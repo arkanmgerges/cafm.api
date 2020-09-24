@@ -3,26 +3,26 @@
 """
 import traceback
 from logging import Logger
-from typing import List, Optional
+from typing import List
+from src.resource.logging.logger import logger
 
 from fastapi import APIRouter, Depends, Query, Body
 from starlette import status
 
-import src.resource.AppDi as AppDi
-from src.resource.api.model.request.Role import Role
-from src.resource.api.router.v1.auth import currentActiveUser
+import src.portadapter.api.rest.AppDi as AppDi
+from src.portadapter.api.rest.model.request.Role import Role
+from src.portadapter.api.rest.router.v1.auth import CustomHttpBearer
 
 router = APIRouter()
 
 
 @router.get(path="/", summary='Get all roles', response_model=List[Role])
-async def getAllRoles(*, currentRole: Role = Depends(currentActiveUser)):
+async def getAllRoles(*, _=Depends(CustomHttpBearer())):
     """Return all roles
     """
     try:
         return []
     except:
-        logger = AppDi.instance.get(Logger)
         logger.warning(traceback.format_exc())
         return []
 
@@ -31,7 +31,7 @@ async def getAllRoles(*, currentRole: Role = Depends(currentActiveUser)):
             response_model=Role)
 async def getRole(*, roleId: str = Query(...,
                                            description='Role id that is used to fetch role data'),
-                    currentRole: Role = Depends(currentActiveUser)):
+                    _=Depends(CustomHttpBearer())):
     """Get a Role by id
     """
     try:
@@ -46,7 +46,7 @@ def _customFunc(args):
     pass
 
 @router.post("/create", summary='Create a new role', status_code=status.HTTP_204_NO_CONTENT)
-async def create(*, currentRole: Role = Depends(currentActiveUser),
+async def create(*, _=Depends(CustomHttpBearer()),
                 title: str = Body(..., description='Title of the role',
                                                    )):
                                                    # ), backgroundTasks: BackgroundTasks):

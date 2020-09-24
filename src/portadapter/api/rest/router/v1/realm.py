@@ -3,23 +3,21 @@
 """
 import traceback
 from logging import Logger
-from typing import List, Optional
+from typing import List
+from src.resource.logging.logger import logger
 
 from fastapi import APIRouter, Depends, Query, Body
 from starlette import status
-from starlette.background import BackgroundTasks
-from starlette.responses import Response
 
-import src.resource.AppDi as AppDi
-from src.resource.api.model.User import User
-from src.resource.api.model.request.Realm import Realm
-from src.resource.api.router.v1.auth import currentActiveUser
+import src.portadapter.api.rest.AppDi as AppDi
+from src.portadapter.api.rest.model.request.Realm import Realm
+from src.portadapter.api.rest.router.v1.auth import CustomHttpBearer
 
 router = APIRouter()
 
 
 @router.get(path="/", summary='Get all realms', response_model=List[Realm])
-async def getAllRealms(*, currentUser: User = Depends(currentActiveUser)):
+async def getAllRealms(*, _=Depends(CustomHttpBearer())):
     """Return all realms
     """
     try:
@@ -34,13 +32,12 @@ async def getAllRealms(*, currentUser: User = Depends(currentActiveUser)):
             response_model=Realm)
 async def getRealm(*, realmId: str = Query(...,
                                            description='Realm id that is used to fetch realm data'),
-                    currentUser: User = Depends(currentActiveUser)):
+                    _=Depends(CustomHttpBearer())):
     """Get a Realm by id
     """
     try:
         return Realm()
     except:
-        logger = AppDi.instance.get(Logger)
         logger.warning(traceback.format_exc())
         return Realm()
 
@@ -49,7 +46,7 @@ def _customFunc(args):
     pass
 
 @router.post("/create", summary='Create a new realm', status_code=status.HTTP_204_NO_CONTENT)
-async def create(*, currentUser: User = Depends(currentActiveUser),
+async def create(*, _=Depends(CustomHttpBearer()),
                 title: str = Body(..., description='Title of the realm',
                                                    )):
                                                    # ), backgroundTasks: BackgroundTasks):

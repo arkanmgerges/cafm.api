@@ -2,7 +2,7 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import traceback
-from logging import Logger
+from src.resource.logging.logger import logger
 
 from starlette import status
 from starlette.responses import JSONResponse
@@ -10,14 +10,12 @@ from starlette.responses import JSONResponse
 import random
 
 import numpy as np
-import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 
-from src.resource.api.model.response.exception.Message import Message
-from src.resource.api.router.v1 import auth, realm, ou, user, role, usergroup
-import src.resource.AppDi as AppDi
+from src.portadapter.api.rest.model.response.exception.Message import Message
+from src.portadapter.api.rest.router.v1 import auth, realm, ou, user, role, usergroup
 
 app = FastAPI(
     title='Coral System Api Gateway',
@@ -28,7 +26,6 @@ app = FastAPI(
 
 def addCustomExceptionHandlers(app):
     from fastapi import Request
-    import src.resource.AppDi as AppDi
     # from src.domainmodel.exception.ItemDoesNotExistException import ItemDoesNotExistException
     # from src.domainmodel.exception.UserDoesNotExistException import UserDoesNotExistException
 
@@ -46,13 +43,11 @@ def addCustomExceptionHandlers(app):
 
     @app.exception_handler(ValueError)
     async def valueExceptionHandler(request: Request, e: ValueError):
-        logger = AppDi.instance.get(Logger)
         logger.warning(traceback.format_exc())
         return JSONResponse(content={"detail": [{"msg": str(e)}]}, status_code=status.HTTP_400_BAD_REQUEST)
 
     @app.exception_handler(Exception)
     async def generalExceptionHandler(request: Request, e: Exception):
-        logger = AppDi.instance.get(Logger)
         logger.warning(traceback.format_exc())
         return JSONResponse(content={"detail": [{"msg": str(e)}]}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
