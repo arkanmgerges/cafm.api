@@ -6,6 +6,8 @@ from enum import Enum
 
 from avro_models.core import avro_schema, AvroModelContainer
 
+from src.portadapter.messaging.common.model.MessageBase import MessageBase
+
 DIR_NAME = os.path.dirname(os.path.realpath(__file__)) + '/../avro'
 
 
@@ -15,9 +17,12 @@ class COMMANDS(str, Enum):
 
 @avro_schema(AvroModelContainer(default_namespace="coral.api"),
              schema_file=os.path.join(DIR_NAME, "api-command.avsc"))
-class Command(object):
+class Command(MessageBase):
     def __init__(self, id, creatorServiceName='coral.api', name=None, createdOn=round(time.time())):
         super().__init__({'id': id, 'creatorServiceName': creatorServiceName, 'name': name, 'createdOn': createdOn})
 
-    def toMap(self, _ctx=None):
+    def toMap(self, thisObjectForMapping, _ctx=None):
         return vars(self)['_value']
+
+    def topic(self):
+        return os.getenv('CORAL_API_COMMAND_TOPIC', None)

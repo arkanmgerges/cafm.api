@@ -6,8 +6,8 @@ from logging import Logger
 from typing import List
 from uuid import uuid4
 
-from src.portadapter.messaging.Producer import Producer
-from src.portadapter.messaging.model.Command import Command, COMMANDS
+from src.portadapter.messaging.common.SimpleProducer import SimpleProducer
+from src.portadapter.messaging.common.model.Command import Command, COMMANDS
 from src.resource.logging.logger import logger
 
 from fastapi import APIRouter, Depends, Query, Body
@@ -58,6 +58,6 @@ async def create(*, title: str = Body(..., description='Title of the user', embe
     """Call async
     """
     # backgroundTasks.add_task(_customFunc, args)
-    producer = AppDi.instance.get(Producer)
-    producer.produce(obj=Command(id=str(uuid4()), name=COMMANDS.CREATE_USER), objMap=Command.toMap,
-                     schema=str(Command.get_schema()))
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=Command(id=str(uuid4()), name=COMMANDS.CREATE_USER),
+                     schema=Command.get_schema())
