@@ -18,10 +18,10 @@ class COMMANDS(str, Enum):
 @avro_schema(AvroModelContainer(default_namespace="coral.api"),
              schema_file=os.path.join(DIR_NAME, "api-command.avsc"))
 class Command(MessageBase):
-    def __init__(self, id, creatorServiceName='coral.api', name=None, createdOn=round(time.time())):
-        super().__init__({'id': id, 'creatorServiceName': creatorServiceName, 'name': name, 'createdOn': createdOn})
+    def __init__(self, id, creatorServiceName='coral.api', name='', data='', createdOn=round(time.time())):
+        super().__init__({'id': id, 'creatorServiceName': creatorServiceName, 'name': name, 'createdOn': createdOn, 'data': data})
 
-    def toMap(self, thisObjectForMapping, _ctx=None):
+    def toMap(self, thisObjectForMapping=None, _ctx=None):
         return vars(self)['_value']
 
     def topic(self):

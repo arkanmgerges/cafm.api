@@ -1,10 +1,12 @@
 import enum
+import json
 import os
 from typing import List, Any
 
-from confluent_kafka import Consumer as ConfluentKafkaConsumer
+from confluent_kafka import DeserializingConsumer as ConfluentKafkaConsumer
 
 from src.portadapter.messaging.common.Consumer import Consumer
+from confluent_kafka.serialization import StringDeserializer
 
 
 class KafkaOffsetReset(enum.Enum):
@@ -19,11 +21,13 @@ class KafkaConsumer(Consumer):
             'bootstrap.servers': os.getenv('MESSAGE_BROKER_SERVERS', ''),
             'group.id': groupId,
             'auto.offset.reset': autoOffsetReset,
+            'key.deserializer': StringDeserializer('utf_8'),
+            'value.deserializer': lambda v, ctx: json.loads(v.decode('utf-8')),
             # Do not advance committed offsets outside of the transaction.
             # Consumer offsets are committed along with the transaction
             # using the producer's send_offsets_to_transaction() API.
             'enable.auto.commit': autoCommit,
-            'enable.partition.eof': partitionEof,
+            'enable.partition.eof': partitionEof
         })
 
     def poll(self, timeout: float = None) -> Any:

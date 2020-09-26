@@ -1,7 +1,9 @@
+import json
 import os
 from uuid import uuid4
 
 from confluent_kafka import SerializingProducer
+from confluent_kafka.avro import CachedSchemaRegistryClient
 from confluent_kafka.schema_registry import record_subject_name_strategy
 from confluent_kafka.schema_registry.avro import AvroSerializer
 from confluent_kafka.serialization import StringSerializer
@@ -19,19 +21,17 @@ class KafkaSimpleProducer(SimpleProducer):
         self._deliveryReport = KafkaDeliveryReport.deliveryReport
 
     def produce(self, obj: MessageBase, schema: dict):
-        avroSerializer = AvroSerializer(
-            str(schema),
-            self._schemaRegistry,
-            obj.toMap,
-            conf={'subject.name.strategy': record_subject_name_strategy,
-                  'auto.register.schemas': False}
-        )
+        c = CachedSchemaRegistryClient({'url': MESSAGE_SCHEMA_REGISTRY_URL})
+        res = c.test_compatibility(subject=f'{schema.namespace}.{schema.name}', avro_schema=schema)
+        if not res:
+            raise Exception(f'Schema is not compatible {schema}')
+
         producerConf = {'bootstrap.servers': os.getenv('MESSAGE_BROKER_SERVERS', ''),
                         'key.serializer': StringSerializer('utf_8'),
-                        'value.serializer': avroSerializer}
+                        'value.serializer': lambda v, ctx: json.dumps(v).encode('utf-8')}
         producer = SerializingProducer(producerConf)
         producer.poll(0.0)
-        producer.produce(topic=obj.topic(), key=str(uuid4()), value=obj,
+        producer.produce(topic=obj.topic(), key=str(uuid4()), value=obj.toMap(),
                          on_delivery=self._deliveryReport)
         producer.flush()
 

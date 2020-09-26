@@ -41,7 +41,10 @@ class CommandApiListener:
         consumer.subscribe([os.getenv('CORAL_API_COMMAND_TOPIC', '')])
         try:
             while True:
-                msg = consumer.poll(timeout=1.0)
+                try:
+                    msg = consumer.poll(timeout=1.0)
+                except Exception as _e:
+                    pass
                 if msg is None:
                     continue
                 if msg.error():
@@ -53,7 +56,6 @@ class CommandApiListener:
                     # Proper message
                     logger.info(f'topic: {msg.topic()}, partition: {msg.partition()}, offset: {msg.offset()} with key: {str(msg.key())}')
                     logger.info(f'value: {msg.value()}')
-                    # logger.info(f'value json: {json.loads(msg.value().decode("utf-8"))}')
                 sleep(3)
         except KeyboardInterrupt:
             logger.info(f'Aborted by user')
