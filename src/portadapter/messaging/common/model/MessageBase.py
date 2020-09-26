@@ -4,7 +4,6 @@
 
 from __future__ import annotations
 
-import os
 from abc import ABC, abstractmethod
 
 
@@ -26,5 +25,12 @@ class MessageBase(ABC, object):
 
         Returns:
             dict: Dictionary data of the object
+        """
+        pass
+
+    @abstractmethod
+    def msgId(self) -> str:
+        """Retrieve message id
+
         """
         pass
