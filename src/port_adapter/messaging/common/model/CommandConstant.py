@@ -5,5 +5,5 @@
 from enum import Enum
 
 
-class CommandConstant(str, Enum):
+class CommandConstant(Enum):
     CREATE_USER = 'createUser'

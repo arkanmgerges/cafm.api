@@ -7,9 +7,9 @@ from time import sleep
 
 from confluent_kafka.cimpl import KafkaError
 
-import src.portadapter.api.rest.AppDi as AppDi
-from src.portadapter.messaging.common.Consumer import Consumer
-from src.portadapter.messaging.common.ConsumerOffsetReset import ConsumerOffsetReset
+import src.port_adapter.api.rest.AppDi as AppDi
+from src.port_adapter.messaging.common.Consumer import Consumer
+from src.port_adapter.messaging.common.ConsumerOffsetReset import ConsumerOffsetReset
 from src.resource.logging.logger import logger
 
 

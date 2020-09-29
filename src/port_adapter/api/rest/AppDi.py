@@ -2,12 +2,12 @@ from uuid import uuid4
 
 from injector import Module, Injector, singleton, provider, inject
 
-from src.portadapter.messaging.common.Consumer import Consumer
-from src.portadapter.messaging.common.ConsumerOffsetReset import ConsumerOffsetReset
-from src.portadapter.messaging.common.SimpleProducer import SimpleProducer
-from src.portadapter.messaging.common.TransactionalProducer import TransactionalProducer
-from src.portadapter.messaging.common.kafka.KafkaConsumer import KafkaConsumer
-from src.portadapter.messaging.common.kafka.KafkaProducer import KafkaProducer
+from src.port_adapter.messaging.common.Consumer import Consumer
+from src.port_adapter.messaging.common.ConsumerOffsetReset import ConsumerOffsetReset
+from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
+from src.port_adapter.messaging.common.TransactionalProducer import TransactionalProducer
+from src.port_adapter.messaging.common.kafka.KafkaConsumer import KafkaConsumer
+from src.port_adapter.messaging.common.kafka.KafkaProducer import KafkaProducer
 from injector import ClassAssistedBuilder
 
 

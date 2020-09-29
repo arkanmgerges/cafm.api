@@ -9,9 +9,9 @@ from confluent_kafka import SerializingProducer
 from confluent_kafka.avro import CachedSchemaRegistryClient
 from confluent_kafka.serialization import StringSerializer
 
-from src.portadapter.messaging.common.SimpleProducer import SimpleProducer
-from src.portadapter.messaging.common.kafka.KafkaDeliveryReport import KafkaDeliveryReport
-from src.portadapter.messaging.common.model.MessageBase import MessageBase
+from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
+from src.port_adapter.messaging.common.kafka.KafkaDeliveryReport import KafkaDeliveryReport
+from src.port_adapter.messaging.common.model.MessageBase import MessageBase
 
 MESSAGE_SCHEMA_REGISTRY_URL = os.getenv('MESSAGE_SCHEMA_REGISTRY_URL', '')
 

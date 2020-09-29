@@ -9,7 +9,7 @@ import time
 
 from avro_models.core import avro_schema, AvroModelContainer
 
-from src.portadapter.messaging.common.model.MessageBase import MessageBase
+from src.port_adapter.messaging.common.model.MessageBase import MessageBase
 
 DIR_NAME = os.path.dirname(os.path.realpath(__file__)) + '/../avro'
 

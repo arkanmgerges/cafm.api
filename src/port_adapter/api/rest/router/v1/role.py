@@ -9,9 +9,9 @@ from src.resource.logging.logger import logger
 from fastapi import APIRouter, Depends, Query, Body
 from starlette import status
 
-import src.portadapter.api.rest.AppDi as AppDi
-from src.portadapter.api.rest.model.request.Role import Role
-from src.portadapter.api.rest.router.v1.auth import CustomHttpBearer
+import src.port_adapter.api.rest.AppDi as AppDi
+from src.port_adapter.api.rest.model.request.Role import Role
+from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
 
 router = APIRouter()
 

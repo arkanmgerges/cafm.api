@@ -9,8 +9,8 @@ from typing import List, Any
 from confluent_kafka import DeserializingConsumer as ConfluentKafkaConsumer
 from confluent_kafka.serialization import StringDeserializer
 
-from src.portadapter.messaging.common.Consumer import Consumer
-from src.portadapter.messaging.common.ConsumerOffsetReset import ConsumerOffsetReset
+from src.port_adapter.messaging.common.Consumer import Consumer
+from src.port_adapter.messaging.common.ConsumerOffsetReset import ConsumerOffsetReset
 
 
 class KafkaConsumer(Consumer):

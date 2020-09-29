@@ -14,8 +14,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 
-from src.portadapter.api.rest.model.response.exception.Message import Message
-from src.portadapter.api.rest.router.v1 import auth, realm, ou, user, role, usergroup
+from src.port_adapter.api.rest.model.response.exception.Message import Message
+from src.port_adapter.api.rest.router.v1 import auth, realm, ou, user, role, usergroup
 
 app = FastAPI(
     title='Coral System Api Gateway',
@@ -26,8 +26,8 @@ app = FastAPI(
 
 def addCustomExceptionHandlers(app):
     from fastapi import Request
-    # from src.domainmodel.exception.ItemDoesNotExistException import ItemDoesNotExistException
-    # from src.domainmodel.exception.UserDoesNotExistException import UserDoesNotExistException
+    # from src.domain_model.exception.ItemDoesNotExistException import ItemDoesNotExistException
+    # from src.domain_model.exception.UserDoesNotExistException import UserDoesNotExistException
 
     # @app.exception_handler(ItemDoesNotExistException)
     # async def itemExceptionHandler(request: Request, e: ItemDoesNotExistException):

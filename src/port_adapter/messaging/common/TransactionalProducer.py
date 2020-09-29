@@ -4,8 +4,8 @@
 
 from abc import ABC, abstractmethod
 
-from src.portadapter.messaging.common.Consumer import Consumer
-from src.portadapter.messaging.common.model.MessageBase import MessageBase
+from src.port_adapter.messaging.common.Consumer import Consumer
+from src.port_adapter.messaging.common.model.MessageBase import MessageBase
 
 
 class TransactionalProducer(ABC):

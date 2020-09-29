@@ -4,7 +4,7 @@
 
 from abc import ABC, abstractmethod
 
-from src.portadapter.messaging.common.model.MessageBase import MessageBase
+from src.port_adapter.messaging.common.model.MessageBase import MessageBase
 
 
 class SimpleProducer(ABC):

@@ -4,7 +4,7 @@
 
 import os
 
-from src.portadapter.messaging.common.SimpleProducer import SimpleProducer
+from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.resource.logging.logger import logger
 
 MESSAGE_SCHEMA_REGISTRY_URL = os.getenv('MESSAGE_SCHEMA_REGISTRY_URL', '')

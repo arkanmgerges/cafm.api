@@ -8,8 +8,8 @@ from typing import List
 from fastapi import APIRouter, Depends, Query, Body
 from starlette import status
 
-from src.portadapter.api.rest.model.request.UserGroup import UserGroup
-from src.portadapter.api.rest.router.v1.auth import CustomHttpBearer
+from src.port_adapter.api.rest.model.request.UserGroup import UserGroup
+from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
 
 router = APIRouter()
 
