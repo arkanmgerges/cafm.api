@@ -62,6 +62,7 @@ MarkupSafe = "==1.1.1"
 Pygments = "==2.7.0"
 PyJWT = "==1.7.1"
 Sphinx = "==2.4.3"
+redis = "*"
 
 [requires]
 python_version = "3.8"
