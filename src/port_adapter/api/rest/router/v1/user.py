@@ -10,12 +10,12 @@ from uuid import uuid4
 
 from fastapi import APIRouter, Depends, Query, Body
 
-import src.port_adapter.api.rest.AppDi as AppDi
+import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.model.User import User
 from src.port_adapter.api.rest.model.request.User import User
 from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
-from src.port_adapter.messaging.common.model.Command import Command
+from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
 
@@ -62,6 +62,6 @@ async def create(*, title: str = Body(..., description='Title of the user', embe
     # backgroundTasks.add_task(_customFunc, args)
 
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=Command(id=str(uuid4()), name=CommandConstant.CREATE_USER.value, data=json.dumps(
+    producer.produce(obj=ApiCommand(id=str(uuid4()), name=CommandConstant.CREATE_USER.value, data=json.dumps(
         {'username': title, 'password': hashlib.sha256('pass'.encode()).hexdigest()})),
-                     schema=Command.get_schema())
+                     schema=ApiCommand.get_schema())

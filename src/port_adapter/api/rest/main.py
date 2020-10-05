@@ -13,7 +13,6 @@ import numpy as np
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-
 from src.port_adapter.api.rest.model.response.exception.Message import Message
 from src.port_adapter.api.rest.router.v1 import auth, realm, ou, user, role, usergroup
 
@@ -23,6 +22,7 @@ app = FastAPI(
     version='1.0.0',
     openapi_url='/api/v1/openapi.json'
 )
+
 
 def addCustomExceptionHandlers(app):
     from fastapi import Request
@@ -51,6 +51,7 @@ def addCustomExceptionHandlers(app):
         logger.warning(traceback.format_exc())
         return JSONResponse(content={"detail": [{"msg": str(e)}]}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
 addCustomExceptionHandlers(app)
 
 app.add_middleware(
@@ -64,7 +65,8 @@ app.add_middleware(
 np.random.seed(0)
 random.seed(0)
 
-app.include_router(auth.router, prefix="/v1/auth", tags=["Auth"])
+app.include_router(auth.router, prefix="/v1/auth", tags=["Auth"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(realm.router, prefix="/v1/realms", tags=["Realm"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(ou.router, prefix="/v1/ous", tags=["OU"],

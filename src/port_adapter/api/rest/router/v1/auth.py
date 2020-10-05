@@ -1,18 +1,33 @@
 """
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
+import json
 import os
+
+import grpc
+from fastapi import Response
+from grpc.beta.interfaces import StatusCode
+
+from src.resource.logging.logger import logger
+
 
 from fastapi import APIRouter
 from fastapi import HTTPException
+from fastapi.param_functions import Body
 from fastapi.security import HTTPBearer
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
+from starlette import status
 from starlette.requests import Request
-from starlette.status import HTTP_403_FORBIDDEN
+from starlette.status import HTTP_403_FORBIDDEN, HTTP_401_UNAUTHORIZED, HTTP_400_BAD_REQUEST, HTTP_200_OK, \
+    HTTP_500_INTERNAL_SERVER_ERROR
 
 # to get a string like this run:
 # openssl rand -hex 32
+from src.resource.proto._generated.auth_app_service_pb2 import AuthAppService_authenticateUserByNameAndPasswordRequest, \
+    AuthAppService_authenticateUserByNameAndPasswordResponse
+from src.resource.proto._generated.auth_app_service_pb2_grpc import AuthAppServiceStub
+
 router = APIRouter()
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
@@ -46,3 +61,32 @@ class CustomHttpBearer(HTTPBearer):
                 status_code=HTTP_403_FORBIDDEN,
                 detail="Invalid authentication credentials",
             )
+
+
+@router.post("/authenticate", summary='Authenticate user', status_code=status.HTTP_200_OK)
+async def authenticate(*,
+                username: str = Body(..., description='Username used for authentication'),
+                password: str = Body(..., description='Password used for authentication')):
+                                                   # ), backgroundTasks: BackgroundTasks):
+    """Call async
+    """
+    #backgroundTasks.add_task(_customFunc, args)
+    # return f'you entered: username: {username}, password: {password}'
+    with grpc.insecure_channel("cafm-identity-server:9999") as channel:
+        stub = AuthAppServiceStub(channel)
+        try:
+            response: AuthAppService_authenticateUserByNameAndPasswordResponse = stub.authenticateUserByNameAndPassword.with_call(
+                AuthAppService_authenticateUserByNameAndPasswordRequest(name=username, password=password),
+                metadata=(('auth_token', 'res-token-yumyum'),))
+            logger.debug(f'[{authenticate.__qualname__}] - grpc call to authenticate user name: {username} response: {response}')
+
+            return response[0].token
+        except grpc.RpcError as e:
+            if e.code() == StatusCode.NOT_FOUND:
+                return Response(status_code=HTTP_401_UNAUTHORIZED)
+            else:
+                return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            logger.info(e)
+        finally:
+            channel.unsubscribe(lambda ch: ch.close())

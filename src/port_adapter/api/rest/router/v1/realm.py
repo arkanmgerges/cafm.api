@@ -9,7 +9,7 @@ from src.resource.logging.logger import logger
 from fastapi import APIRouter, Depends, Query, Body
 from starlette import status
 
-import src.port_adapter.api.rest.AppDi as AppDi
+import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.model.request.Realm import Realm
 from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
 

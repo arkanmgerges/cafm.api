@@ -6,29 +6,27 @@ import os
 import signal
 
 import redis
-from confluent_kafka.cimpl import KafkaError
-
 import src.port_adapter.AppDi as AppDi
+from confluent_kafka.cimpl import KafkaError
 from redis.client import Redis
 
 from src.port_adapter.messaging.common.Consumer import Consumer
 from src.port_adapter.messaging.common.ConsumerOffsetReset import ConsumerOffsetReset
 from src.port_adapter.messaging.common.TransactionalProducer import TransactionalProducer
-from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.resource.logging.logger import logger
 
 
 class ApiCommandListener:
     def __init__(self):
         self._handlers = []
-        self._creatorServiceName = os.getenv('CORAL_API_SERVICE_NAME', 'coral.api')
+        self._creatorServiceName = os.getenv('CAFM_API_SERVICE_NAME', 'cafm.api')
         signal.signal(signal.SIGINT, self.interruptExecution)
         signal.signal(signal.SIGTERM, self.interruptExecution)
 
         try:
-            self._cache: Redis = redis.Redis(host=os.getenv('CORAL_API_REDIS_HOST', 'localhost'),
-                                             port=os.getenv('CORAL_API_REDIS_PORT', 6379))
-            self._cacheSessionKeyPrefix = os.getenv('CORAL_API_REDIS_SESSION_KEY_PREFIX', 'coral.api.session.')
+            self._cache: Redis = redis.Redis(host=os.getenv('CAFM_API_REDIS_HOST', 'localhost'),
+                                             port=os.getenv('CAFM_API_REDIS_PORT', 6379))
+            self._cacheSessionKeyPrefix = os.getenv('CAFM_API_REDIS_SESSION_KEY_PREFIX', 'cafm.api.session.')
         except Exception as e:
             raise Exception(
                 f'[{ApiCommandListener.__init__.__qualname__}] Could not connect to the redis, message: {e}')
@@ -38,12 +36,12 @@ class ApiCommandListener:
 
     def run(self):
         consumer: Consumer = AppDi.Builder.buildConsumer(
-            groupId=os.getenv('CORAL_API_CONSUMER_GROUP_API_RSP_NAME', 'coral.api.consumer-group.rsp'),
+            groupId=os.getenv('CAFM_API_CONSUMER_GROUP_API_RSP_NAME', 'cafm.api.consumer-group.rsp'),
             autoCommit=False, partitionEof=True,
             autoOffsetReset=ConsumerOffsetReset.earliest.name)
 
         # Subscribe
-        consumer.subscribe([os.getenv('CORAL_API_RESPONSE_TOPIC', 'coral.api.rsp')])
+        consumer.subscribe([os.getenv('CAFM_API_RESPONSE_TOPIC', 'cafm.api.rsp')])
 
         # Producer
         producer: TransactionalProducer = AppDi.instance.get(TransactionalProducer)

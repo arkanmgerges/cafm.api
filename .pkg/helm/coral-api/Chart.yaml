@@ -1,5 +1,5 @@
 apiVersion: v2
-name: coral-api
+name: cafm-api
 description: A Helm chart for Coral System Api Gateway
 
 # A chart can be either an 'application' or a 'library' chart.
