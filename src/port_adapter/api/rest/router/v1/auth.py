@@ -10,6 +10,8 @@ from grpc.beta.interfaces import StatusCode
 
 from src.domain_model.AuthenticationService import AuthenticationService
 import src.port_adapter.AppDi as AppDi
+from src.port_adapter.api.rest.grpc.Client import Client
+from src.port_adapter.api.rest.grpc.auth.AuthClient import AuthClient
 from src.resource.logging.logger import logger
 
 
@@ -58,11 +60,14 @@ class CustomHttpBearer(HTTPBearer):
 
     async def __call__(self, request: Request):
         ret = await super().__call__(request)
-        if ret is not None and ret.credentials != SECRET_TOKEN:
+        authClient = AuthClient()
+        Client.token = ret.credentials
+        if ret is not None and not authClient.isAuthenticated(token=ret.credentials):
             raise HTTPException(
                 status_code=HTTP_403_FORBIDDEN,
                 detail="Invalid authentication credentials",
             )
+
 
 
 @router.post("/authenticate", summary='Authenticate user', status_code=status.HTTP_200_OK)
@@ -74,28 +79,16 @@ async def authenticate(*,
     """
     #backgroundTasks.add_task(_customFunc, args)
     # return f'you entered: username: {username}, password: {password}'
-    server = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE', '')
-    port = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE_PORT', '')
-    with grpc.insecure_channel(f'{server}:{port}') as channel:
-        stub = AuthAppServiceStub(channel)
-        try:
-            logger.debug(
-                f'[{authenticate.__module__}.{authenticate.__qualname__}] - grpc call to authenticate user name: {username} from server {server}:{port}')
-            authService:AuthenticationService = AppDi.instance.get(AuthenticationService)
-            response: AuthAppService_authenticateUserByNameAndPasswordResponse = stub.authenticateUserByNameAndPassword.with_call(
-                AuthAppService_authenticateUserByNameAndPasswordRequest(name=username, password=authService.hashPassword(password)),
-                metadata=(('auth_token', 'res-token-yumyum'),))
-            logger.debug(f'[{authenticate.__qualname__}] - grpc call to authenticate user name: {username} response: {response}')
+    try:
+        client = AuthClient()
+        return client.authenticateUserByNameAndPassword(name=username, password=password)
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(status_code=HTTP_401_UNAUTHORIZED)
+        else:
+            logger.error(
+                f'[{authenticate.__module__}.{authenticate.__qualname__}] - error response for username: {username}, e: {e}')
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
 
-            return response[0].token
-        except grpc.RpcError as e:
-            if e.code() == StatusCode.NOT_FOUND:
-                return Response(status_code=HTTP_401_UNAUTHORIZED)
-            else:
-                logger.error(
-                    f'[{authenticate.__qualname__}] - error response for username: {username}, e: {e}')
-                return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
-        except Exception as e:
-            logger.info(e)
-        finally:
-            channel.unsubscribe(lambda ch: ch.close())

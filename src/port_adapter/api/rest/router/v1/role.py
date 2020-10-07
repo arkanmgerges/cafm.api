@@ -4,6 +4,13 @@
 import traceback
 from logging import Logger
 from typing import List
+
+from grpc.beta.interfaces import StatusCode
+from fastapi import Response
+from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
+
+import grpc
+from src.port_adapter.api.rest.grpc.role.RoleClient import RoleClient
 from src.resource.logging.logger import logger
 
 from fastapi import APIRouter, Depends, Query, Body
@@ -21,10 +28,17 @@ async def getAllRoles(*, _=Depends(CustomHttpBearer())):
     """Return all roles
     """
     try:
-        return []
-    except:
-        logger.warning(traceback.format_exc())
-        return []
+        client = RoleClient()
+        return client.roles()
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f'[{getAllRoles.__module__}.{getAllRoles.__qualname__}] - error response e: {e}')
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
 
 
 @router.get(path="/{roleId}/", summary='Get role',
@@ -34,12 +48,7 @@ async def getRole(*, roleId: str = Query(...,
                     _=Depends(CustomHttpBearer())):
     """Get a Role by id
     """
-    try:
-        return Role()
-    except:
-        logger = AppDi.instance.get(Logger)
-        logger.warning(traceback.format_exc())
-        return Role()
+    pass
 
 
 def _customFunc(args):
