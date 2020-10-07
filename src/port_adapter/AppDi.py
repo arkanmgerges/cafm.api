@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from injector import Module, Injector, singleton, provider, inject
 
+from src.domain_model.AuthenticationService import AuthenticationService
 from src.port_adapter.messaging.common.Consumer import Consumer
 from src.port_adapter.messaging.common.ConsumerOffsetReset import ConsumerOffsetReset
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -33,6 +34,13 @@ class AppDi(Module):
                         partitionEof: bool = True, autoOffsetReset: str = ConsumerOffsetReset.latest.name) -> Consumer:
         return KafkaConsumer(groupId=groupId, autoCommit=autoCommit, partitionEof=partitionEof,
                              autoOffsetReset=autoOffsetReset)
+
+    # region Domain Service
+    @singleton
+    @provider
+    def provideAuthenticationService(self) -> AuthenticationService:
+        return AuthenticationService()
+    # endregion
 
 class Builder:
     @classmethod

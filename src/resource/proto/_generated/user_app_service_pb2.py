@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x16user_app_service.proto\x12\x13\x63oral.identity.user\"M\n+UserAppService_userByNameAndPasswordRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"H\n,UserAppService_userByNameAndPasswordResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t2\xb1\x01\n\x0eUserAppService\x12\x9e\x01\n\x15userByNameAndPassword\x12@.cafm.identity.user.UserAppService_userByNameAndPasswordRequest\x1a\x41.cafm.identity.user.UserAppService_userByNameAndPasswordResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x16user_app_service.proto\x12\x12\x63\x61\x66m.identity.user\"M\n+UserAppService_userByNameAndPasswordRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"H\n,UserAppService_userByNameAndPasswordResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t2\xaf\x01\n\x0eUserAppService\x12\x9c\x01\n\x15userByNameAndPassword\x12?.cafm.identity.user.UserAppService_userByNameAndPasswordRequest\x1a@.cafm.identity.user.UserAppService_userByNameAndPasswordResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -59,8 +59,8 @@ _USERAPPSERVICE_USERBYNAMEANDPASSWORDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=47,
-  serialized_end=124,
+  serialized_start=46,
+  serialized_end=123,
 )
 
 
@@ -98,8 +98,8 @@ _USERAPPSERVICE_USERBYNAMEANDPASSWORDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=126,
-  serialized_end=198,
+  serialized_start=125,
+  serialized_end=197,
 )
 
 DESCRIPTOR.message_types_by_name['UserAppService_userByNameAndPasswordRequest'] = _USERAPPSERVICE_USERBYNAMEANDPASSWORDREQUEST
@@ -129,8 +129,8 @@ _USERAPPSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=201,
-  serialized_end=378,
+  serialized_start=200,
+  serialized_end=375,
   methods=[
   _descriptor.MethodDescriptor(
     name='userByNameAndPassword',

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x16role_app_service.proto\x12\x13\x63oral.identity.role\"0\n RoleAppService_roleByNameRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"=\n!RoleAppService_roleByNameResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t2\x8f\x01\n\x0eRoleAppService\x12}\n\nroleByName\x12\x35.cafm.identity.role.RoleAppService_roleByNameRequest\x1a\x36.cafm.identity.role.RoleAppService_roleByNameResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x16role_app_service.proto\x12\x12\x63\x61\x66m.identity.role\"0\n RoleAppService_roleByNameRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"=\n!RoleAppService_roleByNameResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t2\x8d\x01\n\x0eRoleAppService\x12{\n\nroleByName\x12\x34.cafm.identity.role.RoleAppService_roleByNameRequest\x1a\x35.cafm.identity.role.RoleAppService_roleByNameResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -52,8 +52,8 @@ _ROLEAPPSERVICE_ROLEBYNAMEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=47,
-  serialized_end=95,
+  serialized_start=46,
+  serialized_end=94,
 )
 
 
@@ -91,8 +91,8 @@ _ROLEAPPSERVICE_ROLEBYNAMERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=97,
-  serialized_end=158,
+  serialized_start=96,
+  serialized_end=157,
 )
 
 DESCRIPTOR.message_types_by_name['RoleAppService_roleByNameRequest'] = _ROLEAPPSERVICE_ROLEBYNAMEREQUEST
@@ -122,8 +122,8 @@ _ROLEAPPSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=161,
-  serialized_end=304,
+  serialized_start=160,
+  serialized_end=301,
   methods=[
   _descriptor.MethodDescriptor(
     name='roleByName',

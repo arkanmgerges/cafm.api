@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1cpermission_app_service.proto\x12\x19\x63oral.identity.permission\"<\n,PermissionAppService_permissionByNameRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"I\n-PermissionAppService_permissionByNameResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t2\xc0\x01\n\x14PermissionAppService\x12\xa7\x01\n\x10permissionByName\x12G.cafm.identity.permission.PermissionAppService_permissionByNameRequest\x1aH.cafm.identity.permission.PermissionAppService_permissionByNameResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x1cpermission_app_service.proto\x12\x18\x63\x61\x66m.identity.permission\"<\n,PermissionAppService_permissionByNameRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"I\n-PermissionAppService_permissionByNameResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t2\xbe\x01\n\x14PermissionAppService\x12\xa5\x01\n\x10permissionByName\x12\x46.cafm.identity.permission.PermissionAppService_permissionByNameRequest\x1aG.cafm.identity.permission.PermissionAppService_permissionByNameResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -52,8 +52,8 @@ _PERMISSIONAPPSERVICE_PERMISSIONBYNAMEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=59,
-  serialized_end=119,
+  serialized_start=58,
+  serialized_end=118,
 )
 
 
@@ -91,8 +91,8 @@ _PERMISSIONAPPSERVICE_PERMISSIONBYNAMERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=121,
-  serialized_end=194,
+  serialized_start=120,
+  serialized_end=193,
 )
 
 DESCRIPTOR.message_types_by_name['PermissionAppService_permissionByNameRequest'] = _PERMISSIONAPPSERVICE_PERMISSIONBYNAMEREQUEST
@@ -122,8 +122,8 @@ _PERMISSIONAPPSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=197,
-  serialized_end=389,
+  serialized_start=196,
+  serialized_end=386,
   methods=[
   _descriptor.MethodDescriptor(
     name='permissionByName',

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x17realm_app_service.proto\x12\x14\x63oral.identity.realm\"2\n\"RealmAppService_realmByNameRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"?\n#RealmAppService_realmByNameResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t2\x98\x01\n\x0fRealmAppService\x12\x84\x01\n\x0brealmByName\x12\x38.cafm.identity.realm.RealmAppService_realmByNameRequest\x1a\x39.cafm.identity.realm.RealmAppService_realmByNameResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x17realm_app_service.proto\x12\x13\x63\x61\x66m.identity.realm\"2\n\"RealmAppService_realmByNameRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"?\n#RealmAppService_realmByNameResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t2\x96\x01\n\x0fRealmAppService\x12\x82\x01\n\x0brealmByName\x12\x37.cafm.identity.realm.RealmAppService_realmByNameRequest\x1a\x38.cafm.identity.realm.RealmAppService_realmByNameResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -52,8 +52,8 @@ _REALMAPPSERVICE_REALMBYNAMEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=49,
-  serialized_end=99,
+  serialized_start=48,
+  serialized_end=98,
 )
 
 
@@ -91,8 +91,8 @@ _REALMAPPSERVICE_REALMBYNAMERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=101,
-  serialized_end=164,
+  serialized_start=100,
+  serialized_end=163,
 )
 
 DESCRIPTOR.message_types_by_name['RealmAppService_realmByNameRequest'] = _REALMAPPSERVICE_REALMBYNAMEREQUEST
@@ -122,8 +122,8 @@ _REALMAPPSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=167,
-  serialized_end=319,
+  serialized_start=166,
+  serialized_end=316,
   methods=[
   _descriptor.MethodDescriptor(
     name='realmByName',

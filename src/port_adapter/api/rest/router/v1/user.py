@@ -11,6 +11,7 @@ from uuid import uuid4
 from fastapi import APIRouter, Depends, Query, Body
 
 import src.port_adapter.AppDi as AppDi
+from src.domain_model.AuthenticationService import AuthenticationService
 from src.port_adapter.api.rest.model.User import User
 from src.port_adapter.api.rest.model.request.User import User
 from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
@@ -53,7 +54,9 @@ def _customFunc(args):
 
 
 @router.post("/create", summary='Create a new user')
-async def create(*, title: str = Body(..., description='Title of the user', embed=True),
+async def create(*,
+                 username: str = Body(..., description='The name of the user', embed=True),
+                 password: str = Body(..., description='The password of the user', embed=True),
                  _=Depends(CustomHttpBearer()),
                  ):
     # ), backgroundTasks: BackgroundTasks):
@@ -61,7 +64,8 @@ async def create(*, title: str = Body(..., description='Title of the user', embe
     """
     # backgroundTasks.add_task(_customFunc, args)
 
+    authService:AuthenticationService = AppDi.instance.get(AuthenticationService)
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=str(uuid4()), name=CommandConstant.CREATE_USER.value, data=json.dumps(
-        {'username': title, 'password': hashlib.sha256('pass'.encode()).hexdigest()})),
+        {'username': username, 'password': authService.hashPassword(password=password)})),
                      schema=ApiCommand.get_schema())

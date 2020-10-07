@@ -8,6 +8,8 @@ import grpc
 from fastapi import Response
 from grpc.beta.interfaces import StatusCode
 
+from src.domain_model.AuthenticationService import AuthenticationService
+import src.port_adapter.AppDi as AppDi
 from src.resource.logging.logger import logger
 
 
@@ -72,11 +74,16 @@ async def authenticate(*,
     """
     #backgroundTasks.add_task(_customFunc, args)
     # return f'you entered: username: {username}, password: {password}'
-    with grpc.insecure_channel("cafm-identity-server:9999") as channel:
+    server = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE', '')
+    port = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE_PORT', '')
+    with grpc.insecure_channel(f'{server}:{port}') as channel:
         stub = AuthAppServiceStub(channel)
         try:
+            logger.debug(
+                f'[{authenticate.__module__}.{authenticate.__qualname__}] - grpc call to authenticate user name: {username} from server {server}:{port}')
+            authService:AuthenticationService = AppDi.instance.get(AuthenticationService)
             response: AuthAppService_authenticateUserByNameAndPasswordResponse = stub.authenticateUserByNameAndPassword.with_call(
-                AuthAppService_authenticateUserByNameAndPasswordRequest(name=username, password=password),
+                AuthAppService_authenticateUserByNameAndPasswordRequest(name=username, password=authService.hashPassword(password)),
                 metadata=(('auth_token', 'res-token-yumyum'),))
             logger.debug(f'[{authenticate.__qualname__}] - grpc call to authenticate user name: {username} response: {response}')
 
@@ -85,6 +92,8 @@ async def authenticate(*,
             if e.code() == StatusCode.NOT_FOUND:
                 return Response(status_code=HTTP_401_UNAUTHORIZED)
             else:
+                logger.error(
+                    f'[{authenticate.__qualname__}] - error response for username: {username}, e: {e}')
                 return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
         except Exception as e:
             logger.info(e)

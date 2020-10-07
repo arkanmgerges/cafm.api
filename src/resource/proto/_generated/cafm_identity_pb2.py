@@ -28,7 +28,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x14\x63oral_identity.proto\x1a\x14ou_app_service.proto\x1a\x1cpermission_app_service.proto\x1a\x19project_app_service.proto\x1a\x17realm_app_service.proto\x1a\x1fresource_type_app_service.proto\x1a\x16role_app_service.proto\x1a\x16user_app_service.proto\x1a\x1cuser_group_app_service.proto\x1a\x16\x61uth_app_service.protob\x06proto3'
+  serialized_pb=b'\n\x13\x63\x61\x66m_identity.proto\x1a\x14ou_app_service.proto\x1a\x1cpermission_app_service.proto\x1a\x19project_app_service.proto\x1a\x17realm_app_service.proto\x1a\x1fresource_type_app_service.proto\x1a\x16role_app_service.proto\x1a\x16user_app_service.proto\x1a\x1cuser_group_app_service.proto\x1a\x16\x61uth_app_service.protob\x06proto3'
   ,
   dependencies=[ou__app__service__pb2.DESCRIPTOR,permission__app__service__pb2.DESCRIPTOR,project__app__service__pb2.DESCRIPTOR,realm__app__service__pb2.DESCRIPTOR,resource__type__app__service__pb2.DESCRIPTOR,role__app__service__pb2.DESCRIPTOR,user__app__service__pb2.DESCRIPTOR,user__group__app__service__pb2.DESCRIPTOR,auth__app__service__pb2.DESCRIPTOR,])
 

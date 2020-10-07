@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1cuser_group_app_service.proto\x12\x18\x63oral.identity.userGroup\":\n*UserGroupAppService_userGroupByNameRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"G\n+UserGroupAppService_userGroupByNameResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t2\xb8\x01\n\x13UserGroupAppService\x12\xa0\x01\n\x0fuserGroupByName\x12\x44.cafm.identity.userGroup.UserGroupAppService_userGroupByNameRequest\x1a\x45.cafm.identity.userGroup.UserGroupAppService_userGroupByNameResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x1cuser_group_app_service.proto\x12\x17\x63\x61\x66m.identity.userGroup\":\n*UserGroupAppService_userGroupByNameRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"G\n+UserGroupAppService_userGroupByNameResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t2\xb6\x01\n\x13UserGroupAppService\x12\x9e\x01\n\x0fuserGroupByName\x12\x43.cafm.identity.userGroup.UserGroupAppService_userGroupByNameRequest\x1a\x44.cafm.identity.userGroup.UserGroupAppService_userGroupByNameResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -52,8 +52,8 @@ _USERGROUPAPPSERVICE_USERGROUPBYNAMEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=58,
-  serialized_end=116,
+  serialized_start=57,
+  serialized_end=115,
 )
 
 
@@ -91,8 +91,8 @@ _USERGROUPAPPSERVICE_USERGROUPBYNAMERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=118,
-  serialized_end=189,
+  serialized_start=117,
+  serialized_end=188,
 )
 
 DESCRIPTOR.message_types_by_name['UserGroupAppService_userGroupByNameRequest'] = _USERGROUPAPPSERVICE_USERGROUPBYNAMEREQUEST
@@ -122,8 +122,8 @@ _USERGROUPAPPSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=192,
-  serialized_end=376,
+  serialized_start=191,
+  serialized_end=373,
   methods=[
   _descriptor.MethodDescriptor(
     name='userGroupByName',

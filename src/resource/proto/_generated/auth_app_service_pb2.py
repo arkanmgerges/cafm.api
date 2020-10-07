@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x16\x61uth_app_service.proto\x12\x13\x63oral.identity.auth\"Y\n7AuthAppService_authenticateUserByNameAndPasswordRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"I\n8AuthAppService_authenticateUserByNameAndPasswordResponse\x12\r\n\x05token\x18\x01 \x01(\t2\xd5\x01\n\x0e\x41uthAppService\x12\xc2\x01\n!authenticateUserByNameAndPassword\x12L.cafm.identity.auth.AuthAppService_authenticateUserByNameAndPasswordRequest\x1aM.cafm.identity.auth.AuthAppService_authenticateUserByNameAndPasswordResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x16\x61uth_app_service.proto\x12\x12\x63\x61\x66m.identity.auth\"Y\n7AuthAppService_authenticateUserByNameAndPasswordRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"I\n8AuthAppService_authenticateUserByNameAndPasswordResponse\x12\r\n\x05token\x18\x01 \x01(\t2\xd3\x01\n\x0e\x41uthAppService\x12\xc0\x01\n!authenticateUserByNameAndPassword\x12K.cafm.identity.auth.AuthAppService_authenticateUserByNameAndPasswordRequest\x1aL.cafm.identity.auth.AuthAppService_authenticateUserByNameAndPasswordResponse\"\x00\x62\x06proto3'
 )
 
 
@@ -59,8 +59,8 @@ _AUTHAPPSERVICE_AUTHENTICATEUSERBYNAMEANDPASSWORDREQUEST = _descriptor.Descripto
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=47,
-  serialized_end=136,
+  serialized_start=46,
+  serialized_end=135,
 )
 
 
@@ -91,8 +91,8 @@ _AUTHAPPSERVICE_AUTHENTICATEUSERBYNAMEANDPASSWORDRESPONSE = _descriptor.Descript
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=138,
-  serialized_end=211,
+  serialized_start=137,
+  serialized_end=210,
 )
 
 DESCRIPTOR.message_types_by_name['AuthAppService_authenticateUserByNameAndPasswordRequest'] = _AUTHAPPSERVICE_AUTHENTICATEUSERBYNAMEANDPASSWORDREQUEST
@@ -122,8 +122,8 @@ _AUTHAPPSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=214,
-  serialized_end=427,
+  serialized_start=213,
+  serialized_end=424,
   methods=[
   _descriptor.MethodDescriptor(
     name='authenticateUserByNameAndPassword',
