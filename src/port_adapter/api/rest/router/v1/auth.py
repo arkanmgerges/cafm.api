@@ -92,3 +92,12 @@ async def authenticate(*,
     except Exception as e:
         logger.info(e)
 
+
+@router.post("/logout", summary='Logout user', status_code=status.HTTP_200_OK)
+async def logout(*,
+                 token: str = Body(..., description='Username used for authentication', embed=True),):
+    try:
+        client = AuthClient()
+        client.logout(token=token)
+    except Exception as e:
+        return Response(status_code=HTTP_500_INTERNAL_SERVER_ERROR)

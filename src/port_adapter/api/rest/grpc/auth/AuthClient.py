@@ -12,7 +12,7 @@ from src.port_adapter.api.rest.grpc.Client import Client
 from src.resource.logging.logger import logger
 from src.resource.proto._generated.auth_app_service_pb2 import AuthAppService_authenticateUserByNameAndPasswordRequest, \
     AuthAppService_authenticateUserByNameAndPasswordResponse, AuthAppService_isAuthenticatedResponse, \
-    AuthAppService_isAuthenticatedRequest
+    AuthAppService_isAuthenticatedRequest, AuthAppService_logoutRequest
 from src.resource.proto._generated.auth_app_service_pb2_grpc import AuthAppServiceStub
 
 
@@ -53,6 +53,19 @@ class AuthClient(Client):
                     f'[{AuthClient.isAuthenticated.__qualname__}] - grpc response: {response}')
 
                 return response[0].response is True
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    def logout(self, token: str) -> None:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = AuthAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{AuthClient.logout.__qualname__}] - grpc call to logout user with token: {token} from server {self._server}:{self._port}')
+                stub.logout.with_call(AuthAppService_logoutRequest(token=token))
+                logger.debug(
+                    f'[{AuthClient.logout.__qualname__}] - grpc call')
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
