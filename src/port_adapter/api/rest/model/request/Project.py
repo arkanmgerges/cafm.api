@@ -4,7 +4,7 @@
 from pydantic import BaseModel
 
 
-class Serie(BaseModel):
+class Project(BaseModel):
+    id: str
+    name: str
 
-    id: int
-    title: str

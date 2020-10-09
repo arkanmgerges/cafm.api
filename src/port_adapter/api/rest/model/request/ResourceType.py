@@ -4,5 +4,7 @@
 from pydantic import BaseModel
 
 
-class TokenData(BaseModel):
-    username: str = None
+class ResourceType(BaseModel):
+    id: str
+    name: str
+
