@@ -26,7 +26,7 @@ class ApiCommandListener:
         try:
             self._cache: Redis = redis.Redis(host=os.getenv('CAFM_API_REDIS_HOST', 'localhost'),
                                              port=os.getenv('CAFM_API_REDIS_PORT', 6379))
-            self._cacheSessionKeyPrefix = os.getenv('CAFM_API_REDIS_SESSION_KEY_PREFIX', 'cafm.api.session.')
+            self._cacheResponseKeyPrefix = os.getenv('CAFM_API_REDIS_RSP_KEY_PREFIX', 'cafm.api.rsp.')
         except Exception as e:
             raise Exception(
                 f'[{ApiCommandListener.__init__.__qualname__}] Could not connect to the redis, message: {e}')
@@ -73,7 +73,7 @@ class ApiCommandListener:
                         msgData = msg.value()
 
                         logger.debug(f'[{ApiCommandListener.run.__qualname__}] - setting to redis msgData: {msgData}')
-                        self._cache.set(f'{self._cacheSessionKeyPrefix}{msgData["id"]}',
+                        self._cache.set(f'{self._cacheResponseKeyPrefix}{msgData["commandId"]}',
                                         json.dumps({
                                             "commandId": msgData['commandId'],
                                             "commandName": msgData['commandName'],
@@ -81,11 +81,11 @@ class ApiCommandListener:
                                             "data": json.loads(msgData['data']),
                                             "creatorServiceName": msgData['creatorServiceName'],
                                             "success": msgData['success']
-                                        }))
+                                        }).encode('utf-8'))
 
-                        if not (self._cache.exists(f'{self._cacheSessionKeyPrefix}{msgData["id"]}')):
+                        if not (self._cache.exists(f'{self._cacheResponseKeyPrefix}{msgData["commandId"]}')):
                             raise Exception(
-                                f'[{ApiCommandListener.run.__qualname__}] - Redis key id: {msgData["id"]} does not exist after setting it')
+                                f'[{ApiCommandListener.run.__qualname__}] - Redis key id: {msgData["commandId"]} does not exist after setting it')
                         # Send the consumer's position to transaction to commit
                         # them along with the transaction, committing both
                         # input and outputs in the same transaction is what provides EOS.

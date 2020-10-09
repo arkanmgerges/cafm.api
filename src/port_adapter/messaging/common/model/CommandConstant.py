@@ -6,4 +6,5 @@ from enum import Enum
 
 
 class CommandConstant(Enum):
-    CREATE_USER = 'createUser'
+    CREATE_USER = 'create_user'
+    CREATE_ROLE = 'create_role'

@@ -14,7 +14,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.port_adapter.api.rest.model.response.exception.Message import Message
-from src.port_adapter.api.rest.router.v1 import auth, realm, ou, user, role, user_group, project, resource_type, permission
+from src.port_adapter.api.rest.router.v1 import auth, realm, ou, user, role, user_group, project, resource_type, permission, request
 
 app = FastAPI(
     title='Coral System Api Gateway',
@@ -66,6 +66,8 @@ np.random.seed(0)
 random.seed(0)
 
 app.include_router(auth.router, prefix="/v1/auth", tags=["Auth"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+app.include_router(request.router, prefix="/v1/request", tags=["Request"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(realm.router, prefix="/v1/realms", tags=["Realm"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})

@@ -72,3 +72,8 @@ async def create(*, _=Depends(CustomHttpBearer()),
     """Call async
     """
     # backgroundTasks.add_task(_customFunc, args)
+    # authService:AuthenticationService = AppDi.instance.get(AuthenticationService)
+    # producer = AppDi.instance.get(SimpleProducer)
+    # producer.produce(obj=ApiCommand(id=str(uuid4()), name=CommandConstant.CREATE_USER.value, data=json.dumps(
+    #     {'username': username, 'password': authService.hashPassword(password=password)})),
+    #                  schema=ApiCommand.get_schema())
