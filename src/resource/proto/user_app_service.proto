@@ -4,11 +4,12 @@ package cafm.identity.user;
 
 import "user.proto";
 
-message UserAppService_userByNameRequest {
+message UserAppService_userByNameAndPasswordRequest {
   string name = 1;
+  string password = 2;
 }
 
-message UserAppService_userByNameResponse {
+message UserAppService_userByNameAndPasswordResponse {
   User user = 1;
 }
 
@@ -31,7 +32,7 @@ message UserAppService_usersResponse {
 
 
 service UserAppService {
-  rpc userByName (UserAppService_userByNameRequest) returns (UserAppService_userByNameResponse) {}
+  rpc userByName (UserAppService_userByNameAndPasswordRequest) returns (UserAppService_userByNameAndPasswordResponse) {}
   rpc userById (UserAppService_userByIdRequest) returns (UserAppService_userByIdResponse) {}
   rpc users (UserAppService_usersRequest) returns (UserAppService_usersResponse) {}
 }

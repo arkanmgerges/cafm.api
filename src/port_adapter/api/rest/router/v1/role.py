@@ -11,7 +11,7 @@ from fastapi import Response
 from fastapi.params import Path
 from grpc.beta.interfaces import StatusCode
 from starlette import status
-from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
+from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
@@ -36,6 +36,8 @@ async def getAllRoles(*, result_from: int = Query(0, description='Starting offse
         client = RoleClient()
         return client.roles(resultFrom=result_from, resultSize=result_size)
     except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
         if e.code() == StatusCode.NOT_FOUND:
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
@@ -57,6 +59,8 @@ async def getRole(*, role_id: str = Path(...,
         client = RoleClient()
         return client.roleById(roleId=role_id)
     except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
         if e.code() == StatusCode.NOT_FOUND:
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:

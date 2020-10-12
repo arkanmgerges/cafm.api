@@ -9,7 +9,7 @@ from fastapi import Response
 from fastapi.params import Path
 from grpc.beta.interfaces import StatusCode
 from starlette import status
-from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR
+from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
 
 from src.port_adapter.api.rest.grpc.realm.RealmClient import RealmClient
 from src.port_adapter.api.rest.model.request.Realm import Realm
@@ -29,6 +29,8 @@ async def getAllRealms(*, result_from: int = Query(0, description='Starting offs
         client = RealmClient()
         return client.realms(resultFrom=result_from, resultSize=result_size)
     except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
         if e.code() == StatusCode.NOT_FOUND:
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
@@ -50,6 +52,8 @@ async def getRealm(*, realm_id: str = Path(...,
         client = RealmClient()
         return client.realmById(realmId=realm_id)
     except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
         if e.code() == StatusCode.NOT_FOUND:
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:

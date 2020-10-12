@@ -16,8 +16,8 @@ class UserAppServiceStub(object):
         """
         self.userByName = channel.unary_unary(
                 '/cafm.identity.user.UserAppService/userByName',
-                request_serializer=user__app__service__pb2.UserAppService_userByNameRequest.SerializeToString,
-                response_deserializer=user__app__service__pb2.UserAppService_userByNameResponse.FromString,
+                request_serializer=user__app__service__pb2.UserAppService_userByNameAndPasswordRequest.SerializeToString,
+                response_deserializer=user__app__service__pb2.UserAppService_userByNameAndPasswordResponse.FromString,
                 )
         self.userById = channel.unary_unary(
                 '/cafm.identity.user.UserAppService/userById',
@@ -57,8 +57,8 @@ def add_UserAppServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'userByName': grpc.unary_unary_rpc_method_handler(
                     servicer.userByName,
-                    request_deserializer=user__app__service__pb2.UserAppService_userByNameRequest.FromString,
-                    response_serializer=user__app__service__pb2.UserAppService_userByNameResponse.SerializeToString,
+                    request_deserializer=user__app__service__pb2.UserAppService_userByNameAndPasswordRequest.FromString,
+                    response_serializer=user__app__service__pb2.UserAppService_userByNameAndPasswordResponse.SerializeToString,
             ),
             'userById': grpc.unary_unary_rpc_method_handler(
                     servicer.userById,
@@ -92,8 +92,8 @@ class UserAppService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/cafm.identity.user.UserAppService/userByName',
-            user__app__service__pb2.UserAppService_userByNameRequest.SerializeToString,
-            user__app__service__pb2.UserAppService_userByNameResponse.FromString,
+            user__app__service__pb2.UserAppService_userByNameAndPasswordRequest.SerializeToString,
+            user__app__service__pb2.UserAppService_userByNameAndPasswordResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
