@@ -1,7 +1,9 @@
 """
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
+import json
 from typing import List
+from uuid import uuid4
 
 import grpc
 from fastapi import APIRouter, Depends, Query, Body
@@ -11,18 +13,24 @@ from grpc.beta.interfaces import StatusCode
 from starlette import status
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
 
+import src.port_adapter.AppDi as AppDi
+from src.domain_model.AuthenticationService import AuthenticationService
+from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.user.UserClient import UserClient
-from src.port_adapter.api.rest.model.request.User import User, UserDescriptor
+from src.port_adapter.api.rest.model.response.User import UserDescriptor
 from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
+from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
+from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
+from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
 
 router = APIRouter()
 
 
 @router.get(path="/", summary='Get all users', response_model=List[UserDescriptor])
-async def getAllUsers(*, result_from: int = Query(0, description='Starting offset for fetching data'),
-                      result_size: int = Query(10, description='Item count to be fetched'),
-                      _=Depends(CustomHttpBearer())):
+async def getUsers(*, result_from: int = Query(0, description='Starting offset for fetching data'),
+                   result_size: int = Query(10, description='Item count to be fetched'),
+                   _=Depends(CustomHttpBearer())):
     """Return all users
     """
     try:
@@ -35,7 +43,7 @@ async def getAllUsers(*, result_from: int = Query(0, description='Starting offse
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getAllUsers.__module__}.{getAllUsers.__qualname__}] - error response e: {e}')
+                f'[{getUsers.__module__}.{getUsers.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -64,20 +72,49 @@ async def getUser(*, user_id: str = Path(...,
         logger.info(e)
 
 
-def _customFunc(args):
-    pass
-
-
-@router.post("/create", summary='Create a new user', status_code=status.HTTP_204_NO_CONTENT)
+@router.post("/create", summary='Create a new user', status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
-                 title: str = Body(..., description='Title of the user',
-                                   )):
-    # ), backgroundTasks: BackgroundTasks):
-    """Call async
-    """
-    # backgroundTasks.add_task(_customFunc, args)
-    # authService:AuthenticationService = AppDi.instance.get(AuthenticationService)
-    # producer = AppDi.instance.get(SimpleProducer)
-    # producer.produce(obj=ApiCommand(id=str(uuid4()), name=CommandConstant.CREATE_USER.value, data=json.dumps(
-    #     {'username': username, 'password': authService.hashPassword(password=password)})),
-    #                  schema=ApiCommand.get_schema())
+                 name: str = Body(..., description='Username of the user', embed=True),
+                 password: str = Body(..., description='Password of the user', embed=True),
+                 ):
+    reqId = str(uuid4())
+    authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_USER.value,
+                                    metadata=json.dumps({"token": Client.token}),
+                                    data=json.dumps(
+                                        {'name': name, 'password': authService.hashPassword(password=password)})),
+                     schema=ApiCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.delete("/{user_id}", summary='Delete a user', status_code=status.HTTP_200_OK)
+async def delete(*, _=Depends(CustomHttpBearer()),
+                 user_id: str = Path(...,
+                                     description='User id that is used in order to delete the user')):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_USER.value,
+                                    metadata=json.dumps({"token": Client.token}),
+                                    data=json.dumps(
+                                        {'id': user_id})), schema=ApiCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.put("/{user_id}", summary='Update a user', status_code=status.HTTP_200_OK)
+async def update(*, _=Depends(CustomHttpBearer()),
+                 user_id: str = Path(...,
+                                     description='User id that is used in order to delete the user'),
+                 name: str = Body(..., description='Username of the user', embed=True),
+                 password: str = Body(..., description='Password of the user', embed=True),
+                 ):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_USER.value,
+                                    metadata=json.dumps({"token": Client.token}),
+                                    data=json.dumps(
+                                        {'id': user_id, 'name': name,
+                                         'password': authService.hashPassword(password=password)})),
+                     schema=ApiCommand.get_schema())
+    return {"request_id": reqId}

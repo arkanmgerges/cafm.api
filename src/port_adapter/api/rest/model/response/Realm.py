@@ -6,6 +6,5 @@ from pydantic import BaseModel
 
 class Realm(BaseModel):
 
-    id: int
-    title: str
-    description: str
+    id: str
+    name: str

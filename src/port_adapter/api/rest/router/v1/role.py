@@ -16,7 +16,7 @@ from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR,
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.role.RoleClient import RoleClient
-from src.port_adapter.api.rest.model.request.Role import Role
+from src.port_adapter.api.rest.model.response.Role import Role
 from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
@@ -27,11 +27,9 @@ router = APIRouter()
 
 
 @router.get(path="/", summary='Get all roles', response_model=List[Role])
-async def getAllRoles(*, result_from: int = Query(0, description='Starting offset for fetching data'),
-                      result_size: int = Query(10, description='Item count to be fetched'),
-                      _=Depends(CustomHttpBearer())):
-    """Return all roles
-    """
+async def getRoles(*, result_from: int = Query(0, description='Starting offset for fetching data'),
+                   result_size: int = Query(10, description='Item count to be fetched'),
+                   _=Depends(CustomHttpBearer())):
     try:
         client = RoleClient()
         return client.roles(resultFrom=result_from, resultSize=result_size)
@@ -42,7 +40,7 @@ async def getAllRoles(*, result_from: int = Query(0, description='Starting offse
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getAllRoles.__module__}.{getAllRoles.__qualname__}] - error response e: {e}')
+                f'[{getRoles.__module__}.{getRoles.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -53,8 +51,6 @@ async def getAllRoles(*, result_from: int = Query(0, description='Starting offse
 async def getRole(*, role_id: str = Path(...,
                                          description='Role id that is used to fetch role data'),
                   _=Depends(CustomHttpBearer())):
-    """Get a Role by id
-    """
     try:
         client = RoleClient()
         return client.roleById(roleId=role_id)
@@ -71,21 +67,40 @@ async def getRole(*, role_id: str = Path(...,
         logger.info(e)
 
 
-def _customFunc(args):
-    pass
-
-
 @router.post("/create", summary='Create a new role', status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the role', embed=True)):
-    # ), backgroundTasks: BackgroundTasks):
-    """Call async
-    """
-    # backgroundTasks.add_task(_customFunc, args)
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_ROLE.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
                                         {'name': name})), schema=ApiCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.delete("/{role_id}", summary='Delete a role', status_code=status.HTTP_200_OK)
+async def delete(*, _=Depends(CustomHttpBearer()),
+                 role_id: str = Path(...,
+                                     description='Role id that is used in order to delete the role')):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_ROLE.value,
+                                    metadata=json.dumps({"token": Client.token}),
+                                    data=json.dumps(
+                                        {'id': role_id})), schema=ApiCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.put("/{role_id}", summary='Update a role', status_code=status.HTTP_200_OK)
+async def delete(*, _=Depends(CustomHttpBearer()),
+                 role_id: str = Path(...,
+                                     description='Role id that is used in order to delete the role'),
+                 name: str = Body(..., description='Title of the role', embed=True)):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_ROLE.value,
+                                    metadata=json.dumps({"token": Client.token}),
+                                    data=json.dumps(
+                                        {'id': role_id, 'name': name})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}

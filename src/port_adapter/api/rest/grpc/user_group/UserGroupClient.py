@@ -7,7 +7,7 @@ from typing import List
 import grpc
 
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.model.request.UserGroup import UserGroup
+from src.port_adapter.api.rest.model.response.UserGroup import UserGroup
 from src.resource.logging.logger import logger
 from src.resource.proto._generated.user_group_app_service_pb2 import UserGroupAppService_userGroupsResponse, \
     UserGroupAppService_userGroupsRequest, UserGroupAppService_userGroupByIdRequest, \

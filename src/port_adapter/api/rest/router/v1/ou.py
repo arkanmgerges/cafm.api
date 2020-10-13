@@ -1,7 +1,9 @@
 """
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
+import json
 from typing import List
+from uuid import uuid4
 
 import grpc
 from fastapi import APIRouter, Depends, Query, Body
@@ -11,18 +13,23 @@ from grpc.beta.interfaces import StatusCode
 from starlette import status
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
 
+import src.port_adapter.AppDi as AppDi
+from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.ou.OuClient import OuClient
-from src.port_adapter.api.rest.model.request.Ou import Ou
+from src.port_adapter.api.rest.model.response.Ou import Ou
 from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
+from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
+from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
+from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
 
 router = APIRouter()
 
 
 @router.get(path="/", summary='Get all ous', response_model=List[Ou])
-async def getAllOus(*, result_from: int = Query(0, description='Starting offset for fetching data'),
-                    result_size: int = Query(10, description='Item count to be fetched'),
-                    _=Depends(CustomHttpBearer())):
+async def getOus(*, result_from: int = Query(0, description='Starting offset for fetching data'),
+                 result_size: int = Query(10, description='Item count to be fetched'),
+                 _=Depends(CustomHttpBearer())):
     """Return all ous
     """
     try:
@@ -35,7 +42,7 @@ async def getAllOus(*, result_from: int = Query(0, description='Starting offset 
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getAllOus.__module__}.{getAllOus.__qualname__}] - error response e: {e}')
+                f'[{getOus.__module__}.{getOus.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -64,15 +71,40 @@ async def getOu(*, ou_id: str = Path(...,
         logger.info(e)
 
 
-def _customFunc(args):
-    pass
-
-
-@router.post("/create", summary='Create a new ou', status_code=status.HTTP_204_NO_CONTENT)
+@router.post("/create", summary='Create a new ou', status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
-                 title: str = Body(..., description='Title of the ou',
-                                   )):
-    # ), backgroundTasks: BackgroundTasks):
-    """Call async
-    """
-    # backgroundTasks.add_task(_customFunc, args)
+                 name: str = Body(..., description='Title of the ou', embed=True)):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_OU.value,
+                                    metadata=json.dumps({"token": Client.token}),
+                                    data=json.dumps(
+                                        {'name': name})), schema=ApiCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.delete("/{ou_id}", summary='Delete a ou', status_code=status.HTTP_200_OK)
+async def delete(*, _=Depends(CustomHttpBearer()),
+                 ou_id: str = Path(...,
+                                   description='Ou id that is used in order to delete the ou')):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_OU.value,
+                                    metadata=json.dumps({"token": Client.token}),
+                                    data=json.dumps(
+                                        {'id': ou_id})), schema=ApiCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.put("/{ou_id}", summary='Update a ou', status_code=status.HTTP_200_OK)
+async def update(*, _=Depends(CustomHttpBearer()),
+                 ou_id: str = Path(...,
+                                   description='Ou id that is used in order to delete the ou'),
+                 name: str = Body(..., description='Title of the ou', embed=True)):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_OU.value,
+                                    metadata=json.dumps({"token": Client.token}),
+                                    data=json.dumps(
+                                        {'id': ou_id, 'name': name})), schema=ApiCommand.get_schema())
+    return {"request_id": reqId}

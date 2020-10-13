@@ -1,14 +1,13 @@
 """
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
-import json
 import os
 from typing import List
 
 import grpc
 
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.model.request.Role import Role
+from src.port_adapter.api.rest.model.response.Role import Role
 from src.resource.logging.logger import logger
 from src.resource.proto._generated.role_app_service_pb2 import RoleAppService_rolesResponse, \
     RoleAppService_rolesRequest, RoleAppService_roleByIdRequest, RoleAppService_roleByIdResponse

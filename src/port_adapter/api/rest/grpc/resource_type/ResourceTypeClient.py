@@ -7,7 +7,7 @@ from typing import List
 import grpc
 
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.model.request.ResourceType import ResourceType
+from src.port_adapter.api.rest.model.response.ResourceType import ResourceType
 from src.resource.logging.logger import logger
 from src.resource.proto._generated.resource_type_app_service_pb2 import ResourceTypeAppService_resourceTypesResponse, \
     ResourceTypeAppService_resourceTypesRequest, ResourceTypeAppService_resourceTypeByIdRequest, \
