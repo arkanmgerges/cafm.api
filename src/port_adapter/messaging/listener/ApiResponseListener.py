@@ -6,20 +6,21 @@ import os
 import signal
 
 import redis
-import src.port_adapter.AppDi as AppDi
 from confluent_kafka.cimpl import KafkaError
 from redis.client import Redis
 
+import src.port_adapter.AppDi as AppDi
 from src.port_adapter.messaging.common.Consumer import Consumer
 from src.port_adapter.messaging.common.ConsumerOffsetReset import ConsumerOffsetReset
 from src.port_adapter.messaging.common.TransactionalProducer import TransactionalProducer
 from src.resource.logging.logger import logger
 
 
-class ApiCommandListener:
+class ApiResponseListener:
     def __init__(self):
         self._handlers = []
         self._creatorServiceName = os.getenv('CAFM_API_SERVICE_NAME', 'cafm.api')
+        self._topicResponseTtl = os.getenv('CAFM_API_REDIS_RSP_TOPIC_TTL_IN_SECONDS', 3600)
         signal.signal(signal.SIGINT, self.interruptExecution)
         signal.signal(signal.SIGTERM, self.interruptExecution)
 
@@ -29,7 +30,7 @@ class ApiCommandListener:
             self._cacheResponseKeyPrefix = os.getenv('CAFM_API_REDIS_RSP_KEY_PREFIX', 'cafm.api.rsp.')
         except Exception as e:
             raise Exception(
-                f'[{ApiCommandListener.__init__.__qualname__}] Could not connect to the redis, message: {e}')
+                f'[{ApiResponseListener.__init__.__qualname__}] Could not connect to the redis, message: {e}')
 
     def interruptExecution(self, _signum, _frame):
         raise SystemExit()
@@ -60,32 +61,33 @@ class ApiCommandListener:
                 if msg.error():
                     if msg.error().code() == KafkaError._PARTITION_EOF:
                         logger.info(
-                            f'[{ApiCommandListener.run.__qualname__}] - msg reached partition eof: {msg.error()}')
+                            f'[{ApiResponseListener.run.__qualname__}] - msg reached partition eof: {msg.error()}')
                     else:
                         logger.error(msg.error())
                 else:
                     # Proper message
                     logger.info(
-                        f'[{ApiCommandListener.run.__qualname__}] - topic: {msg.topic()}, partition: {msg.partition()}, offset: {msg.offset()} with key: {str(msg.key())}')
+                        f'[{ApiResponseListener.run.__qualname__}] - topic: {msg.topic()}, partition: {msg.partition()}, offset: {msg.offset()} with key: {str(msg.key())}')
                     logger.info(f'value: {msg.value()}')
 
                     try:
                         msgData = msg.value()
 
-                        logger.debug(f'[{ApiCommandListener.run.__qualname__}] - setting to redis msgData: {msgData}')
-                        self._cache.set(f'{self._cacheResponseKeyPrefix}{msgData["commandId"]}',
-                                        json.dumps({
-                                            "commandId": msgData['commandId'],
-                                            "commandName": msgData['commandName'],
-                                            "metadata": json.loads(msgData['metadata']),
-                                            "data": json.loads(msgData['data']),
-                                            "creatorServiceName": msgData['creatorServiceName'],
-                                            "success": msgData['success']
-                                        }).encode('utf-8'))
+                        logger.debug(f'[{ApiResponseListener.run.__qualname__}] - setting to redis msgData: {msgData}')
+                        self._cache.setex(f'{self._cacheResponseKeyPrefix}{msgData["commandId"]}',
+                                          self._topicResponseTtl,
+                                          json.dumps({
+                                              "commandId": msgData['commandId'],
+                                              "commandName": msgData['commandName'],
+                                              "metadata": json.loads(msgData['metadata']),
+                                              "data": json.loads(msgData['data']),
+                                              "creatorServiceName": msgData['creatorServiceName'],
+                                              "success": msgData['success']
+                                          }).encode('utf-8'))
 
                         if not (self._cache.exists(f'{self._cacheResponseKeyPrefix}{msgData["commandId"]}')):
                             raise Exception(
-                                f'[{ApiCommandListener.run.__qualname__}] - Redis key id: {msgData["commandId"]} does not exist after setting it')
+                                f'[{ApiResponseListener.run.__qualname__}] - Redis key id: {msgData["commandId"]} does not exist after setting it')
                         # Send the consumer's position to transaction to commit
                         # them along with the transaction, committing both
                         # input and outputs in the same transaction is what provides EOS.
@@ -98,13 +100,13 @@ class ApiCommandListener:
 
                 # sleep(3)
         except KeyboardInterrupt:
-            logger.info(f'[{ApiCommandListener.run.__qualname__}] - Aborted by user')
+            logger.info(f'[{ApiResponseListener.run.__qualname__}] - Aborted by user')
         except SystemExit:
-            logger.info(f'[{ApiCommandListener.run.__qualname__}] - Shutting down the process')
+            logger.info(f'[{ApiResponseListener.run.__qualname__}] - Shutting down the process')
         finally:
             producer.abortTransaction()
             # Close down consumer to commit final offsets.
             consumer.close()
 
 
-ApiCommandListener().run()
+ApiResponseListener().run()
