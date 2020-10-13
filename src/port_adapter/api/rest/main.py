@@ -17,8 +17,8 @@ from src.port_adapter.api.rest.model.response.exception.Message import Message
 from src.port_adapter.api.rest.router.v1 import auth, realm, ou, user, role, user_group, project, resource_type, permission, request
 
 app = FastAPI(
-    title='Coral System Api Gateway',
-    description='This system provides an entry point to the Coral System',
+    title='CAFM System Api Gateway',
+    description='This system provides an entry point to the CAFM System',
     version='1.0.0',
     openapi_url='/api/v1/openapi.json'
 )
