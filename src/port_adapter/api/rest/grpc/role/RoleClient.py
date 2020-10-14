@@ -8,6 +8,7 @@ import grpc
 
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.model.response.Role import Role
+from src.port_adapter.api.rest.model.response.Roles import Roles
 from src.resource.logging.logger import logger
 from src.resource.proto._generated.role_app_service_pb2 import RoleAppService_rolesResponse, \
     RoleAppService_rolesRequest, RoleAppService_roleByIdRequest, RoleAppService_roleByIdResponse
@@ -19,19 +20,23 @@ class RoleClient(Client):
         self._server = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE', '')
         self._port = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE_PORT', '')
 
-    def roles(self, resultFrom: int = 0, resultSize: int = 10) -> List[Role]:
+    def roles(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> Roles:
+        order = [] if order is None else order
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = RoleAppServiceStub(channel)
             try:
                 logger.debug(
                     f'[{RoleClient.roles.__qualname__}] - grpc call to retrieve roles from server {self._server}:{self._port}')
+                request = RoleAppService_rolesRequest(resultFrom=resultFrom, resultSize=resultSize)
+                [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: RoleAppService_rolesResponse = stub.roles.with_call(
-                    RoleAppService_rolesRequest(resultFrom=resultFrom, resultSize=resultSize),
+                    request,
                     metadata=(('token', self.token),))
                 logger.debug(
                     f'[{RoleClient.roles.__qualname__}] - grpc response: {response}')
 
-                return [Role(id=role.id, name=role.name) for role in response[0].roles]
+                return Roles(roles=[Role(id=role.id, name=role.name) for role in response[0].roles],
+                             itemCount=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e

@@ -8,9 +8,11 @@ import grpc
 
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.model.response.Permission import Permission
+from src.port_adapter.api.rest.model.response.Permissions import Permissions
 from src.resource.logging.logger import logger
 from src.resource.proto._generated.permission_app_service_pb2 import PermissionAppService_permissionsResponse, \
-    PermissionAppService_permissionsRequest, PermissionAppService_permissionByIdRequest, PermissionAppService_permissionByIdResponse
+    PermissionAppService_permissionsRequest, PermissionAppService_permissionByIdRequest, \
+    PermissionAppService_permissionByIdResponse
 from src.resource.proto._generated.permission_app_service_pb2_grpc import PermissionAppServiceStub
 
 
@@ -19,19 +21,24 @@ class PermissionClient(Client):
         self._server = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE', '')
         self._port = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE_PORT', '')
 
-    def permissions(self, resultFrom: int = 0, resultSize: int = 10) -> List[Permission]:
+    def permissions(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> Permissions:
+        order = [] if order is None else order
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = PermissionAppServiceStub(channel)
             try:
                 logger.debug(
                     f'[{PermissionClient.permissions.__qualname__}] - grpc call to retrieve permissions from server {self._server}:{self._port}')
+                request = PermissionAppService_permissionsRequest(resultFrom=resultFrom, resultSize=resultSize)
+                [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: PermissionAppService_permissionsResponse = stub.permissions.with_call(
-                    PermissionAppService_permissionsRequest(resultFrom=resultFrom, resultSize=resultSize),
+                    request,
                     metadata=(('token', self.token),))
                 logger.debug(
                     f'[{PermissionClient.permissions.__qualname__}] - grpc response: {response}')
 
-                return [Permission(id=permission.id, name=permission.name) for permission in response[0].permissions]
+                return Permissions(permissions=[Permission(id=permission.id, name=permission.name) for permission in
+                                                response[0].permissions],
+                                   itemCount=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e

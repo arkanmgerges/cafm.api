@@ -2,7 +2,6 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import json
-from typing import List
 from uuid import uuid4
 
 import grpc
@@ -14,9 +13,11 @@ from starlette import status
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
 
 import src.port_adapter.AppDi as AppDi
+from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.ou.OuClient import OuClient
 from src.port_adapter.api.rest.model.response.Ou import Ou
+from src.port_adapter.api.rest.model.response.Ous import Ous
 from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
@@ -26,15 +27,17 @@ from src.resource.logging.logger import logger
 router = APIRouter()
 
 
-@router.get(path="/", summary='Get all ous', response_model=List[Ou])
-async def getOus(*, result_from: int = Query(0, description='Starting offset for fetching data'),
+@router.get(path="/", summary='Get all ous', response_model=Ous)
+async def getOus(*,
+                 result_from: int = Query(0, description='Starting offset for fetching data'),
                  result_size: int = Query(10, description='Item count to be fetched'),
+                 order: str = Query('', description='e.g. name:asc,age:desc'),
                  _=Depends(CustomHttpBearer())):
-    """Return all ous
-    """
     try:
         client = OuClient()
-        return client.ous(resultFrom=result_from, resultSize=result_size)
+        orderService = AppDi.instance.get(OrderService)
+        order = orderService.orderStringToListOfDict(order)
+        return client.ous(resultFrom=result_from, resultSize=result_size, order=order)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)

@@ -8,6 +8,7 @@ import grpc
 
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.model.response.UserGroup import UserGroup
+from src.port_adapter.api.rest.model.response.UserGroups import UserGroups
 from src.resource.logging.logger import logger
 from src.resource.proto._generated.user_group_app_service_pb2 import UserGroupAppService_userGroupsResponse, \
     UserGroupAppService_userGroupsRequest, UserGroupAppService_userGroupByIdRequest, \
@@ -20,19 +21,24 @@ class UserGroupClient(Client):
         self._server = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE', '')
         self._port = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE_PORT', '')
 
-    def userGroups(self, resultFrom: int = 0, resultSize: int = 10) -> List[UserGroup]:
+    def userGroups(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> UserGroups:
+        order = [] if order is None else order
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = UserGroupAppServiceStub(channel)
             try:
                 logger.debug(
                     f'[{UserGroupClient.userGroups.__qualname__}] - grpc call to retrieve userGroups from server {self._server}:{self._port}')
+                request = UserGroupAppService_userGroupsRequest(resultFrom=resultFrom, resultSize=resultSize)
+                [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: UserGroupAppService_userGroupsResponse = stub.userGroups.with_call(
-                    UserGroupAppService_userGroupsRequest(resultFrom=resultFrom, resultSize=resultSize),
+                    request,
                     metadata=(('token', self.token),))
                 logger.debug(
                     f'[{UserGroupClient.userGroups.__qualname__}] - grpc response: {response}')
 
-                return [UserGroup(id=userGroup.id, name=userGroup.name) for userGroup in response[0].userGroups]
+                return UserGroups(userGroups=[UserGroup(id=userGroup.id, name=userGroup.name) for userGroup in
+                                              response[0].userGroups],
+                                  itemCount=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e

@@ -3,6 +3,7 @@ from uuid import uuid4
 from injector import Module, Injector, singleton, provider, inject
 
 from src.domain_model.AuthenticationService import AuthenticationService
+from src.domain_model.OrderService import OrderService
 from src.port_adapter.messaging.common.Consumer import Consumer
 from src.port_adapter.messaging.common.ConsumerOffsetReset import ConsumerOffsetReset
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -39,7 +40,12 @@ class AppDi(Module):
     @singleton
     @provider
     def provideAuthenticationService(self) -> AuthenticationService:
-        return AuthenticationService()
+        return AuthenticationService()    \
+
+    @singleton
+    @provider
+    def provideOrderService(self) -> OrderService:
+        return OrderService()
     # endregion
 
 class Builder:
