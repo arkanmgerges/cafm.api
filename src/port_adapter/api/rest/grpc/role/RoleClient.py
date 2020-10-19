@@ -36,7 +36,7 @@ class RoleClient(Client):
                     f'[{RoleClient.roles.__qualname__}] - grpc response: {response}')
 
                 return Roles(roles=[Role(id=role.id, name=role.name) for role in response[0].roles],
-                             itemCount=response[0].itemCount)
+                             item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e

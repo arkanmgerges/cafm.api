@@ -2,6 +2,7 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import json
+from typing import List
 from uuid import uuid4
 
 import grpc
@@ -16,8 +17,8 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.permission.PermissionClient import PermissionClient
-from src.port_adapter.api.rest.model.response.Permissions import Permissions
 from src.port_adapter.api.rest.model.response.Permission import Permission
+from src.port_adapter.api.rest.model.response.Permissions import Permissions
 from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
@@ -80,13 +81,16 @@ def _customFunc(args):
 
 @router.post("/create", summary='Create a new permission', status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='Title of the permission', embed=True)):
+                 name: str = Body(..., description='Title of the permission', embed=True),
+                 allowed_actions: List[str] = Body(..., description='The actions that is allowed by the permission',
+                                                   embed=True),
+                 ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_PERMISSION.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'name': name})), schema=ApiCommand.get_schema())
+                                        {'name': name, 'allowed_actions': allowed_actions})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 

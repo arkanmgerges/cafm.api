@@ -38,7 +38,7 @@ class UserGroupClient(Client):
 
                 return UserGroups(userGroups=[UserGroup(id=userGroup.id, name=userGroup.name) for userGroup in
                                               response[0].userGroups],
-                                  itemCount=response[0].itemCount)
+                                  item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e

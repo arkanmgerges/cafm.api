@@ -36,7 +36,7 @@ class OuClient(Client):
                     f'[{OuClient.ous.__qualname__}] - grpc response: {response}')
 
                 return Ous(ous=[Ou(id=ou.id, name=ou.name) for ou in response[0].ous],
-                           itemCount=response[0].itemCount)
+                           item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e

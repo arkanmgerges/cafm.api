@@ -10,5 +10,5 @@ from src.port_adapter.api.rest.model.response.Role import Role
 
 class Roles(BaseModel):
     roles: List[Role]
-    itemCount: int
+    item_count: int
 

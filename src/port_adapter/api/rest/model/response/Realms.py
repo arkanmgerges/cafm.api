@@ -10,4 +10,4 @@ from src.port_adapter.api.rest.model.response.Realm import Realm
 
 class Realms(BaseModel):
     realms: List[Realm]
-    itemCount: int
+    item_count: int

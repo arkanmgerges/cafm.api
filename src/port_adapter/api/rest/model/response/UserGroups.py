@@ -9,5 +9,5 @@ from src.port_adapter.api.rest.model.response.UserGroup import UserGroup
 
 
 class UserGroups(BaseModel):
-    userGroups: List[UserGroup]
-    itemCount: int
+    user_groups: List[UserGroup]
+    item_count: int

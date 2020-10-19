@@ -39,7 +39,7 @@ class ResourceTypeClient(Client):
                 return ResourceTypes(
                     resourceTypes=[ResourceType(id=resourceType.id, name=resourceType.name) for resourceType in
                                    response[0].resourceTypes],
-                    itemCount=response[0].itemCount)
+                    item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e

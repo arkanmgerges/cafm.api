@@ -35,10 +35,12 @@ class PermissionClient(Client):
                     metadata=(('token', self.token),))
                 logger.debug(
                     f'[{PermissionClient.permissions.__qualname__}] - grpc response: {response}')
-
-                return Permissions(permissions=[Permission(id=permission.id, name=permission.name) for permission in
-                                                response[0].permissions],
-                                   itemCount=response[0].itemCount)
+                return Permissions(permissions=[
+                    Permission(id=permission.id, name=permission.name,
+                               allowed_actions=[x for x in permission.allowedActions]) for
+                    permission in
+                    response[0].permissions],
+                    item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e

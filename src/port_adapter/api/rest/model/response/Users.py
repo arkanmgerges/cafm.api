@@ -10,4 +10,4 @@ from src.port_adapter.api.rest.model.response.User import User
 
 class Users(BaseModel):
     users: List[User]
-    itemCount: int
+    item_count: int

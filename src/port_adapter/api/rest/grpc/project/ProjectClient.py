@@ -37,7 +37,7 @@ class ProjectClient(Client):
 
                 return Projects(
                     projects=[Project(id=project.id, name=project.name) for project in response[0].projects],
-                    itemCount=response[0].itemCount)
+                    item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e

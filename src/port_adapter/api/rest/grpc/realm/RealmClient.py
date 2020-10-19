@@ -36,7 +36,7 @@ class RealmClient(Client):
                     f'[{RealmClient.realms.__qualname__}] - grpc response: {response}')
 
                 return Realms(realms=[Realm(id=realm.id, name=realm.name) for realm in response[0].realms],
-                              itemCount=response[0].itemCount)
+                              item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
