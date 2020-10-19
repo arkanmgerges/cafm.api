@@ -1,20 +1,19 @@
 """
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
-import traceback
-from src.resource.logging.logger import logger
-
-from starlette import status
-from starlette.responses import JSONResponse
-
 import random
+import traceback
 
 import numpy as np
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette import status
+from starlette.responses import JSONResponse
 
 from src.port_adapter.api.rest.model.response.exception.Message import Message
-from src.port_adapter.api.rest.router.v1 import auth, realm, ou, user, role, user_group, project, resource_type, permission, request
+from src.port_adapter.api.rest.router.v1 import auth, realm, ou, user, role, user_group, project, resource_type, \
+    permission, request, assignment
+from src.resource.logging.logger import logger
 
 app = FastAPI(
     title='CAFM System Api Gateway',
@@ -84,4 +83,6 @@ app.include_router(project.router, prefix="/v1/projects", tags=["Project"],
 app.include_router(resource_type.router, prefix="/v1/resource_types", tags=["Resource Type"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(permission.router, prefix="/v1/permissions", tags=["Permission"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+app.include_router(assignment.router, prefix="/v1/assignments", tags=["Access Assignment"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
