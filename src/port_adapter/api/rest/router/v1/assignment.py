@@ -134,21 +134,21 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_ROLE.value,
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_USER_TO_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
                                         {'user_group_id': user_group_id, 'user_id': user_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
-@router.delete("/user_to_user_group", summary='Remove a user group assignment to user', status_code=status.HTTP_200_OK)
+@router.delete("/user_to_user_group", summary='Remove assignment a user to user group', status_code=status.HTTP_200_OK)
 async def delete(*, _=Depends(CustomHttpBearer()),
                  user_id: str = Body(..., description='User id that will be disconnected from the user group', embed=True),
                  user_group_id: str = Body(..., description='User group id to be disconnected from the user group', embed=True),
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_ROLE.value,
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_USER_TO_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
                                         {'user_group_id': user_group_id, 'user_id': user_id})), schema=ApiCommand.get_schema(),
