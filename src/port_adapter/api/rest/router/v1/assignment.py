@@ -164,7 +164,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_ROLE.value,
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_ROLE_TO_PERMISSION_FOR_RESOURCE_TYPE.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
                                         {'role_id': role_id, 'permission_id': permission_id, 'resource_type_id': resource_type_id})), schema=ApiCommand.get_schema(),
@@ -179,7 +179,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_ROLE.value,
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_ROLE_TO_PERMISSION_FOR_RESOURCE_TYPE.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
                                         {'role_id': role_id, 'permission_id': permission_id, 'resource_type_id': resource_type_id})), schema=ApiCommand.get_schema(),

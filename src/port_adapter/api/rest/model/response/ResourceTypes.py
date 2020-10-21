@@ -9,5 +9,5 @@ from src.port_adapter.api.rest.model.response.ResourceType import ResourceType
 
 
 class ResourceTypes(BaseModel):
-    resourceTypes: List[ResourceType]
+    resource_types: List[ResourceType]
     item_count: int

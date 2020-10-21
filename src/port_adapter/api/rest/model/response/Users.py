@@ -5,9 +5,9 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.port_adapter.api.rest.model.response.User import User
+from src.port_adapter.api.rest.model.response.User import UserDescriptor
 
 
 class Users(BaseModel):
-    users: List[User]
+    users: List[UserDescriptor]
     item_count: int

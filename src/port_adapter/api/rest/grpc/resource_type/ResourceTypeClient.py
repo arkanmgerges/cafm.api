@@ -37,7 +37,7 @@ class ResourceTypeClient(Client):
                     f'[{ResourceTypeClient.resourceTypes.__qualname__}] - grpc response: {response}')
 
                 return ResourceTypes(
-                    resourceTypes=[ResourceType(id=resourceType.id, name=resourceType.name) for resourceType in
+                    resource_types=[ResourceType(id=resourceType.id, name=resourceType.name) for resourceType in
                                    response[0].resourceTypes],
                     item_count=response[0].itemCount)
             except Exception as e:
