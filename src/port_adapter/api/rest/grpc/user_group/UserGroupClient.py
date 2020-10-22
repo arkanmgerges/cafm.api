@@ -36,7 +36,7 @@ class UserGroupClient(Client):
                 logger.debug(
                     f'[{UserGroupClient.userGroups.__qualname__}] - grpc response: {response}')
 
-                return UserGroups(userGroups=[UserGroup(id=userGroup.id, name=userGroup.name) for userGroup in
+                return UserGroups(user_groups=[UserGroup(id=userGroup.id, name=userGroup.name) for userGroup in
                                               response[0].userGroups],
                                   item_count=response[0].itemCount)
             except Exception as e:
