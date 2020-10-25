@@ -2,7 +2,6 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import json
-from typing import List
 from uuid import uuid4
 
 import grpc
@@ -100,6 +99,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
                                         {'role_id': role_id, 'user_id': user_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
+
 @router.post("/role_to_user_group", summary='Assign role to user group', status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id to be assigned to user group', embed=True),
@@ -110,22 +110,26 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_ROLE_TO_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'role_id': role_id, 'user_group_id': user_group_id})), schema=ApiCommand.get_schema())
+                                        {'role_id': role_id, 'user_group_id': user_group_id})),
+                     schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
 @router.delete("/role_to_user_group", summary='Remove a role assignment to user group', status_code=status.HTTP_200_OK)
 async def delete(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id to be disconnected from the user group', embed=True),
-                 user_group_id: str = Body(..., description='User group id that will be disconnected from the role', embed=True),
+                 user_group_id: str = Body(..., description='User group id that will be disconnected from the role',
+                                           embed=True),
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_ROLE_TO_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'role_id': role_id, 'user_group_id': user_group_id})), schema=ApiCommand.get_schema())
+                                        {'role_id': role_id, 'user_group_id': user_group_id})),
+                     schema=ApiCommand.get_schema())
     return {"request_id": reqId}
+
 
 @router.post("/user_to_user_group", summary='Assign user to user group', status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
@@ -137,54 +141,77 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_USER_TO_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'user_group_id': user_group_id, 'user_id': user_id})), schema=ApiCommand.get_schema())
+                                        {'user_group_id': user_group_id, 'user_id': user_id})),
+                     schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
 @router.delete("/user_to_user_group", summary='Remove assignment a user to user group', status_code=status.HTTP_200_OK)
 async def delete(*, _=Depends(CustomHttpBearer()),
-                 user_id: str = Body(..., description='User id that will be disconnected from the user group', embed=True),
-                 user_group_id: str = Body(..., description='User group id to be disconnected from the user group', embed=True),
+                 user_id: str = Body(..., description='User id that will be disconnected from the user group',
+                                     embed=True),
+                 user_group_id: str = Body(..., description='User group id to be disconnected from the user group',
+                                           embed=True),
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_USER_TO_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'user_group_id': user_group_id, 'user_id': user_id})), schema=ApiCommand.get_schema(),
+                                        {'user_group_id': user_group_id, 'user_id': user_id})),
+                     schema=ApiCommand.get_schema(),
                      )
     return {"request_id": reqId}
 
 
-@router.post("/role_permission_resource_type", summary='Assign role to permission for resource type', status_code=status.HTTP_200_OK)
+@router.post("/role_permission_resource_type", summary='Assign role to permission for resource type',
+             status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
-                 role_id: str = Body(..., description='Role id that will have a permission for resource type', embed=True),
-                 permission_id: str = Body(..., description='Permission id to be assigned to a role for a resource type', embed=True),
-                 resource_type_id: str = Body(..., description='Resource type id to be associated for a permission to a role', embed=True),
+                 role_id: str = Body(..., description='Role id that will have a permission for resource type',
+                                     embed=True),
+                 permission_id: str = Body(...,
+                                           description='Permission id to be assigned to a role for a resource type',
+                                           embed=True),
+                 resource_type_id: str = Body(...,
+                                              description='Resource type id to be associated for a permission to a role',
+                                              embed=True),
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_ROLE_TO_PERMISSION_FOR_RESOURCE_TYPE.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'role_id': role_id, 'permission_id': permission_id, 'resource_type_id': resource_type_id})), schema=ApiCommand.get_schema(),
+                                        {'role_id': role_id, 'permission_id': permission_id,
+                                         'resource_type_id': resource_type_id})), schema=ApiCommand.get_schema(),
                      )
     return {"request_id": reqId}
 
-@router.delete("/role_permission_resource_type", summary='Remove the assignment of a role to permission for resource type', status_code=status.HTTP_200_OK)
+
+@router.delete("/role_permission_resource_type",
+               summary='Remove the assignment of a role to permission for resource type',
+               status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
-                 role_id: str = Body(..., description='Role id that will remove the assignment for a permission for resource type', embed=True),
-                 permission_id: str = Body(..., description='Permission id to be have assignment removed to a role for a resource type', embed=True),
-                 resource_type_id: str = Body(..., description='Resource type id to be disassociated for a permission to a role', embed=True),
+                 role_id: str = Body(...,
+                                     description='Role id that will remove the assignment for a permission for resource type',
+                                     embed=True),
+                 permission_id: str = Body(...,
+                                           description='Permission id to be have assignment removed to a role for a resource type',
+                                           embed=True),
+                 resource_type_id: str = Body(...,
+                                              description='Resource type id to be disassociated for a permission to a role',
+                                              embed=True),
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_ROLE_TO_PERMISSION_FOR_RESOURCE_TYPE.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'role_id': role_id, 'permission_id': permission_id, 'resource_type_id': resource_type_id})), schema=ApiCommand.get_schema(),
-                     )
+    producer.produce(
+        obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_ROLE_TO_PERMISSION_FOR_RESOURCE_TYPE.value,
+                       metadata=json.dumps({"token": Client.token}),
+                       data=json.dumps(
+                           {'role_id': role_id, 'permission_id': permission_id, 'resource_type_id': resource_type_id})),
+        schema=ApiCommand.get_schema(),
+        )
     return {"request_id": reqId}
+
 
 @router.post("/access/role_resource", summary='Link access for a role to a resource', status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
@@ -196,10 +223,13 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_ROLE.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'role_id': role_id, 'resource_id': resource_id})), schema=ApiCommand.get_schema())
+                                        {'role_id': role_id, 'resource_id': resource_id})),
+                     schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
-@router.delete("/access/role_resource", summary='Remove a link access for a role to a resource', status_code=status.HTTP_200_OK)
+
+@router.delete("/access/role_resource", summary='Remove a link access for a role to a resource',
+               status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id to remove link access to a resource', embed=True),
                  resource_id: str = Body(..., description='Resource is for a role to remove the access to', embed=True),
@@ -209,4 +239,41 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_ROLE.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'role_id': role_id, 'resource_id': resource_id})), schema=ApiCommand.get_schema())
+                                        {'role_id': role_id, 'resource_id': resource_id})),
+                     schema=ApiCommand.get_schema())
+
+
+@router.post("/resource_to_resource", summary='Assign a resource to another resouce', status_code=status.HTTP_200_OK)
+async def create(*, _=Depends(CustomHttpBearer()),
+                 src_resource_id: str = Body(..., description='Source resource id', embed=True),
+                 dst_resource_id: str = Body(..., description='Destination resource id', embed=True),
+                 ):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_RESOURCE_TO_RESOURCE.value,
+                                    metadata=json.dumps({"token": Client.token}),
+                                    data=json.dumps(
+                                        {'src_resource_id': src_resource_id, 'dst_resource_id': dst_resource_id})),
+                     schema=ApiCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.delete("/resource_to_resource", summary='Remove assignment of resource to another resource',
+               status_code=status.HTTP_200_OK)
+async def delete(*, _=Depends(CustomHttpBearer()),
+                 src_resource_id: str = Body(...,
+                                             description='Source resource to unlink it from the destination resource',
+                                             embed=True),
+                 dst_resource_id: str = Body(...,
+                                             description='Destination resource to unlink it from the source resource',
+                                             embed=True),
+                 ):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_RESOURCE_TO_RESOURCE.value,
+                                    metadata=json.dumps({"token": Client.token}),
+                                    data=json.dumps(
+                                        {'src_resource_id': src_resource_id, 'dst_resource_id': dst_resource_id})),
+                     schema=ApiCommand.get_schema(),
+                     )
+    return {"request_id": reqId}
