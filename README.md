@@ -41,7 +41,7 @@ then goto to menu '*topics*', then you will see the topics cafm.api.cmd and cafm
 if you visit the menu '*Schema Registry*', then you will see 2 schemas created cafm.api.Command and
 cafm.api.Response (as they are set in the .env file)
 
-**4 - Run the API**
+**5 - Run the API**
 You need to open 2 terminals windows:
 * One for kafka consumer to consume the responses for the api **Start at the root of this repository**
 ```sh
