@@ -54,6 +54,7 @@ pipenv shell
 uvicorn src.port_adapter.api.rest.main:app --port 8000 --reload
 ```
 Now you can visit http://localhost:8000/docs  
+![api_ui](https://github.com/DigitalMOB2/cafm.api/raw/master/src/resource/img/api_ui.png)   
 Also you can change the port above to be any port that you want to use.  
 Also the api will service requests on http://localhost:8000/v1 if you want to use 
 other clients like [Postman](https://www.postman.com/) and [Insomnia](https://insomnia.rest/)
