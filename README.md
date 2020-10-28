@@ -14,7 +14,7 @@ You can run `pip install pipenv` in order to install Pipenv
 Make a copy of .env.docker-compose and rename it to .env, then set up the ports for the following
 based on the ports of the infrastructure services that you got from [CAFM.Infra Repo](https://github.com/DigitalMOB2/cafm.infra):  
 `MESSAGE_BROKER_SERVERS - For kafka`  
-`MESSAGE_SCHEMA_REGISTRY_URL - As stated for schema registry url`
+`MESSAGE_SCHEMA_REGISTRY_URL - As stated for schema registry url`  
 `CAFM_API_REDIS_PORT - As stated for redis`
 
 **2 - Install the dependencies**  
