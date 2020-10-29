@@ -111,11 +111,13 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 async def update(*, _=Depends(CustomHttpBearer()),
                  permission_id: str = Path(...,
                                            description='Permission id that is used in order to delete the permission'),
-                 name: str = Body(..., description='Title of the permission', embed=True)):
+                 name: str = Body(..., description='Title of the permission', embed=True),
+                 allowed_actions: List[str] = Body(..., description='The actions that is allowed by the permission',
+                                                   embed=True)):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_PERMISSION.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': permission_id, 'name': name})), schema=ApiCommand.get_schema())
+                                        {'id': permission_id, 'name': name, 'allowed_actions': allowed_actions})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
