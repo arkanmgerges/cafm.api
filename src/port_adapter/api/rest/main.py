@@ -12,7 +12,7 @@ from starlette.responses import JSONResponse
 
 from src.port_adapter.api.rest.model.response.exception.Message import Message
 from src.port_adapter.api.rest.router.v1 import auth, realm, ou, user, role, user_group, project, resource_type, \
-    permission, request, assignment
+    permission, request, assignment, access
 from src.resource.logging.logger import logger
 
 app = FastAPI(
@@ -84,5 +84,7 @@ app.include_router(resource_type.router, prefix="/v1/resource_types", tags=["Res
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(permission.router, prefix="/v1/permissions", tags=["Permission"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(assignment.router, prefix="/v1/assignments", tags=["Access Assignment"],
+app.include_router(assignment.router, prefix="/v1/assignments", tags=["Assignment"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+app.include_router(access.router, prefix="/v1/accesses", tags=["Access"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
