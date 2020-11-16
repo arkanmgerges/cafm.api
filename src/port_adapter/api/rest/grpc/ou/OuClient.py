@@ -34,8 +34,7 @@ class OuClient(Client):
                     metadata=(('token', self.token),))
                 logger.debug(
                     f'[{OuClient.ous.__qualname__}] - grpc response: {response}')
-
-                return Ous(ous=[Ou(id=ou.id, name=ou.name) for ou in response[0].ous],
+                return Ous(ous=[Ou(id=ou.id, name=ou.name, description='') for ou in response[0].ous],
                            item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

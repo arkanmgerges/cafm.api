@@ -16,9 +16,9 @@ from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR,
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.grpc.resource_type.ResourceTypeClient import ResourceTypeClient
-from src.port_adapter.api.rest.model.response.ResourceType import ResourceType
-from src.port_adapter.api.rest.model.response.ResourceTypes import ResourceTypes
+from src.port_adapter.api.rest.grpc.permission_context.PermissionContextClient import PermissionContextClient
+from src.port_adapter.api.rest.model.response.PermissionContext import PermissionContext
+from src.port_adapter.api.rest.model.response.PermissionContexts import PermissionContexts
 from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
@@ -28,17 +28,17 @@ from src.resource.logging.logger import logger
 router = APIRouter()
 
 
-@router.get(path="/", summary='Get all resource types', response_model=ResourceTypes)
-async def getResourceTypes(*,
+@router.get(path="/", summary='Get all permission contexts', response_model=PermissionContexts)
+async def getPermissionContexts(*,
                    result_from: int = Query(0, description='Starting offset for fetching data'),
                    result_size: int = Query(10, description='Item count to be fetched'),
                    order: str = Query('', description='e.g. name:asc,age:desc'),
                    _=Depends(CustomHttpBearer())):
     try:
-        client = ResourceTypeClient()
+        client = PermissionContextClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.resourceTypes(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.permissionContexts(resultFrom=result_from, resultSize=result_size, order=order)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -46,20 +46,20 @@ async def getResourceTypes(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getResourceTypes.__module__}.{getResourceTypes.__qualname__}] - error response e: {e}')
+                f'[{getPermissionContexts.__module__}.{getPermissionContexts.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
 
 
-@router.get(path="/{resource_type_id}/", summary='Get resource type',
-            response_model=ResourceType)
-async def getResourceType(*, resource_type_id: str = Path(...,
-                                                         description='Resource type id that is used to fetch resource type data'),
+@router.get(path="/{permission_context_id}/", summary='Get permission context',
+            response_model=PermissionContext)
+async def getPermissionContext(*, permission_context_id: str = Path(...,
+                                                         description='Resource type id that is used to fetch permission context data'),
                           _=Depends(CustomHttpBearer())):
     try:
-        client = ResourceTypeClient()
-        return client.resourceTypeById(resourceTypeId=resource_type_id)
+        client = PermissionContextClient()
+        return client.permissionContextById(permissionContextId=permission_context_id)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -67,46 +67,50 @@ async def getResourceType(*, resource_type_id: str = Path(...,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getResourceType.__module__}.{getResourceType.__qualname__}] - error response e: {e}')
+                f'[{getPermissionContext.__module__}.{getPermissionContext.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
 
 
-@router.post("/create", summary='Create a new resource type', status_code=status.HTTP_200_OK)
+@router.post("/create", summary='Create a new permission context', status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='Title of the resource type', embed=True)):
+                 type: str = Body(..., description='Type of the permission context', embed=True),
+                 data: dict = Body(..., description='Data of the permission context', embed=True),
+                 ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_RESOURCE_TYPE.value,
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_PERMISSION_CONTEXT.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'name': name})), schema=ApiCommand.get_schema())
+                                        {'type': type, 'data': data})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
-@router.delete("/{resource_type_id}", summary='Delete a resource type', status_code=status.HTTP_200_OK)
+@router.delete("/{permission_context_id}", summary='Delete a permission context', status_code=status.HTTP_200_OK)
 async def delete(*, _=Depends(CustomHttpBearer()),
-                 resource_type_id: str = Path(...,
-                                             description='ResourceType id that is used in order to delete the resource type')):
+                 permission_context_id: str = Path(...,
+                                             description='PermissionContext id that is used in order to delete the permission context')):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_RESOURCE_TYPE.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': resource_type_id})), schema=ApiCommand.get_schema())
+                                        {'id': permission_context_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
-@router.put("/{resource_type_id}", summary='Update a resource type', status_code=status.HTTP_200_OK)
+@router.put("/{permission_context_id}", summary='Update a permission context', status_code=status.HTTP_200_OK)
 async def update(*, _=Depends(CustomHttpBearer()),
-                 resource_type_id: str = Path(...,
-                                             description='Resource type id that is used in order to delete the resource type'),
-                 name: str = Body(..., description='Title of the resource type', embed=True)):
+                 permission_context_id: str = Path(...,
+                                             description='Resource type id that is used in order to delete the permission context'),
+                 type: str = Body(..., description='Type of the permission context', embed=True),
+                 data: dict = Body(..., description='Data of the permission context', embed=True),
+                 ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_RESOURCE_TYPE.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': resource_type_id, 'name': name})), schema=ApiCommand.get_schema())
+                                        {'id': permission_context_id, 'type': type, 'data': data})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}

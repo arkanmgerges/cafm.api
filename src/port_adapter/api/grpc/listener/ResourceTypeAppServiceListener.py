@@ -40,7 +40,7 @@ class ResourceTypeAppServiceListener(ResourceTypeAppServiceServicer):
             return response
         except ResourceTypeDoesNotExistException:
             context.set_code(grpc.StatusCode.NOT_FOUND)
-            context.set_details('ResourceType does not exist')
+            context.set_details('PermissionContext does not exist')
             return ResourceTypeAppService_resourceTypeByNameResponse()
         # except Exception as e:
         #     context.set_code(grpc.StatusCode.UNKNOWN)
@@ -80,5 +80,5 @@ resultFrom: {request.resultFrom}, resultSize: {resultSize}')
             return response
         except ResourceTypeDoesNotExistException:
             context.set_code(grpc.StatusCode.NOT_FOUND)
-            context.set_details('ResourceType does not exist')
+            context.set_details('PermissionContext does not exist')
             return ResourceTypeAppService_resourceTypeByIdResponse()
