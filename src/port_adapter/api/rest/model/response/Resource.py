@@ -6,9 +6,7 @@ from typing import List
 from pydantic import BaseModel
 
 
-class Permission(BaseModel):
+class Resource(BaseModel):
     id: str
-    name: str
-    allowed_actions: List[str]
-    denied_actions: List[str]
+    type: str
 

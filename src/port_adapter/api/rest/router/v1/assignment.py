@@ -5,7 +5,7 @@ import json
 from uuid import uuid4
 
 import grpc
-from fastapi import APIRouter, Depends, Query, Body
+from fastapi import APIRouter, Depends, Body
 from fastapi import Response
 from fastapi.params import Path
 from grpc.beta.interfaces import StatusCode
@@ -13,11 +13,10 @@ from starlette import status
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
 
 import src.port_adapter.AppDi as AppDi
-from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.role.RoleClient import RoleClient
 from src.port_adapter.api.rest.model.response.Role import Role
-from src.port_adapter.api.rest.model.response.Roles import Roles
+from src.port_adapter.api.rest.model.response.RoleAccessPermissionDatas import RoleAccessPermissionDatas
 from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
@@ -27,17 +26,11 @@ from src.resource.logging.logger import logger
 router = APIRouter()
 
 
-@router.get(path="/roles", summary='Get all assignments for all roles', response_model=Roles)
-async def getRoles(*,
-                   result_from: int = Query(0, description='Starting offset for fetching data'),
-                   result_size: int = Query(10, description='Item count to be fetched'),
-                   order: str = Query('', description='e.g. name:asc,age:desc'),
-                   _=Depends(CustomHttpBearer())):
+@router.get(path="/roles_trees", summary='Get all assignments for all roles', response_model=RoleAccessPermissionDatas)
+async def getRoles(*, _=Depends(CustomHttpBearer())):
     try:
         client = RoleClient()
-        orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
-        return client.roles(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.rolesTrees()
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -177,7 +170,8 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_ROLE_TO_PERMISSION.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'role_id': role_id, 'permission_id': permission_id})), schema=ApiCommand.get_schema())
+                                        {'role_id': role_id, 'permission_id': permission_id})),
+                     schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -199,8 +193,9 @@ async def create(*, _=Depends(CustomHttpBearer()),
                        data=json.dumps(
                            {'role_id': role_id, 'permission_id': permission_id})),
         schema=ApiCommand.get_schema(),
-        )
+    )
     return {"request_id": reqId}
+
 
 @router.post("/permission_to_resource_type", summary='Assign permission to resource type',
              status_code=status.HTTP_200_OK)
@@ -241,8 +236,9 @@ async def create(*, _=Depends(CustomHttpBearer()),
                        data=json.dumps(
                            {'permission_id': permission_id, 'resource_type_id': resource_type_id})),
         schema=ApiCommand.get_schema(),
-        )
+    )
     return {"request_id": reqId}
+
 
 @router.post("/resource_to_resource", summary='Assign a resource to another resouce', status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
