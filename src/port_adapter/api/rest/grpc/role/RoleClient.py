@@ -76,6 +76,53 @@ class RoleClient(Client):
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
+    def roleTree(self, roleId) -> RoleAccessPermissionDatas:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = RoleAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{RoleClient.rolesTrees.__qualname__}] - grpc call to retrieve roles from server {self._server}:{self._port}')
+                request = RoleAppService_rolesTreesRequest()
+                response: RoleAppService_rolesTreesResponse = stub.rolesTrees.with_call(
+                    request,
+                    metadata=(('token', self.token),))
+                logger.debug(
+                    f'[{RoleClient.rolesTrees.__qualname__}] - grpc response: {response}')
+
+                result = []
+
+                roleAccessPermissionsResponse = response[0].roleAccessPermission
+                for roleAccessPermissionResponse in roleAccessPermissionsResponse:
+                    role = Role(id=roleAccessPermissionResponse.role.id, name=roleAccessPermissionResponse.role.name)
+                    # owned by
+                    ownedBy = self._resourceFromProtoBuff(roleAccessPermissionResponse.ownedBy)
+                    # owner of
+                    ownerOfList = []
+                    for ownerOfItem in roleAccessPermissionResponse.ownerOf:
+                        ownerOfList.append(self._resourceFromProtoBuff(ownerOfItem))
+
+                    # permissions with permission contexts
+                    tmp = []
+                    for permissionWithContext in roleAccessPermissionResponse.permissionWithPermissionContexts:
+                        pcs = []
+                        for permissionContext in permissionWithContext.permissionContexts:
+                            pcs.append(self._permissionContextFromProtoBuff(permissionContext))
+
+                        tmp.append(PermissionWithPermissionContexts(
+                            permission=self._permissionFromProtoBuff(permissionWithContext.permission),
+                            permission_contexts=pcs))
+
+                    # role access tree
+
+
+                    result.append(RoleAccessPermissionData(role=role, owned_by=ownedBy, owner_of=ownerOfList,
+                                                           permissions=tmp,
+                                                           access_tree=self._accessNodeFromProtoBuff(roleAccessPermissionResponse.accessTree)))
+                return RoleAccessPermissionDatas(roleAccessPermissions=result)
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
     def _resourceFromProtoBuff(self, protoBuf):
         return Resource(id=protoBuf.id, type=protoBuf.type)
 

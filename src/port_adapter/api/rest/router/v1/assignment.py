@@ -16,6 +16,7 @@ import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.role.RoleClient import RoleClient
 from src.port_adapter.api.rest.model.response.Role import Role
+from src.port_adapter.api.rest.model.response.RoleAccessPermissionData import RoleAccessPermissionData
 from src.port_adapter.api.rest.model.response.RoleAccessPermissionDatas import RoleAccessPermissionDatas
 from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -26,8 +27,8 @@ from src.resource.logging.logger import logger
 router = APIRouter()
 
 
-@router.get(path="/roles_trees", summary='Get all assignments for all roles', response_model=RoleAccessPermissionDatas)
-async def getRoles(*, _=Depends(CustomHttpBearer())):
+@router.get(path="/roles_trees", summary='Get all tree details for all roles', response_model=RoleAccessPermissionDatas)
+async def getRolesTrees(*, _=Depends(CustomHttpBearer())):
     try:
         client = RoleClient()
         return client.rolesTrees()
@@ -38,11 +39,29 @@ async def getRoles(*, _=Depends(CustomHttpBearer())):
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getRoles.__module__}.{getRoles.__qualname__}] - error response e: {e}')
+                f'[{getRolesTrees.__module__}.{getRolesTrees.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
 
+@router.get(path="/roles/{role_id}/role_tree", summary='Get all tree details for a role', response_model=RoleAccessPermissionData)
+async def getRoleTree(*, role_id: str = Path(...,
+                                         description='Role id that is used to fetch role data'),
+                      _=Depends(CustomHttpBearer())):
+    try:
+        client = RoleClient()
+        return client.roleTree(role_id)
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f'[{getRoleTree.__module__}.{getRoleTree.__qualname__}] - error response e: {e}')
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
 
 @router.get(path="/{role_id}", summary='Get role assignments',
             response_model=Role)
