@@ -24,9 +24,9 @@ based on the ports of the infrastructure services that you got from [CAFM.Infra 
 `pip install hupper`
 
 **4 - Init kafka topics and schemas**  
-Open the terminal go the root of this repo, then issue the following commands:  
+Open the terminal go to src/resource/script of this repo, then issue the following commands:
 `pipenv shell`  
-`cd src/resource/script`  
+`pipenv install`   
 **You need python 3 and higher to run the script**
 `python admin_script.py`  This will print the help, now issue the command  
 `python admin_script.py init-kafka-topics-and-schemas`
