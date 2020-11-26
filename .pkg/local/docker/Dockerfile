@@ -1,9 +1,14 @@
 FROM python:3.8-slim
 
-COPY . /app
-WORKDIR /app
+RUN pip3 install pipenv
+RUN pip3 install hupper
 
-RUN pip install -qr requirements.txt
+# -- Adding Pipfiles
+COPY Pipfile Pipfile
+COPY Pipfile.lock Pipfile.lock
+# -- Install dependencies:
+RUN set -ex && pipenv install --deploy --system
+COPY . /app
 
 ENV CAFM_API_LOGGING=DEBUG
 ENV CAFM_API_LOGGING_MAX_FILE_LINES=7
@@ -19,8 +24,3 @@ ENV CAFM_API_REDIS_RSP_KEY_PREFIX='cafm.api.rsp.'
 ENV CAFM_API_REDIS_RSP_TOPIC_TTL_IN_SECONDS=172800
 ENV CAFM_IDENTITY_GRPC_SERVER_SERVICE='localhost'
 ENV CAFM_IDENTITY_GRPC_SERVER_SERVICE_PORT=9999
-
-
-
-EXPOSE 8000
-ENTRYPOINT ["uvicorn", "src.port_adapter.api.rest.main:app", "--host", "0.0.0.0", "--port", "8000"]
