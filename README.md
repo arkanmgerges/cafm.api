@@ -9,7 +9,7 @@ If you don't have them already running then you can do it by following this [lin
 **2 - Install Pipenv**  
 You can run `pip install pipenv` in order to install Pipenv
 
-##### Running API 
+##### Running API (without docker)
 **1 - Set up the env vars**  
 Make a copy of .env.docker-compose and rename it to .env, then set up the ports for the following
 based on the ports of the infrastructure services that you got from [CAFM.Infra Repo](https://github.com/DigitalMOB2/cafm.infra):  
@@ -58,3 +58,14 @@ Now you can visit http://localhost:8000/docs
 Also you can change the port above to be any port that you want to use.  
 Also the api will service requests on http://localhost:8000/v1 if you want to use 
 other clients like [Postman](https://www.postman.com/) and [Insomnia](https://insomnia.rest/)
+
+##### Running API (with docker compose)
+**1 - Modify the environment variables**  
+In the `.pkg/local/docker/Dockerfile` use the variables that you get from the infra (see [here](https://github.com/DigitalMOB2/cafm.infra))
+  
+**2 - Build the image and run the services**  
+Run `docker-compose -f .pkg/local/docker/docker-compose.yaml -p cafm-api up` from the root of this repository
+
+**3 - Stop/Run the services**  
+To stop the services, run `docker-compose -f .pkg/local/docker/docker-compose.yaml -p cafm-api stop`  
+To start the services, run `docker-compose -f .pkg/local/docker/docker-compose.yaml -p cafm-api start`
