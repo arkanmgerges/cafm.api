@@ -17,6 +17,11 @@ based on the ports of the infrastructure services that you got from [CAFM.Infra 
 `MESSAGE_SCHEMA_REGISTRY_URL - As stated for schema registry url`  
 `CAFM_API_REDIS_PORT - As stated for redis`
 
+You need also to add in your /etc/hosts the following for kafka to work from the admin script:
+`127.0.0.1 kafka`  
+Also rename `src/resource/script/.env.sample` into `src/resource/script/.env`
+
+
 **2 - Install the dependencies**  
 `Pipenv install`   
 
