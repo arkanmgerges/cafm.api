@@ -12,6 +12,7 @@ from confluent_kafka.serialization import StringSerializer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.kafka.KafkaDeliveryReport import KafkaDeliveryReport
 from src.port_adapter.messaging.common.model.MessageBase import MessageBase
+from src.resource.logging.logger import logger
 
 MESSAGE_SCHEMA_REGISTRY_URL = os.getenv('MESSAGE_SCHEMA_REGISTRY_URL', '')
 
@@ -23,6 +24,7 @@ class KafkaSimpleProducer(SimpleProducer):
 
     def produce(self, obj: MessageBase, schema: dict):
         c = CachedSchemaRegistryClient({'url': MESSAGE_SCHEMA_REGISTRY_URL})
+        logger.info(MESSAGE_SCHEMA_REGISTRY_URL)
         res = c.test_compatibility(subject=f'{schema.namespace}.{schema.name}', avro_schema=schema)
         if not res:
             raise Exception(f'Schema is not compatible {schema}')

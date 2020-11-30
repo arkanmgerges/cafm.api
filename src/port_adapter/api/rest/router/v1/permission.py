@@ -82,7 +82,9 @@ def _customFunc(args):
 @router.post("/create", summary='Create a new permission', status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the permission', embed=True),
-                 allowed_actions: List[str] = Body(..., description='The actions that is allowed by the permission',
+                 allowed_actions: List[str] = Body(..., description='The actions that are allowed by the permission',
+                                                   embed=True),
+                 denied_actions: List[str] = Body(..., description='The actions that are denied by the permission and it has higher priority over the allowed actions',
                                                    embed=True),
                  ):
     reqId = str(uuid4())
@@ -90,7 +92,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_PERMISSION.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'name': name, 'allowed_actions': allowed_actions})), schema=ApiCommand.get_schema())
+                                        {'name': name, 'allowed_actions': allowed_actions, 'denied_actions': denied_actions})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -113,11 +115,15 @@ async def update(*, _=Depends(CustomHttpBearer()),
                                            description='Permission id that is used in order to delete the permission'),
                  name: str = Body(..., description='Title of the permission', embed=True),
                  allowed_actions: List[str] = Body(..., description='The actions that is allowed by the permission',
-                                                   embed=True)):
+                                                   embed=True),
+                 denied_actions: List[str] = Body(...,
+                                                  description='The actions that are denied by the permission and it has higher priority over the allowed actions',
+                                                  embed=True)
+                 ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_PERMISSION.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': permission_id, 'name': name, 'allowed_actions': allowed_actions})), schema=ApiCommand.get_schema())
+                                        {'id': permission_id, 'name': name, 'allowed_actions': allowed_actions, 'denied_actions': denied_actions})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
