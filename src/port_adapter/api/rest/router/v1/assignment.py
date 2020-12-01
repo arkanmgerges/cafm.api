@@ -216,44 +216,44 @@ async def create(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 
-@router.post("/permission_to_resource_type", summary='Assign permission to resource type',
+@router.post("/permission_to_permission_context", summary='Assign permission to permission context',
              status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
                  permission_id: str = Body(...,
                                            description='Permission id to be assigned to a resource type',
                                            embed=True),
-                 resource_type_id: str = Body(...,
-                                              description='Resource type id to be associated to a permission',
+                 permission_context_id: str = Body(...,
+                                              description='Permission context id to be associated with the permission',
                                               embed=True)):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_PERMISSION_TO_RESOURCE_TYPE.value,
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_PERMISSION_TO_PERMISSION_CONTEXT.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
                                         {'permission_id': permission_id,
-                                         'resource_type_id': resource_type_id})), schema=ApiCommand.get_schema(),
+                                         'permission_context_id': permission_context_id})), schema=ApiCommand.get_schema(),
                      )
     return {"request_id": reqId}
 
 
-@router.delete("/permission_to_resource_type",
-               summary='Remove the assignment of a permission to resource type',
+@router.delete("/permission_to_permission_context",
+               summary='Revoke the assignment of a permission from permission context',
                status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
                  permission_id: str = Body(...,
-                                           description='Permission id to be have assignment removed to a resource type',
+                                           description='Permission id to be have assignment removed from the permission context',
                                            embed=True),
-                 resource_type_id: str = Body(...,
-                                              description='Resource type id to be disassociated for a permission',
-                                              embed=True),
+                 permission_context_id: str = Body(...,
+                                                   description='Permission context id to be dissociated from the permission',
+                                                   embed=True)
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(
-        obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_PERMISSION_TO_RESOURCE_TYPE.value,
+        obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_PERMISSION_TO_PERMISSION_CONTEXT.value,
                        metadata=json.dumps({"token": Client.token}),
                        data=json.dumps(
-                           {'permission_id': permission_id, 'resource_type_id': resource_type_id})),
+                           {'permission_id': permission_id, 'permission_context_id': permission_context_id})),
         schema=ApiCommand.get_schema(),
     )
     return {"request_id": reqId}
