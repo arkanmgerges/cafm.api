@@ -9,5 +9,5 @@ from src.port_adapter.api.rest.model.response.PermissionContext import Permissio
 
 
 class PermissionContexts(BaseModel):
-    resource_types: List[PermissionContext]
+    permission_contexts: List[PermissionContext]
     item_count: int

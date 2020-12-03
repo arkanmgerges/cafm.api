@@ -1,6 +1,7 @@
 """
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
+import json
 import os
 from typing import List
 
@@ -37,7 +38,7 @@ class PermissionContextClient(Client):
                     f'[{PermissionContextClient.permissionContexts.__qualname__}] - grpc response: {response}')
 
                 return PermissionContexts(
-                    permission_contexts=[PermissionContext(id=permissionContext.id, type=permissionContext.type, data=permissionContext.data) for permissionContext in
+                    permission_contexts=[PermissionContext(id=permissionContext.id, type=permissionContext.type, data=json.loads(permissionContext.data)) for permissionContext in
                                    response[0].permissionContexts],
                     item_count=response[0].itemCount)
             except Exception as e:

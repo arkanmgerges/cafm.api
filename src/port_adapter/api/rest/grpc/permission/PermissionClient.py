@@ -37,7 +37,7 @@ class PermissionClient(Client):
                     f'[{PermissionClient.permissions.__qualname__}] - grpc response: {response}')
                 return Permissions(permissions=[
                     Permission(id=permission.id, name=permission.name,
-                               allowed_actions=[x for x in permission.allowedActions]) for
+                               allowed_actions=[x for x in permission.allowedActions], denied_actions=[x for x in permission.deniedActions]) for
                     permission in
                     response[0].permissions],
                     item_count=response[0].itemCount)
