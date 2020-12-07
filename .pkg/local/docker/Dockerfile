@@ -5,7 +5,7 @@ RUN pip3 install hupper
 
 # -- Adding Pipfiles
 COPY Pipfile Pipfile
-COPY Pipfile.lock Pipfile.lock
+COPY Pipfile.lock Pipfile.lock ./
 # -- Install dependencies:
 RUN set -ex && pipenv install --deploy --system
 COPY . /app
