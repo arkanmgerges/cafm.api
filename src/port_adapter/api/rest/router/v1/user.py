@@ -80,12 +80,12 @@ async def getUser(*, user_id: str = Path(...,
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Username of the user', embed=True),
                  password: str = Body(..., description='Password of the user', embed=True),
-                 first_name: str = Body(..., description='Password of the user', embed=True),
-                 last_name: str = Body(..., description='Password of the user', embed=True),
-                 address_line_one: str = Body(..., description='Password of the user', embed=True),
-                 address_line_two: str = Body(..., description='Password of the user', embed=True),
-                 postal_code: str = Body(..., description='Password of the user', embed=True),
-                 avatar_image: str = Body(..., description='Password of the user', embed=True),
+                 first_name: str = Body(..., description='First name of the user', embed=True),
+                 last_name: str = Body(..., description='Last name of the user', embed=True),
+                 address_line_one: str = Body(..., description='User first line of address', embed=True),
+                 address_line_two: str = Body(..., description='User second line of address', embed=True),
+                 postal_code: str = Body(..., description='Postal code of the user', embed=True),
+                 avatar_image: str = Body(..., description='Avatar URL of the user', embed=True),
                  ):
     reqId = str(uuid4())
     authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
