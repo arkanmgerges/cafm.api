@@ -80,6 +80,12 @@ async def getUser(*, user_id: str = Path(...,
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Username of the user', embed=True),
                  password: str = Body(..., description='Password of the user', embed=True),
+                 first_name: str = Body(..., description='Password of the user', embed=True),
+                 last_name: str = Body(..., description='Password of the user', embed=True),
+                 address_line_one: str = Body(..., description='Password of the user', embed=True),
+                 address_line_two: str = Body(..., description='Password of the user', embed=True),
+                 postal_code: str = Body(..., description='Password of the user', embed=True),
+                 avatar_image: str = Body(..., description='Password of the user', embed=True),
                  ):
     reqId = str(uuid4())
     authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
@@ -87,7 +93,14 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'name': name, 'password': authService.hashPassword(password=password)})),
+                                        {'name': name, 
+                                         'password': authService.hashPassword(password=password), 
+                                         'firstName': first_name, 
+                                         'lastName': last_name, 
+                                         'addressLineOne': address_line_one, 
+                                         'addressLineTwo': address_line_two, 
+                                         'postalCode': postal_code, 
+                                         'avatarImage': avatar_image})),
                      schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
