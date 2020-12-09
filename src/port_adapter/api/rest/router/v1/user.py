@@ -124,6 +124,12 @@ async def update(*, _=Depends(CustomHttpBearer()),
                                      description='User id that is used in order to delete the user'),
                  name: str = Body(..., description='Username of the user', embed=True),
                  password: str = Body(..., description='Password of the user', embed=True),
+                 first_name: str = Body(..., description='First name of the user', embed=True),
+                 last_name: str = Body(..., description='Last name of the user', embed=True),
+                 address_line_one: str = Body(..., description='User first line of address', embed=True),
+                 address_line_two: str = Body(..., description='User second line of address', embed=True),
+                 postal_code: str = Body(..., description='Postal code of the user', embed=True),
+                 avatar_image: str = Body(..., description='Avatar URL of the user', embed=True),
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
@@ -132,6 +138,12 @@ async def update(*, _=Depends(CustomHttpBearer()),
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
                                         {'id': user_id, 'name': name,
-                                         'password': authService.hashPassword(password=password)})),
+                                         'password': authService.hashPassword(password=password),
+                                         'firstName': first_name, 
+                                         'lastName': last_name, 
+                                         'addressLineOne': address_line_one, 
+                                         'addressLineTwo': address_line_two, 
+                                         'postalCode': postal_code, 
+                                         'avatarImage': avatar_image})),
                      schema=ApiCommand.get_schema())
     return {"request_id": reqId}
