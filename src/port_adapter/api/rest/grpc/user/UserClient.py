@@ -36,7 +36,7 @@ class UserClient(Client):
                     f'[{UserClient.users.__qualname__}] - grpc response: {response}')
 
                 return Users(users=[User(id=user.id, name=user.name, first_name=user.firstName, last_name=user.lastName, 
-                                         address_line_one=user.addressLineOne, address_line_two=user.addressLineTwo, 
+                                         address_line_one=user.addressOne, address_line_two=user.addressTwo, 
                                          postal_code=user.postalCode, avatar_image=user.avatarImage) for user in response[0].users],
                              item_count=response[0].itemCount)
             except Exception as e:

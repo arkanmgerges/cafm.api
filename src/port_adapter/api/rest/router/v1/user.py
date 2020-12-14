@@ -95,13 +95,13 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                     data=json.dumps(
                                         {'name': name, 
                                          'password': authService.hashPassword(password=password), 
-                                         'firstName': first_name, 
-                                         'lastName': last_name, 
-                                         'addressLineOne': address_line_one, 
-                                         'addressLineTwo': address_line_two, 
-                                         'postalCode': postal_code, 
-                                         'avatarImage': avatar_image})),
-                     schema=ApiCommand.get_schema())
+                                         'first_name': first_name, 
+                                         'last_name': last_name, 
+                                         'address_one': address_line_one, 
+                                         'address_two': address_line_two, 
+                                         'postal_code': postal_code, 
+                                         'avatar_image': avatar_image})),
+                                    schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -137,13 +137,14 @@ async def update(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': user_id, 'name': name,
+                                        {'id': user_id, 
+                                         'name': name,
                                          'password': authService.hashPassword(password=password),
-                                         'firstName': first_name, 
-                                         'lastName': last_name, 
-                                         'addressLineOne': address_line_one, 
-                                         'addressLineTwo': address_line_two, 
-                                         'postalCode': postal_code, 
-                                         'avatarImage': avatar_image})),
-                     schema=ApiCommand.get_schema())
+                                         'first_name': first_name, 
+                                         'last_name': last_name, 
+                                         'address_one': address_line_one, 
+                                         'address_two': address_line_two, 
+                                         'postal_code': postal_code, 
+                                         'avatar_image': avatar_image})),
+                                    schema=ApiCommand.get_schema())
     return {"request_id": reqId}
