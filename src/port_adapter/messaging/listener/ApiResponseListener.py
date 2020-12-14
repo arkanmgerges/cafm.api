@@ -74,20 +74,20 @@ class ApiResponseListener:
                         msgData = msg.value()
 
                         logger.debug(f'[{ApiResponseListener.run.__qualname__}] - setting to redis msgData: {msgData}')
-                        self._cache.setex(f'{self._cacheResponseKeyPrefix}{msgData["commandId"]}',
+                        self._cache.setex(f'{self._cacheResponseKeyPrefix}{msgData["command_id"]}',
                                           self._topicResponseTtl,
                                           json.dumps({
-                                              "commandId": msgData['commandId'],
-                                              "commandName": msgData['commandName'],
+                                              "command_id": msgData['command_id'],
+                                              "command_name": msgData['command_name'],
                                               "metadata": json.loads(msgData['metadata']),
                                               "data": json.loads(msgData['data']),
-                                              "creatorServiceName": msgData['creatorServiceName'],
+                                              "creator_service_name": msgData['creator_service_name'],
                                               "success": msgData['success']
                                           }).encode('utf-8'))
 
-                        if not (self._cache.exists(f'{self._cacheResponseKeyPrefix}{msgData["commandId"]}')):
+                        if not (self._cache.exists(f'{self._cacheResponseKeyPrefix}{msgData["command_id"]}')):
                             raise Exception(
-                                f'[{ApiResponseListener.run.__qualname__}] - Redis key id: {msgData["commandId"]} does not exist after setting it')
+                                f'[{ApiResponseListener.run.__qualname__}] - Redis key id: {msgData["command_id"]} does not exist after setting it')
                         # Send the consumer's position to transaction to commit
                         # them along with the transaction, committing both
                         # input and outputs in the same transaction is what provides EOS.
