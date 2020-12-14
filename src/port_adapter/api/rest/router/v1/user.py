@@ -80,6 +80,12 @@ async def getUser(*, user_id: str = Path(...,
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Username of the user', embed=True),
                  password: str = Body(..., description='Password of the user', embed=True),
+                 first_name: str = Body(..., description='First name of the user', embed=True),
+                 last_name: str = Body(..., description='Last name of the user', embed=True),
+                 address_line_one: str = Body(..., description='User first line of address', embed=True),
+                 address_line_two: str = Body(..., description='User second line of address', embed=True),
+                 postal_code: str = Body(..., description='Postal code of the user', embed=True),
+                 avatar_image: str = Body(..., description='Avatar URL of the user', embed=True),
                  ):
     reqId = str(uuid4())
     authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
@@ -87,8 +93,15 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'name': name, 'password': authService.hashPassword(password=password)})),
-                     schema=ApiCommand.get_schema())
+                                        {'name': name, 
+                                         'password': authService.hashPassword(password=password), 
+                                         'first_name': first_name, 
+                                         'last_name': last_name, 
+                                         'address_one': address_line_one, 
+                                         'address_two': address_line_two, 
+                                         'postal_code': postal_code, 
+                                         'avatar_image': avatar_image})),
+                                    schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -111,6 +124,12 @@ async def update(*, _=Depends(CustomHttpBearer()),
                                      description='User id that is used in order to delete the user'),
                  name: str = Body(..., description='Username of the user', embed=True),
                  password: str = Body(..., description='Password of the user', embed=True),
+                 first_name: str = Body(..., description='First name of the user', embed=True),
+                 last_name: str = Body(..., description='Last name of the user', embed=True),
+                 address_line_one: str = Body(..., description='User first line of address', embed=True),
+                 address_line_two: str = Body(..., description='User second line of address', embed=True),
+                 postal_code: str = Body(..., description='Postal code of the user', embed=True),
+                 avatar_image: str = Body(..., description='Avatar URL of the user', embed=True),
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
@@ -118,7 +137,14 @@ async def update(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': user_id, 'name': name,
-                                         'password': authService.hashPassword(password=password)})),
-                     schema=ApiCommand.get_schema())
+                                        {'id': user_id, 
+                                         'name': name,
+                                         'password': authService.hashPassword(password=password),
+                                         'first_name': first_name, 
+                                         'last_name': last_name, 
+                                         'address_one': address_line_one, 
+                                         'address_two': address_line_two, 
+                                         'postal_code': postal_code, 
+                                         'avatar_image': avatar_image})),
+                                    schema=ApiCommand.get_schema())
     return {"request_id": reqId}
