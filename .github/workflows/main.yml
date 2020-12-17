@@ -25,13 +25,8 @@ jobs:
         color: warning
 
     - name: Verify that we can build the Docker image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: cafm/api
-        IMAGE_TAG: ${{ steps.vars.outputs.version }}
       run: |
         docker build \
-          --cache-from $ECR_REGISTRY/$ECR_REPOSITORY:latest \
           -t cafm-api.local \
           -f ${GITHUB_WORKSPACE}/.pkg/local/docker/Dockerfile \
           ${GITHUB_WORKSPACE}
