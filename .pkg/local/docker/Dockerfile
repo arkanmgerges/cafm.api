@@ -1,13 +1,12 @@
 FROM python:3.8-slim
 
-RUN pip3 install pipenv
-RUN pip3 install hupper
+RUN apt update
+RUN pip3 install --upgrade pip && pip3 install pipenv && pip3 install hupper
 
 # -- Adding Pipfiles
-COPY Pipfile Pipfile
-COPY Pipfile.lock Pipfile.lock ./
+COPY Pipfile Pipfile.lock ./
 # -- Install dependencies:
-RUN set -ex && pipenv install --deploy --system
+RUN set -ex && pipenv install --dev --deploy --system
 COPY . /app
 
 ENV CAFM_API_LOGGING=DEBUG
@@ -25,3 +24,4 @@ ENV CAFM_API_REDIS_RSP_KEY_PREFIX='cafm.api.rsp.'
 ENV CAFM_API_REDIS_RSP_TOPIC_TTL_IN_SECONDS=172800
 ENV CAFM_IDENTITY_GRPC_SERVER_SERVICE='cafm-identity-server'
 ENV CAFM_IDENTITY_GRPC_SERVER_SERVICE_PORT=9999
+

@@ -33,6 +33,18 @@ services:
     depends_on:
       - cafm-api
 
+  cafm-api-script:
+    image: cafm-api:local
+    command: >
+      bash -c "python -m src.resource.script.admin_script init-kafka-topics-and-schemas"
+    working_dir: /app
+    networks:
+      - cafm-infra_default
+    volumes:
+      - ../../..:/app
+    depends_on:
+      - cafm-api
+
 networks:
   cafm-infra_default:
     external: true
