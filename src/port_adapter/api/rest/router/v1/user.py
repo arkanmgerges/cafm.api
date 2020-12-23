@@ -24,6 +24,7 @@ from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
+from src.port_adapter.messaging.listener.CacheType import CacheType
 from src.resource.logging.logger import logger
 
 router = APIRouter()
@@ -87,7 +88,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  postal_code: str = Body(..., description='Postal code of the user', embed=True),
                  avatar_image: str = Body(..., description='Avatar URL of the user', embed=True),
                  ):
-    reqId = str(uuid4())
+    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2' # 2 for completion of identity & project
     authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_USER.value,

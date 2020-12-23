@@ -13,6 +13,7 @@ import src.port_adapter.AppDi as AppDi
 from src.port_adapter.messaging.common.Consumer import Consumer
 from src.port_adapter.messaging.common.ConsumerOffsetReset import ConsumerOffsetReset
 from src.port_adapter.messaging.common.TransactionalProducer import TransactionalProducer
+from src.port_adapter.messaging.listener.CacheType import CacheType
 from src.resource.logging.logger import logger
 
 
@@ -27,7 +28,7 @@ class ApiResponseListener:
         try:
             self._cache: Redis = redis.Redis(host=os.getenv('CAFM_API_REDIS_HOST', 'localhost'),
                                              port=os.getenv('CAFM_API_REDIS_PORT', 6379))
-            self._cacheResponseKeyPrefix = os.getenv('CAFM_API_REDIS_RSP_KEY_PREFIX', 'cafm.api.rsp.')
+            self._cacheResponseKeyPrefix = os.getenv('CAFM_API_REDIS_RSP_KEY_PREFIX', 'cafm.api.rsp')
         except Exception as e:
             raise Exception(
                 f'[{ApiResponseListener.__init__.__qualname__}] Could not connect to the redis, message: {e}')
@@ -72,22 +73,43 @@ class ApiResponseListener:
 
                     try:
                         msgData = msg.value()
-
                         logger.debug(f'[{ApiResponseListener.run.__qualname__}] - setting to redis msgData: {msgData}')
-                        self._cache.setex(f'{self._cacheResponseKeyPrefix}{msgData["command_id"]}',
-                                          self._topicResponseTtl,
-                                          json.dumps({
-                                              "command_id": msgData['command_id'],
-                                              "command_name": msgData['command_name'],
-                                              "metadata": json.loads(msgData['metadata']),
-                                              "data": json.loads(msgData['data']),
-                                              "creator_service_name": msgData['creator_service_name'],
-                                              "success": msgData['success']
-                                          }).encode('utf-8'))
+                        cacheKey = f'{self._cacheResponseKeyPrefix}:{msgData["command_id"]}'
+                        splitCommand = msgData["command_id"].split(':')
+                        if len(splitCommand) == 1:
+                            self._cache.setex(cacheKey,
+                                              self._topicResponseTtl,
+                                              json.dumps({
+                                                  "command_id": msgData['command_id'],
+                                                  "command_name": msgData['command_name'],
+                                                  "metadata": json.loads(msgData['metadata']),
+                                                  "data": json.loads(msgData['data']),
+                                                  "creator_service_name": msgData['creator_service_name'],
+                                                  "success": msgData['success']
+                                              }).encode('utf-8'))
+                            if not (self._cache.exists(cacheKey)):
+                                raise Exception(
+                                    f'[{ApiResponseListener.run.__qualname__}] - Redis key id: {msgData["command_id"]} does not exist after setting it')
+                        else:
+                            cacheType = CacheType.valueToEnum(splitCommand[0])
+                            if cacheType == CacheType.LIST:
+                                self._cache.lpush(cacheKey,
+                                                  json.dumps({
+                                                      "command_id": msgData['command_id'],
+                                                      "command_name": msgData['command_name'],
+                                                      "metadata": json.loads(msgData['metadata']),
+                                                      "data": json.loads(msgData['data']),
+                                                      "creator_service_name": msgData['creator_service_name'],
+                                                      "success": msgData['success']
+                                                  }).encode('utf-8'))
+                                self._cache.expire(cacheKey, self._topicResponseTtl)
+                                if not (self._cache.exists(cacheKey)):
+                                    raise Exception(
+                                        f'[{ApiResponseListener.run.__qualname__}] - Redis key id: {msgData["command_id"]} does not exist after setting it')
+                            else:
+                                raise Exception(
+                                    f'[{ApiResponseListener.run.__qualname__}] - Redis unknown key type: {msgData["command_id"]}')
 
-                        if not (self._cache.exists(f'{self._cacheResponseKeyPrefix}{msgData["command_id"]}')):
-                            raise Exception(
-                                f'[{ApiResponseListener.run.__qualname__}] - Redis key id: {msgData["command_id"]} does not exist after setting it')
                         # Send the consumer's position to transaction to commit
                         # them along with the transaction, committing both
                         # input and outputs in the same transaction is what provides EOS.
