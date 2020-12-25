@@ -39,19 +39,18 @@ async def isRequestSuccessful(*,
             cacheType = split[0]
             if CacheType.valueToEnum(cacheType) == CacheType.LIST:
                 key = split[1]
-                successRequired = split[2]
+                successRequired = int(split[2])
                 if cacheClient.llen(cacheKey) == successRequired:
                     items = cacheClient.lrange(cacheKey, 0, -1)
-                    logger.debug(items)
-                    logger.debug(successRequired)
-                    logger.debug(len(items) < int(successRequired))
-                    if len(items) < int(successRequired):
+                    if len(items) < successRequired:
                         raise InProgressException(f'Request id: {request_id} is still in progress')
                     for item in items:
                         result = json.loads(item.decode('utf-8'))
                         if not result['success']:
                             return BoolRequestResponse(success=False)
                     return BoolRequestResponse(success=True)
+                else:
+                    raise InProgressException(f'Request id: {request_id} is still in progress')
             else:
                 raise UnknownCacheTypeException(f'Request id: {request_id} has unknown cache type {cacheType}')
     except NotFoundException as e:
@@ -67,13 +66,33 @@ async def getRequestIdResult(*, request_id: str = Query(..., description='Reques
     try:
         cache = RedisCache()
         cacheClient = cache.client()
-        result = cacheClient.get(f'{cache.cacheResponseKeyPrefix}{request_id}')
-
-        if result is None:
-            raise NotFoundException(f'Request id: {request_id} not found')
-        else:
+        cacheKey = f'{cache.cacheResponseKeyPrefix}:{request_id}'
+        split = request_id.split(':')
+        if len(split) == 1:
+            result = cacheClient.get(cacheKey)
+            if result is None:
+                raise NotFoundException(f'Request id: {request_id} not found')
             result = json.loads(result.decode('utf-8'))
-            return ResultRequestResponse(result=result["data"])
+            return BoolRequestResponse(success=result["success"])
+        else:
+            cacheType = split[0]
+            if CacheType.valueToEnum(cacheType) == CacheType.LIST:
+                result = {'items': [], 'items_count': 0}
+                key = split[1]
+                successRequired = int(split[2])
+                if cacheClient.llen(cacheKey) == successRequired:
+                    items = cacheClient.lrange(cacheKey, 0, -1)
+                    if len(items) < successRequired:
+                        raise InProgressException(f'Request id: {request_id} is still in progress')
+                    for item in items:
+                        resultDict = json.loads(item.decode('utf-8'))
+                        result['items'].append({**resultDict['data'], 'creator_service_name': resultDict['creator_service_name']})
+                        result['items_count'] += 1
+                    return ResultRequestResponse(result=result)
+                else:
+                    raise InProgressException(f'Request id: {request_id} is still in progress')
+            else:
+                raise UnknownCacheTypeException(f'Request id: {request_id} has unknown cache type {cacheType}')
     except NotFoundException as e:
         return JSONResponse(status_code=404, content={"detail": [{"msg": e.msg}]})
     except Exception as e:

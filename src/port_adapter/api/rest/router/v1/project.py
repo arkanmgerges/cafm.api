@@ -22,6 +22,7 @@ from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
+from src.port_adapter.messaging.listener.CacheType import CacheType
 from src.resource.logging.logger import logger
 
 router = APIRouter()
@@ -77,7 +78,7 @@ async def getProject(*, project_id: str = Path(...,
 @router.post("/create", summary='Create a new project', status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the project', embed=True)):
-    reqId = str(uuid4())
+    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_PROJECT.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -104,7 +105,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
                  project_id: str = Path(...,
                                         description='Project id that is used in order to delete the project'),
                  name: str = Body(..., description='Title of the project', embed=True)):
-    reqId = str(uuid4())
+    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_PROJECT.value,
                                     metadata=json.dumps({"token": Client.token}),

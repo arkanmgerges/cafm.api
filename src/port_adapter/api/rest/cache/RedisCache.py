@@ -12,7 +12,7 @@ class RedisCache:
         try:
             self.cache: Redis = redis.Redis(host=os.getenv('CAFM_API_REDIS_HOST', 'localhost'),
                                             port=os.getenv('CAFM_API_REDIS_PORT', 6379))
-            self.cacheResponseKeyPrefix = os.getenv('CAFM_API_REDIS_RSP_KEY_PREFIX', 'cafm.api.rsp.')
+            self.cacheResponseKeyPrefix = os.getenv('CAFM_API_REDIS_RSP_KEY_PREFIX', 'cafm.api.rsp')
         except Exception as e:
             raise Exception(
                 f'[{RedisCache.__init__.__qualname__}] Could not connect to the redis, message: {e}')

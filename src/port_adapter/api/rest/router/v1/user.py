@@ -2,7 +2,6 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import json
-from typing import List
 from uuid import uuid4
 
 import grpc
@@ -88,21 +87,21 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  postal_code: str = Body(..., description='Postal code of the user', embed=True),
                  avatar_image: str = Body(..., description='Avatar URL of the user', embed=True),
                  ):
-    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2' # 2 for completion of identity & project
+    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'  # 2 for completion of identity & project
     authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'name': name, 
-                                         'password': authService.hashPassword(password=password), 
-                                         'first_name': first_name, 
-                                         'last_name': last_name, 
-                                         'address_one': address_line_one, 
-                                         'address_two': address_line_two, 
-                                         'postal_code': postal_code, 
+                                        {'name': name,
+                                         'password': authService.hashPassword(password=password),
+                                         'first_name': first_name,
+                                         'last_name': last_name,
+                                         'address_one': address_line_one,
+                                         'address_two': address_line_two,
+                                         'postal_code': postal_code,
                                          'avatar_image': avatar_image})),
-                                    schema=ApiCommand.get_schema())
+                     schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -132,20 +131,20 @@ async def update(*, _=Depends(CustomHttpBearer()),
                  postal_code: str = Body(..., description='Postal code of the user', embed=True),
                  avatar_image: str = Body(..., description='Avatar URL of the user', embed=True),
                  ):
-    reqId = str(uuid4())
+    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
     producer = AppDi.instance.get(SimpleProducer)
     authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': user_id, 
+                                        {'id': user_id,
                                          'name': name,
                                          'password': authService.hashPassword(password=password),
-                                         'first_name': first_name, 
-                                         'last_name': last_name, 
-                                         'address_one': address_line_one, 
-                                         'address_two': address_line_two, 
-                                         'postal_code': postal_code, 
+                                         'first_name': first_name,
+                                         'last_name': last_name,
+                                         'address_one': address_line_one,
+                                         'address_two': address_line_two,
+                                         'postal_code': postal_code,
                                          'avatar_image': avatar_image})),
-                                    schema=ApiCommand.get_schema())
+                     schema=ApiCommand.get_schema())
     return {"request_id": reqId}
