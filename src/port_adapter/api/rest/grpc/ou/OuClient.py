@@ -10,9 +10,9 @@ from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.model.response.Ou import Ou
 from src.port_adapter.api.rest.model.response.Ous import Ous
 from src.resource.logging.logger import logger
-from src.resource.proto._generated.ou_app_service_pb2 import OuAppService_ousResponse, \
+from src.resource.proto._generated.identity.ou_app_service_pb2 import OuAppService_ousResponse, \
     OuAppService_ousRequest, OuAppService_ouByIdRequest, OuAppService_ouByIdResponse
-from src.resource.proto._generated.ou_app_service_pb2_grpc import OuAppServiceStub
+from src.resource.proto._generated.identity.ou_app_service_pb2_grpc import OuAppServiceStub
 
 
 class OuClient(Client):

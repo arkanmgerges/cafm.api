@@ -19,10 +19,10 @@ from src.port_adapter.api.rest.model.response.RoleAccessPermissionData import Ro
 from src.port_adapter.api.rest.model.response.RoleAccessPermissionDatas import RoleAccessPermissionDatas
 from src.port_adapter.api.rest.model.response.Roles import Roles
 from src.resource.logging.logger import logger
-from src.resource.proto._generated.role_app_service_pb2 import RoleAppService_rolesResponse, \
+from src.resource.proto._generated.identity.role_app_service_pb2 import RoleAppService_rolesResponse, \
     RoleAppService_rolesRequest, RoleAppService_roleByIdRequest, RoleAppService_roleByIdResponse, \
     RoleAppService_rolesTreesRequest, RoleAppService_rolesTreesResponse, RoleAppService_roleTreeRequest
-from src.resource.proto._generated.role_app_service_pb2_grpc import RoleAppServiceStub
+from src.resource.proto._generated.identity.role_app_service_pb2_grpc import RoleAppServiceStub
 
 
 class RoleClient(Client):

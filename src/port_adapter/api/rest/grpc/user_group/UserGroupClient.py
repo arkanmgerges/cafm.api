@@ -10,10 +10,10 @@ from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.model.response.UserGroup import UserGroup
 from src.port_adapter.api.rest.model.response.UserGroups import UserGroups
 from src.resource.logging.logger import logger
-from src.resource.proto._generated.user_group_app_service_pb2 import UserGroupAppService_userGroupsResponse, \
+from src.resource.proto._generated.identity.user_group_app_service_pb2 import UserGroupAppService_userGroupsResponse, \
     UserGroupAppService_userGroupsRequest, UserGroupAppService_userGroupByIdRequest, \
     UserGroupAppService_userGroupByIdResponse
-from src.resource.proto._generated.user_group_app_service_pb2_grpc import UserGroupAppServiceStub
+from src.resource.proto._generated.identity.user_group_app_service_pb2_grpc import UserGroupAppServiceStub
 
 
 class UserGroupClient(Client):

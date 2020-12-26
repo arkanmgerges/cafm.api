@@ -10,9 +10,9 @@ from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.model.response.Realm import Realm
 from src.port_adapter.api.rest.model.response.Realms import Realms
 from src.resource.logging.logger import logger
-from src.resource.proto._generated.realm_app_service_pb2 import RealmAppService_realmsResponse, \
+from src.resource.proto._generated.identity.realm_app_service_pb2 import RealmAppService_realmsResponse, \
     RealmAppService_realmsRequest, RealmAppService_realmByIdRequest, RealmAppService_realmByIdResponse
-from src.resource.proto._generated.realm_app_service_pb2_grpc import RealmAppServiceStub
+from src.resource.proto._generated.identity.realm_app_service_pb2_grpc import RealmAppServiceStub
 
 
 class RealmClient(Client):

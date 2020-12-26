@@ -11,10 +11,10 @@ from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.model.response.PermissionContext import PermissionContext
 from src.port_adapter.api.rest.model.response.PermissionContexts import PermissionContexts
 from src.resource.logging.logger import logger
-from src.resource.proto._generated.permission_context_app_service_pb2 import \
+from src.resource.proto._generated.identity.permission_context_app_service_pb2 import \
     PermissionContextAppService_permissionContextsRequest, PermissionContextAppService_permissionContextsResponse, \
     PermissionContextAppService_permissionContextByIdResponse, PermissionContextAppService_permissionContextByIdRequest
-from src.resource.proto._generated.permission_context_app_service_pb2_grpc import PermissionContextAppServiceStub
+from src.resource.proto._generated.identity.permission_context_app_service_pb2_grpc import PermissionContextAppServiceStub
 
 
 class PermissionContextClient(Client):

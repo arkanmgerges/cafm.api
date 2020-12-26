@@ -7,8 +7,17 @@ from pydantic import BaseModel
 
 
 class MessageDetail(BaseModel):
-    msg: str
+    message: str
+
+
+class ValidationMessageDetail(BaseModel):
+    message: str
+    data: dict
 
 
 class Message(BaseModel):
     detail: List[MessageDetail]
+
+
+class ValidationMessage(BaseModel):
+    detail: List[ValidationMessageDetail]

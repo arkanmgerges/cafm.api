@@ -10,10 +10,10 @@ from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.model.response.Permission import Permission
 from src.port_adapter.api.rest.model.response.Permissions import Permissions
 from src.resource.logging.logger import logger
-from src.resource.proto._generated.permission_app_service_pb2 import PermissionAppService_permissionsResponse, \
+from src.resource.proto._generated.identity.permission_app_service_pb2 import PermissionAppService_permissionsResponse, \
     PermissionAppService_permissionsRequest, PermissionAppService_permissionByIdRequest, \
     PermissionAppService_permissionByIdResponse
-from src.resource.proto._generated.permission_app_service_pb2_grpc import PermissionAppServiceStub
+from src.resource.proto._generated.identity.permission_app_service_pb2_grpc import PermissionAppServiceStub
 
 
 class PermissionClient(Client):

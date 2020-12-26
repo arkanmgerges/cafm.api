@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, Query, Body
 from fastapi import Response
 from fastapi.params import Path
 from grpc.beta.interfaces import StatusCode
+from pyArango.validation import Email
 from starlette import status
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
 
@@ -17,6 +18,7 @@ from src.domain_model.AuthenticationService import AuthenticationService
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.user.UserClient import UserClient
+from src.port_adapter.api.rest.helper.Validator import Validator
 from src.port_adapter.api.rest.model.response.User import UserDescriptor
 from src.port_adapter.api.rest.model.response.Users import Users
 from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
@@ -78,8 +80,7 @@ async def getUser(*, user_id: str = Path(...,
 
 @router.post("/create", summary='Create a new user', status_code=status.HTTP_200_OK)
 async def create(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='Username of the user', embed=True),
-                 password: str = Body(..., description='Password of the user', embed=True),
+                 email: str = Body(..., description='User email', embed=True),
                  first_name: str = Body(..., description='First name of the user', embed=True),
                  last_name: str = Body(..., description='Last name of the user', embed=True),
                  address_line_one: str = Body(..., description='User first line of address', embed=True),
@@ -87,14 +88,14 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  postal_code: str = Body(..., description='Postal code of the user', embed=True),
                  avatar_image: str = Body(..., description='Avatar URL of the user', embed=True),
                  ):
-    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'  # 2 for completion of identity & project
-    authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
+    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:3'  # 3 for completion of identity & project
     producer = AppDi.instance.get(SimpleProducer)
+    Validator.validateEmail(email=email, fields={'email': email})
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'name': name,
-                                         'password': authService.hashPassword(password=password),
+                                        {'email': email,
+                                         # 'password': authService.hashPassword(password=password),
                                          'first_name': first_name,
                                          'last_name': last_name,
                                          'address_one': address_line_one,
