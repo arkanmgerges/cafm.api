@@ -12,6 +12,8 @@ from src.port_adapter.messaging.common.kafka.KafkaConsumer import KafkaConsumer
 from src.port_adapter.messaging.common.kafka.KafkaProducer import KafkaProducer
 from injector import ClassAssistedBuilder
 
+from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
+
 
 class AppDi(Module):
     """
@@ -40,12 +42,19 @@ class AppDi(Module):
     @singleton
     @provider
     def provideAuthenticationService(self) -> AuthenticationService:
-        return AuthenticationService()    \
+        return AuthenticationService()
 
     @singleton
     @provider
     def provideOrderService(self) -> OrderService:
         return OrderService()
+    # endregion
+
+    # region Resource
+    @singleton
+    @provider
+    def provideOpenTelemetry(self) -> OpenTelemetry:
+        return OpenTelemetry()
     # endregion
 
 class Builder:

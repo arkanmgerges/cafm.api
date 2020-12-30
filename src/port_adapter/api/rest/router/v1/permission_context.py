@@ -24,11 +24,13 @@ from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
+from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
 
 @router.get(path="/", summary='Get all permission contexts', response_model=PermissionContexts)
+@OpenTelemetry.fastApiTraceOTel
 async def getPermissionContexts(*,
                    result_from: int = Query(0, description='Starting offset for fetching data'),
                    result_size: int = Query(10, description='Item count to be fetched'),
@@ -54,6 +56,7 @@ async def getPermissionContexts(*,
 
 @router.get(path="/{permission_context_id}/", summary='Get permission context',
             response_model=PermissionContext)
+@OpenTelemetry.fastApiTraceOTel
 async def getPermissionContext(*, permission_context_id: str = Path(...,
                                                          description='Resource type id that is used to fetch permission context data'),
                           _=Depends(CustomHttpBearer())):
@@ -74,6 +77,7 @@ async def getPermissionContext(*, permission_context_id: str = Path(...,
 
 
 @router.post("/create", summary='Create a new permission context', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  type: str = Body(..., description='Type of the permission context', embed=True),
                  data: dict = Body(..., description='Data of the permission context', embed=True),
@@ -88,6 +92,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 
 @router.delete("/{permission_context_id}", summary='Delete a permission context', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
                  permission_context_id: str = Path(...,
                                              description='PermissionContext id that is used in order to delete the permission context')):
@@ -101,6 +106,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 
 
 @router.put("/{permission_context_id}", summary='Update a permission context', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
                  permission_context_id: str = Path(...,
                                              description='Resource type id that is used in order to delete the permission context'),

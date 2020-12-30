@@ -23,6 +23,7 @@ from src.resource.logging.logger import logger
 
 # to get a string like this run:
 # openssl rand -hex 32
+from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
@@ -62,6 +63,7 @@ class CustomHttpBearer(HTTPBearer):
 
 
 @router.post("/authenticate", summary='Authenticate user', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def authenticate(*,
                        email: str = Body(..., description='Email used for authentication'),
                        password: str = Body(..., description='Password used for authentication')):
@@ -87,6 +89,7 @@ async def authenticate(*,
 
 
 @router.post("/logout", summary='Logout user', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def logout(*,
                  token: str = Body(..., description='Username used for authentication', embed=True), ):
     try:

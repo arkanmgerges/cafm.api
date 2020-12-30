@@ -4,6 +4,7 @@
 import json
 import random
 import traceback
+from datetime import datetime
 
 import numpy as np
 from fastapi import FastAPI
@@ -11,11 +12,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette import status
 from starlette.responses import JSONResponse
 
+import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.model.response.exception.Message import Message, ValidationMessage
 from src.port_adapter.api.rest.resource.exception.ValidationErrorException import ValidationErrorException
 from src.port_adapter.api.rest.router.v1 import auth, realm, ou, user, role, user_group, project, permission_context, \
     permission, request, assignment, access
 from src.resource.logging.logger import logger
+from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
+
+# from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 app = FastAPI(
     title='CAFM System Api Gateway',
@@ -24,6 +29,10 @@ app = FastAPI(
     openapi_url='/api/v1/openapi.json'
 )
 
+openTelemetry = AppDi.instance.get(OpenTelemetry)
+
+
+# FastAPIInstrumentor.instrument_app(app)
 
 def addCustomExceptionHandlers(app):
     from fastapi import Request
@@ -49,7 +58,8 @@ def addCustomExceptionHandlers(app):
     @app.exception_handler(Exception)
     async def generalExceptionHandler(request: Request, e: Exception):
         logger.warning(traceback.format_exc())
-        return JSONResponse(content={"detail": [{"message": str(e)}]}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return JSONResponse(content={"detail": [{"message": str(e)}]},
+                            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 addCustomExceptionHandlers(app)
@@ -62,11 +72,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-np.random.seed(0)
-random.seed(0)
+np.random.seed(int(datetime.utcnow().timestamp()))
+random.seed(datetime.utcnow().timestamp())
 
 app.include_router(auth.router, prefix="/v1/auth", tags=["Identity/Auth"],
-                   responses={400: {"model": Message}, 404: {"model": Message}, 422: {"model": ValidationMessage}, 500: {"model": Message}})
+                   responses={400: {"model": Message}, 404: {"model": Message}, 422: {"model": ValidationMessage},
+                              500: {"model": Message}})
 app.include_router(request.router, prefix="/v1/request", tags=["Identity/Request"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(realm.router, prefix="/v1/realms", tags=["Identity/Realm"],

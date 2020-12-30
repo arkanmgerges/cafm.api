@@ -14,11 +14,13 @@ from src.port_adapter.api.rest.resource.exception.UnknownCacheTypeException impo
 from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
 from src.port_adapter.messaging.listener.CacheType import CacheType
 from src.resource.logging.logger import logger
+from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
 
 @router.get(path="/is_successful", summary='Check if the request has succeeded', response_model=BoolRequestResponse)
+@OpenTelemetry.fastApiTraceOTel
 async def isRequestSuccessful(*,
                               request_id: str = Query(..., description='Request id to check if it is succeeded or not'),
                               _=Depends(CustomHttpBearer())):
@@ -61,6 +63,7 @@ async def isRequestSuccessful(*,
 
 
 @router.get(path="/result", summary='Get the request id result', response_model=ResultRequestResponse)
+@OpenTelemetry.fastApiTraceOTel
 async def getRequestIdResult(*, request_id: str = Query(..., description='Request id that is used to fetch the result'),
                              _=Depends(CustomHttpBearer())):
     try:

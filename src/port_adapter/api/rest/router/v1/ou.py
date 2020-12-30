@@ -23,11 +23,13 @@ from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
+from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
 
 @router.get(path="/", summary='Get all ous', response_model=Ous)
+@OpenTelemetry.fastApiTraceOTel
 async def getOus(*,
                  result_from: int = Query(0, description='Starting offset for fetching data'),
                  result_size: int = Query(10, description='Item count to be fetched'),
@@ -53,6 +55,7 @@ async def getOus(*,
 
 @router.get(path="/{ou_id}/", summary='Get ou',
             response_model=Ou)
+@OpenTelemetry.fastApiTraceOTel
 async def getOu(*, ou_id: str = Path(...,
                                      description='Ou id that is used to fetch ou data'),
                 _=Depends(CustomHttpBearer())):
@@ -75,6 +78,7 @@ async def getOu(*, ou_id: str = Path(...,
 
 
 @router.post("/create", summary='Create a new ou', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the ou', embed=True)):
     reqId = str(uuid4())
@@ -87,6 +91,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 
 @router.delete("/{ou_id}", summary='Delete a ou', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
                  ou_id: str = Path(...,
                                    description='Ou id that is used in order to delete the ou')):
@@ -100,6 +105,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 
 
 @router.put("/{ou_id}", summary='Update a ou', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
                  ou_id: str = Path(...,
                                    description='Ou id that is used in order to delete the ou'),

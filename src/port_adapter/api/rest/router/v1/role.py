@@ -24,11 +24,13 @@ from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
+from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
 
 @router.get(path="/", summary='Get all roles', response_model=Roles)
+@OpenTelemetry.fastApiTraceOTel
 async def getRoles(*,
                    result_from: int = Query(0, description='Starting offset for fetching data'),
                    result_size: int = Query(10, description='Item count to be fetched'),
@@ -54,6 +56,7 @@ async def getRoles(*,
 
 @router.get(path="/{role_id}/", summary='Get role',
             response_model=Role)
+@OpenTelemetry.fastApiTraceOTel
 async def getRole(*, role_id: str = Path(...,
                                          description='Role id that is used to fetch role data'),
                   _=Depends(CustomHttpBearer())):
@@ -74,6 +77,7 @@ async def getRole(*, role_id: str = Path(...,
 
 
 @router.post("/create", summary='Create a new role', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the role', embed=True)):
     reqId = str(uuid4())
@@ -86,6 +90,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 
 @router.delete("/{role_id}", summary='Delete a role', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Path(...,
                                      description='Role id that is used in order to delete the role')):
@@ -99,6 +104,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 
 
 @router.put("/{role_id}", summary='Update a role', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Path(...,
                                      description='Role id that is used in order to delete the role'),

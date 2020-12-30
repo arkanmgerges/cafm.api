@@ -9,7 +9,6 @@ from fastapi import APIRouter, Depends, Query, Body
 from fastapi import Response
 from fastapi.params import Path
 from grpc.beta.interfaces import StatusCode
-from pyArango.validation import Email
 from starlette import status
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
 
@@ -27,11 +26,13 @@ from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.port_adapter.messaging.listener.CacheType import CacheType
 from src.resource.logging.logger import logger
+from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
 
 @router.get(path="/", summary='Get all users', response_model=Users)
+@OpenTelemetry.fastApiTraceOTel
 async def getUsers(*,
                    result_from: int = Query(0, description='Starting offset for fetching data'),
                    result_size: int = Query(10, description='Item count to be fetched'),
@@ -57,12 +58,17 @@ async def getUsers(*,
 
 @router.get(path="/{user_id}/", summary='Get user',
             response_model=UserDescriptor)
+@OpenTelemetry.fastApiTraceOTel
 async def getUser(*, user_id: str = Path(...,
                                          description='User id that is used to fetch user data'),
                   _=Depends(CustomHttpBearer())):
     """Get a User by id
     """
     try:
+        # trace = openTelemetry.trace()
+        # with trace.get_current_span() as span:
+        #     span.set_attribute("user_id", user_id)
+
         client = UserClient()
         return client.userById(userId=user_id)
     except grpc.RpcError as e:
@@ -79,6 +85,7 @@ async def getUser(*, user_id: str = Path(...,
 
 
 @router.post("/create", summary='Create a new user', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  email: str = Body(..., description='User email', embed=True),
                  first_name: str = Body(..., description='First name of the user', embed=True),
@@ -107,6 +114,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 
 @router.delete("/{user_id}", summary='Delete a user', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
                  user_id: str = Path(...,
                                      description='User id that is used in order to delete the user')):
@@ -120,6 +128,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 
 
 @router.put("/{user_id}", summary='Update a user', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
                  user_id: str = Path(...,
                                      description='User id that is used in order to delete the user'),

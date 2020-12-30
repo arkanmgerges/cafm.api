@@ -24,17 +24,27 @@ from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
+from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
+# openTelemetry = AppDi.instance.get(OpenTelemetry)
+
 
 @router.get(path="/", summary='Get all permissions', response_model=Permissions)
+@OpenTelemetry.fastApiTraceOTel
 async def getPermissions(*,
                          result_from: int = Query(0, description='Starting offset for fetching data'),
                          result_size: int = Query(10, description='Item count to be fetched'),
                          order: str = Query('', description='e.g. name:asc,age:desc'),
                          _=Depends(CustomHttpBearer())):
     try:
+        # trace = openTelemetry.trace()
+        # with trace.get_current_span() as span:
+        #     span.set_attribute("result_from", result_from)
+        #     span.set_attribute("result_size", result_size)
+        #     span.set_attribute("order", order)
+
         client = PermissionClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
@@ -54,6 +64,7 @@ async def getPermissions(*,
 
 @router.get(path="/{permission_id}/", summary='Get permission',
             response_model=Permission)
+@OpenTelemetry.fastApiTraceOTel
 async def getPermission(*, permission_id: str = Path(...,
                                                      description='Permission id that is used to fetch permission data'),
                         _=Depends(CustomHttpBearer())):
@@ -80,6 +91,7 @@ def _customFunc(args):
 
 
 @router.post("/create", summary='Create a new permission', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the permission', embed=True),
                  allowed_actions: List[str] = Body(..., description='The actions that are allowed by the permission',
@@ -97,6 +109,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 
 @router.delete("/{permission_id}", summary='Delete a permission', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
                  permission_id: str = Path(...,
                                            description='Permission id that is used in order to delete the permission')):
@@ -110,6 +123,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 
 
 @router.put("/{permission_id}", summary='Update a permission', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
                  permission_id: str = Path(...,
                                            description='Permission id that is used in order to delete the permission'),

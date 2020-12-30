@@ -13,11 +13,13 @@ from src.port_adapter.api.rest.router.v1.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
+from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
 
 @router.post("/role_to_resource", summary='Link access for a role to a resource', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id to link access to a resource', embed=True),
                  resource_id: str = Body(..., description='Resource is for a role to have access to', embed=True),
@@ -34,6 +36,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 @router.delete("/role_to_resource", summary='Remove a link access for a role to a resource',
                status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id to remove link access to a resource', embed=True),
                  resource_id: str = Body(..., description='Resource is for a role to remove the access to', embed=True),

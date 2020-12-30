@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "0b74c8ee3c9c20f32e9f4a308ee57b602f4f77e4af50308164604fa791790d46"
+            "sha256": "40eb2ff4e86ee3c87688dff29e35b16726f346b3e49c56d88309865c3f3662d9"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -31,6 +31,14 @@
             ],
             "index": "pypi",
             "version": "==0.7.12"
+        },
+        "asgiref": {
+            "hashes": [
+                "sha256:5ee950735509d04eb673bd7f7120f8fa1c9e2df495394992c73234d526907e17",
+                "sha256:7162a3cb30ab0609f1a4c95938fd73e8604f63bdba516a7f7d64b83ff09478f0"
+            ],
+            "markers": "python_version >= '3.5'",
+            "version": "==3.3.1"
         },
         "avro-models": {
             "hashes": [
@@ -473,6 +481,62 @@
             "index": "pypi",
             "version": "==1.19.1"
         },
+        "opentelemetry-api": {
+            "hashes": [
+                "sha256:1fa122d0f2b4970d2597f9c3c35b292758b42e2e0caaa055983317bcc3d69e72",
+                "sha256:48a3cd8aae2cb32ffb8694be8e1a7a548b8ce2398a733f833c92ff21c0e3136f"
+            ],
+            "index": "pypi",
+            "version": "==0.16b1"
+        },
+        "opentelemetry-exporter-jaeger": {
+            "hashes": [
+                "sha256:2e7db3df04c56efb24efa2de1fdecb518ace1be1142fc5463807aa2834687a8d",
+                "sha256:aec27500030ead3933ae480a6930d964880345c3dadffcfdaf72197f6d6b5797"
+            ],
+            "index": "pypi",
+            "version": "==0.16b1"
+        },
+        "opentelemetry-instrumentation": {
+            "hashes": [
+                "sha256:4eb79e926f59770ee16a8c9ebd474991684b19aa6b6c76d862227da7190cc200",
+                "sha256:f465ed34d0cdcf2d518e680b9db8d87991eb9c8f88e456b40cb71d4c952205ea"
+            ],
+            "markers": "python_version >= '3.5'",
+            "version": "==0.16b1"
+        },
+        "opentelemetry-instrumentation-asgi": {
+            "hashes": [
+                "sha256:6c0e9bb178eb467a0b3eb4de6d3f9d2e32c411e6c051ce5f209dcfac1b9b6db4",
+                "sha256:c0aa527768a7163080be2fdc34fdd08158c0f0a669902c6d8c9a1a1a891a7a12"
+            ],
+            "index": "pypi",
+            "version": "==0.16b1"
+        },
+        "opentelemetry-instrumentation-fastapi": {
+            "hashes": [
+                "sha256:1df99e9459ed2f790fd59494da123fa92b7352a2fc10fe9be602abc3235dd051",
+                "sha256:3f293bb8f005dcc75d130f52662a0f2eee8091a285fa72ba588f6f5ffdf49482"
+            ],
+            "index": "pypi",
+            "version": "==0.16b1"
+        },
+        "opentelemetry-instrumentation-grpc": {
+            "hashes": [
+                "sha256:c994c26a8e2244c3c4dcc0ec5f6c9776fd129bb67feb35b90ef2765b4bd4e5a5",
+                "sha256:ddb023443637fbbef0f8e7978c13617c848e61ac475ded0450b09fda1a2d019a"
+            ],
+            "index": "pypi",
+            "version": "==0.16b1"
+        },
+        "opentelemetry-sdk": {
+            "hashes": [
+                "sha256:c99952f2814cb43dbd16e00f1e1107bcee9d3eedcc17335f400338117e58908d",
+                "sha256:cb9162335fc1d4af917969a2e3013625be6bca62f2680f50bad8a6b6aad1800d"
+            ],
+            "index": "pypi",
+            "version": "==0.16b1"
+        },
         "packaging": {
             "hashes": [
                 "sha256:24e0da08660a87484d1602c30bb4902d74816b6985b93de36926f5bc95741858",
@@ -757,6 +821,12 @@
             "index": "pypi",
             "version": "==0.13.6"
         },
+        "thrift": {
+            "hashes": [
+                "sha256:9af1c86bf73433afc6010ed376a6c6aca2b54099cc0d61895f640870a9ae7d89"
+            ],
+            "version": "==0.13.0"
+        },
         "typing-extensions": {
             "hashes": [
                 "sha256:7cb407020f00f7bfc3cb3e7881628838e69d8f3fcab2f64742a5e76b2f841918",
@@ -832,6 +902,12 @@
             ],
             "index": "pypi",
             "version": "==8.1"
+        },
+        "wrapt": {
+            "hashes": [
+                "sha256:b62ffa81fb85f4332a4f609cab4ac40709470da05643a082ec1eb88e6d9b97d7"
+            ],
+            "version": "==1.12.1"
         },
         "zope.interface": {
             "hashes": [

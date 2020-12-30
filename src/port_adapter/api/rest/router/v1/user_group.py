@@ -24,11 +24,13 @@ from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
+from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
 
 @router.get(path="/", summary='Get all user groups', response_model=UserGroups)
+@OpenTelemetry.fastApiTraceOTel
 async def getUserGroups(*,
                    result_from: int = Query(0, description='Starting offset for fetching data'),
                    result_size: int = Query(10, description='Item count to be fetched'),
@@ -54,6 +56,7 @@ async def getUserGroups(*,
 
 @router.get(path="/{user_group_id}/", summary='Get user group',
             response_model=UserGroup)
+@OpenTelemetry.fastApiTraceOTel
 async def getUserGroup(*, user_group_id: str = Path(...,
                                                    description='User group id that is used to fetch user group data'),
                        _=Depends(CustomHttpBearer())):
@@ -76,6 +79,7 @@ async def getUserGroup(*, user_group_id: str = Path(...,
 
 
 @router.post("/create", summary='Create a new user group', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the user group', embed=True)):
     reqId = str(uuid4())
@@ -88,6 +92,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 
 @router.delete("/{user_group_id}", summary='Delete a user group', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
                  user_group_id: str = Path(...,
                                      description='User group id that is used in order to delete the user group')):
@@ -101,6 +106,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 
 
 @router.put("/{user_group_id}", summary='Update a user group', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
                  user_group_id: str = Path(...,
                                      description='User group id that is used in order to delete the user group'),
