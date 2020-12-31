@@ -14,13 +14,13 @@ from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.identity.project_app_service_pb2 import ProjectAppService_projectsResponse, \
     ProjectAppService_projectsRequest, ProjectAppService_projectByIdRequest, ProjectAppService_projectByIdResponse
-from src.resource.proto._generated.identity.project_app_service_pb2_grpc import ProjectAppServiceStub
+from src.resource.proto._generated.project.project_app_service_pb2_grpc import ProjectAppServiceStub
 
 
 class ProjectClient(Client):
     def __init__(self):
-        self._server = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE', '')
-        self._port = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE_PORT', '')
+        self._server = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE', '')
+        self._port = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE_PORT', '')
 
     @OpenTelemetry.grpcTraceOTel
     def projects(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> Projects:
@@ -34,7 +34,7 @@ class ProjectClient(Client):
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: ProjectAppService_projectsResponse = stub.projects.with_call(
                     request,
-                    metadata=(('token', self.token),('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.projects.__qualname__))))
+                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.projects.__qualname__))))
                 logger.debug(
                     f'[{ProjectClient.projects.__qualname__}] - grpc response: {response}')
 
