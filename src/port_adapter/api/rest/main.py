@@ -15,8 +15,11 @@ from starlette.responses import JSONResponse
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.model.response.exception.Message import Message, ValidationMessage
 from src.port_adapter.api.rest.resource.exception.ValidationErrorException import ValidationErrorException
-from src.port_adapter.api.rest.router.v1 import auth, realm, ou, user, role, user_group, project, permission_context, \
-    permission, request, assignment, access
+from src.port_adapter.api.rest.router.v1.identity import auth as id_auth, realm as id_realm, ou as id_ou, \
+    user as id_user, role as id_role, user_group as id_user_group, project as id_project,\
+    permission_context as id_permission_context, \
+    permission as id_permission,request as id_request, assignment as id_assignment, access as id_access
+from src.port_adapter.api.rest.router.v1.project import project as project_project
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -75,28 +78,37 @@ app.add_middleware(
 np.random.seed(int(datetime.utcnow().timestamp()))
 random.seed(datetime.utcnow().timestamp())
 
-app.include_router(auth.router, prefix="/v1/auth", tags=["Identity/Auth"],
+# region Identity
+app.include_router(id_auth.router, prefix="/v1/identity/auth", tags=["Identity/Auth"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 422: {"model": ValidationMessage},
                               500: {"model": Message}})
-app.include_router(request.router, prefix="/v1/request", tags=["Identity/Request"],
+app.include_router(id_request.router, prefix="/v1/identity/request", tags=["Identity/Request"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(realm.router, prefix="/v1/realms", tags=["Identity/Realm"],
+app.include_router(id_realm.router, prefix="/v1/identity/realms", tags=["Identity/Realm"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(ou.router, prefix="/v1/ous", tags=["Identity/OU"],
+app.include_router(id_ou.router, prefix="/v1/identity/ous", tags=["Identity/OU"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(user.router, prefix="/v1/users", tags=["Identity/User"],
+app.include_router(id_user.router, prefix="/v1/identity/users", tags=["Identity/User"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(role.router, prefix="/v1/roles", tags=["Identity/Role"],
+app.include_router(id_role.router, prefix="/v1/identity/roles", tags=["Identity/Role"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(user_group.router, prefix="/v1/user_groups", tags=["Identity/User Groups"],
+app.include_router(id_user_group.router, prefix="/v1/identity/user_groups", tags=["Identity/User Groups"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(project.router, prefix="/v1/projects", tags=["Identity/Project"],
+app.include_router(id_project.router, prefix="/v1/identity/projects", tags=["Identity/Project"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(permission.router, prefix="/v1/permissions", tags=["Identity/Permission"],
+app.include_router(id_permission.router, prefix="/v1/identity/permissions", tags=["Identity/Permission"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(permission_context.router, prefix="/v1/permission_contexts", tags=["Identity/Permission"],
+app.include_router(id_permission_context.router, prefix="/v1/permission_contexts", tags=["Identity/Permission"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(assignment.router, prefix="/v1/assignments", tags=["Identity/Assignment"],
+app.include_router(id_assignment.router, prefix="/v1/identity/assignments", tags=["Identity/Assignment"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(access.router, prefix="/v1/accesses", tags=["Identity/Access"],
+app.include_router(id_access.router, prefix="/v1/identity/accesses", tags=["Identity/Access"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+# endregion
+
+# region Project
+app.include_router(project_project.router, prefix="/v1/project/projects", tags=["Project/Project"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+# app.include_router(project_user.router, prefix="/v1/project/users", tags=["Project/User"],
+#                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+# endregion
