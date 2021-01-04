@@ -91,7 +91,7 @@ class RoleClient(Client):
                 request = RoleAppService_roleTreeRequest(roleId=roleId)
                 response: RoleAppService_rolesTreesResponse = stub.roleTree.with_call(
                     request,
-                    metadata=(('token', self.token),('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(RoleClient.roleTree.__qualname__))))
+                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(RoleClient.roleTree.__qualname__))))
                 logger.debug(
                     f'[{RoleClient.roleTree.__qualname__}] - grpc response: {response}')
 

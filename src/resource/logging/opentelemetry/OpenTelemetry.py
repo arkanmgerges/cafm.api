@@ -10,9 +10,7 @@ from opentelemetry import trace
 from opentelemetry.context import attach, detach
 from opentelemetry.exporter import jaeger
 from opentelemetry.sdk.trace import TracerProvider, Tracer
-from opentelemetry.sdk.trace.export import (BatchExportSpanProcessor,
-                                            ConsoleSpanExporter,
-                                            SimpleExportSpanProcessor)
+from opentelemetry.sdk.trace.export import (BatchExportSpanProcessor)
 from opentelemetry.trace.span import SpanContext
 
 
@@ -135,8 +133,9 @@ class OpenTelemetry:
                 import src.port_adapter.AppDi as AppDi
                 openTelemetry = AppDi.instance.get(OpenTelemetry)
                 tracer: Tracer = openTelemetry.tracer(f.__name__)
-                if len(args) > 1:
-                    contextData = openTelemetry.contextDataFromGrpcContext(args[2])
+                grpcServicerContext = cls._grpcServicerContext(args)
+                if grpcServicerContext is not None:
+                    contextData = openTelemetry.contextDataFromGrpcContext(grpcServicerContext)
                     with openTelemetry.setRemoteContext(contextData):
                         return cls._startCurrentSpan(args, kwargs, openTelemetry, tracer, f)
                 else:
@@ -150,6 +149,17 @@ class OpenTelemetry:
             return f
 
     @classmethod
+    def _grpcServicerContext(cls, args):
+        from grpc._server import _Context
+        try:
+            for arg in args:
+                if isinstance(arg, _Context):
+                    return arg
+        except:
+            pass
+        return None
+
+    @classmethod
     def _startCurrentSpan(cls, args, kwargs, openTelemetry, tracer, f):
         with tracer.start_as_current_span(name=f.__name__) as span:
             span.set_attribute('module', str(inspect.getmodule(f)))
@@ -160,4 +170,3 @@ class OpenTelemetry:
             # Important: the decorated method that uses this decorator, needs to use __qualname__ for its method
             openTelemetry.setContext(ctx, f.__qualname__)  # ex. class name and method like User.userAge
             return f(*args, **kwargs)
-
