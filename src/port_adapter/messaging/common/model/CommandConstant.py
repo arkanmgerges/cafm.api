@@ -44,3 +44,5 @@ class CommandConstant(Enum):
     REVOKE_ACCESS_ROLE_TO_RESOURCE = 'revoke_access_role_to_resource'
     ASSIGN_RESOURCE_TO_RESOURCE = 'assign_resource_to_resource'
     REVOKE_ASSIGNMENT_RESOURCE_TO_RESOURCE = 'revoke_assignment_resource_to_resource'
+    SET_USER_PASSWORD = 'set_user_password'
+    RESET_USER_PASSWORD = 'reset_user_password'

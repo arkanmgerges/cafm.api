@@ -132,8 +132,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 async def update(*, _=Depends(CustomHttpBearer()),
                  user_id: str = Path(...,
                                      description='User id that is used in order to delete the user'),
-                 name: str = Body(..., description='Username of the user', embed=True),
-                 password: str = Body(..., description='Password of the user', embed=True),
+                 email: str = Body(..., description='User email', embed=True),
                  first_name: str = Body(..., description='First name of the user', embed=True),
                  last_name: str = Body(..., description='Last name of the user', embed=True),
                  address_line_one: str = Body(..., description='User first line of address', embed=True),
@@ -143,18 +142,55 @@ async def update(*, _=Depends(CustomHttpBearer()),
                  ):
     reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
     producer = AppDi.instance.get(SimpleProducer)
-    authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
                                         {'id': user_id,
-                                         'name': name,
-                                         'password': authService.hashPassword(password=password),
+                                         'email': email,
                                          'first_name': first_name,
                                          'last_name': last_name,
                                          'address_one': address_line_one,
                                          'address_two': address_line_two,
                                          'postal_code': postal_code,
                                          'avatar_image': avatar_image})),
+                     schema=ApiCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.put("/{user_id}/set_password", summary='Set user password', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def setUserPassword(*, _=Depends(CustomHttpBearer()),
+                          user_id: str = Path(...,
+                                              description='User id that is used in order to set up the user password'),
+                          password: str = Body(..., description='Password of the user', embed=True),
+                          ):
+    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
+    producer = AppDi.instance.get(SimpleProducer)
+    authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.SET_USER_PASSWORD.value,
+                                    metadata=json.dumps({"token": Client.token}),
+                                    data=json.dumps(
+                                        {'id': user_id,
+                                         'password': authService.hashPassword(password=password)})),
+                     schema=ApiCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.put("/{user_id}/reset_password", summary='Reset user password', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def resetUserPassword(*, _=Depends(CustomHttpBearer()),
+                            user_id: str = Path(...,
+                                                description='User id that is used in order to reset the user password'),
+                            email: str = Body(..., description='User email', embed=True),
+                            ):
+    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
+    producer = AppDi.instance.get(SimpleProducer)
+    authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.RESET_USER_PASSWORD.value,
+                                    metadata=json.dumps({"token": Client.token}),
+                                    data=json.dumps(
+                                        {'id': user_id,
+                                         'email': email
+                                         })),
                      schema=ApiCommand.get_schema())
     return {"request_id": reqId}
