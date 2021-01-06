@@ -109,7 +109,7 @@ app.include_router(id_assignment.router, prefix="/v1/identity/assignments", tags
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(id_access.router, prefix="/v1/identity/accesses", tags=["Identity/Access"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(id_country.router, prefix="/v1/countries", tags=["Country"],
+app.include_router(id_country.router, prefix="/v1/identity/countries", tags=["Identity/Country"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 # endregion
 
