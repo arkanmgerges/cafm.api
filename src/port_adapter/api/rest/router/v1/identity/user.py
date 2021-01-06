@@ -36,7 +36,7 @@ router = APIRouter()
 async def getUsers(*,
                    result_from: int = Query(0, description='Starting offset for fetching data'),
                    result_size: int = Query(10, description='Item count to be fetched'),
-                   order: str = Query('', description='e.g. name:asc,age:desc'),
+                   order: str = Query('', description='e.g. id:asc,email:desc'),
                    _=Depends(CustomHttpBearer())):
     try:
         client = UserClient()
@@ -121,7 +121,7 @@ async def setUserPassword(*, _=Depends(CustomHttpBearer()),
                                               description='User id that is used in order to set up the user password'),
                           password: str = Body(..., description='Password of the user', embed=True),
                           ):
-    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
+    reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.SET_USER_PASSWORD.value,
@@ -140,9 +140,8 @@ async def resetUserPassword(*, _=Depends(CustomHttpBearer()),
                                                 description='User id that is used in order to reset the user password'),
                             email: str = Body(..., description='User email', embed=True),
                             ):
-    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
+    reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
-    authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.RESET_USER_PASSWORD.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(

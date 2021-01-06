@@ -76,7 +76,7 @@ async def getRequestIdResult(*, request_id: str = Query(..., description='Reques
             if result is None:
                 raise NotFoundException(f'Request id: {request_id} not found')
             result = json.loads(result.decode('utf-8'))
-            return BoolRequestResponse(success=result["success"])
+            return ResultRequestResponse(result=result['data'])
         else:
             cacheType = split[0]
             if CacheType.valueToEnum(cacheType) == CacheType.LIST:
