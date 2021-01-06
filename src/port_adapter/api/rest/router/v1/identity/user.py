@@ -88,12 +88,6 @@ async def getUser(*, user_id: str = Path(...,
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  email: str = Body(..., description='User email', embed=True),
-                 first_name: str = Body(..., description='First name of the user', embed=True),
-                 last_name: str = Body(..., description='Last name of the user', embed=True),
-                 address_line_one: str = Body(..., description='User first line of address', embed=True),
-                 address_line_two: str = Body(..., description='User second line of address', embed=True),
-                 postal_code: str = Body(..., description='Postal code of the user', embed=True),
-                 avatar_image: str = Body(..., description='Avatar URL of the user', embed=True),
                  ):
     reqId = f'{CacheType.LIST.value}:{str(uuid4())}:3'  # 3 for completion of identity & project
     producer = AppDi.instance.get(SimpleProducer)
@@ -101,14 +95,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'email': email,
-                                         # 'password': authService.hashPassword(password=password),
-                                         'first_name': first_name,
-                                         'last_name': last_name,
-                                         'address_one': address_line_one,
-                                         'address_two': address_line_two,
-                                         'postal_code': postal_code,
-                                         'avatar_image': avatar_image})),
+                                        {'email': email, })),
                      schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
