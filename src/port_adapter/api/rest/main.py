@@ -18,7 +18,8 @@ from src.port_adapter.api.rest.resource.exception.ValidationErrorException impor
 from src.port_adapter.api.rest.router.v1.identity import auth as id_auth, realm as id_realm, ou as id_ou, \
     user as id_user, role as id_role, user_group as id_user_group, project as id_project,\
     permission_context as id_permission_context, \
-    permission as id_permission,request as id_request, assignment as id_assignment, access as id_access
+    permission as id_permission, assignment as id_assignment, access as id_access
+from src.port_adapter.api.rest.router.v1.common import request as common_request
 from src.port_adapter.api.rest.router.v1.project import project as project_project
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
@@ -78,12 +79,15 @@ app.add_middleware(
 np.random.seed(int(datetime.utcnow().timestamp()))
 random.seed(datetime.utcnow().timestamp())
 
+# region Global
+app.include_router(common_request.router, prefix="/v1/common/request", tags=["Common"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+# endregion
+
 # region Identity
 app.include_router(id_auth.router, prefix="/v1/identity/auth", tags=["Identity/Auth"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 422: {"model": ValidationMessage},
                               500: {"model": Message}})
-app.include_router(id_request.router, prefix="/v1/identity/request", tags=["Identity/Request"],
-                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(id_realm.router, prefix="/v1/identity/realms", tags=["Identity/Realm"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(id_ou.router, prefix="/v1/identity/ous", tags=["Identity/OU"],
