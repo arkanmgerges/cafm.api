@@ -28,7 +28,7 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="/", summary='Get all realms', response_model=Realms)
+@router.get(path="", summary='Get all realms', response_model=Realms)
 @OpenTelemetry.fastApiTraceOTel
 async def getRealms(*,
                     result_from: int = Query(0, description='Starting offset for fetching data'),
@@ -53,7 +53,7 @@ async def getRealms(*,
         logger.info(e)
 
 
-@router.get(path="/{realm_id}/", summary='Get realm',
+@router.get(path="/{realm_id}", summary='Get realm',
             response_model=Realm)
 @OpenTelemetry.fastApiTraceOTel
 async def getRealm(*, realm_id: str = Path(...,

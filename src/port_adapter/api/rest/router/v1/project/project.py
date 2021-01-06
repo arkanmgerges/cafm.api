@@ -29,8 +29,8 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-# @OpenTelemetry.fastApiTraceOTel
-@router.get(path="/", summary='Get all projects', response_model=Projects)
+@router.get(path="", summary='Get all projects', response_model=Projects)
+@OpenTelemetry.fastApiTraceOTel
 async def getProjects(*,
                       result_from: int = Query(0, description='Starting offset for fetching data'),
                       result_size: int = Query(10, description='Item count to be fetched'),
@@ -54,7 +54,7 @@ async def getProjects(*,
         logger.info(e)
 
 
-@router.get(path="/{project_id}/", summary='Get project',
+@router.get(path="/{project_id}", summary='Get project',
             response_model=Project)
 @OpenTelemetry.fastApiTraceOTel
 async def getProject(*, project_id: str = Path(...,

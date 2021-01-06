@@ -31,7 +31,7 @@ router = APIRouter()
 # openTelemetry = AppDi.instance.get(OpenTelemetry)
 
 
-@router.get(path="/", summary='Get all permissions', response_model=Permissions)
+@router.get(path="", summary='Get all permissions', response_model=Permissions)
 @OpenTelemetry.fastApiTraceOTel
 async def getPermissions(*,
                          result_from: int = Query(0, description='Starting offset for fetching data'),
@@ -62,7 +62,7 @@ async def getPermissions(*,
         logger.info(e)
 
 
-@router.get(path="/{permission_id}/", summary='Get permission',
+@router.get(path="/{permission_id}", summary='Get permission',
             response_model=Permission)
 @OpenTelemetry.fastApiTraceOTel
 async def getPermission(*, permission_id: str = Path(...,

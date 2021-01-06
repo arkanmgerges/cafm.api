@@ -28,7 +28,7 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="/", summary='Get all roles', response_model=Roles)
+@router.get(path="", summary='Get all roles', response_model=Roles)
 @OpenTelemetry.fastApiTraceOTel
 async def getRoles(*,
                    result_from: int = Query(0, description='Starting offset for fetching data'),
@@ -53,7 +53,7 @@ async def getRoles(*,
         logger.info(e)
 
 
-@router.get(path="/{role_id}/", summary='Get role',
+@router.get(path="/{role_id}", summary='Get role',
             response_model=Role)
 @OpenTelemetry.fastApiTraceOTel
 async def getRole(*, role_id: str = Path(...,

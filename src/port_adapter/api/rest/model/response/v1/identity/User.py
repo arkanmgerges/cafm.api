@@ -10,12 +10,6 @@ class User(BaseModel):
     id: str
     email: str
     password: Optional[str]
-    first_name: Optional[str]
-    last_name: Optional[str]
-    address_line_one: Optional[str]
-    address_line_two: Optional[str]
-    postal_code: Optional[str]
-    avatar_image: Optional[str]
 
 
 class UserDescriptor(BaseModel):

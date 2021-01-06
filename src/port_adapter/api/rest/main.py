@@ -20,7 +20,7 @@ from src.port_adapter.api.rest.router.v1.identity import auth as id_auth, realm 
     permission_context as id_permission_context, \
     permission as id_permission, assignment as id_assignment, access as id_access
 from src.port_adapter.api.rest.router.v1.common import request as common_request
-from src.port_adapter.api.rest.router.v1.project import project as project_project
+from src.port_adapter.api.rest.router.v1.project import project as project_project, user as project_user
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -113,6 +113,6 @@ app.include_router(id_access.router, prefix="/v1/identity/accesses", tags=["Iden
 # region Project
 app.include_router(project_project.router, prefix="/v1/project/projects", tags=["Project/Project"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-# app.include_router(project_user.router, prefix="/v1/project/users", tags=["Project/User"],
-#                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+app.include_router(project_user.router, prefix="/v1/project/users", tags=["Project/User"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 # endregion

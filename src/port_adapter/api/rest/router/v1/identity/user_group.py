@@ -28,7 +28,7 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="/", summary='Get all user groups', response_model=UserGroups)
+@router.get(path="", summary='Get all user groups', response_model=UserGroups)
 @OpenTelemetry.fastApiTraceOTel
 async def getUserGroups(*,
                    result_from: int = Query(0, description='Starting offset for fetching data'),
@@ -53,7 +53,7 @@ async def getUserGroups(*,
         logger.info(e)
 
 
-@router.get(path="/{user_group_id}/", summary='Get user group',
+@router.get(path="/{user_group_id}", summary='Get user group',
             response_model=UserGroup)
 @OpenTelemetry.fastApiTraceOTel
 async def getUserGroup(*, user_group_id: str = Path(...,

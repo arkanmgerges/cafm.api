@@ -28,7 +28,7 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="/", summary='Get all permission contexts', response_model=PermissionContexts)
+@router.get(path="", summary='Get all permission contexts', response_model=PermissionContexts)
 @OpenTelemetry.fastApiTraceOTel
 async def getPermissionContexts(*,
                    result_from: int = Query(0, description='Starting offset for fetching data'),
@@ -53,7 +53,7 @@ async def getPermissionContexts(*,
         logger.info(e)
 
 
-@router.get(path="/{permission_context_id}/", summary='Get permission context',
+@router.get(path="/{permission_context_id}", summary='Get permission context',
             response_model=PermissionContext)
 @OpenTelemetry.fastApiTraceOTel
 async def getPermissionContext(*, permission_context_id: str = Path(...,
