@@ -16,8 +16,8 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.user.UserClient import UserClient
-from src.port_adapter.api.rest.model.response.v1.identity.User import UserDescriptor
-from src.port_adapter.api.rest.model.response.v1.identity.Users import Users
+from src.port_adapter.api.rest.model.response.v1.project.User import UserDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.Users import Users
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -84,17 +84,17 @@ async def update(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 
-@router.get(path="/{user_id}", summary='Get user',
+@router.get(path="/{user_id}", summary='Get user by id',
             response_model=UserDescriptor)
 @OpenTelemetry.fastApiTraceOTel
-async def getUser(*, user_id: str = Path(...,
+async def getUserById(*, user_id: str = Path(...,
                                          description='User id that is used to fetch user data'),
                   _=Depends(CustomHttpBearer())):
     """Get a User by id
     """
     try:
         client = UserClient()
-        return client.userById(userId=user_id)
+        return client.userById(id=user_id)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -102,7 +102,7 @@ async def getUser(*, user_id: str = Path(...,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getUser.__module__}.{getUser.__qualname__}] - error response e: {e}')
+                f'[{getUserById.__module__}.{getUserById.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
