@@ -127,36 +127,6 @@ async def delete(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 
-@router.put("/{user_id}", summary='Update a user', status_code=status.HTTP_200_OK)
-@OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
-                 user_id: str = Path(...,
-                                     description='User id that is used in order to delete the user'),
-                 email: str = Body(..., description='User email', embed=True),
-                 first_name: str = Body(..., description='First name of the user', embed=True),
-                 last_name: str = Body(..., description='Last name of the user', embed=True),
-                 address_line_one: str = Body(..., description='User first line of address', embed=True),
-                 address_line_two: str = Body(..., description='User second line of address', embed=True),
-                 postal_code: str = Body(..., description='Postal code of the user', embed=True),
-                 avatar_image: str = Body(..., description='Avatar URL of the user', embed=True),
-                 ):
-    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
-    producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_USER.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'id': user_id,
-                                         'email': email,
-                                         'first_name': first_name,
-                                         'last_name': last_name,
-                                         'address_one': address_line_one,
-                                         'address_two': address_line_two,
-                                         'postal_code': postal_code,
-                                         'avatar_image': avatar_image})),
-                     schema=ApiCommand.get_schema())
-    return {"request_id": reqId}
-
-
 @router.put("/{user_id}/set_password", summary='Set user password', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def setUserPassword(*, _=Depends(CustomHttpBearer()),
