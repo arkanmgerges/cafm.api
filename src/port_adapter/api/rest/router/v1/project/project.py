@@ -78,33 +78,6 @@ async def getProject(*, project_id: str = Path(...,
         logger.info(e)
 
 
-@router.post("/create", summary='Create a new project', status_code=status.HTTP_200_OK)
-@OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='Title of the project', embed=True)):
-    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
-    producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_PROJECT.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'name': name})), schema=ApiCommand.get_schema())
-    return {"request_id": reqId}
-
-
-@router.delete("/{project_id}", summary='Delete a project', status_code=status.HTTP_200_OK)
-@OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
-                 project_id: str = Path(...,
-                                        description='Project id that is used in order to delete the project')):
-    reqId = str(uuid4())
-    producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_PROJECT.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'id': project_id})), schema=ApiCommand.get_schema())
-    return {"request_id": reqId}
-
-
 @router.put("/{project_id}", summary='Update a project', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),

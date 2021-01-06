@@ -103,18 +103,3 @@ async def delete(*, _=Depends(CustomHttpBearer()),
                                     data=json.dumps(
                                         {'id': project_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
-
-
-@router.put("/{project_id}", summary='Update a project', status_code=status.HTTP_200_OK)
-@OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
-                 project_id: str = Path(...,
-                                        description='Project id that is used in order to delete the project'),
-                 name: str = Body(..., description='Title of the project', embed=True)):
-    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
-    producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_PROJECT.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'id': project_id, 'name': name})), schema=ApiCommand.get_schema())
-    return {"request_id": reqId}
