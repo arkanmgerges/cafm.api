@@ -10,7 +10,7 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.model.response.v1.identity.Countries import Countries, CountryDescriptor
-from src.port_adapter.api.rest.model.response.v1.identity.Cities import Cities
+from src.port_adapter.api.rest.model.response.v1.identity.Cities import Cities, CityDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Country import Country
 from src.port_adapter.api.rest.model.response.v1.identity.City import City
 from src.resource.logging.logger import logger
@@ -19,7 +19,9 @@ from src.resource.proto._generated.identity.country_app_service_pb2 import (Coun
                                                                             CountryAppService_countryByIdRequest,
                                                                             CountryAppService_countryByIdResponse,
                                                                             CountryAppService_countryCitiesResponse,
-                                                                            CountryAppService_countryCitiesRequest)
+                                                                            CountryAppService_countryCitiesRequest,
+                                                                            CountryAppService_countryCityResponse,
+                                                                            CountryAppService_countryCityRequest)
 from src.resource.proto._generated.identity.country_app_service_pb2_grpc import CountryAppServiceStub
 
 
@@ -124,6 +126,41 @@ class CountryClient(Client):
                                       for city in
                                       response[0].cities],
                               item_count=response[0].itemCount)
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def countryCity(self, countryId: str = '', cityId: str = '') -> CityDescriptor:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = CountryAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{CountryClient.countryCity.__qualname__}] - grpc call to retrieve country with countryId: {countryId} from server {self._server}:{self._port}')
+                response: CountryAppService_countryCityResponse = stub.countryCity.with_call(
+                    CountryAppService_countryCityRequest(countryId=countryId, cityId=cityId),
+                    metadata=(('token', self.token), (
+                        'opentel',
+                        AppDi.instance.get(OpenTelemetry).serializedContext(CountryClient.countryCity.__qualname__))))
+                logger.debug(
+                    f'[{CountryClient.countryCity.__qualname__}] - grpc response: {response}')
+
+                city = response[0].city
+                return CityDescriptor(id=city.id,
+                                      geo_name_id=city.geoNameId,
+                                      locale_code=city.localeCode,
+                                      continent_code=city.continentCode,
+                                      continent_name=city.continentName,
+                                      country_iso_code=city.countryIsoCode,
+                                      country_name=city.countryName,
+                                      subdivision_one_iso_code=city.subdivisionOneIsoCode,
+                                      subdivision_one_iso_name=city.subdivisionOneIsoName,
+                                      subdivision_two_iso_code=city.subdivisionTwoIsoCode,
+                                      subdivision_two_iso_name=city.subdivisionTwoIsoName,
+                                      city_name=city.cityName,
+                                      metro_code=city.metroCode,
+                                      time_zone=city.timeZone,
+                                      is_in_european_union=city.isInEuropeanUnion)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
