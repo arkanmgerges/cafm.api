@@ -26,6 +26,9 @@ async def getCountries(*,
                        result_size: int = Query(10, description='Item count to be fetched'),
                        order: str = Query('', description='e.g. name:asc,age:desc'),
                        _=Depends(CustomHttpBearer())):
+    """
+        Get list od countries
+    """
     try:
         client = CountryClient()
         orderService = AppDi.instance.get(OrderService)
@@ -47,7 +50,8 @@ async def getCountries(*,
 @router.get(path="/{country_id}/", summary='Get country', response_model=CountryDescriptor)
 async def getCountry(*, country_id: str = Path(..., description='Country id that is used to fetch country data'),
                      _=Depends(CustomHttpBearer())):
-    """Get a Country by id
+    """
+        Get a Country by id
     """
     try:
         client = CountryClient()
@@ -72,7 +76,8 @@ async def getCountryCities(*,
                            order: str = Query('', description='e.g. name:asc,age:desc'),
                            country_id: str = Path(..., description='Country id that is used to fetch country cities'),
                            _=Depends(CustomHttpBearer())):
-    """Get a list of Country Cities by Country id
+    """
+        Get a list of Country Cities by Country id
     """
     try:
         client = CountryClient()
@@ -93,10 +98,11 @@ async def getCountryCities(*,
 
 
 @router.get(path="/{country_id}/cities/{city_id}", summary='Get a country city', response_model=CityDescriptor)
-async def getCountryCity(*, country_id: str = Path(..., description='Country id that is used to fetch country cities'),
-                         city_id: str = Path(..., description='Country id that is used to fetch country cities'),
+async def getCountryCity(*, country_id: str = Path(..., description='Country id that is used to fetch country city'),
+                         city_id: str = Path(..., description='City id that is used to fetch country city'),
                          _=Depends(CustomHttpBearer())):
-    """Get a city of Country by Country id and City id
+    """
+        Get a city of Country by Country id and City id
     """
     try:
         client = CountryClient()
