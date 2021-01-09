@@ -17,7 +17,7 @@ DIR_NAME = os.path.dirname(os.path.realpath(__file__)) + '/../avro'
 @avro_schema(AvroModelContainer(default_namespace="cafm.project"),
              schema_file=os.path.join(DIR_NAME, "project-command.avsc"))
 class ProjectCommand(MessageBase):
-    def __init__(self, id, creatorServiceName='cafm.api', name='', version=1, metadata='', data='',
+    def __init__(self, id, creatorServiceName='cafm.project', name='', version=1, metadata='', data='',
                  createdOn=round(time.time() * 1000), external=None):
         super().__init__(
             {'id': id, 'creator_service_name': creatorServiceName, 'name': name, 'version': version,
@@ -31,3 +31,8 @@ class ProjectCommand(MessageBase):
 
     def msgId(self):
         return self.id
+
+    def msgKey(self):
+        import json
+        dataDict = json.loads(self.data)
+        return dataDict['id'] if 'id' in dataDict else self.msgId()
