@@ -30,7 +30,10 @@ class CityClient(Client):
             try:
                 logger.debug(
                     f'[{CityClient.cities.__qualname__}] - grpc call to retrieve cities from server {self._server}:{self._port}')
-                request = CityAppService_citiesRequest(resultFrom=resultFrom, resultSize=resultSize)
+                request = CityAppService_citiesRequest(resultFrom=resultFrom, resultSize=resultSize,
+                                                       metadata=(('token', self.token), ('opentel', AppDi.instance.get(
+                                                           OpenTelemetry).serializedContext(
+                                                           CityClient.cities.__qualname__))))
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: CityAppService_citiesResponse = stub.cities.with_call(
                     request,

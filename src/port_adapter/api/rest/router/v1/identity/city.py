@@ -15,11 +15,13 @@ from src.port_adapter.api.rest.grpc.v1.identity.city.CityClient import CityClien
 from src.port_adapter.api.rest.model.response.v1.identity.Cities import Cities, CityDescriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.resource.logging.logger import logger
+from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
 
-@router.get(path="/", summary='Get all cities', response_model=Cities)
+@router.get(path="", summary='Get all cities', response_model=Cities)
+@OpenTelemetry.fastApiTraceOTel
 async def getCities(*,
                     result_from: int = Query(0, description='Starting offset for fetching data'),
                     result_size: int = Query(10, description='Item count to be fetched'),
@@ -46,7 +48,8 @@ async def getCities(*,
         logger.info(e)
 
 
-@router.get(path="/{city_id}/", summary='Get city', response_model=CityDescriptor)
+@router.get(path="/{city_id}", summary='Get city', response_model=CityDescriptor)
+@OpenTelemetry.fastApiTraceOTel
 async def getCity(*, city_id: str = Path(..., description='City id that is used to fetch city data'),
                   _=Depends(CustomHttpBearer())):
     """
