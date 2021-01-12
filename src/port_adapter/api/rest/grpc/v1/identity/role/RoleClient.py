@@ -3,7 +3,7 @@
 """
 import json
 import os
-from typing import List
+from typing import List, Any
 
 import grpc
 
@@ -13,10 +13,12 @@ from src.port_adapter.api.rest.model.response.v1.identity.AccessNode import Acce
 from src.port_adapter.api.rest.model.response.v1.identity.AccessNodeData import AccessNodeData
 from src.port_adapter.api.rest.model.response.v1.identity.Permission import Permission
 from src.port_adapter.api.rest.model.response.v1.identity.PermissionContext import PermissionContext
-from src.port_adapter.api.rest.model.response.v1.identity.PermissionWithPermissionContexts import PermissionWithPermissionContexts
+from src.port_adapter.api.rest.model.response.v1.identity.PermissionWithPermissionContexts import \
+    PermissionWithPermissionContexts
 from src.port_adapter.api.rest.model.response.v1.identity.Resource import Resource
-from src.port_adapter.api.rest.model.response.v1.identity.Role import Role
-from src.port_adapter.api.rest.model.response.v1.identity.RoleAccessPermissionData import RoleAccessPermissionData
+from src.port_adapter.api.rest.model.response.v1.identity.Role import RoleDescriptor
+from src.port_adapter.api.rest.model.response.v1.identity.RoleAccessPermissionData import \
+    RoleAccessPermissionDataDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.RoleAccessPermissionDatas import RoleAccessPermissionDatas
 from src.port_adapter.api.rest.model.response.v1.identity.Roles import Roles
 from src.resource.logging.logger import logger
@@ -42,7 +44,8 @@ class RoleClient(Client):
                 request = RoleAppService_rolesTreesRequest()
                 response: RoleAppService_rolesTreesResponse = stub.rolesTrees.with_call(
                     request,
-                    metadata=(('token', self.token),('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(RoleClient.rolesTrees.__qualname__))))
+                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                        RoleClient.rolesTrees.__qualname__))))
                 logger.debug(
                     f'[{RoleClient.rolesTrees.__qualname__}] - grpc response: {response}')
 
@@ -51,7 +54,7 @@ class RoleClient(Client):
                 roleAccessPermissionsResponse = response[0].roleAccessPermission
 
                 for roleAccessPermissionResponse in roleAccessPermissionsResponse:
-                    role = Role(id=roleAccessPermissionResponse.role.id, name=roleAccessPermissionResponse.role.name)
+                    role = self._descriptorByObject(obj=roleAccessPermissionResponse.role)
                     # owned by
                     ownedBy = self._resourceFromProtoBuff(roleAccessPermissionResponse.ownedBy)
                     # owner of
@@ -71,11 +74,10 @@ class RoleClient(Client):
                             permission_contexts=pcs))
 
                     # role access tree
-                    result.append(RoleAccessPermissionData(role=role, owned_by=ownedBy, owner_of=ownerOfList,
-                                                           permissions=tmp,
-                                                           access_tree=self._accessNodeFromProtoBuff(
-                                                               roleAccessPermissionResponse.accessTree)))
-                    print(RoleAccessPermissionDatas(roleAccessPermissions=result))
+                    result.append(RoleAccessPermissionDataDescriptor(role=role, owned_by=ownedBy, owner_of=ownerOfList,
+                                                                     permissions=tmp,
+                                                                     access_tree=self._accessNodeFromProtoBuff(
+                                                                         roleAccessPermissionResponse.accessTree)))
                 return RoleAccessPermissionDatas(roleAccessPermissions=result)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -91,12 +93,14 @@ class RoleClient(Client):
                 request = RoleAppService_roleTreeRequest(roleId=roleId)
                 response: RoleAppService_rolesTreesResponse = stub.roleTree.with_call(
                     request,
-                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(RoleClient.roleTree.__qualname__))))
+                    metadata=(('token', self.token), (
+                        'opentel',
+                        AppDi.instance.get(OpenTelemetry).serializedContext(RoleClient.roleTree.__qualname__))))
                 logger.debug(
                     f'[{RoleClient.roleTree.__qualname__}] - grpc response: {response}')
 
                 roleAccessPermissionResponse = response[0].roleAccessPermission
-                role = Role(id=roleAccessPermissionResponse.role.id, name=roleAccessPermissionResponse.role.name)
+                role = self._descriptorByObject(obj=roleAccessPermissionResponse.role)
                 # owned by
                 ownedBy = self._resourceFromProtoBuff(roleAccessPermissionResponse.ownedBy)
                 # owner of
@@ -117,10 +121,10 @@ class RoleClient(Client):
 
                 # role access tree
 
-                return RoleAccessPermissionData(role=role, owned_by=ownedBy, owner_of=ownerOfList,
-                                                permissions=tmp,
-                                                access_tree=self._accessNodeFromProtoBuff(
-                                                    roleAccessPermissionResponse.accessTree))
+                return RoleAccessPermissionDataDescriptor(role=role, owned_by=ownedBy, owner_of=ownerOfList,
+                                                          permissions=tmp,
+                                                          access_tree=self._accessNodeFromProtoBuff(
+                                                              roleAccessPermissionResponse.accessTree))
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
@@ -164,18 +168,19 @@ class RoleClient(Client):
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: RoleAppService_rolesResponse = stub.roles.with_call(
                     request,
-                    metadata=(('token', self.token),('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(RoleClient.roles.__qualname__))))
+                    metadata=(('token', self.token), (
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(RoleClient.roles.__qualname__))))
                 logger.debug(
                     f'[{RoleClient.roles.__qualname__}] - grpc response: {response}')
 
-                return Roles(roles=[Role(id=role.id, name=role.name) for role in response[0].roles],
+                return Roles(roles=[self._descriptorByObject(obj=role) for role in response[0].roles],
                              item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def roleById(self, roleId) -> Role:
+    def roleById(self, roleId) -> RoleDescriptor:
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = RoleAppServiceStub(channel)
             try:
@@ -183,11 +188,16 @@ class RoleClient(Client):
                     f'[{RoleClient.roleById.__qualname__}] - grpc call to retrieve role with roleId: {roleId} from server {self._server}:{self._port}')
                 response: RoleAppService_roleByIdResponse = stub.roleById.with_call(
                     RoleAppService_roleByIdRequest(id=roleId),
-                    metadata=(('token', self.token),('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(RoleClient.roleById.__qualname__))))
+                    metadata=(('token', self.token), (
+                        'opentel',
+                        AppDi.instance.get(OpenTelemetry).serializedContext(RoleClient.roleById.__qualname__))))
                 logger.debug(
                     f'[{RoleClient.roleById.__qualname__}] - grpc response: {response}')
 
-                return Role(id=response[0].role.id, name=response[0].role.name)
+                return self._descriptorByObject(obj=response[0].role)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
+
+    def _descriptorByObject(self, obj: Any) -> RoleDescriptor:
+        return RoleDescriptor(id=obj.id, name=obj.name)

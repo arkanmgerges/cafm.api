@@ -8,3 +8,6 @@ class Project(BaseModel):
     id: str
     name: str
 
+
+class ProjectDescriptor(Project):
+    pass

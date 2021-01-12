@@ -16,7 +16,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.role.RoleClient import RoleClient
-from src.port_adapter.api.rest.model.response.v1.identity.Role import Role
+from src.port_adapter.api.rest.model.response.v1.identity.Role import RoleDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Roles import Roles
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -54,7 +54,7 @@ async def getRoles(*,
 
 
 @router.get(path="/{role_id}", summary='Get role',
-            response_model=Role)
+            response_model=RoleDescriptor)
 @OpenTelemetry.fastApiTraceOTel
 async def getRole(*, role_id: str = Path(...,
                                          description='Role id that is used to fetch role data'),
@@ -106,7 +106,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Path(...,
-                                     description='Role id that is used in order to delete the role'),
+                                     description='Role id that is used in order to update the role'),
                  name: str = Body(..., description='Title of the role', embed=True)):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)

@@ -15,8 +15,9 @@ from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR,
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.role.RoleClient import RoleClient
-from src.port_adapter.api.rest.model.response.v1.identity.Role import Role
-from src.port_adapter.api.rest.model.response.v1.identity.RoleAccessPermissionData import RoleAccessPermissionData
+from src.port_adapter.api.rest.model.response.v1.identity.Role import RoleDescriptor
+from src.port_adapter.api.rest.model.response.v1.identity.RoleAccessPermissionData import \
+    RoleAccessPermissionDataDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.RoleAccessPermissionDatas import RoleAccessPermissionDatas
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -46,10 +47,12 @@ async def getRolesTrees(*, _=Depends(CustomHttpBearer())):
     except Exception as e:
         logger.info(e)
 
-@router.get(path="/roles/{role_id}/role_tree", summary='Get all tree details for a role', response_model=RoleAccessPermissionData)
+
+@router.get(path="/roles/{role_id}/role_tree", summary='Get all tree details for a role',
+            response_model=RoleAccessPermissionDataDescriptor)
 @OpenTelemetry.fastApiTraceOTel
 async def getRoleTree(*, role_id: str = Path(...,
-                                         description='Role id that is used to fetch role data'),
+                                             description='Role id that is used to fetch role data'),
                       _=Depends(CustomHttpBearer())):
     try:
         client = RoleClient()
@@ -66,8 +69,9 @@ async def getRoleTree(*, role_id: str = Path(...,
     except Exception as e:
         logger.info(e)
 
+
 @router.get(path="/{role_id}", summary='Get role assignments',
-            response_model=Role)
+            response_model=RoleDescriptor)
 @OpenTelemetry.fastApiTraceOTel
 async def getRole(*, role_id: str = Path(...,
                                          description='Role id that is used to fetch role data'),
@@ -236,15 +240,16 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                            description='Permission id to be assigned to a resource type',
                                            embed=True),
                  permission_context_id: str = Body(...,
-                                              description='Permission context id to be associated with the permission',
-                                              embed=True)):
+                                                   description='Permission context id to be associated with the permission',
+                                                   embed=True)):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_PERMISSION_TO_PERMISSION_CONTEXT.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
                                         {'permission_id': permission_id,
-                                         'permission_context_id': permission_context_id})), schema=ApiCommand.get_schema(),
+                                         'permission_context_id': permission_context_id})),
+                     schema=ApiCommand.get_schema(),
                      )
     return {"request_id": reqId}
 

@@ -16,7 +16,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.ou.OuClient import OuClient
-from src.port_adapter.api.rest.model.response.v1.identity.Ou import Ou
+from src.port_adapter.api.rest.model.response.v1.identity.Ou import OuDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Ous import Ous
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -54,7 +54,7 @@ async def getOus(*,
 
 
 @router.get(path="/{ou_id}", summary='Get ou',
-            response_model=Ou)
+            response_model=OuDescriptor)
 @OpenTelemetry.fastApiTraceOTel
 async def getOu(*, ou_id: str = Path(...,
                                      description='Ou id that is used to fetch ou data'),
@@ -108,7 +108,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
                  ou_id: str = Path(...,
-                                   description='Ou id that is used in order to delete the ou'),
+                                   description='Ou id that is used in order to update the ou'),
                  name: str = Body(..., description='Title of the ou', embed=True)):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)

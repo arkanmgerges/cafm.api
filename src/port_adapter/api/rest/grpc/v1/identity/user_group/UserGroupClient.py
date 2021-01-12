@@ -2,13 +2,13 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import os
-from typing import List
+from typing import List, Any
 
 import grpc
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.model.response.v1.identity.UserGroup import UserGroup
+from src.port_adapter.api.rest.model.response.v1.identity.UserGroup import UserGroupDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.UserGroups import UserGroups
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
@@ -35,19 +35,20 @@ class UserGroupClient(Client):
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: UserGroupAppService_userGroupsResponse = stub.userGroups.with_call(
                     request,
-                    metadata=(('token', self.token),('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(UserGroupClient.userGroups.__qualname__))))
+                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                        UserGroupClient.userGroups.__qualname__))))
                 logger.debug(
                     f'[{UserGroupClient.userGroups.__qualname__}] - grpc response: {response}')
 
-                return UserGroups(user_groups=[UserGroup(id=userGroup.id, name=userGroup.name) for userGroup in
-                                              response[0].userGroups],
+                return UserGroups(user_groups=[self._descriptorByObject(obj=userGroup)
+                                               for userGroup in response[0].userGroups],
                                   item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def userGroupById(self, userGroupId) -> UserGroup:
+    def userGroupById(self, userGroupId) -> UserGroupDescriptor:
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = UserGroupAppServiceStub(channel)
             try:
@@ -55,11 +56,15 @@ class UserGroupClient(Client):
                     f'[{UserGroupClient.userGroupById.__qualname__}] - grpc call to retrieve userGroup with userGroupId: {userGroupId} from server {self._server}:{self._port}')
                 response: UserGroupAppService_userGroupByIdResponse = stub.userGroupById.with_call(
                     UserGroupAppService_userGroupByIdRequest(id=userGroupId),
-                    metadata=(('token', self.token),('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(UserGroupClient.userGroupById.__qualname__))))
+                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                        UserGroupClient.userGroupById.__qualname__))))
                 logger.debug(
                     f'[{UserGroupClient.userGroupById.__qualname__}] - grpc response: {response}')
 
-                return UserGroup(id=response[0].userGroup.id, name=response[0].userGroup.name)
+                return self._descriptorByObject(obj=response[0].userGroup)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
+
+    def _descriptorByObject(self, obj: Any) -> UserGroupDescriptor:
+        return UserGroupDescriptor(id=obj.id, name=obj.name)

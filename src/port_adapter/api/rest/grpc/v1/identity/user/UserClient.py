@@ -2,19 +2,20 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import os
-from typing import List
+from typing import List, Any
 
 import grpc
 
+import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.model.response.v1.identity.User import User, UserDescriptor
+from src.port_adapter.api.rest.model.response.v1.identity.User import UserDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Users import Users
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.identity.user_app_service_pb2 import UserAppService_usersResponse, \
     UserAppService_usersRequest, UserAppService_userByIdRequest, UserAppService_userByIdResponse
 from src.resource.proto._generated.identity.user_app_service_pb2_grpc import UserAppServiceStub
-import src.port_adapter.AppDi as AppDi
+
 
 class UserClient(Client):
     def __init__(self):
@@ -33,16 +34,12 @@ class UserClient(Client):
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: UserAppService_usersResponse = stub.users.with_call(
                     request,
-                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(UserClient.users.__qualname__)),))
+                    metadata=(('token', self.token), (
+                    'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(UserClient.users.__qualname__)),))
                 logger.debug(
                     f'[{UserClient.users.__qualname__}] - grpc response: {response}')
 
-                return Users(users=[User(id=user.id, email=user.email,
-                                         # first_name=user.firstName, last_name=user.lastName,
-                                         # address_line_one=user.addressOne, address_line_two=user.addressTwo,
-                                         # postal_code=user.postalCode, avatar_image=user.avatarImage
-                                         )
-                                    for user in response[0].users],
+                return Users(users=[self._descriptorByObject(obj=user) for user in response[0].users],
                              item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -57,11 +54,15 @@ class UserClient(Client):
                     f'[{UserClient.userById.__qualname__}] - grpc call to retrieve user with userId: {userId} from server {self._server}:{self._port}')
                 response: UserAppService_userByIdResponse = stub.userById.with_call(
                     UserAppService_userByIdRequest(id=userId),
-                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(UserClient.users.__qualname__))))
+                    metadata=(('token', self.token), (
+                    'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(UserClient.users.__qualname__))))
                 logger.debug(
                     f'[{UserClient.userById.__qualname__}] - grpc response: {response}')
 
-                return User(id=response[0].user.id, email=response[0].user.email)
+                return self._descriptorByObject(obj=response[0].user)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
+
+    def _descriptorByObject(self, obj: Any) -> UserDescriptor:
+        return UserDescriptor(id=obj.id, email=obj.email)

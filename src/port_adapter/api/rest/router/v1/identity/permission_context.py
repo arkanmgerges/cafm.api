@@ -15,8 +15,9 @@ from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR,
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.grpc.v1.identity.permission_context.PermissionContextClient import PermissionContextClient
-from src.port_adapter.api.rest.model.response.v1.identity.PermissionContext import PermissionContext
+from src.port_adapter.api.rest.grpc.v1.identity.permission_context.PermissionContextClient import \
+    PermissionContextClient
+from src.port_adapter.api.rest.model.response.v1.identity.PermissionContext import PermissionContextDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.PermissionContexts import PermissionContexts
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -31,10 +32,10 @@ router = APIRouter()
 @router.get(path="", summary='Get all permission contexts', response_model=PermissionContexts)
 @OpenTelemetry.fastApiTraceOTel
 async def getPermissionContexts(*,
-                   result_from: int = Query(0, description='Starting offset for fetching data'),
-                   result_size: int = Query(10, description='Item count to be fetched'),
-                   order: str = Query('', description='e.g. name:asc,age:desc'),
-                   _=Depends(CustomHttpBearer())):
+                                result_from: int = Query(0, description='Starting offset for fetching data'),
+                                result_size: int = Query(10, description='Item count to be fetched'),
+                                order: str = Query('', description='e.g. name:asc,age:desc'),
+                                _=Depends(CustomHttpBearer())):
     try:
         client = PermissionContextClient()
         orderService = AppDi.instance.get(OrderService)
@@ -54,11 +55,11 @@ async def getPermissionContexts(*,
 
 
 @router.get(path="/{permission_context_id}", summary='Get permission context',
-            response_model=PermissionContext)
+            response_model=PermissionContextDescriptor)
 @OpenTelemetry.fastApiTraceOTel
 async def getPermissionContext(*, permission_context_id: str = Path(...,
-                                                         description='Resource type id that is used to fetch permission context data'),
-                          _=Depends(CustomHttpBearer())):
+                                                                    description='Resource type id that is used to fetch permission context data'),
+                               _=Depends(CustomHttpBearer())):
     try:
         client = PermissionContextClient()
         return client.permissionContextById(permissionContextId=permission_context_id)
@@ -94,7 +95,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
                  permission_context_id: str = Path(...,
-                                             description='PermissionContext id that is used in order to delete the permission context')):
+                                                   description='PermissionContext id that is used in order to delete the permission context')):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_RESOURCE_TYPE.value,
@@ -108,7 +109,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
                  permission_context_id: str = Path(...,
-                                             description='Resource type id that is used in order to delete the permission context'),
+                                                   description='Resource type id that is used in order to update the permission context'),
                  type: str = Body(..., description='Type of the permission context', embed=True),
                  data: dict = Body(..., description='Data of the permission context', embed=True),
                  ):
@@ -117,5 +118,6 @@ async def update(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_RESOURCE_TYPE.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': permission_context_id, 'type': type, 'data': data})), schema=ApiCommand.get_schema())
+                                        {'id': permission_context_id, 'type': type, 'data': data})),
+                     schema=ApiCommand.get_schema())
     return {"request_id": reqId}

@@ -2,13 +2,13 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import os
-from typing import List
+from typing import List, Any
 
 import grpc
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.model.response.v1.project.Project import Project
+from src.port_adapter.api.rest.model.response.v1.project.Project import ProjectDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.Projects import Projects
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
@@ -34,19 +34,20 @@ class ProjectClient(Client):
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: ProjectAppService_projectsResponse = stub.projects.with_call(
                     request,
-                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.projects.__qualname__))))
+                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                        ProjectClient.projects.__qualname__))))
                 logger.debug(
                     f'[{ProjectClient.projects.__qualname__}] - grpc response: {response}')
 
                 return Projects(
-                    projects=[Project(id=project.id, name=project.name) for project in response[0].projects],
+                    projects=[self._descriptorByObject(project) for project in response[0].projects],
                     item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def projectById(self, projectId) -> Project:
+    def projectById(self, projectId) -> ProjectDescriptor:
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = ProjectAppServiceStub(channel)
             try:
@@ -54,11 +55,22 @@ class ProjectClient(Client):
                     f'[{ProjectClient.projectById.__qualname__}] - grpc call to retrieve project with projectId: {projectId} from server {self._server}:{self._port}')
                 response: ProjectAppService_projectByIdResponse = stub.projectById.with_call(
                     ProjectAppService_projectByIdRequest(id=projectId),
-                    metadata=(('token', self.token),('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.projectById.__qualname__))))
+                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                        ProjectClient.projectById.__qualname__))))
                 logger.debug(
                     f'[{ProjectClient.projectById.__qualname__}] - grpc response: {response}')
 
-                return Project(id=response[0].project.id, name=response[0].project.name)
+                return self._descriptorByObject(response[0].project)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
+
+    def _descriptorByObject(self, obj: Any) -> ProjectDescriptor:
+        return ProjectDescriptor(id=obj.id,
+                                 name=obj.name,
+                                 city_id=obj.cityId,
+                                 country_id=obj.countryId,
+                                 address_line=obj.addressLine,
+                                 beneficiary_id=obj.beneficiaryId,
+                                 state=obj.state
+                                 )

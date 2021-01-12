@@ -5,6 +5,10 @@ from pydantic import BaseModel
 
 
 class Realm(BaseModel):
-
     id: str
     name: str
+    realm_type: str
+
+
+class RealmDescriptor(Realm):
+    pass

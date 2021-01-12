@@ -5,10 +5,9 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.port_adapter.api.rest.model.response.v1.identity.Role import Role
+from src.port_adapter.api.rest.model.response.v1.identity.Role import RoleDescriptor
 
 
 class Roles(BaseModel):
-    roles: List[Role]
+    roles: List[RoleDescriptor]
     item_count: int
-

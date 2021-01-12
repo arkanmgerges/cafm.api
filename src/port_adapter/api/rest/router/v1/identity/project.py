@@ -16,7 +16,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.project.ProjectClient import ProjectClient
-from src.port_adapter.api.rest.model.response.v1.identity.Project import Project
+from src.port_adapter.api.rest.model.response.v1.identity.Project import ProjectDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Projects import Projects
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -55,7 +55,7 @@ async def getProjects(*,
 
 
 @router.get(path="/{project_id}", summary='Get project',
-            response_model=Project)
+            response_model=ProjectDescriptor)
 @OpenTelemetry.fastApiTraceOTel
 async def getProject(*, project_id: str = Path(...,
                                                description='Project id that is used to fetch project data'),

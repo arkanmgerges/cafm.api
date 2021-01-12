@@ -2,13 +2,13 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import os
-from typing import List
+from typing import List, Any
 
 import grpc
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.model.response.v1.identity.Realm import Realm
+from src.port_adapter.api.rest.model.response.v1.identity.Realm import RealmDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Realms import Realms
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
@@ -34,18 +34,20 @@ class RealmClient(Client):
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: RealmAppService_realmsResponse = stub.realms.with_call(
                     request,
-                    metadata=(('token', self.token),('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(RealmClient.realms.__qualname__))))
+                    metadata=(('token', self.token), (
+                        'opentel',
+                        AppDi.instance.get(OpenTelemetry).serializedContext(RealmClient.realms.__qualname__))))
                 logger.debug(
                     f'[{RealmClient.realms.__qualname__}] - grpc response: {response}')
 
-                return Realms(realms=[Realm(id=realm.id, name=realm.name) for realm in response[0].realms],
+                return Realms(realms=[self._descriptorByObject(obj=realm) for realm in response[0].realms],
                               item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def realmById(self, realmId) -> Realm:
+    def realmById(self, realmId) -> RealmDescriptor:
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = RealmAppServiceStub(channel)
             try:
@@ -53,11 +55,15 @@ class RealmClient(Client):
                     f'[{RealmClient.realmById.__qualname__}] - grpc call to retrieve realm with realmId: {realmId} from server {self._server}:{self._port}')
                 response: RealmAppService_realmByIdResponse = stub.realmById.with_call(
                     RealmAppService_realmByIdRequest(id=realmId),
-                    metadata=(('token', self.token),('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(RealmClient.realmById.__qualname__))))
+                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                        RealmClient.realmById.__qualname__))))
                 logger.debug(
                     f'[{RealmClient.realmById.__qualname__}] - grpc response: {response}')
 
-                return Realm(id=response[0].realm.id, name=response[0].realm.name)
+                return self._descriptorByObject(obj=response[0].realm)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
+
+    def _descriptorByObject(self, obj: Any) -> RealmDescriptor:
+        return RealmDescriptor(id=obj.id, name=obj.name, realm_type=obj.realmType)

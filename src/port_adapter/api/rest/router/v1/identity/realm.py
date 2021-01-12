@@ -16,7 +16,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.realm.RealmClient import RealmClient
-from src.port_adapter.api.rest.model.response.v1.identity.Realm import Realm
+from src.port_adapter.api.rest.model.response.v1.identity.Realm import RealmDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Realms import Realms
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -54,7 +54,7 @@ async def getRealms(*,
 
 
 @router.get(path="/{realm_id}", summary='Get realm',
-            response_model=Realm)
+            response_model=RealmDescriptor)
 @OpenTelemetry.fastApiTraceOTel
 async def getRealm(*, realm_id: str = Path(...,
                                            description='Realm id that is used to fetch realm data'),
@@ -80,13 +80,20 @@ async def getRealm(*, realm_id: str = Path(...,
 @router.post("/create", summary='Create a new realm', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='Title of the realm', embed=True)):
-    reqId = str(uuid4())
+                 name: str = Body(..., description='Title of the realm', embed=True),
+                 realm_type: str = Body(..., description='The type can be provider, beneficiary, or tenant',
+                                        embed=True),
+                 ):
+    from src.port_adapter.messaging.listener.CacheType import CacheType
+    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
+    realm_type = realm_type.lower()
+    if realm_type not in ['provider', 'beneficiary', 'tenant']:
+        raise ValueError('Invalid realm_type, it should be one of these: provider, beneficiary, or tenant')
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_REALM.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'name': name})), schema=ApiCommand.get_schema())
+                                        {'name': name, 'realm_type': realm_type})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -108,7 +115,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
                  realm_id: str = Path(...,
-                                      description='Realm id that is used in order to delete the realm'),
+                                      description='Realm id that is used in order to update the realm'),
                  name: str = Body(..., description='Title of the realm', embed=True)):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)

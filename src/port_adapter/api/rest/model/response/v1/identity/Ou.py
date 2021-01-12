@@ -4,7 +4,12 @@
 
 from pydantic import BaseModel
 
+
 class Ou(BaseModel):
     id: str
     name: str
     description: str
+
+
+class OuDescriptor(Ou):
+    pass

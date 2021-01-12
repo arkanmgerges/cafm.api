@@ -5,9 +5,9 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.port_adapter.api.rest.model.response.v1.identity.Ou import Ou
+from src.port_adapter.api.rest.model.response.v1.identity.Ou import OuDescriptor
 
 
 class Ous(BaseModel):
-    ous: List[Ou]
+    ous: List[OuDescriptor]
     item_count: int

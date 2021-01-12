@@ -16,7 +16,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.project.ProjectClient import ProjectClient
-from src.port_adapter.api.rest.model.response.v1.project.Project import Project
+from src.port_adapter.api.rest.model.response.v1.project.Project import ProjectDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.Projects import Projects
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -55,7 +55,7 @@ async def getProjects(*,
 
 
 @router.get(path="/{project_id}", summary='Get project',
-            response_model=Project)
+            response_model=ProjectDescriptor)
 @OpenTelemetry.fastApiTraceOTel
 async def getProject(*, project_id: str = Path(...,
                                                description='Project id that is used to fetch project data'),
@@ -82,12 +82,25 @@ async def getProject(*, project_id: str = Path(...,
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
                  project_id: str = Path(...,
-                                        description='Project id that is used in order to delete the project'),
-                 name: str = Body(..., description='Title of the project', embed=True)):
+                                        description='Project id that is used in order to update the project'),
+                 name: str = Body(..., description='Title of the project', embed=True),
+                 city_id: str = Body(..., description='City id of this project', embed=True),
+                 country_id: str = Body(..., description='Country id of this project', embed=True),
+                 address_line: str = Body(..., description='Address line of the project', embed=True),
+                 beneficiary_id: str = Body(..., description='The id of the beneficiary', embed=True),
+                 state: str = Body(..., description='The state of the project', embed=True),
+                 ):
     reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_PROJECT.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': project_id, 'name': name})), schema=ApiCommand.get_schema())
+                                        {'id': project_id,
+                                         'name': name,
+                                         'city_id': city_id,
+                                         'country_id': country_id,
+                                         'address_line': address_line,
+                                         'beneficiary_id': beneficiary_id,
+                                         'state': state
+                                         })), schema=ApiCommand.get_schema())
     return {"request_id": reqId}

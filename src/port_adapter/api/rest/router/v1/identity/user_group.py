@@ -16,7 +16,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.user_group.UserGroupClient import UserGroupClient
-from src.port_adapter.api.rest.model.response.v1.identity.UserGroup import UserGroup
+from src.port_adapter.api.rest.model.response.v1.identity.UserGroup import UserGroupDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.UserGroups import UserGroups
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -31,10 +31,10 @@ router = APIRouter()
 @router.get(path="", summary='Get all user groups', response_model=UserGroups)
 @OpenTelemetry.fastApiTraceOTel
 async def getUserGroups(*,
-                   result_from: int = Query(0, description='Starting offset for fetching data'),
-                   result_size: int = Query(10, description='Item count to be fetched'),
-                   order: str = Query('', description='e.g. name:asc,age:desc'),
-                   _=Depends(CustomHttpBearer())):
+                        result_from: int = Query(0, description='Starting offset for fetching data'),
+                        result_size: int = Query(10, description='Item count to be fetched'),
+                        order: str = Query('', description='e.g. name:asc,age:desc'),
+                        _=Depends(CustomHttpBearer())):
     try:
         client = UserGroupClient()
         orderService = AppDi.instance.get(OrderService)
@@ -54,10 +54,10 @@ async def getUserGroups(*,
 
 
 @router.get(path="/{user_group_id}", summary='Get user group',
-            response_model=UserGroup)
+            response_model=UserGroupDescriptor)
 @OpenTelemetry.fastApiTraceOTel
 async def getUserGroup(*, user_group_id: str = Path(...,
-                                                   description='User group id that is used to fetch user group data'),
+                                                    description='User group id that is used to fetch user group data'),
                        _=Depends(CustomHttpBearer())):
     """Get a UserGroup by id
     """
@@ -94,7 +94,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
                  user_group_id: str = Path(...,
-                                     description='User group id that is used in order to delete the user group')):
+                                           description='User group id that is used in order to delete the user group')):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_USER_GROUP.value,
@@ -108,7 +108,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
                  user_group_id: str = Path(...,
-                                     description='User group id that is used in order to delete the user group'),
+                                           description='User group id that is used in order to update the user group'),
                  name: str = Body(..., description='Title of the user group', embed=True)):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)

@@ -8,3 +8,6 @@ class UserGroup(BaseModel):
     id: str
     name: str
 
+
+class UserGroupDescriptor(UserGroup):
+    pass

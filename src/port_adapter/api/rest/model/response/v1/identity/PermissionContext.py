@@ -9,3 +9,6 @@ class PermissionContext(BaseModel):
     type: str
     data: dict
 
+
+class PermissionContextDescriptor(PermissionContext):
+    pass

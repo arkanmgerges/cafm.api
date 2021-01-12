@@ -13,3 +13,6 @@ class PermissionWithPermissionContexts(BaseModel):
     permission: Permission
     permission_contexts: List[PermissionContext]
 
+
+class PermissionWithPermissionContextsDescriptor(PermissionWithPermissionContexts):
+    pass

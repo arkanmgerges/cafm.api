@@ -12,3 +12,6 @@ class Permission(BaseModel):
     allowed_actions: List[str]
     denied_actions: List[str]
 
+
+class PermissionDescriptor(Permission):
+    pass

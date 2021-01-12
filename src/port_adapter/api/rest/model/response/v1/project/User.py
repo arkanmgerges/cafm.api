@@ -11,18 +11,16 @@ class User(BaseModel):
     email: str
     first_name: Optional[str]
     last_name: Optional[str]
-    address_line_one: Optional[str]
-    address_line_two: Optional[str]
+    address_one: Optional[str]
+    address_two: Optional[str]
     postal_code: Optional[str]
+    phone_number: Optional[str]
     avatar_image: Optional[str]
+    country_id: Optional[int]
+    city_id: Optional[int]
+    country_state_name: Optional[str]
+    start_date: Optional[float]
 
 
-class UserDescriptor(BaseModel):
-    id: str
-    email: str
-    first_name: Optional[str]
-    last_name: Optional[str]
-    address_line_one: Optional[str]
-    address_line_two: Optional[str]
-    postal_code: Optional[str]
-    avatar_image: Optional[str]
+class UserDescriptor(User):
+    pass

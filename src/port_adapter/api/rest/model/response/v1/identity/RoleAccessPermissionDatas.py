@@ -5,8 +5,9 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.port_adapter.api.rest.model.response.v1.identity.RoleAccessPermissionData import RoleAccessPermissionData
+from src.port_adapter.api.rest.model.response.v1.identity.RoleAccessPermissionData import \
+    RoleAccessPermissionDataDescriptor
 
 
 class RoleAccessPermissionDatas(BaseModel):
-    roleAccessPermissions: List[RoleAccessPermissionData] = []
+    roleAccessPermissions: List[RoleAccessPermissionDataDescriptor] = []

@@ -11,7 +11,8 @@ from src.domain_model.AuthenticationService import AuthenticationService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
-from src.resource.proto._generated.identity.auth_app_service_pb2 import AuthAppService_authenticateUserByEmailAndPasswordRequest, \
+from src.resource.proto._generated.identity.auth_app_service_pb2 import \
+    AuthAppService_authenticateUserByEmailAndPasswordRequest, \
     AuthAppService_authenticateUserByEmailAndPasswordResponse, AuthAppService_isAuthenticatedResponse, \
     AuthAppService_isAuthenticatedRequest, AuthAppService_logoutRequest
 from src.resource.proto._generated.identity.auth_app_service_pb2_grpc import AuthAppServiceStub
@@ -36,7 +37,9 @@ class AuthClient(Client):
                         AuthAppService_authenticateUserByEmailAndPasswordRequest(email=email,
                                                                                  password=authService.hashPassword(
                                                                                      password)),
-                        metadata=(('auth_token', 'res-token-yumyum'), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(AuthClient.authenticateUserByEmailAndPassword.__qualname__))))
+                        metadata=(('auth_token', 'res-token-yumyum'), ('opentel', AppDi.instance.get(
+                            OpenTelemetry).serializedContext(
+                            AuthClient.authenticateUserByEmailAndPassword.__qualname__))))
                 logger.debug(
                     f'[{AuthClient.authenticateUserByEmailAndPassword.__qualname__}] - grpc call to authenticate user email: {email} response: {response}')
 
@@ -54,7 +57,8 @@ class AuthClient(Client):
                     f'[{AuthClient.isAuthenticated.__qualname__}] - grpc call to check if the token is valid and considered as authenticated token: {token} from server {self._server}:{self._port}')
                 response: AuthAppService_isAuthenticatedResponse = stub.isAuthenticated.with_call(
                     AuthAppService_isAuthenticatedRequest(token=token),
-                    metadata=(('token', token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(AuthClient.isAuthenticated.__qualname__)),)
+                    metadata=(('token', token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                        AuthClient.isAuthenticated.__qualname__)),)
                 )
                 logger.debug(
                     f'[{AuthClient.isAuthenticated.__qualname__}] - grpc response: {response}')
@@ -72,7 +76,9 @@ class AuthClient(Client):
                 logger.debug(
                     f'[{AuthClient.logout.__qualname__}] - grpc call to logout user with token: {token} from server {self._server}:{self._port}')
                 stub.logout.with_call(AuthAppService_logoutRequest(token=token),
-                                      metadata=(('token',token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(AuthClient.logout.__qualname__))))
+                                      metadata=(('token', token), ('opentel',
+                                                                   AppDi.instance.get(OpenTelemetry).serializedContext(
+                                                                       AuthClient.logout.__qualname__))))
                 logger.debug(
                     f'[{AuthClient.logout.__qualname__}] - grpc call')
             except Exception as e:
