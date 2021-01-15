@@ -49,7 +49,7 @@ async def getCountries(*,
 
 
 @router.get(path="/{country_id}/", summary='Get country', response_model=CountryDescriptor)
-async def getCountry(*, country_id: str = Path(..., description='Country id that is used to fetch country data'),
+async def getCountry(*, country_id: int = Path(..., description='GeoName id that is used to fetch country data'),
                      _=Depends(CustomHttpBearer())):
     """
         Get a Country by id
@@ -76,7 +76,7 @@ async def getCitiesByCountryId(*,
                            result_from: int = Query(0, description='Starting offset for fetching data'),
                            result_size: int = Query(10, description='Item count to be fetched'),
                            order: str = Query('', description='e.g. name:asc,age:desc'),
-                           country_id: str = Path(..., description='Country id that is used to fetch country cities'),
+                           country_id: int = Path(..., description='Country id that is used to fetch country cities'),
                            _=Depends(CustomHttpBearer())):
     """
         Get a list of Country Cities by Country id
@@ -101,8 +101,8 @@ async def getCitiesByCountryId(*,
 
 @router.get(path="/{country_id}/cities/{city_id}", summary='Get a country city', response_model=CityDescriptor)
 @OpenTelemetry.fastApiTraceOTel
-async def getCityByCountryId(*, country_id: str = Path(..., description='Country id that is used to fetch country city'),
-                         city_id: str = Path(..., description='City id that is used to fetch country city'),
+async def getCityByCountryId(*, country_id: int = Path(..., description='Country id that is used to fetch country city'),
+                         city_id: int = Path(..., description='City id that is used to fetch country city'),
                          _=Depends(CustomHttpBearer())):
     """
         Get a city of Country by Country id and City id

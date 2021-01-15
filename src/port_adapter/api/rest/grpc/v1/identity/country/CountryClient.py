@@ -38,11 +38,12 @@ class CountryClient(Client):
             try:
                 logger.debug(
                     f'[{CountryClient.countries.__qualname__}] - grpc call to retrieve countries from server {self._server}:{self._port}')
-                request = CountryAppService_countriesRequest(resultFrom=resultFrom, resultSize=resultSize,
-                                                             metadata=(
-                                                                 ('token', self.token), ('opentel', AppDi.instance.get(
-                                                                     OpenTelemetry).serializedContext(
-                                                                     CountryClient.countries.__qualname__))))
+                request = CountryAppService_countriesRequest(resultFrom=resultFrom, resultSize=resultSize)
+                # metadata=(
+                #     ('token', self.token), ('opentel', AppDi.instance.get(
+                #         OpenTelemetry).serializedContext(
+                #         CountryClient.countries.__qualname__))))
+                CountryAppService_countriesRequest()
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: CountryAppService_countriesResponse = stub.countries.with_call(
                     request,
@@ -51,8 +52,7 @@ class CountryClient(Client):
                     f'[{CountryClient.countries.__qualname__}] - grpc response: {response}')
 
                 return Countries(
-                    countries=[Country(id=country.id,
-                                       geo_name_id=country.geoNameId,
+                    countries=[Country(geoname_id=country.geoNameId,
                                        locale_code=country.localeCode,
                                        continent_code=country.continentCode,
                                        continent_name=country.continentName,
@@ -67,7 +67,7 @@ class CountryClient(Client):
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def countryById(self, countryId: str = '') -> CountryDescriptor:
+    def countryById(self, countryId: int = None) -> CountryDescriptor:
 
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = CountryAppServiceStub(channel)
@@ -82,8 +82,7 @@ class CountryClient(Client):
                 logger.debug(
                     f'[{CountryClient.countryById.__qualname__}] - grpc response: {response}')
 
-                return CountryDescriptor(id=response[0].country.id,
-                                         geo_name_id=response[0].country.geoNameId,
+                return CountryDescriptor(geoname_id=response[0].country.geoNameId,
                                          locale_code=response[0].country.localeCode,
                                          continent_code=response[0].country.continentCode,
                                          continent_name=response[0].country.continentName,
@@ -95,7 +94,7 @@ class CountryClient(Client):
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def citiesByCountryId(self, countryId: str = '', resultFrom: int = 0, resultSize: int = 10,
+    def citiesByCountryId(self, countryId: int, resultFrom: int = 0, resultSize: int = 10,
                           order: List[dict] = None) -> Cities:
         order = [] if order is None else order
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
@@ -105,12 +104,12 @@ class CountryClient(Client):
                     f'[{CountryClient.citiesByCountryId.__qualname__}] - grpc call to retrieve a country cities: {countryId} from server {self._server}:{self._port}')
                 request = CountryAppService_citiesByCountryIdRequest(id=countryId,
                                                                      resultFrom=resultFrom,
-                                                                     resultSize=resultSize,
-                                                                     metadata=(('token', self.token),
-                                                                               ('opentel',
-                                                                                AppDi.instance.get(
-                                                                                    OpenTelemetry).serializedContext(
-                                                                                    CountryClient.countries.__qualname__))))
+                                                                     resultSize=resultSize)
+                # metadata=(('token', self.token),
+                #           ('opentel',
+                #            AppDi.instance.get(
+                #                OpenTelemetry).serializedContext(
+                #                CountryClient.countries.__qualname__))))
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: CountryAppService_citiesByCountryIdResponse = stub.citiesByCountryId.with_call(
                     request, metadata=(('token', self.token),))
@@ -118,19 +117,15 @@ class CountryClient(Client):
                 logger.debug(
                     f'[{CountryClient.countryById.__qualname__}] - grpc response: {response}')
 
-                return Cities(cities=[City(id=city.id,
-                                           geo_name_id=city.geoNameId,
+                return Cities(cities=[City(geoname_id=city.geoNameId,
                                            locale_code=city.localeCode,
                                            continent_code=city.continentCode,
                                            continent_name=city.continentName,
                                            country_iso_code=city.countryIsoCode,
                                            country_name=city.countryName,
-                                           subdivision_one_iso_code=city.subdivisionOneIsoCode,
-                                           subdivision_one_iso_name=city.subdivisionOneIsoName,
-                                           subdivision_two_iso_code=city.subdivisionTwoIsoCode,
-                                           subdivision_two_iso_name=city.subdivisionTwoIsoName,
+                                           subdivision_1_iso_code=city.subdivisionOneIsoCode,
+                                           subdivision_1_name=city.subdivisionOneIsoName,
                                            city_name=city.cityName,
-                                           metro_code=city.metroCode,
                                            time_zone=city.timeZone,
                                            is_in_european_union=city.isInEuropeanUnion)
                                       for city in
@@ -141,12 +136,12 @@ class CountryClient(Client):
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def cityByCountryId(self, countryId: str = '', cityId: str = '') -> CityDescriptor:
+    def cityByCountryId(self, countryId: int, cityId: int) -> CityDescriptor:
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = CountryAppServiceStub(channel)
             try:
                 logger.debug(
-                    f'[{CountryClient.cityByCountryId.__qualname__}] - grpc call to retrieve country with countryId: {countryId} from server {self._server}:{self._port}')
+                    f'[{CountryClient.cityByCountryId.__qualname__}] - grpc call to retrieve city with countryId: {countryId} & cityId: {cityId} from server {self._server}:{self._port}')
                 response: CountryAppService_cityByCountryIdResponse = stub.cityByCountryId.with_call(
                     CountryAppService_cityByCountryIdRequest(countryId=countryId, cityId=cityId),
                     metadata=(('token', self.token), (
@@ -157,19 +152,15 @@ class CountryClient(Client):
                     f'[{CountryClient.cityByCountryId.__qualname__}] - grpc response: {response}')
 
                 city = response[0].city
-                return CityDescriptor(id=city.id,
-                                      geo_name_id=city.geoNameId,
+                return CityDescriptor(geoname_id=city.geoNameId,
                                       locale_code=city.localeCode,
                                       continent_code=city.continentCode,
                                       continent_name=city.continentName,
                                       country_iso_code=city.countryIsoCode,
                                       country_name=city.countryName,
-                                      subdivision_one_iso_code=city.subdivisionOneIsoCode,
-                                      subdivision_one_iso_name=city.subdivisionOneIsoName,
-                                      subdivision_two_iso_code=city.subdivisionTwoIsoCode,
-                                      subdivision_two_iso_name=city.subdivisionTwoIsoName,
+                                      subdivision_1_iso_code=city.subdivisionOneIsoCode,
+                                      subdivision_1_name=city.subdivisionOneIsoName,
                                       city_name=city.cityName,
-                                      metro_code=city.metroCode,
                                       time_zone=city.timeZone,
                                       is_in_european_union=city.isInEuropeanUnion)
             except Exception as e:

@@ -30,10 +30,10 @@ class CityClient(Client):
             try:
                 logger.debug(
                     f'[{CityClient.cities.__qualname__}] - grpc call to retrieve cities from server {self._server}:{self._port}')
-                request = CityAppService_citiesRequest(resultFrom=resultFrom, resultSize=resultSize,
-                                                       metadata=(('token', self.token), ('opentel', AppDi.instance.get(
-                                                           OpenTelemetry).serializedContext(
-                                                           CityClient.cities.__qualname__))))
+                request = CityAppService_citiesRequest(resultFrom=resultFrom, resultSize=resultSize)
+                # metadata=(('token', self.token), ('opentel', AppDi.instance.get(
+                #     OpenTelemetry).serializedContext(
+                #     CityClient.cities.__qualname__))))
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: CityAppService_citiesResponse = stub.cities.with_call(
                     request,
@@ -42,14 +42,12 @@ class CityClient(Client):
                     f'[{CityClient.cities.__qualname__}] - grpc response: {response}')
 
                 return Cities(
-                    cities=[City(id=city.id, geo_name_id=city.geoNameId, locale_code=city.localeCode,
+                    cities=[City(geoname_id=city.geoNameId, locale_code=city.localeCode,
                                  continent_code=city.continentCode, continent_name=city.continentName,
                                  country_iso_code=city.countryIsoCode, country_name=city.countryName,
-                                 subdivision_one_iso_code=city.subdivisionOneIsoCode,
-                                 subdivision_one_iso_name=city.subdivisionOneIsoName,
-                                 subdivision_two_iso_code=city.subdivisionTwoIsoCode,
-                                 subdivision_two_iso_name=city.subdivisionTwoIsoName, city_name=city.cityName,
-                                 metro_code=city.metroCode, time_zone=city.timeZone,
+                                 subdivision_1_iso_code=city.subdivisionOneIsoCode,
+                                 subdivision_1_name=city.subdivisionOneIsoName,
+                                 city_name=city.cityName, time_zone=city.timeZone,
                                  is_in_european_union=city.isInEuropeanUnion) for city in response[0].cities],
                     item_count=response[0].itemCount)
             except Exception as e:
@@ -57,7 +55,7 @@ class CityClient(Client):
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def cityById(self, cityId: str = '') -> CityDescriptor:
+    def cityById(self, cityId: int = '') -> CityDescriptor:
 
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = CityAppServiceStub(channel)
@@ -73,19 +71,18 @@ class CityClient(Client):
                 logger.debug(
                     f'[{CityClient.cityById.__qualname__}] - grpc response: {response}')
 
-                return CityDescriptor(id=response[0].city.id, geo_name_id=response[0].city.geoNameId,
+                return CityDescriptor(geoname_id=response[0].city.geoNameId,
                                       locale_code=response[0].city.localeCode,
                                       continent_code=response[0].city.continentCode,
                                       continent_name=response[0].city.continentName,
                                       country_iso_code=response[0].city.countryIsoCode,
                                       country_name=response[0].city.countryName,
-                                      subdivision_one_iso_code=response[0].city.subdivisionOneIsoCode,
-                                      subdivision_one_iso_name=response[0].city.subdivisionOneIsoName,
-                                      subdivision_two_iso_code=response[0].city.subdivisionTwoIsoCode,
-                                      subdivision_two_iso_name=response[0].city.subdivisionTwoIsoName,
-                                      city_name=response[0].city.cityName, metro_code=response[0].city.metroCode,
+                                      subdivision_1_iso_code=response[0].city.subdivisionOneIsoCode,
+                                      subdivision_1_name=response[0].city.subdivisionOneIsoName,
+                                      city_name=response[0].city.cityName,
                                       time_zone=response[0].city.timeZone,
-                                      is_in_european_union=response[0].city.isInEuropeanUnion)
+                                      is_in_european_union=response[
+                                          0].city.isInEuropeanUnion)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e

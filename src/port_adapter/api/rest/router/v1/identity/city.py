@@ -50,7 +50,7 @@ async def getCities(*,
 
 @router.get(path="/{city_id}", summary='Get city', response_model=CityDescriptor)
 @OpenTelemetry.fastApiTraceOTel
-async def getCity(*, city_id: str = Path(..., description='City id that is used to fetch city data'),
+async def getCity(*, city_id: int = Path(..., description='City id that is used to fetch city data'),
                   _=Depends(CustomHttpBearer())):
     """
         Get a City by id
