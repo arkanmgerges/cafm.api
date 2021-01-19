@@ -21,7 +21,7 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="/", summary='Get all countries', response_model=Countries)
+@router.get(path="", summary='Get all countries', response_model=Countries)
 async def getCountries(*,
                        result_from: int = Query(0, description='Starting offset for fetching data'),
                        result_size: int = Query(10, description='Item count to be fetched'),
@@ -48,7 +48,7 @@ async def getCountries(*,
         logger.info(e)
 
 
-@router.get(path="/{country_id}/", summary='Get country', response_model=CountryDescriptor)
+@router.get(path="/{country_id}", summary='Get country', response_model=CountryDescriptor)
 async def getCountry(*, country_id: int = Path(..., description='GeoName id that is used to fetch country data'),
                      _=Depends(CustomHttpBearer())):
     """
