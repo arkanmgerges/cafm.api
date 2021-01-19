@@ -42,7 +42,7 @@ class CityClient(Client):
                     f'[{CityClient.cities.__qualname__}] - grpc response: {response}')
 
                 return Cities(
-                    cities=[City(geoname_id=city.geoNameId, locale_code=city.localeCode,
+                    cities=[City(id=city.id, locale_code=city.localeCode,
                                  continent_code=city.continentCode, continent_name=city.continentName,
                                  country_iso_code=city.countryIsoCode, country_name=city.countryName,
                                  subdivision_1_iso_code=city.subdivisionOneIsoCode,
@@ -71,7 +71,7 @@ class CityClient(Client):
                 logger.debug(
                     f'[{CityClient.cityById.__qualname__}] - grpc response: {response}')
 
-                return CityDescriptor(geoname_id=response[0].city.geoNameId,
+                return CityDescriptor(id=response[0].city.id,
                                       locale_code=response[0].city.localeCode,
                                       continent_code=response[0].city.continentCode,
                                       continent_name=response[0].city.continentName,
