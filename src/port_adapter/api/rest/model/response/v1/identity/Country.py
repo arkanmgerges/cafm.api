@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 
 class Country(BaseModel):
-    geoname_id: int
+    id: int
     locale_code: str
     continent_code: str
     continent_name: str
@@ -17,7 +17,7 @@ class Country(BaseModel):
 
 
 class CountryDescriptor(BaseModel):
-    geoname_id: int
+    id: int
     locale_code: str
     continent_code: str
     continent_name: str
