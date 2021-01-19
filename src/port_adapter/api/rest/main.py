@@ -14,13 +14,14 @@ from starlette.responses import JSONResponse
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.model.response.exception.Message import Message, ValidationMessage
+from src.port_adapter.api.rest.resource.exception.InProgressException import InProgressException
 from src.port_adapter.api.rest.resource.exception.ValidationErrorException import ValidationErrorException
+from src.port_adapter.api.rest.router.v1.common import request as common_request
 from src.port_adapter.api.rest.router.v1.identity import auth as id_auth, realm as id_realm, ou as id_ou, \
     user as id_user, role as id_role, user_group as id_user_group, project as id_project, \
     permission_context as id_permission_context, \
     permission as id_permission, assignment as id_assignment, access as id_access, country as id_country, \
     city as id_city
-from src.port_adapter.api.rest.router.v1.common import request as common_request
 from src.port_adapter.api.rest.router.v1.project import project as project_project, user as project_user, \
     organization as project_organization
 from src.resource.logging.logger import logger
@@ -61,6 +62,12 @@ def addCustomExceptionHandlers(app):
         logger.warning(traceback.format_exc())
         return JSONResponse(content={"detail": [{"message": str(e)}]}, status_code=status.HTTP_400_BAD_REQUEST)
 
+    @app.exception_handler(InProgressException)
+    async def generalExceptionHandler(request: Request, e: Exception):
+        logger.warning(traceback.format_exc())
+        return JSONResponse(content={"detail": [{"message": str(e)}]},
+                            status_code=status.HTTP_202_ACCEPTED)
+
     @app.exception_handler(Exception)
     async def generalExceptionHandler(request: Request, e: Exception):
         logger.warning(traceback.format_exc())
@@ -83,7 +90,8 @@ random.seed(datetime.utcnow().timestamp())
 
 # region Global
 app.include_router(common_request.router, prefix="/v1/common/request", tags=["Common"],
-                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+                   responses={202: {"model": Message}, 400: {"model": Message}, 404: {"model": Message},
+                              500: {"model": Message}})
 # endregion
 
 # region Identity

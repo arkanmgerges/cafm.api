@@ -18,7 +18,6 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
-
 @router.get(path="/is_successful", summary='Check if the request has succeeded', response_model=BoolRequestResponse)
 @OpenTelemetry.fastApiTraceOTel
 async def isRequestSuccessful(*,
@@ -57,6 +56,8 @@ async def isRequestSuccessful(*,
                 raise UnknownCacheTypeException(f'Request id: {request_id} has unknown cache type {cacheType}')
     except NotFoundException as e:
         return JSONResponse(status_code=404, content={"detail": [{"msg": e.msg}]})
+    except InProgressException as e:
+        raise e
     except Exception as e:
         logger.info(e)
         return BoolRequestResponse(success=False)
@@ -97,6 +98,8 @@ async def getRequestIdResult(*, request_id: str = Query(..., description='Reques
                 raise UnknownCacheTypeException(f'Request id: {request_id} has unknown cache type {cacheType}')
     except NotFoundException as e:
         return JSONResponse(status_code=404, content={"detail": [{"msg": e.msg}]})
+    except InProgressException as e:
+        raise e
     except Exception as e:
         logger.info(e)
         return JSONResponse(status_code=400, content={"detail": [{"msg": str(e)}]})
