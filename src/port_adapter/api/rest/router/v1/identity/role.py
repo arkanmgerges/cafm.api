@@ -79,7 +79,8 @@ async def getRole(*, role_id: str = Path(...,
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the role', embed=True)):
-    reqId = str(uuid4())
+    from src.port_adapter.messaging.listener.CacheType import CacheType
+    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_ROLE.value,
                                     metadata=json.dumps({"token": Client.token}),

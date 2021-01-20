@@ -13,6 +13,7 @@ _sym_db = _symbol_database.Default()
 
 from project import project_app_service_pb2 as project_dot_project__app__service__pb2
 from project import user_app_service_pb2 as project_dot_user__app__service__pb2
+from project import user_lookup_app_service_pb2 as project_dot_user__lookup__app__service__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -21,9 +22,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x12\x63\x61\x66m_project.proto\x1a!project/project_app_service.proto\x1a\x1eproject/user_app_service.protob\x06proto3'
+  serialized_pb=b'\n\x12\x63\x61\x66m_project.proto\x1a!project/project_app_service.proto\x1a\x1eproject/user_app_service.proto\x1a%project/user_lookup_app_service.protob\x06proto3'
   ,
-  dependencies=[project_dot_project__app__service__pb2.DESCRIPTOR,project_dot_user__app__service__pb2.DESCRIPTOR,])
+  dependencies=[project_dot_project__app__service__pb2.DESCRIPTOR,project_dot_user__app__service__pb2.DESCRIPTOR,project_dot_user__lookup__app__service__pb2.DESCRIPTOR,])
 
 
 
