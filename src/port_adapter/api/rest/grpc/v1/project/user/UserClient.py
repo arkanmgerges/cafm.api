@@ -78,4 +78,4 @@ class UserClient(Client):
                               country_id=obj.countryId,
                               city_id=obj.cityId,
                               country_state_name=obj.countryStateName,
-                              start_date=obj.start_date)
+                              start_date=obj.startDate)

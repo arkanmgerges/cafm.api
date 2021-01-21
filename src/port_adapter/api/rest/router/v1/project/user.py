@@ -17,6 +17,7 @@ from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.user.UserClient import UserClient
 from src.port_adapter.api.rest.model.response.v1.project.User import UserDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.UserLookups import UserLookups
 from src.port_adapter.api.rest.model.response.v1.project.Users import Users
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -99,8 +100,8 @@ async def update(*, _=Depends(CustomHttpBearer()),
             response_model=UserDescriptor)
 @OpenTelemetry.fastApiTraceOTel
 async def getUserById(*, user_id: str = Path(...,
-                                         description='User id that is used to fetch user data'),
-                  _=Depends(CustomHttpBearer())):
+                                             description='User id that is used to fetch user data'),
+                      _=Depends(CustomHttpBearer())):
     """Get a User by id
     """
     try:

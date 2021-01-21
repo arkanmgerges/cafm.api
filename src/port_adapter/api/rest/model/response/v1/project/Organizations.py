@@ -9,5 +9,5 @@ from src.port_adapter.api.rest.model.response.v1.project.Organization import Org
 
 
 class Organizations(BaseModel):
-    users: List[OrganizationDescriptor]
+    organizations: List[OrganizationDescriptor]
     item_count: int
