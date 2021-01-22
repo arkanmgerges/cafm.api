@@ -19,7 +19,7 @@ class User(BaseModel):
     country_id: Optional[int]
     city_id: Optional[int]
     country_state_name: Optional[str]
-    start_date: Optional[float]
+    start_date: Optional[int]
 
 
 class UserDescriptor(User):
