@@ -200,4 +200,4 @@ class RoleClient(Client):
                 raise e
 
     def _descriptorByObject(self, obj: Any) -> RoleDescriptor:
-        return RoleDescriptor(id=obj.id, name=obj.name)
+        return RoleDescriptor(id=obj.id, name=obj.name, title=obj.title)

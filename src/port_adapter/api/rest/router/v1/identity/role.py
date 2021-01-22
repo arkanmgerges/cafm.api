@@ -78,14 +78,14 @@ async def getRole(*, role_id: str = Path(...,
 @router.post("/create", summary='Create a new role', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='Title of the role', embed=True)):
+                 name: str = Body(..., description='Title of the role', embed=True),
+                 title: str = Body(..., description='Display title of the role', embed=True)):
     from src.port_adapter.messaging.listener.CacheType import CacheType
     reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_ROLE.value,
                                     metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'name': name})), schema=ApiCommand.get_schema())
+                                    data=json.dumps({'name': name, 'title': title})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -105,14 +105,15 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 
 @router.put("/{role_id}", summary='Update a role', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def update(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Path(...,
                                      description='Role id that is used in order to update the role'),
-                 name: str = Body(..., description='Title of the role', embed=True)):
+                 name: str = Body(..., description='Title of the role', embed=True),
+                 title: str = Body(..., description='Display title of the role', embed=True)):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_ROLE.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': role_id, 'name': name})), schema=ApiCommand.get_schema())
+                                        {'id': role_id, 'name': name, 'title': title})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
