@@ -112,7 +112,7 @@ app.include_router(id_project.router, prefix="/v1/identity/projects", tags=["Ide
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(id_permission.router, prefix="/v1/identity/permissions", tags=["Identity/Permission"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(id_permission_context.router, prefix="/v1/permission_contexts", tags=["Identity/Permission"],
+app.include_router(id_permission_context.router, prefix="/v1/identity/permission_contexts", tags=["Identity/Permission"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(id_assignment.router, prefix="/v1/identity/assignments", tags=["Identity/Assignment"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
