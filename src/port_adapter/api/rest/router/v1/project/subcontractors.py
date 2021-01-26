@@ -1,5 +1,5 @@
 """
-@author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
+@author: Mohammad M. mmdii<mmdii@develoop.run>
 """
 import json
 from uuid import uuid4
@@ -27,13 +27,13 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="", summary='Get all organizations', response_model=Organizations)
+@router.get(path="", summary='Get all subcontractors', response_model=Organizations)
 @OpenTelemetry.fastApiTraceOTel
-async def getOrganizations(*,
-                           result_from: int = Query(0, description='Starting offset for fetching data'),
-                           result_size: int = Query(10, description='Item count to be fetched'),
-                           order: str = Query('', description='e.g. id:asc,email:desc'),
-                           _=Depends(CustomHttpBearer())):
+async def getSubcontractors(*,
+                            result_from: int = Query(0, description='Starting offset for fetching data'),
+                            result_size: int = Query(10, description='Item count to be fetched'),
+                            order: str = Query('', description='e.g. id:asc,email:desc'),
+                            _=Depends(CustomHttpBearer())):
     try:
         client = OrganizationClient()
         orderService = AppDi.instance.get(OrderService)
@@ -52,72 +52,104 @@ async def getOrganizations(*,
         logger.info(e)
 
 
-@router.put("/{organization_id}", summary='Update a organization', status_code=status.HTTP_200_OK)
+# @router.get(path="/{subcontractors_id}", summary='Get subcontractors by id',
+#             response_model=OrganizationDescriptor)
+# @OpenTelemetry.fastApiTraceOTel
+# async def getSubcontractorsById(*, organization_id: str = Path(...,
+#                                                                description='Organization id that is used to fetch organization data'),
+#                                 _=Depends(CustomHttpBearer())):
+#     """Get a Organization by id
+#     """
+#     try:
+#         client = OrganizationClient()
+#         return client.organizationById(id=organization_id)
+#     except grpc.RpcError as e:
+#         if e.code() == StatusCode.PERMISSION_DENIED:
+#             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+#         if e.code() == StatusCode.NOT_FOUND:
+#             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+#         else:
+#             logger.error(
+#                 f'[{getOrganizationById.__module__}.{getOrganizationById.__qualname__}] - error response e: {e}')
+#             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+#     except Exception as e:
+#         logger.info(e)
+
+
+@router.post("", summary='Create a subcontractors', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
-                 organization_id: str = Path(...,
-                                             description='Organization id that is used in order to update the organization'),
-                 name: str = Body(..., description='Organization name', embed=True),
-                 website_url: str = Body(..., description='The website url of the organization', embed=True),
-                 organization_type: str = Body(..., description='The type of the organization', embed=True),
-                 address_one: str = Body(..., description='Organization first address', embed=True),
-                 address_two: str = Body(..., description='Organization second address', embed=True),
-                 postal_code: str = Body(..., description='Postal code of the organization', embed=True),
-                 country_id: int = Body(..., description='Country id', embed=True),
-                 city_id: int = Body(..., description='City id', embed=True),
-                 country_state_name: str = Body(..., description='State name', embed=True),
-                 manager_first_name: str = Body(..., description='First name of the manager', embed=True),
-                 manager_last_name: str = Body(..., description='Last name of the manager', embed=True),
-                 manager_email: str = Body(..., description='Email of the manager', embed=True),
-                 manager_phone_number: str = Body(..., description='Phone number of the manager', embed=True),
-                 manager_avatar: str = Body(..., description='Avatar image of the manager', embed=True),
-                 ):
+async def create(*, _=Depends(CustomHttpBearer()),
+                 company_name: str = Body(..., description='subcontractor name', embed=True),
+                 website_url: str = Body(..., description='The website url of the subcontractor', embed=True),
+                 contact_person: str = Body(..., description='The contact person of the subcontractor', embed=True),
+                 email: str = Body(..., description='Email of the subcontractor', embed=True),
+                 phone_number: str = Body(..., description='Phone number of the subcontractor', embed=True),
+                 address_one: str = Body(..., description='subcontractor first address', embed=True),
+                 address_two: str = Body(..., description='subcontractor second address', embed=True), ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_USER.value,
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_SUBCONTRACTOR.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
-                                            {'id': organization_id,
-                                             'name': name,
+                                            {'company_name': company_name,
                                              'website_url': website_url,
-                                             'organization_type': organization_type,
+                                             'contact_person': contact_person,
+                                             'email': email,
+                                             'phone_number': phone_number,
                                              'address_one': address_one,
-                                             'address_two': address_two,
-                                             'postal_code': postal_code,
-                                             'country_id': country_id,
-                                             'city_id': city_id,
-                                             'country_state_name': country_state_name,
-                                             'manager_first_name': manager_first_name,
-                                             'manager_last_name': manager_last_name,
-                                             'manager_email': manager_email,
-                                             'manager_phone_number': manager_phone_number,
-                                             'manager_avatar': manager_avatar,
-                                             }),
+                                             'address_two': address_two, }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 
 
-@router.get(path="/{organization_id}", summary='Get organization by id',
-            response_model=OrganizationDescriptor)
+@router.put("/{subcontractors_id}", summary='Update a subcontractors', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def getOrganizationById(*, organization_id: str = Path(...,
-                                                             description='Organization id that is used to fetch organization data'),
-                              _=Depends(CustomHttpBearer())):
-    """Get a Organization by id
-    """
-    try:
-        client = OrganizationClient()
-        return client.organizationById(id=organization_id)
-    except grpc.RpcError as e:
-        if e.code() == StatusCode.PERMISSION_DENIED:
-            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
-        if e.code() == StatusCode.NOT_FOUND:
-            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
-        else:
-            logger.error(
-                f'[{getOrganizationById.__module__}.{getOrganizationById.__qualname__}] - error response e: {e}')
-            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
-    except Exception as e:
-        logger.info(e)
+async def update(*, _=Depends(CustomHttpBearer()),
+                 subcontractors_id: str = Path(...,
+                                               description='Subcontractor id that is used in order to update the subcontractor'),
+                 company_name: str = Body(..., description='subcontractor name', embed=True),
+                 website_url: str = Body(..., description='The website url of the subcontractor', embed=True),
+                 contact_person: str = Body(..., description='The contact person of the subcontractor', embed=True),
+                 email: str = Body(..., description='Email of the subcontractor', embed=True),
+                 phone_number: str = Body(..., description='Phone number of the subcontractor', embed=True),
+                 address_one: str = Body(..., description='subcontractor first address', embed=True),
+                 address_two: str = Body(..., description='subcontractor second address', embed=True),
+                 ):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_SUBCONTRACTOR.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'id': subcontractors_id,
+                                             'company_name': company_name,
+                                             'website_url': website_url,
+                                             'contact_person': contact_person,
+                                             'email': email,
+                                             'phone_number': phone_number,
+                                             'address_one': address_one,
+                                             'address_two': address_two, }),
+                                        external=[]),
+                     schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
+
+
+#
+#
+@router.delete("/{subcontractors_id}", summary='Delete a subcontractors', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def delete(*, _=Depends(CustomHttpBearer()),
+                 subcontractors_id: str = Path(...,
+                                               description='Subcontractor id that is used in order to delete the subcontractor'), ):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_SUBCONTRACTOR.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'id': subcontractors_id}),
+                                        external=[]),
+                     schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
