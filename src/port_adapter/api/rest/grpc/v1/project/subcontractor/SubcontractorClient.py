@@ -50,7 +50,7 @@ class SubcontractorClient(Client):
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def SubcontractorById(self, id) -> SubcontractorDescriptor:
+    def subcontractorById(self, id) -> SubcontractorDescriptor:
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = SubcontractorAppServiceStub(channel)
             try:
