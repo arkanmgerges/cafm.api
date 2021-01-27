@@ -28,7 +28,10 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
-
+"""
+c4model|cb|api:Component(api__permission_context_py__getPermissionContexts, "Get permission contexts", "json/https", "get all permission contexts")
+c4model:Rel(api__permission_context_py__getPermissionContexts, identity__grpc__PermissionContextAppServiceListener__permissionContexts, "Get permission contexts", "grpc call")
+"""
 @router.get(path="", summary='Get all permission contexts', response_model=PermissionContexts)
 @OpenTelemetry.fastApiTraceOTel
 async def getPermissionContexts(*,
@@ -53,7 +56,10 @@ async def getPermissionContexts(*,
     except Exception as e:
         logger.info(e)
 
-
+"""
+c4model|cb|api:Component(api__permission_context_py__getPermissionContext, "Get one permission context", "json/https", "get a permission contextby id")
+c4model:Rel(api__permission_context_py__getPermissionContext, identity__grpc__PermissionContextAppServiceListener__permissionContextById, "Get a permission contextby id", "grpc call")
+"""
 @router.get(path="/{permission_context_id}", summary='Get permission context',
             response_model=PermissionContextDescriptor)
 @OpenTelemetry.fastApiTraceOTel
@@ -75,7 +81,10 @@ async def getPermissionContext(*, permission_context_id: str = Path(...,
     except Exception as e:
         logger.info(e)
 
-
+"""
+c4model|cb|api:Component(api__permission_context_py__create, "Create Permission context", "json/https", "Create permission context")
+c4model:Rel(api__permission_context_py__create, identity__messaging_api_command_handler__CreatePermissionContextHandler, "Create permission context", "message")
+"""
 @router.post("/create", summary='Create a new permission context', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
@@ -90,7 +99,10 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                         {'type': type, 'data': data})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
-
+"""
+c4model|cb|api:Component(api__permission_context_py__delete, "Delete Permission context", "json/https", "Delete permission context")
+c4model:Rel(api__permission_context_py__delete, identity__messaging_api_command_handler__DeletePermissionContextHandler, "Delete permission context", "message")
+"""
 @router.delete("/{permission_context_id}", summary='Delete a permission context', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
@@ -104,7 +116,10 @@ async def delete(*, _=Depends(CustomHttpBearer()),
                                         {'id': permission_context_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
-
+"""
+c4model|cb|api:Component(api__permission_context_py__update, "Update Permission context", "json/https", "Update permission context")
+c4model:Rel(api__permission_context_py__update, identity__messaging_api_command_handler__UpdatePermissionContextHandler, "Update permission context", "message")
+"""
 @router.put("/{permission_context_id}", summary='Update a permission context', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),

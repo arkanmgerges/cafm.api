@@ -27,7 +27,10 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
-
+"""
+c4model|cb|api:Component(api__role_py__getRoles, "Get roles", "json/https", "get all roles")
+c4model:Rel(api__role_py__getRoles, identity__grpc__RoleAppServiceListener__roles, "Get roles", "grpc call")
+"""
 @router.get(path="", summary='Get all roles', response_model=Roles)
 @OpenTelemetry.fastApiTraceOTel
 async def getRoles(*,
@@ -52,7 +55,10 @@ async def getRoles(*,
     except Exception as e:
         logger.info(e)
 
-
+"""
+c4model|cb|api:Component(api__role_py__getRole, "Get one role", "json/https", "get a role by id")
+c4model:Rel(api__role_py__getRole, identity__grpc__RoleAppServiceListener__roleById, "Get a role by id", "grpc call")
+"""
 @router.get(path="/{role_id}", summary='Get role',
             response_model=RoleDescriptor)
 @OpenTelemetry.fastApiTraceOTel
@@ -74,7 +80,10 @@ async def getRole(*, role_id: str = Path(...,
     except Exception as e:
         logger.info(e)
 
-
+"""
+c4model|cb|api:Component(api__role_py__create, "Create Role", "json/https", "Create role")
+c4model:Rel(api__role_py__create, identity__messaging_api_command_handler__CreateRoleHandler, "Create role", "message")
+"""
 @router.post("/create", summary='Create a new role', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
@@ -88,7 +97,10 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                     data=json.dumps({'name': name, 'title': title})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
-
+"""
+c4model|cb|api:Component(api__role_py__delete, "Delete Role", "json/https", "Delete role")
+c4model:Rel(api__role_py__delete, identity__messaging_api_command_handler__DeleteRoleHandler, "Delete role", "message")
+"""
 @router.delete("/{role_id}", summary='Delete a role', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
@@ -102,7 +114,10 @@ async def delete(*, _=Depends(CustomHttpBearer()),
                                         {'id': role_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
-
+"""
+c4model|cb|api:Component(api__role_py__update, "Update Role", "json/https", "Update role")
+c4model:Rel(api__role_py__update, identity__messaging_api_command_handler__UpdateRoleHandler, "Update role", "message")
+"""
 @router.put("/{role_id}", summary='Update a role', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),

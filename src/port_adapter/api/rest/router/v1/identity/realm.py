@@ -27,7 +27,10 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
-
+"""
+c4model|cb|api:Component(api__realm_py__getRealms, "Get realms", "json/https", "get all realms")
+c4model:Rel(api__realm_py__getRealms, identity__grpc__RealmAppServiceListener__realms, "Get realms", "grpc call")
+"""
 @router.get(path="", summary='Get all realms', response_model=Realms)
 @OpenTelemetry.fastApiTraceOTel
 async def getRealms(*,
@@ -52,7 +55,10 @@ async def getRealms(*,
     except Exception as e:
         logger.info(e)
 
-
+"""
+c4model|cb|api:Component(api__realm_py__getRealm, "Get one realm", "json/https", "get a realm by id")
+c4model:Rel(api__realm_py__getRealm, identity__grpc__RealmAppServiceListener__realmById, "Get a realm by id", "grpc call")
+"""
 @router.get(path="/{realm_id}", summary='Get realm',
             response_model=RealmDescriptor)
 @OpenTelemetry.fastApiTraceOTel
@@ -76,7 +82,10 @@ async def getRealm(*, realm_id: str = Path(...,
     except Exception as e:
         logger.info(e)
 
-
+"""
+c4model|cb|api:Component(api__realm_py__create, "Create Realm", "json/https", "Create realm")
+c4model:Rel(api__realm_py__create, identity__messaging_api_command_handler__CreateRealmHandler, "Create realm", "message")
+"""
 @router.post("/create", summary='Create a new realm', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
@@ -96,7 +105,10 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                         {'name': name, 'realm_type': realm_type})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
-
+"""
+c4model|cb|api:Component(api__realm_py__delete, "Delete Realm", "json/https", "Delete realm")
+c4model:Rel(api__realm_py__delete, identity__messaging_api_command_handler__DeleteRealmHandler, "Delete realm", "message")
+"""
 @router.delete("/{realm_id}", summary='Delete a realm', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
@@ -110,7 +122,10 @@ async def delete(*, _=Depends(CustomHttpBearer()),
                                         {'id': realm_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
-
+"""
+c4model|cb|api:Component(api__realm_py__update, "Update Realm", "json/https", "Update realm")
+c4model:Rel(api__realm_py__update, identity__messaging_api_command_handler__UpdateRealmHandler, "Update realm", "message")
+"""
 @router.put("/{realm_id}", summary='Update a realm', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),

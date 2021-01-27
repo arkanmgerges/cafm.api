@@ -27,7 +27,10 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
-
+"""
+c4model|cb|api:Component(api__ou_py__getOus, "Get ous", "json/https", "get all ous")
+c4model:Rel(api__ou_py__getOus, identity__grpc__OuAppServiceListener__ous, "Get ous", "grpc call")
+"""
 @router.get(path="", summary='Get all ous', response_model=Ous)
 @OpenTelemetry.fastApiTraceOTel
 async def getOus(*,
@@ -52,7 +55,10 @@ async def getOus(*,
     except Exception as e:
         logger.info(e)
 
-
+"""
+c4model|cb|api:Component(api__ou_py__getOu, "Get one ou", "json/https", "get a ou by id")
+c4model:Rel(api__ou_py__getOu, identity__grpc__OuAppServiceListener__ouById, "Get an ou by id", "grpc call")
+"""
 @router.get(path="/{ou_id}", summary='Get ou',
             response_model=OuDescriptor)
 @OpenTelemetry.fastApiTraceOTel
@@ -76,7 +82,10 @@ async def getOu(*, ou_id: str = Path(...,
     except Exception as e:
         logger.info(e)
 
-
+"""
+c4model|cb|api:Component(api__ou_py__create, "Create Ou", "json/https", "Create ou")
+c4model:Rel(api__ou_py__create, identity__messaging_api_command_handler__CreateOuHandler, "Create ou", "message")
+"""
 @router.post("/create", summary='Create a new ou', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
@@ -89,7 +98,10 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                         {'name': name})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
-
+"""
+c4model|cb|api:Component(api__ou_py__delete, "Delete Ou", "json/https", "Delete ou")
+c4model:Rel(api__ou_py__delete, identity__messaging_api_command_handler__DeleteOuHandler, "Delete ou", "message")
+"""
 @router.delete("/{ou_id}", summary='Delete a ou', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
@@ -103,7 +115,10 @@ async def delete(*, _=Depends(CustomHttpBearer()),
                                         {'id': ou_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
-
+"""
+c4model|cb|api:Component(api__ou_py__update, "Update Ou", "json/https", "Update ou")
+c4model:Rel(api__ou_py__update, identity__messaging_api_command_handler__UpdateOuHandler, "Update ou", "message")
+"""
 @router.put("/{ou_id}", summary='Update a ou', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),

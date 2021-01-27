@@ -61,7 +61,10 @@ class CustomHttpBearer(HTTPBearer):
                 detail="Invalid authentication credentials",
             )
 
-
+"""
+c4model|cb|api:Component(api__auth_py__authenticate, "Authenticate a user", "json/https", "Authenticate a user")
+c4model:Rel(api__auth_py__authenticate, identity__grpc__AuthAppServiceListener__authenticateUserByEmailAndPassword, "Auth user & get token", "grpc call")
+"""
 @router.post("/authenticate", summary='Authenticate user', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def authenticate(*,
@@ -87,7 +90,10 @@ async def authenticate(*,
         logger.info(e)
         raise e
 
-
+"""
+c4model|cb|api:Component(api__auth_py__logout, "logout", "json/https", "logout a user")
+c4model:Rel(api__auth_py__logout, identity__grpc__AuthAppServiceListener__logout, "Logout user by token", "grpc call")
+"""
 @router.post("/logout", summary='Logout user', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def logout(*,

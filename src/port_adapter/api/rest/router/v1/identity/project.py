@@ -29,7 +29,10 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-# @OpenTelemetry.fastApiTraceOTel
+"""
+c4model|cb|api:Component(api__project_py__getProjects, "Get projects", "json/https", "get all projects")
+c4model:Rel(api__project_py__getProjects, identity__grpc__ProjectAppServiceListener__projects, "Get projects", "grpc call")
+"""
 @router.get(path="", summary='Get all projects', response_model=Projects)
 async def getProjects(*,
                       result_from: int = Query(0, description='Starting offset for fetching data'),
@@ -53,7 +56,10 @@ async def getProjects(*,
     except Exception as e:
         logger.info(e)
 
-
+"""
+c4model|cb|api:Component(api__project_py__getProject, "Get one project", "json/https", "get a project by id")
+c4model:Rel(api__project_py__getProject, identity__grpc__ProjectAppServiceListener__projectById, "Get a project by id", "grpc call")
+"""
 @router.get(path="/{project_id}", summary='Get project',
             response_model=ProjectDescriptor)
 @OpenTelemetry.fastApiTraceOTel
@@ -77,7 +83,10 @@ async def getProject(*, project_id: str = Path(...,
     except Exception as e:
         logger.info(e)
 
-
+"""
+c4model|cb|api:Component(api__project_py__create, "Create Project", "json/https", "Create project")
+c4model:Rel(api__project_py__create, identity__messaging_api_command_handler__CreateProjectHandler, "Create project", "message")
+"""
 @router.post("/create", summary='Create a new project', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
@@ -90,7 +99,10 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                         {'name': name})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
-
+"""
+c4model|cb|api:Component(api__project_py__delete, "Delete Project", "json/https", "Delete project")
+c4model:Rel(api__project_py__delete, identity__messaging_api_command_handler__DeleteProjectHandler, "Delete project", "message")
+"""
 @router.delete("/{project_id}", summary='Delete a project', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),

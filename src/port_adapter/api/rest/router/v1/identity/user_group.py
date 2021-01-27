@@ -27,7 +27,10 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
-
+"""
+c4model|cb|api:Component(api__user_group_py__getUserGroups, "Get user groups", "json/https", "get all user groups")
+c4model:Rel(api__user_group_py__getUserGroups, identity__grpc__UserGroupAppServiceListener__userGroups, "Get user groups", "grpc call")
+"""
 @router.get(path="", summary='Get all user groups', response_model=UserGroups)
 @OpenTelemetry.fastApiTraceOTel
 async def getUserGroups(*,
@@ -52,7 +55,10 @@ async def getUserGroups(*,
     except Exception as e:
         logger.info(e)
 
-
+"""
+c4model|cb|api:Component(api__user_group_py__getUserGroup, "Get one user group", "json/https", "get a user group by id")
+c4model:Rel(api__user_group_py__getUserGroup, identity__grpc__UserGroupAppServiceListener__userGroupById, "Get a user group by id", "grpc call")
+"""
 @router.get(path="/{user_group_id}", summary='Get user group',
             response_model=UserGroupDescriptor)
 @OpenTelemetry.fastApiTraceOTel
@@ -76,7 +82,10 @@ async def getUserGroup(*, user_group_id: str = Path(...,
     except Exception as e:
         logger.info(e)
 
-
+"""
+c4model|cb|api:Component(api__user_group_py__create, "Create UserGroup", "json/https", "Create user group")
+c4model:Rel(api__user_group_py__create, identity__messaging_api_command_handler__CreateUserGroupHandler, "Create user group", "message")
+"""
 @router.post("/create", summary='Create a new user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
@@ -89,7 +98,10 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                         {'name': name})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
-
+"""
+c4model|cb|api:Component(api__user_group_py__delete, "Delete UserGroup", "json/https", "Delete user group")
+c4model:Rel(api__user_group_py__delete, identity__messaging_api_command_handler__DeleteUserGroupHandler, "Delete user group", "message")
+"""
 @router.delete("/{user_group_id}", summary='Delete a user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
@@ -103,7 +115,10 @@ async def delete(*, _=Depends(CustomHttpBearer()),
                                         {'id': user_group_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
-
+"""
+c4model|cb|api:Component(api__user_group_py__update, "Update UserGroup", "json/https", "Update user group")
+c4model:Rel(api__user_group_py__update, identity__messaging_api_command_handler__UpdateUserGroupHandler, "Update user group", "message")
+"""
 @router.put("/{user_group_id}", summary='Update a user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
