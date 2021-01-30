@@ -31,8 +31,8 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 """
-c4model|cb|api:Component(api__user_py__getUsers, "Get users", "json/https", "get all users")
-c4model:Rel(api__user_py__getUsers, identity__grpc__UserAppServiceListener__users, "Get users", "grpc call")
+c4model|cb|api:Component(api__identity_user_py__getUsers, "Get Users", "http(s)", "Get all users")
+c4model:Rel(api__identity_user_py__getUsers, identity__grpc__UserAppServiceListener__users, "Get users", "grpc")
 """
 @router.get(path="", summary='Get all users', response_model=Users)
 @OpenTelemetry.fastApiTraceOTel
@@ -59,8 +59,8 @@ async def getUsers(*,
         logger.info(e)
 
 """
-c4model|cb|api:Component(api__user_py__getUser, "Get one user", "json/https", "get a user by id")
-c4model:Rel(api__user_py__getUser, identity__grpc__UserAppServiceListener__userById, "Get a user by id", "grpc call")
+c4model|cb|api:Component(api__identity_user_py__getUser, "Get User", "http(s)", "Get user by id")
+c4model:Rel(api__identity_user_py__getUser, identity__grpc__UserAppServiceListener__userById, "Get user by id", "grpc")
 """
 @router.get(path="/{user_id}", summary='Get user',
             response_model=UserDescriptor)
@@ -90,8 +90,9 @@ async def getUser(*, user_id: str = Path(...,
         logger.info(e)
 
 """
-c4model|cb|api:Component(api__user_py__create, "Create User", "json/https", "Create user")
-c4model:Rel(api__user_py__create, identity__messaging_api_command_handler__CreateUserHandler, "Create user", "message")
+c4model|cb|api:Component(api__identity_user_py__create, "Create User", "http(s)", "")
+c4model|cb|api:ComponentQueue(api__identity_user_py__create__api_command_topic, "CommonCommandConstant.CREATE_USER.value", "api command topic", "")
+c4model:Rel(api__identity_user_py__create, api__identity_user_py__create__api_command_topic, "CommonCommandConstant.CREATE_USER.value", "message")
 """
 @router.post("/create", summary='Create a new user', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
@@ -109,8 +110,9 @@ async def create(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 """
-c4model|cb|api:Component(api__user_py__delete, "Delete User", "json/https", "Delete user")
-c4model:Rel(api__user_py__delete, identity__messaging_api_command_handler__DeleteUserHandler, "Delete user", "message")
+c4model|cb|api:Component(api__identity_user_py__delete, "Delete User", http(s)", "")
+c4model|cb|api:ComponentQueue(api__identity_user_py__delete__api_command_topic, "CommonCommandConstant.DELETE_USER.value", "api command topic", "")
+c4model:Rel(api__identity_user_py__delete, api__identity_user_py__delete__api_command_topic, "CommonCommandConstant.DELETE_USER.value", "message")
 """
 @router.delete("/{user_id}", summary='Delete a user', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
@@ -126,8 +128,9 @@ async def delete(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 """
-c4model|cb|api:Component(api__user_py__setUserPassword, "Set User Password", "json/https", "Set user password")
-c4model:Rel(api__user_py__setUserPassword, identity__messaging_api_command_handler__SetUserPasswordHandler, "Set user password", "message")
+c4model|cb|api:Component(api__identity_user_py__setUserPassword, "Set User Password", "http(s)", "")
+c4model|cb|api:ComponentQueue(api__identity_user_py__setUserPassword__api_command_topic, "CommonCommandConstant.SET_USER_PASSWORD.value", "api command topic", "")
+c4model:Rel(api__identity_user_py__setUserPassword, api__identity_user_py__setUserPassword__api_command_topic, "CommonCommandConstant.SET_USER_PASSWORD.value", "message")
 """
 @router.put("/{user_id}/set_password", summary='Set user password', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
@@ -148,8 +151,9 @@ async def setUserPassword(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 """
-c4model|cb|api:Component(api__user_py__resetUserPassword, "Reset User Password", "json/https", "Reset user password")
-c4model:Rel(api__user_py__resetUserPassword, identity__messaging_api_command_handler__ResetUserPasswordHandler, "Reset user password", "message")
+c4model|cb|api:Component(api__identity_user_py__resetUserPassword, "Reset User Password", "http(s)", "")
+c4model|cb|api:ComponentQueue(api__identity_user_py__resetUserPassword__api_command_topic, "CommonCommandConstant.RESET_USER_PASSWORD.value", "api command topic", "")
+c4model:Rel(api__identity_user_py__resetUserPassword, api__identity_user_py__resetUserPassword__api_command_topic, "CommonCommandConstant.RESET_USER_PASSWORD.value", "message")
 """
 @router.put("/{user_id}/reset_password", summary='Reset user password', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel

@@ -30,8 +30,8 @@ router = APIRouter()
 
 
 """
-c4model|cb|api:Component(api__project_py__getProjects, "Get projects", "json/https", "get all projects")
-c4model:Rel(api__project_py__getProjects, identity__grpc__ProjectAppServiceListener__projects, "Get projects", "grpc call")
+c4model|cb|api:Component(api__identity_project_py__getProjects, "Get Projects", "http(s)", "Get all projects")
+c4model:Rel(api__identity_project_py__getProjects, identity__grpc__ProjectAppServiceListener__projects, "Get projects", "grpc")
 """
 @router.get(path="", summary='Get all projects', response_model=Projects)
 async def getProjects(*,
@@ -57,8 +57,8 @@ async def getProjects(*,
         logger.info(e)
 
 """
-c4model|cb|api:Component(api__project_py__getProject, "Get one project", "json/https", "get a project by id")
-c4model:Rel(api__project_py__getProject, identity__grpc__ProjectAppServiceListener__projectById, "Get a project by id", "grpc call")
+c4model|cb|api:Component(api__identity_project_py__getProject, "Get Project", "http(s)", "Get project by id")
+c4model:Rel(api__identity_project_py__getProject, identity__grpc__ProjectAppServiceListener__projectById, "Get a project by id", "grpc")
 """
 @router.get(path="/{project_id}", summary='Get project',
             response_model=ProjectDescriptor)
@@ -84,8 +84,9 @@ async def getProject(*, project_id: str = Path(...,
         logger.info(e)
 
 """
-c4model|cb|api:Component(api__project_py__create, "Create Project", "json/https", "Create project")
-c4model:Rel(api__project_py__create, identity__messaging_api_command_handler__CreateProjectHandler, "Create project", "message")
+c4model|cb|api:Component(api__identity_project_py__create, "Create Project", "http(s)", "")
+c4model|cb|api:ComponentQueue(api__identity_project_py__create__api_command_topic, "CommonCommandConstant.CREATE_PROJECT.value", "api command topic", "")
+c4model:Rel(api__identity_project_py__create, api__identity_project_py__create__api_command_topic, "CommonCommandConstant.CREATE_PROJECT.value", "message")
 """
 @router.post("/create", summary='Create a new project', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
@@ -100,8 +101,9 @@ async def create(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 """
-c4model|cb|api:Component(api__project_py__delete, "Delete Project", "json/https", "Delete project")
-c4model:Rel(api__project_py__delete, identity__messaging_api_command_handler__DeleteProjectHandler, "Delete project", "message")
+c4model|cb|api:Component(api__identity_project_py__delete, "Delete Project", "http(s)", "")
+c4model|cb|api:ComponentQueue(api__identity_project_py__delete__api_command_topic, "CommonCommandConstant.DELETE_PROJECT.value", "api command topic", "")
+c4model:Rel(api__identity_project_py__delete, api__identity_project_py__delete__api_command_topic, "CommonCommandConstant.DELETE_PROJECT.value", "message")
 """
 @router.delete("/{project_id}", summary='Delete a project', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel

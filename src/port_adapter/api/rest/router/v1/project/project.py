@@ -77,7 +77,11 @@ async def getProject(*, project_id: str = Path(...,
     except Exception as e:
         logger.info(e)
 
-
+"""
+c4model|cb|api:Component(api__project_project_py__update, "Update Project", "http(s)", "")
+c4model|cb|api:ComponentQueue(api__project_project_py__update__api_command_topic, "CommonCommandConstant.UPDATE_PROJECT.value", "api command topic", "")
+c4model:Rel(api__project_project_py__update, api__project_project_py__update__api_command_topic, "CommonCommandConstant.UPDATE_PROJECT.value", "message")
+"""
 @router.put("/{project_id}", summary='Update a project', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),

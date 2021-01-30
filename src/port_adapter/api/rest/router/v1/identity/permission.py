@@ -32,8 +32,8 @@ router = APIRouter()
 # openTelemetry = AppDi.instance.get(OpenTelemetry)
 
 """
-c4model|cb|api:Component(api__permission_py__getPermissions, "Get permissions", "json/https", "get all permissions")
-c4model:Rel(api__permission_py__getPermissions, identity__grpc__PermissionAppServiceListener__permissions, "Get permissions", "grpc call")
+c4model|cb|api:Component(api__identity_permission_py__getPermissions, "Get Permissions", "http(s)", "Get all permissions")
+c4model:Rel(api__identity_permission_py__getPermissions, identity__grpc__PermissionAppServiceListener__permissions, "Get permissions", "grpc")
 """
 @router.get(path="", summary='Get all permissions', response_model=Permissions)
 @OpenTelemetry.fastApiTraceOTel
@@ -66,8 +66,8 @@ async def getPermissions(*,
         logger.info(e)
 
 """
-c4model|cb|api:Component(api__permission_py__getPermission, "Get one permission", "json/https", "get a permission by id")
-c4model:Rel(api__permission_py__getPermission, identity__grpc__PermissionAppServiceListener__permissionById, "Get a permission by id", "grpc call")
+c4model|cb|api:Component(api__identity_permission_py__getPermission, "Get Permission", "http(s)", "Get permission by id")
+c4model:Rel(api__identity_permission_py__getPermission, identity__grpc__PermissionAppServiceListener__permissionById, "Get permission by id", "grpc")
 """
 @router.get(path="/{permission_id}", summary='Get permission',
             response_model=PermissionDescriptor)
@@ -97,8 +97,9 @@ def _customFunc(args):
     pass
 
 """
-c4model|cb|api:Component(api__permission_py__create, "Create Permission", "json/https", "Create permission")
-c4model:Rel(api__permission_py__create, identity__messaging_api_command_handler__CreatePermissionHandler, "Create permission", "message")
+c4model|cb|api:Component(api__identity_permission_py__create, "Create Permission", "http(s)", "")
+c4model|cb|api:ComponentQueue(api__identity_permission_py__create__api_command_topic, "CommonCommandConstant.CREATE_PERMISSION.value", "api command topic", "")
+c4model:Rel(api__identity_permission_py__create, api__identity_permission_py__create__api_command_topic, "CommonCommandConstant.CREATE_PERMISSION.value", "message")
 """
 @router.post("/create", summary='Create a new permission', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
@@ -120,8 +121,9 @@ async def create(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 """
-c4model|cb|api:Component(api__permission_py__delete, "Delete Permission", "json/https", "Delete permission")
-c4model:Rel(api__permission_py__delete, identity__messaging_api_command_handler__DeletePermissionHandler, "Delete permission", "message")
+c4model|cb|api:Component(api__identity_permission_py__delete, "Delete Permission", "http(s)", "")
+c4model|cb|api:ComponentQueue(api__identity_permission_py__delete__api_command_topic, "CommonCommandConstant.DELETE_PERMISSION.value", "api command topic", "")
+c4model:Rel(api__identity_permission_py__delete, api__identity_permission_py__delete__api_command_topic, "CommonCommandConstant.DELETE_PERMISSION.value", "message")
 """
 @router.delete("/{permission_id}", summary='Delete a permission', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
@@ -137,8 +139,9 @@ async def delete(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 """
-c4model|cb|api:Component(api__permission_py__update, "Update Permission", "json/https", "Update permission")
-c4model:Rel(api__permission_py__update, identity__messaging_api_command_handler__UpdatePermissionHandler, "Update permission", "message")
+c4model|cb|api:Component(api__identity_permission_py__update, "Update Permission", "http(s)", "")
+c4model|cb|api:ComponentQueue(api__identity_permission_py__update__api_command_topic, "CommonCommandConstant.UPDATE_PERMISSION.value", "api command topic", "")
+c4model:Rel(api__identity_permission_py__update, api__identity_permission_py__update__api_command_topic, "CommonCommandConstant.UPDATE_PERMISSION.value", "message")
 """
 @router.put("/{permission_id}", summary='Update a permission', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
