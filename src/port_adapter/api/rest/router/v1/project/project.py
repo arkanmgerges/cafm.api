@@ -22,6 +22,7 @@ from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
+from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 from src.port_adapter.messaging.listener.CacheType import CacheType
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
@@ -77,11 +78,14 @@ async def getProject(*, project_id: str = Path(...,
     except Exception as e:
         logger.info(e)
 
+
 """
 c4model|cb|api:Component(api__project_project_py__update, "Update Project", "http(s)", "")
 c4model|cb|api:ComponentQueue(api__project_project_py__update__api_command_topic, "CommonCommandConstant.UPDATE_PROJECT.value", "api command topic", "")
 c4model:Rel(api__project_project_py__update, api__project_project_py__update__api_command_topic, "CommonCommandConstant.UPDATE_PROJECT.value", "message")
 """
+
+
 @router.put("/{project_id}", summary='Update a project', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
@@ -107,4 +111,27 @@ async def update(*, _=Depends(CustomHttpBearer()),
                                          'beneficiary_id': beneficiary_id,
                                          'state': state
                                          })), schema=ApiCommand.get_schema())
+    return {"request_id": reqId}
+
+
+"""
+c4model|cb|api:Component(api__project_project_py__createBuilding, "Create Building", "http(s)", "")
+c4model:Rel(api__project_project_py__createBuilding, project__messaging_project_command_handler__CreateBuildingHandler, "CommonCommandConstant.CREATE_BUILDING.value", "message")
+"""
+
+
+@router.post("/{project_id}/buildings", summary='Create building', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def createBuilding(*, _=Depends(CustomHttpBearer()),
+                         project_id: str = Path(..., description='Project id'),
+                         name: str = Body(..., description='Building name', embed=True),
+                         ):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_BUILDING.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'project_id': project_id,
+                                             'name': name,
+                                             }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
