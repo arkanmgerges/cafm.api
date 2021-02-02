@@ -19,7 +19,7 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="user_lookups", summary='Get users with other related data', response_model=UserLookups)
+@router.get(path="/users", summary='Get users with other related data', response_model=UserLookups)
 @OpenTelemetry.fastApiTraceOTel
 async def getUserLookups(*,
                          result_from: int = Query(0, description='Starting offset for fetching data'),
