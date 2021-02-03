@@ -87,7 +87,7 @@ c4model|cb|api:Component(api__identity_ou_py__create, "Create Ou", "http(s)", ""
 c4model|cb|api:ComponentQueue(api__identity_ou_py__create__api_command_topic, "CommonCommandConstant.CREATE_OU.value", "api command topic", "")
 c4model:Rel(api__identity_ou_py__create, api__identity_ou_py__create__api_command_topic, "CommonCommandConstant.CREATE_OU.value", "message")
 """
-@router.post("/create", summary='Create a new ou', status_code=status.HTTP_200_OK)
+@router.post("", summary='Create a new ou', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the ou', embed=True)):

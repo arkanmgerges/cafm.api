@@ -87,7 +87,7 @@ c4model|cb|api:Component(api__identity_user_group_py__create, "Create User Group
 c4model|cb|api:ComponentQueue(api__identity_user_group_py__create__api_command_topic, "CommonCommandConstant.CREATE_USER_GROUP.value", "api command topic", "")
 c4model:Rel(api__identity_user_group_py__create, api__identity_user_group_py__create__api_command_topic, "CommonCommandConstant.CREATE_USER_GROUP.value", "message")
 """
-@router.post("/create", summary='Create a new user group', status_code=status.HTTP_200_OK)
+@router.post("", summary='Create a new user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the user group', embed=True)):
