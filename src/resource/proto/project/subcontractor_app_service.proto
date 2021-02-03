@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package cafm.project.organization;
+package cafm.project.subcontractor;
 
 import "project/subcontractor.proto";
 import "order.proto";

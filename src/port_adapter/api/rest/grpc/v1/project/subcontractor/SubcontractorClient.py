@@ -55,14 +55,14 @@ class SubcontractorClient(Client):
             stub = SubcontractorAppServiceStub(channel)
             try:
                 logger.debug(
-                    f'[{SubcontractorClient.SubcontractorById.__qualname__}] - grpc call to retrieve subcontractor with SubcontractorId: {id} from server {self._server}:{self._port}')
+                    f'[{SubcontractorClient.subcontractorById.__qualname__}] - grpc call to retrieve subcontractor with SubcontractorId: {id} from server {self._server}:{self._port}')
                 response: SubcontractorppService_subcontractorByIdResponse = stub.subcontractorById.with_call(
                     SubcontractorppService_subcontractorByIdRequest(id=id),
                     metadata=(('token', self.token), (
                         'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
-                            SubcontractorClient.SubcontractorById.__qualname__))))
+                            SubcontractorClient.subcontractorById.__qualname__))))
                 logger.debug(
-                    f'[{SubcontractorClient.SubcontractorById.__qualname__}] - grpc response: {response}')
+                    f'[{SubcontractorClient.subcontractorById.__qualname__}] - grpc response: {response}')
                 subcontractor = response[0].subcontractor
                 return self._descriptorByObject(obj=subcontractor)
             except Exception as e:
@@ -73,8 +73,8 @@ class SubcontractorClient(Client):
         return SubcontractorDescriptor(id=obj.id,
                                        company_name=obj.name,
                                        website_url=obj.websiteUrl,
-                                       contact_person=obj.organizationType,
-                                       email=obj.postalCode,
-                                       phone_number=obj.managerPhoneNumber,
+                                       contact_person=obj.contactPerson,
+                                       email=obj.email,
+                                       phone_number=obj.phoneNumber,
                                        address_one=obj.addressOne,
                                        address_two=obj.addressTwo)
