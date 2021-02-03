@@ -118,8 +118,6 @@ async def update(*, _=Depends(CustomHttpBearer()),
 c4model|cb|api:Component(api__project_project_py__createBuilding, "Create Building", "http(s)", "")
 c4model:Rel(api__project_project_py__createBuilding, project__messaging_project_command_handler__CreateBuildingHandler, "CommonCommandConstant.CREATE_BUILDING.value", "message")
 """
-
-
 @router.post("/{project_id}/buildings", summary='Create building', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def createBuilding(*, _=Depends(CustomHttpBearer()),
@@ -133,5 +131,25 @@ async def createBuilding(*, _=Depends(CustomHttpBearer()),
                                         data=json.dumps(
                                             {'project_id': project_id,
                                              'name': name,
+                                             }), external=[]), schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
+
+"""  
+c4model|cb|api:Component(api__project_project_py__deleteBuilding, "Delete Building", "http(s)", "")
+c4model:Rel(api__project_project_py__deleteBuilding, project__messaging_project_command_handler__DeleteBuildingHandler, "CommonCommandConstant.DELETE_BUILDING.value", "message")
+"""
+@router.delete("/{project_id}/buildings/{building_id}", summary='Delete building', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def deleteBuilding(*, _=Depends(CustomHttpBearer()),
+                         project_id: str = Path(..., description='Project id'),
+                         building_id: str = Path(..., description='Building id'),
+                         ):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_BUILDING.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'project_id': project_id,
+                                             'building_id': building_id,
                                              }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
