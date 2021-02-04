@@ -99,7 +99,7 @@ c4model:Rel(api__identity_user_py__create, api__identity_user_py__create__api_co
 async def create(*, _=Depends(CustomHttpBearer()),
                  email: str = Body(..., description='User email', embed=True),
                  ):
-    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'  # 2 for completion of identity & project
+    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:3'  # 3 for completion of identity & project
     producer = AppDi.instance.get(SimpleProducer)
     Validator.validateEmail(email=email, fields={'email': email})
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_USER.value,
