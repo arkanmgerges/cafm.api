@@ -158,7 +158,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 @router.post("/{subcontractors_id}/assign_to_oraganization", summary='Assign a subcontractor to a oraganization',
              status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def assign(*, _=Depends(CustomHttpBearer()),
                  subcontractors_id: str = Path(...,
                                                description='Subcontractor id that is used in order to assign a oraganization'),
                  oraganization_id: str = Body(..., description='Oraganization id that is need to be assigned',
@@ -166,10 +166,31 @@ async def create(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.ASSIGN_SUBCONTRACTOR.value,
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.ASSIGN_SUBCONTRACTOR_TO_ORGANIZATION.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps({'id': subcontractors_id,
                                                          'org_id': oraganization_id}),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.delete("/{subcontractors_id}/assign_to_oraganization", summary='Unassign a subcontractor to a oraganization',
+               status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def revoke(*, _=Depends(CustomHttpBearer()),
+                 subcontractors_id: str = Path(...,
+                                               description='Subcontractor id that is used in order to assign a oraganization'),
+                 oraganization_id: str = Body(..., description='Oraganization id that is need to be assigned',
+                                              embed=True), ):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    producer.produce(
+        obj=ProjectCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_SUBCONTRACTOR_TO_ORGANIZATION.value,
+                           metadata=json.dumps({"token": Client.token}),
+                           data=json.dumps({'id': subcontractors_id,
+                                            'org_id': oraganization_id}),
+                           external=[]),
+        schema=ProjectCommand.get_schema())
     return {"request_id": reqId}

@@ -58,4 +58,5 @@ class CommandConstant(Enum):
     CREATE_SUBCONTRACTOR = 'create_subcontractor'
     DELETE_SUBCONTRACTOR = 'delete_subcontractor'
     UPDATE_SUBCONTRACTOR = 'update_subcontractor'
-    ASSIGN_SUBCONTRACTOR = 'assign_subcontractor'
+    ASSIGN_SUBCONTRACTOR_TO_ORGANIZATION = 'assign_subcontractor_to_organization'
+    REVOKE_ASSIGNMENT_SUBCONTRACTOR_TO_ORGANIZATION = 'revoke_assignment_subcontractor_to_organization'
