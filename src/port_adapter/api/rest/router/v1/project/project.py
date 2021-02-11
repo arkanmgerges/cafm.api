@@ -193,7 +193,7 @@ async def createBuildingLevel(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_BUILDING_LEVEL.value,
-                                        metadata=json.dumps({"token": Client.token}),
+                                        metadata=json.dumps({"token": Client.token, "msg_key": building_id}),
                                         data=json.dumps(
                                             {'project_id': project_id,
                                              'building_id': building_id,
