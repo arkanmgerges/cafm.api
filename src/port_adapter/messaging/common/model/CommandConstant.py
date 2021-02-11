@@ -57,3 +57,4 @@ class CommandConstant(Enum):
     CREATE_BUILDING_LEVEL_ROOM = 'create_building_level_room'
     DELETE_BUILDING_LEVEL_ROOM = 'delete_building_level_room'
     UPDATE_BUILDING_LEVEL_ROOM = 'update_building_level_room'
+    UPDATE_BUILDING_LEVEL_ROOM_INDEX = 'update_building_level_room_index'

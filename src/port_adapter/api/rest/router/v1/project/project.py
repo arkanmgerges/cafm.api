@@ -370,4 +370,30 @@ async def updateBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
                                              'description': description
                                              }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
+
+"""  
+c4model|cb|api:Component(api__project_project_py__updateBuildingLevelRoomIndex, "Update Building Level Room Index", "http(s)", "")
+c4model:Rel(api__project_project_py__updateBuildingLevelRoomIndex, project__messaging_project_command_handler__UpdateBuildingLevelRoomIndexHandler, "CommonCommandConstant.UPDATE_BUILDING_LEVEL_ROOM_INDEX.value", "message")
+"""
+@router.put("/{project_id}/buildings/{building_id}/levels/{level_id}/rooms/{room_id}/update_index", summary='Update building level room index', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def updateBuildingLevelRoomIndex(*, _=Depends(CustomHttpBearer()),
+                         project_id: str = Path(..., description='Project id'),
+                         building_id: str = Path(..., description='Building id'),
+                         level_id: str = Path(..., description='Building level id'),
+                         room_id: str = Path(..., description='Building level room id'),
+                         index: int = Body(..., description='Building level room index', embed=True),
+                         ):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_BUILDING_LEVEL_ROOM_INDEX.value,
+                                        metadata=json.dumps({"token": Client.token, "msg_key": level_id}),
+                                        data=json.dumps(
+                                            {'project_id': project_id,
+                                             'building_id': building_id,
+                                             'building_level_id': level_id,
+                                             'building_level_room_id': room_id,
+                                             'index': index
+                                             }), external=[]), schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
 #endregion
