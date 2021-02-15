@@ -132,7 +132,32 @@ async def update(*, _=Depends(CustomHttpBearer()),
                                          })), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
-
+@router.patch("/{project_id}", summary='Parital update a project', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def paritalUpdate(*, _=Depends(CustomHttpBearer()),
+                 project_id: str = Path(...,
+                                        description='Project id that is used in order to update the project'),
+                 name: str = Body(..., description='Title of the project', embed=True),
+                 city_id: str = Body(..., description='City id of this project', embed=True),
+                 country_id: str = Body(..., description='Country id of this project', embed=True),
+                 address_line: str = Body(..., description='Address line of the project', embed=True),
+                 beneficiary_id: str = Body(..., description='The id of the beneficiary', embed=True),
+                 state: str = Body(..., description='The state of the project', embed=True),
+                 ):
+    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.PARTIAL_UPDATE_PROJECT.value,
+                                    metadata=json.dumps({"token": Client.token}),
+                                    data=json.dumps(
+                                        {'id': project_id,
+                                         'name': name,
+                                         'city_id': city_id,
+                                         'country_id': country_id,
+                                         'address_line': address_line,
+                                         'beneficiary_id': beneficiary_id,
+                                         'state': state
+                                         })), schema=ApiCommand.get_schema())
+    return {"request_id": reqId}
 # endregion
 
 # region Building

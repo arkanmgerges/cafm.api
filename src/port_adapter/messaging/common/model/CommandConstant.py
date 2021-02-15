@@ -22,6 +22,7 @@ class CommandConstant(Enum):
     CREATE_PROJECT = 'create_project'
     DELETE_PROJECT = 'delete_project'
     UPDATE_PROJECT = 'update_project'
+    PARTIAL_UPDATE_PROJECT = 'partial_update_project'
     CREATE_REALM = 'create_realm'
     DELETE_REALM = 'delete_realm'
     UPDATE_REALM = 'update_realm'
