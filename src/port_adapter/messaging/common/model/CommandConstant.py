@@ -58,3 +58,8 @@ class CommandConstant(Enum):
     DELETE_BUILDING_LEVEL_ROOM = 'delete_building_level_room'
     UPDATE_BUILDING_LEVEL_ROOM = 'update_building_level_room'
     UPDATE_BUILDING_LEVEL_ROOM_INDEX = 'update_building_level_room_index'
+    CREATE_SUBCONTRACTOR = 'create_subcontractor'
+    DELETE_SUBCONTRACTOR = 'delete_subcontractor'
+    UPDATE_SUBCONTRACTOR = 'update_subcontractor'
+    ASSIGN_SUBCONTRACTOR_TO_ORGANIZATION = 'assign_subcontractor_to_organization'
+    REVOKE_ASSIGNMENT_SUBCONTRACTOR_TO_ORGANIZATION = 'revoke_assignment_subcontractor_to_organization'
