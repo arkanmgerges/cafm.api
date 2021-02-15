@@ -7,6 +7,7 @@ import sys
 # sys.path.append("/app")
 
 import os
+from time import sleep
 
 import click
 from confluent_kafka.avro import CachedSchemaRegistryClient
@@ -49,11 +50,36 @@ def init_kafka_topics_and_schemas():
     newSchemas = []
     for requiredSchema in requiredSchemas:
         click.echo(click.style(f'Verify if schema {requiredSchema["name"]} is available', fg='green'))
-        r = c.get_latest_schema(subject=f'{requiredSchema["name"]}')
+        try:
+            r = c.get_latest_schema(subject=f'{requiredSchema["name"]}')
+        except:
+            r = (None,)
+
         if r[0] is None:
             click.echo(click.style(f'Schema {requiredSchema["name"]} will be created', fg='green'))
             newSchemas.append(requiredSchema)
     [c.register(schema['name'], schema['schema']) for schema in newSchemas]
+
+@cli.command(help='Test kafka schema readiness')
+def test_kafka_schema_readiness():
+    counter = 5
+    url = os.getenv('MESSAGE_SCHEMA_REGISTRY_URL', '')
+    while counter > 0:
+        counter -= 1
+        c = CachedSchemaRegistryClient({'url': url})
+        requiredSchemas = [{'name': 'cafm.api.Command', 'schema': ApiCommand.get_schema()},
+                           {'name': 'cafm.api.Response', 'schema': ApiResponse.get_schema()}]
+        newSchemas = []
+        for requiredSchema in requiredSchemas:
+            click.echo(click.style(f'Verify if schema {requiredSchema["name"]} is available', fg='green'))
+            click.echo(click.style(f'Connecting to {url}', fg='green'))
+            try:
+                r = c.get_latest_schema(subject=f'{requiredSchema["name"]}')
+                exit(0)
+            except Exception as e:
+                click.echo(click.style(e, fg='red'))
+                sleep(5)
+    exit(1)
 
 
 @cli.command(help='Drop kafka topics and schema registries')

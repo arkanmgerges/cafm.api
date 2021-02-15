@@ -8,12 +8,24 @@ import grpc
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
+from src.port_adapter.api.rest.model.response.v1.project.Building import BuildingDescriptor, Building
+from src.port_adapter.api.rest.model.response.v1.project.BuildingLevel import BuildingLevelDescriptor, BuildingLevel
+from src.port_adapter.api.rest.model.response.v1.project.BuildingLevelRoom import BuildingLevelRoomDescriptor, \
+    BuildingLevelRoom
+from src.port_adapter.api.rest.model.response.v1.project.BuildingLevelRooms import BuildingLevelRooms
+from src.port_adapter.api.rest.model.response.v1.project.BuildingLevels import BuildingLevels
+from src.port_adapter.api.rest.model.response.v1.project.Buildings import Buildings
 from src.port_adapter.api.rest.model.response.v1.project.Project import ProjectDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.Projects import Projects
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.project_app_service_pb2 import ProjectAppService_projectsResponse, \
-    ProjectAppService_projectsRequest, ProjectAppService_projectByIdRequest, ProjectAppService_projectByIdResponse
+    ProjectAppService_projectsRequest, ProjectAppService_projectByIdRequest, ProjectAppService_projectByIdResponse, \
+    ProjectAppService_buildingsRequest, ProjectAppService_buildingsResponse, ProjectAppService_buildingLevelsRequest, \
+    ProjectAppService_buildingLevelsResponse, ProjectAppService_buildingByIdRequest, \
+    ProjectAppService_buildingByIdResponse, ProjectAppService_buildingLevelByIdRequest, \
+    ProjectAppService_buildingLevelByIdResponse, ProjectAppService_buildingLevelRoomByIdRequest, \
+    ProjectAppService_buildingLevelRoomByIdResponse
 from src.resource.proto._generated.project.project_app_service_pb2_grpc import ProjectAppServiceStub
 
 
@@ -22,6 +34,7 @@ class ProjectClient(Client):
         self._server = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE', '')
         self._port = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE_PORT', '')
 
+    # region Project
     @OpenTelemetry.grpcTraceOTel
     def projects(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> Projects:
         order = [] if order is None else order
@@ -74,3 +87,174 @@ class ProjectClient(Client):
                                  beneficiary_id=obj.beneficiaryId,
                                  state=obj.state
                                  )
+
+    # endregion
+
+    # region Building, level & room
+    @OpenTelemetry.grpcTraceOTel
+    def buildings(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None,
+                  include: List[str] = None, projectId: str = None) -> Buildings:
+        order = [] if order is None else order
+        include = [] if include is None else include
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = ProjectAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{ProjectClient.buildings.__qualname__}] - grpc call to retrieve data from server {self._server}:{self._port}')
+                request = ProjectAppService_buildingsRequest(resultFrom=resultFrom, resultSize=resultSize,
+                                                             include=include, projectId=projectId)
+                [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
+                response: ProjectAppService_buildingsResponse = stub.buildings.with_call(
+                    request,
+                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                        ProjectClient.buildings.__qualname__))))
+                logger.debug(
+                    f'[{ProjectClient.buildings.__qualname__}] - grpc response: {response}')
+
+                return Buildings(
+                    buildings=[self._buildingDescriptor(obj=obj) for obj in response[0].buildings],
+                    item_count=response[0].itemCount)
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def buildingById(self, id: str = None, include: List[str] = None) -> Building:
+        include = [] if include is None else include
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = ProjectAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{ProjectClient.buildingById.__qualname__}] - grpc call to retrieve data from server {self._server}:{self._port}')
+                request = ProjectAppService_buildingByIdRequest(id=id, include=include)
+                response: ProjectAppService_buildingByIdResponse = stub.buildingById.with_call(
+                    request,
+                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                        ProjectClient.buildingById.__qualname__))))
+                logger.debug(
+                    f'[{ProjectClient.buildingById.__qualname__}] - grpc response: {response}')
+
+                return self._buildingDescriptor(obj=response[0].building)
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def buildingLevels(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None,
+                       include: List[str] = None, buildingId: str = None) -> BuildingLevels:
+        order = [] if order is None else order
+        include = [] if include is None else include
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = ProjectAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{ProjectClient.buildingLevels.__qualname__}] - grpc call to retrieve data from server {self._server}:{self._port}')
+                request = ProjectAppService_buildingLevelsRequest(resultFrom=resultFrom, resultSize=resultSize,
+                                                                  include=include, buildingId=buildingId)
+                [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
+                response: ProjectAppService_buildingLevelsResponse = stub.buildingLevels.with_call(
+                    request,
+                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                        ProjectClient.buildingLevels.__qualname__))))
+                logger.debug(
+                    f'[{ProjectClient.buildingLevels.__qualname__}] - grpc response: {response}')
+
+                return BuildingLevels(
+                    building_levels=[self._buildingLevelDescriptor(obj=obj) for obj in response[0].buildingLevels],
+                    item_count=response[0].itemCount)
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def buildingLevelById(self, id: str = None, include: List[str] = None) -> BuildingLevel:
+        include = [] if include is None else include
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = ProjectAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{ProjectClient.buildingLevelById.__qualname__}] - grpc call to retrieve data from server {self._server}:{self._port}')
+                request = ProjectAppService_buildingLevelByIdRequest(id=id, include=include)
+                response: ProjectAppService_buildingLevelByIdResponse = stub.buildingLevelById.with_call(
+                    request,
+                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                        ProjectClient.buildingLevelById.__qualname__))))
+                logger.debug(
+                    f'[{ProjectClient.buildingLevelById.__qualname__}] - grpc response: {response}')
+
+                return self._buildingLevelDescriptor(obj=response[0].buildingLevel)
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def buildingLevelRooms(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None,
+                           buildingLevelId: str = None) -> BuildingLevelRooms:
+        order = [] if order is None else order
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = ProjectAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{ProjectClient.buildingLevelRooms.__qualname__}] - grpc call to retrieve data from server {self._server}:{self._port}')
+                request = ProjectAppService_buildingLevelsRequest(resultFrom=resultFrom, resultSize=resultSize,
+                                                                  buildingLevelId=buildingLevelId)
+                [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
+                response: ProjectAppService_buildingLevelsResponse = stub.buildingLevelRooms.with_call(
+                    request,
+                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                        ProjectClient.buildingLevelRooms.__qualname__))))
+                logger.debug(
+                    f'[{ProjectClient.buildingLevelRooms.__qualname__}] - grpc response: {response}')
+
+                return BuildingLevelRooms(
+                    building_level_rooms=[self._buildingLevelRoomDescriptor(obj=obj) for obj in
+                                          response[0].buildingLevelRooms],
+                    item_count=response[0].itemCount)
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def buildingLevelRoomById(self, id: str = None) -> BuildingLevelRoom:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = ProjectAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{ProjectClient.buildingLevelRoomById.__qualname__}] - grpc call to retrieve data from server {self._server}:{self._port}')
+                request = ProjectAppService_buildingLevelRoomByIdRequest(id=id)
+                response: ProjectAppService_buildingLevelRoomByIdResponse = stub.buildingLevelRoomById.with_call(
+                    request,
+                    metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                        ProjectClient.buildingLevelRoomById.__qualname__))))
+                logger.debug(
+                    f'[{ProjectClient.buildingLevelRoomById.__qualname__}] - grpc response: {response}')
+
+                return self._buildingLevelRoomDescriptor(obj=response[0].buildingLevelRoom)
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    def _buildingDescriptor(self, obj: Any) -> BuildingDescriptor:
+        logger.debug(f'_buildingDescriptor --> {obj}')
+        return BuildingDescriptor(id=obj.id,
+                                  name=obj.name,
+                                  project_id=obj.projectId,
+                                  building_levels=[self._buildingLevelDescriptor(x) for x in obj.buildingLevels])
+
+    def _buildingLevelDescriptor(self, obj: Any) -> BuildingLevelDescriptor:
+        logger.debug(f'_buildingLevelDescriptor --> {obj}')
+        return BuildingLevelDescriptor(id=obj.id,
+                                       name=obj.name,
+                                       building_ids=[x for x in obj.buildingIds],
+                                       building_level_rooms=[self._buildingLevelRoomDescriptor(x) for x in
+                                                             obj.buildingLevelRooms])
+
+    def _buildingLevelRoomDescriptor(self, obj: Any) -> BuildingLevelRoomDescriptor:
+        logger.debug(f'_buildingLevelRoomDescriptor --> {obj}')
+        return BuildingLevelRoomDescriptor(id=obj.id,
+                                           name=obj.name,
+                                           description=obj.description,
+                                           index=obj.index,
+                                           building_level_id=obj.buildingLevelId)
+
+    # endregion
