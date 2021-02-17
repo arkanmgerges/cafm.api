@@ -2,6 +2,7 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import json
+from typing import Optional
 from uuid import uuid4
 
 import grpc
@@ -75,6 +76,49 @@ async def update(*, _=Depends(CustomHttpBearer()),
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_USER.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'id': user_id,
+                                             'email': email,
+                                             'first_name': first_name,
+                                             'last_name': last_name,
+                                             'address_one': address_one,
+                                             'address_two': address_two,
+                                             'postal_code': postal_code,
+                                             'phone_number': phone_number,
+                                             'avatar_image': avatar_image,
+                                             'country_id': country_id,
+                                             'city_id': city_id,
+                                             'country_state_name': country_state_name,
+                                             'start_date': start_date,
+                                             }),
+                                        external=[]),
+                     schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.patch("/{user_id}", summary='Partial update a user', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+                        user_id: str = Path(...,
+                                            description='User id that is used in order to update the user'),
+                        email: Optional[str] = Body(None, description='User email', embed=True),
+                        first_name: Optional[str] = Body(None, description='First name of the user', embed=True),
+                        last_name: Optional[str] = Body(None, description='Last name of the user', embed=True),
+                        address_one: Optional[str] = Body(None, description='User first line of address', embed=True),
+                        address_two: Optional[str] = Body(None, description='User second line of address', embed=True),
+                        postal_code: Optional[str] = Body(None, description='Postal code of the user', embed=True),
+                        phone_number: Optional[str] = Body(None, description='Phone number of the user', embed=True),
+                        avatar_image: Optional[str] = Body(None, description='Avatar URL of the user', embed=True),
+                        country_id: Optional[int] = Body(None, description='Country id', embed=True),
+                        city_id: Optional[int] = Body(None, description='City id', embed=True),
+                        country_state_name: Optional[str] = Body(None, description='State name', embed=True),
+                        start_date: Optional[float] = Body(None, description='Start date of the user', embed=True),
+                        ):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.PARTIAL_UPDATE_USER.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {'id': user_id,
