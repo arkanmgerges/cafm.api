@@ -2,6 +2,7 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import json
+import os
 import random
 import traceback
 from datetime import datetime
@@ -76,14 +77,14 @@ def addCustomExceptionHandlers(app):
 
 
 addCustomExceptionHandlers(app)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+if os.getenv('ENABLE_CORS', True):
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 np.random.seed(int(datetime.utcnow().timestamp()))
 random.seed(datetime.utcnow().timestamp())
