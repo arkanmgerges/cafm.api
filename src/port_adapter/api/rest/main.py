@@ -75,7 +75,6 @@ def addCustomExceptionHandlers(app):
         return JSONResponse(content={"detail": [{"message": str(e)}]},
                             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 addCustomExceptionHandlers(app)
 if os.getenv('ENABLE_CORS', True):
     app.add_middleware(

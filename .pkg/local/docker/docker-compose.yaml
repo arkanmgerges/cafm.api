@@ -21,6 +21,8 @@ services:
       - cafm-infra_default
     volumes:
       - ../../..:/app
+    env_file:
+      - ../../../.env
 
   cafm-api-rsp:
     image: cafm-api:local
