@@ -165,7 +165,7 @@ c4model:Rel(api__identity_realm_py__partial_update, api__identity_realm_py__upda
 """
 
 
-@router.put("/{realm_id}", summary='Partial update a realm', status_code=status.HTTP_200_OK)
+@router.patch("/{realm_id}", summary='Partial update a realm', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def partialUpdate(*, _=Depends(CustomHttpBearer()),
                         realm_id: str = Path(...,
