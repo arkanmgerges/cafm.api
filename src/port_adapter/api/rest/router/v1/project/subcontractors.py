@@ -136,8 +136,38 @@ async def update(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 
-#
-#
+@router.patch("/{subcontractors_id}", summary='Partial update a subcontractors', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+                        subcontractors_id: str = Path(...,
+                                                      description='Subcontractor id that is used in order to update the subcontractor'),
+                        company_name: str = Body(None, description='subcontractor name', embed=True),
+                        website_url: str = Body(None, description='The website url of the subcontractor', embed=True),
+                        contact_person: str = Body(None, description='The contact person of the subcontractor',
+                                                   embed=True),
+                        email: str = Body(None, description='Email of the subcontractor', embed=True),
+                        phone_number: str = Body(None, description='Phone number of the subcontractor', embed=True),
+                        address_one: str = Body(None, description='subcontractor first address', embed=True),
+                        address_two: str = Body(None, description='subcontractor second address', embed=True)):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_SUBCONTRACTOR.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'id': subcontractors_id,
+                                             'company_name': company_name,
+                                             'website_url': website_url,
+                                             'contact_person': contact_person,
+                                             'email': email,
+                                             'phone_number': phone_number,
+                                             'address_one': address_one,
+                                             'address_two': address_two, }),
+                                        external=[]),
+                     schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
+
+
 @router.delete("/{subcontractors_id}", summary='Delete a subcontractors', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
