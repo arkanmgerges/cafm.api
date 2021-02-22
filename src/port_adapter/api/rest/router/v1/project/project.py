@@ -132,21 +132,21 @@ async def update(*, _=Depends(CustomHttpBearer()),
                                          })), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
+
 @router.patch("/{project_id}", summary='Parital update a project', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def paritalUpdate(*, _=Depends(CustomHttpBearer()),
-                 project_id: str = Path(...,
-                                        description='Project id that is used in order to update the project'),
-                 name: str = Body(..., description='Title of the project', embed=True),
-                 city_id: str = Body(..., description='City id of this project', embed=True),
-                 country_id: str = Body(..., description='Country id of this project', embed=True),
-                 address_line: str = Body(..., description='Address line of the project', embed=True),
-                 beneficiary_id: str = Body(..., description='The id of the beneficiary', embed=True),
-                 state: str = Body(..., description='The state of the project', embed=True),
-                 ):
+                        project_id: str = Path(...,
+                                               description='Project id that is used in order to update the project'),
+                        name: str = Body(None, description='Title of the project', embed=True),
+                        city_id: str = Body(None, description='City id of this project', embed=True),
+                        country_id: str = Body(None, description='Country id of this project', embed=True),
+                        address_line: str = Body(None, description='Address line of the project', embed=True),
+                        beneficiary_id: str = Body(None, description='The id of the beneficiary', embed=True),
+                        state: str = Body(None, description='The state of the project', embed=True), ):
     reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.PARTIAL_UPDATE_PROJECT.value,
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_PROJECT.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
                                         {'id': project_id,
@@ -158,6 +158,8 @@ async def paritalUpdate(*, _=Depends(CustomHttpBearer()),
                                          'state': state
                                          })), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
+
+
 # endregion
 
 # region Building
@@ -551,19 +553,20 @@ c4model:Rel(api__project_project_py__getBuildingLevelRoomById, project__grpc__Pr
 """
 
 
-@router.get(path="/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/rooms/{building_level_room_id}",
-            summary='Get building level room by id', response_model=BuildingLevelRoom)
+@router.get(
+    path="/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/rooms/{building_level_room_id}",
+    summary='Get building level room by id', response_model=BuildingLevelRoom)
 @OpenTelemetry.fastApiTraceOTel
 async def getBuildingLevelRoomById(*,
-                               project_id: str = Path(...,
-                                                      description='Project id that is used to fetch data'),
-                               building_id: str = Path(...,
-                                                       description='building id that is used to fetch data'),
-                               building_level_id: str = Path(...,
-                                                             description='building level id that is used to fetch data'),
-                                building_level_room_id: str = Path(...,
-                                                          description='building level room id that is used to fetch data'),
-                               _=Depends(CustomHttpBearer())):
+                                   project_id: str = Path(...,
+                                                          description='Project id that is used to fetch data'),
+                                   building_id: str = Path(...,
+                                                           description='building id that is used to fetch data'),
+                                   building_level_id: str = Path(...,
+                                                                 description='building level id that is used to fetch data'),
+                                   building_level_room_id: str = Path(...,
+                                                                      description='building level room id that is used to fetch data'),
+                                   _=Depends(CustomHttpBearer())):
     try:
         client = ProjectClient()
         return client.buildingLevelRoomById(id=building_level_room_id)
