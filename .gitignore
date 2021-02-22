@@ -132,3 +132,7 @@ log.html
 output.xml
 report.html
 *.robot
+
+# test
+.pytest_cache
+
