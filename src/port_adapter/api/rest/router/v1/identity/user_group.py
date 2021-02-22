@@ -31,6 +31,8 @@ router = APIRouter()
 c4model|cb|api:Component(api__identity_user_group_py__getUserGroups, "Get User Groups", "http(s)", "get all user groups")
 c4model:Rel(api__identity_user_group_py__getUserGroups, identity__grpc__UserGroupAppServiceListener__userGroups, "Get user groups", "grpc")
 """
+
+
 @router.get(path="", summary='Get all user groups', response_model=UserGroups)
 @OpenTelemetry.fastApiTraceOTel
 async def getUserGroups(*,
@@ -55,10 +57,13 @@ async def getUserGroups(*,
     except Exception as e:
         logger.info(e)
 
+
 """
 c4model|cb|api:Component(api__identity_user_group_py__getUserGroup, "Get User Group", "http(s)", "get user group by id")
 c4model:Rel(api__identity_user_group_py__getUserGroup, identity__grpc__UserGroupAppServiceListener__userGroupById, "Get user group by id", "grpc")
 """
+
+
 @router.get(path="/{user_group_id}", summary='Get user group',
             response_model=UserGroupDescriptor)
 @OpenTelemetry.fastApiTraceOTel
@@ -82,11 +87,14 @@ async def getUserGroup(*, user_group_id: str = Path(...,
     except Exception as e:
         logger.info(e)
 
+
 """
 c4model|cb|api:Component(api__identity_user_group_py__create, "Create User Group", "http(s)", "")
 c4model|cb|api:ComponentQueue(api__identity_user_group_py__create__api_command_topic, "CommonCommandConstant.CREATE_USER_GROUP.value", "api command topic", "")
 c4model:Rel(api__identity_user_group_py__create, api__identity_user_group_py__create__api_command_topic, "CommonCommandConstant.CREATE_USER_GROUP.value", "message")
 """
+
+
 @router.post("", summary='Create a new user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
@@ -99,11 +107,14 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                         {'name': name})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
+
 """
 c4model|cb|api:Component(api__identity_user_group_py__delete, "Delete User Group", "http(s)", "")
 c4model|cb|api:ComponentQueue(api__identity_user_group_py__delete__api_command_topic, "CommonCommandConstant.DELETE_USER_GROUP.value", "api command topic", "")
 c4model:Rel(api__identity_user_group_py__delete, api__identity_user_group_py__delete__api_command_topic, "CommonCommandConstant.DELETE_USER_GROUP.value", "message")
 """
+
+
 @router.delete("/{user_group_id}", summary='Delete a user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
@@ -117,17 +128,42 @@ async def delete(*, _=Depends(CustomHttpBearer()),
                                         {'id': user_group_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
+
 """
 c4model|cb|api:Component(api__identity_user_group_py__update, "Update User Group", "http(s)", "")
 c4model|cb|api:ComponentQueue(api__identity_user_group_py__update__api_command_topic, "CommonCommandConstant.UPDATE_USER_GROUP.value", "api command topic", "")
 c4model:Rel(api__identity_user_group_py__update, api__identity_user_group_py__update__api_command_topic, "CommonCommandConstant.UPDATE_USER_GROUP.value", "message")
 """
+
+
 @router.put("/{user_group_id}", summary='Update a user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
                  user_group_id: str = Path(...,
                                            description='User group id that is used in order to update the user group'),
                  name: str = Body(..., description='Title of the user group', embed=True)):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_USER_GROUP.value,
+                                    metadata=json.dumps({"token": Client.token}),
+                                    data=json.dumps(
+                                        {'id': user_group_id, 'name': name})), schema=ApiCommand.get_schema())
+    return {"request_id": reqId}
+
+
+"""
+c4model|cb|api:Component(api__identity_user_group_py__partial_update, "Update User Group", "http(s)", "")
+c4model|cb|api:ComponentQueue(api__identity_user_group_py__update__api_command_topic, "CommonCommandConstant.UPDATE_USER_GROUP.value", "api command topic", "")
+c4model:Rel(api__identity_user_group_py__partial_update, api__identity_user_group_py__update__api_command_topic, "CommonCommandConstant.UPDATE_USER_GROUP.value", "message")
+"""
+
+
+@router.patch("/{user_group_id}", summary='Update a user group', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+                        user_group_id: str = Path(...,
+                                                  description='User group id that is used in order to update the user group'),
+                        name: str = Body(None, description='Title of the user group', embed=True)):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_USER_GROUP.value,
