@@ -75,7 +75,53 @@ async def update(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_USER.value,
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_ORGANIZATION.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'id': organization_id,
+                                             'name': name,
+                                             'website_url': website_url,
+                                             'organization_type': organization_type,
+                                             'address_one': address_one,
+                                             'address_two': address_two,
+                                             'postal_code': postal_code,
+                                             'country_id': country_id,
+                                             'city_id': city_id,
+                                             'country_state_name': country_state_name,
+                                             'manager_first_name': manager_first_name,
+                                             'manager_last_name': manager_last_name,
+                                             'manager_email': manager_email,
+                                             'manager_phone_number': manager_phone_number,
+                                             'manager_avatar': manager_avatar,
+                                             }),
+                                        external=[]),
+                     schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.patch("/{organization_id}", summary='Partial update a organization', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def PartialUpdate(*, _=Depends(CustomHttpBearer()),
+                        organization_id: str = Path(...,
+                                                    description='Organization id that is used in order to update the organization'),
+                        name: str = Body(None, description='Organization name', embed=True),
+                        website_url: str = Body(None, description='The website url of the organization', embed=True),
+                        organization_type: str = Body(None, description='The type of the organization', embed=True),
+                        address_one: str = Body(None, description='Organization first address', embed=True),
+                        address_two: str = Body(None, description='Organization second address', embed=True),
+                        postal_code: str = Body(None, description='Postal code of the organization', embed=True),
+                        country_id: int = Body(None, description='Country id', embed=True),
+                        city_id: int = Body(None, description='City id', embed=True),
+                        country_state_name: str = Body(None, description='State name', embed=True),
+                        manager_first_name: str = Body(None, description='First name of the manager', embed=True),
+                        manager_last_name: str = Body(None, description='Last name of the manager', embed=True),
+                        manager_email: str = Body(None, description='Email of the manager', embed=True),
+                        manager_phone_number: str = Body(None, description='Phone number of the manager', embed=True),
+                        manager_avatar: str = Body(None, description='Avatar image of the manager', embed=True)):
+    reqId = str(uuid4())
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_ORGANIZATION.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {'id': organization_id,
