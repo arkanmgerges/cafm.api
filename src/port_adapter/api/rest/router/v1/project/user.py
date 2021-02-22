@@ -118,7 +118,7 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.PARTIAL_UPDATE_USER.value,
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_USER.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {'id': user_id,
