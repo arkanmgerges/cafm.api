@@ -158,7 +158,7 @@ c4model:Rel(api__identity_user_group_py__partial_update, api__identity_user_grou
 """
 
 
-@router.put("/{user_group_id}", summary='Update a user group', status_code=status.HTTP_200_OK)
+@router.patch("/{user_group_id}", summary='Update a user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def partialUpdate(*, _=Depends(CustomHttpBearer()),
                         user_group_id: str = Path(...,
