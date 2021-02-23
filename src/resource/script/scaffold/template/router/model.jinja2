@@ -52,7 +52,7 @@ async def get{{ className }}s(*,
         client = {{ className }}Client()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.{{ className }}s(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.{{ lowerCamelModelName }}s(resultFrom=result_from, resultSize=result_size, order=order)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -90,7 +90,7 @@ async def get{{ className }}ById(*, {{ model.name }}_id: str = Path(...,
         logger.info(e)
 
 
-@router.post("", summary='Create a {{ model.name | spacedWords }}s', status_code=status.HTTP_200_OK)
+@router.post("", summary='Create {{ model.name | spacedWords }}', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                 {%- for field in model.field %}
