@@ -58,7 +58,7 @@ async def getSubcontractors(*,
 async def getSubcontractorById(*, subcontractors_id: str = Path(...,
                                                                 description='Subcontractor id that is used to fetch subcontractor data'),
                                _=Depends(CustomHttpBearer())):
-    """Get a Organization by id
+    """Get a Subcontractor by id
     """
     try:
         client = SubcontractorClient()

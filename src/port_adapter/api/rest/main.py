@@ -24,7 +24,7 @@ from src.port_adapter.api.rest.router.v1.identity import auth as id_auth, realm 
     permission as id_permission, assignment as id_assignment, access as id_access, country as id_country, \
     city as id_city
 from src.port_adapter.api.rest.router.v1.project import project as project_project, user as project_user, \
-    organization as project_organization, lookup as project_lookup, subcontractors as project_subcontractors
+    organization as project_organization, lookup as project_lookup, subcontractor as project_subcontractor
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -133,6 +133,6 @@ app.include_router(project_lookup.router, prefix="/v1/project/lookups", tags=["P
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(project_organization.router, prefix="/v1/project/organizations", tags=["Project/Organization"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(project_subcontractors.router, prefix="/v1/project/subcontractors", tags=["Project/Sub Contractors"],
+app.include_router(project_subcontractor.router, prefix="/v1/project/subcontractor", tags=["Project/SubContractor"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 # endregion
