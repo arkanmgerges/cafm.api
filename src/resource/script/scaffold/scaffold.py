@@ -59,20 +59,15 @@ def cli():
 def generate(config_file):
     # Init the config data
     initConfigData(config_file)
-    # Generate models
-    generateDomainModel()
-    # Generate application services
-    generateApplicationService()
-    # Generate repository
-    generateRepository()
-    # Generate db repository
-    generateDbRepository()
-    # Generate messaging listener
-    generateMessagingListener()
+    # Generate routes
+    generateRoute()
+    # Generate model response
+    generateRouterModelResponse()
+    # Generate grpc api client
+    generateGrpcApiClient()
     # Generate protocol buffer files
     generateProtoBuffer()
-    # Generate grpc api
-    generateGrpcApi()
+
 
 @cli.command(help='Print config data')
 @click.argument('config_file')
@@ -107,173 +102,16 @@ def readConfig(configFile) -> dict:
         sys.exit(1)
 
 
-# Generate domain models classes
-def generateDomainModel():
-    domainModelPath = Config.configData['globals']['paths']['domain_model']
-    exceptionPath = Config.configData['globals']['paths']['exception']
-    exceptionFullPath = f'{Config.projectPath}/{exceptionPath}'
-    domainModelFullPath = f'{Config.projectPath}/{domainModelPath}'
-    createDir(path=domainModelFullPath)
-
-    modelTemplates = [
-        jinjaEnv.get_template(f'domain_model/model.jinja2'),
-        jinjaEnv.get_template(f'domain_model/model_created.jinja2'),
-        jinjaEnv.get_template(f'domain_model/model_deleted.jinja2'),
-        jinjaEnv.get_template(f'domain_model/model_updated.jinja2'),
-        jinjaEnv.get_template(f'domain_model/model_repository.jinja2'),
-        jinjaEnv.get_template(f'domain_model/model_service.jinja2'),
-    ]
-
-    for modelConfig in Config.configData['domain_models']:
-        model = modelConfig['model']
-        doNotSkip = True if 'skip' in model and 'model' not in model['skip'] else False
-        if doNotSkip:
-            dirPath = f'{domainModelFullPath}/{model["path"]}'
-            createDir(dirPath)
-            # Generate model, repository, events and service
-            for actionFuncIndex, action in {0: '', 1: 'Created', 2: 'Deleted', 3: 'Updated', 4: 'Repository',
-                                            5: 'Service'}.items():
-                with open(f'{dirPath}/{Util.snakeCaseToUpperCameCaseString(string=model["name"])}{action}.py',
-                          'w+') as file:
-                    file.write(modelTemplates[actionFuncIndex].render(model=model))
-                    file.write('\n')
-
-            # Generate Exceptions
-            fileNamePrefix = Util.snakeCaseToUpperCameCaseString(model['name'])
-            exceptionTemplates = [
-                jinjaEnv.get_template(f'domain_model/exception/model_already_exist.jinja2'),
-                jinjaEnv.get_template(f'domain_model/exception/model_does_not_exist.jinja2'),
-                jinjaEnv.get_template(f'domain_model/exception/update_model_failed.jinja2'),
-            ]
-            for templateIndex, fileName in {0: f'{fileNamePrefix}AlreadyExistException',
-                                            1: f'{fileNamePrefix}DoesNotExistException',
-                                            2: f'Update{fileNamePrefix}FailedException',
-                                            }.items():
-                with open(f'{exceptionFullPath}/{fileName}.py', 'w+') as file:
-                    file.write(exceptionTemplates[templateIndex].render(model=model))
-                    file.write('\n')
-
-
-# Generate application services
-def generateApplicationService():
-    applicationPath = Config.configData['globals']['paths']['application']
-    applicationFullPath = f'{Config.projectPath}/{applicationPath}'
-    createDir(path=applicationFullPath)
-    for modelConfig in Config.configData['domain_models']:
-        model = modelConfig['model']
-        doNotSkip = True if 'skip' in model and 'app_service' not in model['skip'] else False
-        if doNotSkip:
-            fileNamePrefix = Util.snakeCaseToUpperCameCaseString(model['name'])
-            template = jinjaEnv.get_template(f'application/model_application.jinja2')
-            with open(f'{applicationFullPath}/{fileNamePrefix}ApplicationService.py',
-                      'w+') as file:
-                file.write(template.render(model=model))
-                file.write('\n')
-
-# Generate repositories
-def generateRepository():
-    repositoryPath = Config.configData['globals']['paths']['repository']
-    repositoryFullPath = f'{Config.projectPath}/{repositoryPath}'
-    createDir(path=repositoryFullPath)
-
-    for modelConfig in Config.configData['domain_models']:
-        model = modelConfig['model']
-        doNotSkip = True if 'skip' in model and 'repository_impl' not in model['skip'] else False
-        if doNotSkip:
-            modelRepositoryFullPath = f'{repositoryFullPath}/{model["name"]}'
-            createDir(modelRepositoryFullPath)
-            fileNamePrefix = Util.snakeCaseToUpperCameCaseString(model['name'])
-            template = jinjaEnv.get_template(f'repository/model_repository.jinja2')
-            with open(f'{modelRepositoryFullPath}/{fileNamePrefix}RepositoryImpl.py',
-                      'w+') as file:
-                file.write(template.render(model=model))
-                file.write('\n')
-
-# Generate db repositories
-def generateDbRepository():
-    dbRepositoryPath = Config.configData['globals']['paths']['db_model']
-    dbRepositoryFullPath = f'{Config.projectPath}/{dbRepositoryPath}'
-    createDir(path=dbRepositoryFullPath)
-
-    for modelConfig in Config.configData['domain_models']:
-        model = modelConfig['model']
-        doNotSkip = True if 'skip' in model and 'db_repository' not in model['skip'] else False
-        if doNotSkip:
-            dbModelFileName = Util.snakeCaseToUpperCameCaseString(model['name'])
-            template = jinjaEnv.get_template(f'repository/model_db_repository.jinja2')
-            with open(f'{dbRepositoryFullPath}/{dbModelFileName}.py',
-                      'w+') as file:
-                file.write(template.render(model=model))
-                file.write('\n')
-
-# Generate messaging listeners
-def generateMessagingListener():
-    messageListenerPath = Config.configData['globals']['paths']['messaging_listener']
-    messageListenerFullPath = f'{Config.projectPath}/{messageListenerPath}'
-    createDir(path=messageListenerFullPath)
-
-    for modelConfig in Config.configData['domain_models']:
-        model = modelConfig['model']
-        doNotSkip = True if 'skip' in model and 'listener' not in model['skip'] else False
-        if doNotSkip:
-            # region Create handlers in common/handler
-            commonHandlerDirFullPath = f'{messageListenerFullPath}/common/handler'
-            commonModelHandlerDirFullPath = f'{commonHandlerDirFullPath}/{model["path"]}'
-            createDir(commonModelHandlerDirFullPath)
-            templates = [
-                jinjaEnv.get_template(f'messaging/listener/common/create_model_handler.jinja2'),
-                jinjaEnv.get_template(f'messaging/listener/common/delete_model_handler.jinja2'),
-                jinjaEnv.get_template(f'messaging/listener/common/update_model_handler.jinja2'),
-            ]
-            modelFileName = Util.snakeCaseToUpperCameCaseString(model['name'])
-            for templateIndex, fileName in {0: f'Create{modelFileName}Hanlder',
-                                            1: f'Delete{modelFileName}Handler',
-                                            2: f'Update{modelFileName}Handler',
-                                            }.items():
-                with open(f'{commonModelHandlerDirFullPath}/{fileName}.py', 'w+') as file:
-                    file.write(templates[templateIndex].render(model=model))
-                    file.write('\n')
-            # endregion
-
-            # region Create handlers in project_command/handler
-            projectCommandHandlerDirFullPath = f'{messageListenerFullPath}/project_command/handler'
-            projectModelHandlerDirFullPath = f'{projectCommandHandlerDirFullPath}/{model["path"]}'
-            createDir(projectModelHandlerDirFullPath)
-            templates = [
-                jinjaEnv.get_template(f'messaging/listener/create_model_handler.jinja2'),
-                jinjaEnv.get_template(f'messaging/listener/delete_model_handler.jinja2'),
-                jinjaEnv.get_template(f'messaging/listener/update_model_handler.jinja2'),
-            ]
-            modelFileName = Util.snakeCaseToUpperCameCaseString(model['name'])
-            for templateIndex, fileName in {0: f'Create{modelFileName}Hanlder',
-                                            1: f'Delete{modelFileName}Handler',
-                                            2: f'Update{modelFileName}Handler',
-                                            }.items():
-                with open(f'{projectModelHandlerDirFullPath}/{fileName}.py', 'w+') as file:
-                    file.write(templates[templateIndex].render(model=model))
-                    file.write('\n')
-            # endregion
-
-            # region Create db persistence handler
-            dbPersistenceCommandHandlerDirFullPath = f'{messageListenerFullPath}/db_persistence/handler'
-            dbPersistenceModelHandlerDirFullPath = f'{dbPersistenceCommandHandlerDirFullPath}/{model["path"]}'
-            createDir(dbPersistenceModelHandlerDirFullPath)
-            template = jinjaEnv.get_template(f'messaging/listener/db_persistence/model_handler.jinja2')
-            modelFileName = Util.snakeCaseToUpperCameCaseString(model['name'])
-            with open(f'{dbPersistenceModelHandlerDirFullPath}/{modelFileName}Handler.py', 'w+') as file:
-                file.write(template.render(model=model))
-                file.write('\n')
-            # endregion
-
+# Generate protocol buffer files
 def generateProtoBuffer():
-    protoPath = Config.configData['globals']['paths']['proto_buffer']
+    protoPath = Config.configData['global']['path']['proto_buffer']
     protoFullPath = f'{Config.projectPath}/{protoPath}'
-    createDir(path=protoFullPath)
-    for modelConfig in Config.configData['domain_models']:
+    _createDir(path=protoFullPath)
+    for modelConfig in Config.configData['domain_model']:
         model = modelConfig['model']
-        doNotSkip = True if 'skip' in model and 'proto' not in model['skip'] else False
+        doNotSkip = True if ('skip' in model and 'proto' not in model['skip']) or ('skip' not in model) else False
         if doNotSkip:
-            modelProtoName = f'{protoFullPath}/{model["name"]}'
+            modelProtoName = f'{protoFullPath}/{model["microservice"]}/{model["name"]}'
             modelTemplate = jinjaEnv.get_template(f'proto/model.jinja2')
             modelAppTemplate = jinjaEnv.get_template(f'proto/model_app.jinja2')
             with open(f'{modelProtoName}.proto', 'w+') as file:
@@ -283,21 +121,87 @@ def generateProtoBuffer():
                 file.write(modelAppTemplate.render(model=model))
                 file.write('\n')
 
-def generateGrpcApi():
-    grpcPath = Config.configData['globals']['paths']['grpc_api_listener']
-    grpcFullPath = f'{Config.projectPath}/{grpcPath}'
-    createDir(path=grpcFullPath)
-    for modelConfig in Config.configData['domain_models']:
+
+# Generate routes for the models
+def generateRoute():
+    routerPath = Config.configData['global']['path']['router']
+    routerFullPath = f'{Config.projectPath}/{routerPath}'
+    _createDir(path=routerFullPath)
+    for modelConfig in Config.configData['domain_model']:
         model = modelConfig['model']
-        doNotSkip = True if 'skip' in model and 'grpc' not in model['skip'] else False
+        _createDir(f'{routerFullPath}/{model["path"]}')
+        doNotSkip = True if ('skip' in model and 'router' not in model['skip']) or ('skip' not in model) else False
         if doNotSkip:
-            modelGrpcName = f'{grpcFullPath}/{Util.snakeCaseToUpperCameCaseString(model["name"])}AppServiceListener'
-            modelTemplate = jinjaEnv.get_template(f'grpc/model.jinja2')
-            with open(f'{modelGrpcName}.py', 'w+') as file:
-                file.write(modelTemplate.render(model=model))
+            modelTestName = f'{routerFullPath}/{model["path"]}/{model["name"]}'
+            testTemplate = jinjaEnv.get_template(f'router/model.jinja2')
+            with open(f'{modelTestName}.py', 'w+') as file:
+                file.write(testTemplate.render(model=model))
                 file.write('\n')
 
-def createDir(path: str):
+
+# Generate api response models
+def generateRouterModelResponse():
+    modelResponsePath = Config.configData['global']['path']['router_model_response']
+    modelResponseFullPath = f'{Config.projectPath}/{modelResponsePath}'
+    _createDir(path=modelResponseFullPath)
+    for modelConfig in Config.configData['domain_model']:
+        model = modelConfig['model']
+        _createDir(f'{modelResponseFullPath}/{model["path"]}')
+        doNotSkip = True if ('skip' in model and 'model_response' not in model['skip']) or (
+                'skip' not in model) else False
+        if doNotSkip:
+            modelTestName = f'{modelResponseFullPath}/{model["path"]}/{Util.snakeCaseToUpperCameCaseString(model["name"])}'
+            template = jinjaEnv.get_template(f'router/model_response/model.jinja2')
+            with open(f'{modelTestName}.py', 'w+') as file:
+                file.write(template.render(model=model))
+                file.write('\n')
+            template = jinjaEnv.get_template(f'router/model_response/models.jinja2')
+            with open(f'{modelTestName}s.py', 'w+') as file:
+                file.write(template.render(model=model))
+                file.write('\n')
+
+
+# Generate grpc client files
+def generateGrpcApiClient():
+    grpcClientPath = Config.configData['global']['path']['grpc_api_client']
+    grpcClientFullPath = f'{Config.projectPath}/{grpcClientPath}'
+    _createDir(path=grpcClientFullPath)
+    for modelConfig in Config.configData['domain_model']:
+        model = modelConfig['model']
+        _createDir(f'{grpcClientFullPath}/{model["path"]}')
+        doNotSkip = True if ('skip' in model and 'grpc_client' not in model['skip']) or ('skip' not in model) else False
+        if doNotSkip:
+            modelTestName = f'{grpcClientFullPath}/{model["path"]}/{Util.snakeCaseToUpperCameCaseString(model["name"])}'
+            template = jinjaEnv.get_template(f'grpc/model.jinja2')
+            with open(f'{modelTestName}Client.py', 'w+') as file:
+                file.write(template.render(model=model))
+                file.write('\n')
+
+
+def _addTemplateBeforeSignatureEnd(fullFilePath, template, model, signatureStart, signatureEnd):
+    tabSize = Config.configData['global']['setting']['tab_size']
+    renderedTemplate = template.render(model=model)
+    spaces = ' ' * tabSize
+    spacedRenderedTemplate = renderedTemplate.replace('\t', spaces)
+    fileLines = []
+    currentContent = ''
+    with open(f'{fullFilePath}.py', 'r+') as file:
+        fileLines = file.readlines()
+        file.seek(0)
+        currentContent = file.read()
+    with open(f'{fullFilePath}.py', 'w+') as file:
+        if currentContent.find(spacedRenderedTemplate) == -1:
+            for signatureStartIndex in range(0, len(fileLines)):
+                if fileLines[signatureStartIndex].find(signatureStart) != -1:
+                    for signatureEndIndex in range(signatureStartIndex + 1, len(fileLines)):
+                        if fileLines[signatureEndIndex].find(signatureEnd) != -1:
+                            fileLines.insert(signatureEndIndex - 1, f'{renderedTemplate}\n')
+                            break
+                    break
+        file.writelines(fileLines)
+
+
+def _createDir(path: str):
     os.makedirs(path, exist_ok=True)
     Path(f'{path}/__init__.py').touch()
 
@@ -311,26 +215,40 @@ def funcParamsJinjaFilter(value):
 def funcArgsLowerKeyJinjaFilter(value, objectName=None, objectType=None, sign='='):
     if objectName is not None:
         if objectType == 'function':
-            res = map(lambda x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{objectName}.{x["name"]}()', value)
+            res = map(lambda
+                          x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{objectName}.{x["name"]}()',
+                      value)
         elif objectType == 'dictionary':
-            res = map(lambda x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{objectName}["{x["name"]}"]', value)
+            res = map(lambda
+                          x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{objectName}["{x["name"]}"]',
+                      value)
         else:
-            res = map(lambda x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{objectName}.{x["name"]}', value)
+            res = map(lambda
+                          x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{objectName}.{x["name"]}',
+                      value)
     else:
         res = map(lambda x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{x["name"]}', value)
     return ', '.join(list(res))
 
+
 def funcArgsLowerValueJinjaFilter(value, objectName=None, objectType=None, sign='='):
     if objectName is not None:
         if objectType == 'function':
-            res = map(lambda x: f'{_argKey(x["name"], sign)}{sign}{objectName}.{Util.snakeCaseToLowerCameCaseString(x["name"])}()', value)
+            res = map(lambda
+                          x: f'{_argKey(x["name"], sign)}{sign}{objectName}.{Util.snakeCaseToLowerCameCaseString(x["name"])}()',
+                      value)
         elif objectType == 'dictionary':
-            res = map(lambda x: f'{_argKey(x["name"], sign)}{sign}{objectName}["{Util.snakeCaseToLowerCameCaseString(x["name"])}"]', value)
+            res = map(lambda
+                          x: f'{_argKey(x["name"], sign)}{sign}{objectName}["{Util.snakeCaseToLowerCameCaseString(x["name"])}"]',
+                      value)
         else:
-            res = map(lambda x: f'{_argKey(x["name"], sign)}{sign}{objectName}.{Util.snakeCaseToLowerCameCaseString(x["name"])}', value)
+            res = map(lambda
+                          x: f'{_argKey(x["name"], sign)}{sign}{objectName}.{Util.snakeCaseToLowerCameCaseString(x["name"])}',
+                      value)
     else:
         res = map(lambda x: f'{_argKey(x["name"], sign)}{sign}{Util.snakeCaseToLowerCameCaseString(x["name"])}', value)
     return ', '.join(list(res))
+
 
 def funcArgsJinjaFilter(value, objectName=None, objectType=None, sign='='):
     if objectName is not None:
@@ -344,17 +262,27 @@ def funcArgsJinjaFilter(value, objectName=None, objectType=None, sign='='):
         res = map(lambda x: f'{_argKey(x["name"], sign)}{sign}{x["name"]}', value)
     return ', '.join(list(res))
 
+
 def funcArgsLowerCamelCaseJinjaFilter(value, objectName=None, objectType=None, sign='='):
     if objectName is not None:
         if objectType == 'function':
-            res = map(lambda x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{objectName}.{Util.snakeCaseToLowerCameCaseString(x["name"])}()', value)
+            res = map(lambda
+                          x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{objectName}.{Util.snakeCaseToLowerCameCaseString(x["name"])}()',
+                      value)
         elif objectType == 'dictionary':
-            res = map(lambda x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{objectName}["{Util.snakeCaseToLowerCameCaseString(x["name"])}"]', value)
+            res = map(lambda
+                          x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{objectName}["{Util.snakeCaseToLowerCameCaseString(x["name"])}"]',
+                      value)
         else:
-            res = map(lambda x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{objectName}.{Util.snakeCaseToLowerCameCaseString(x["name"])}', value)
+            res = map(lambda
+                          x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{objectName}.{Util.snakeCaseToLowerCameCaseString(x["name"])}',
+                      value)
     else:
-        res = map(lambda x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{Util.snakeCaseToLowerCameCaseString(x["name"])}', value)
+        res = map(lambda
+                      x: f'{_argKey(Util.snakeCaseToLowerCameCaseString(x["name"]), sign)}{sign}{Util.snakeCaseToLowerCameCaseString(x["name"])}',
+                  value)
     return ', '.join(list(res))
+
 
 def _argKey(string: str, sign: str):
     return f'"{string}"' if sign == ':' else string
@@ -366,8 +294,12 @@ def funcToMapReturnDataJinjaFilter(value):
 
 
 def funcMapCompareJinjaFilter(value):
-    res = map(lambda x: f"self.{Util.snakeCaseToLowerCameCaseString(x['name'])}() == other.{Util.snakeCaseToLowerCameCaseString(x['name'])}()", value)
+    res = map(lambda
+                  x: f"self.{Util.snakeCaseToLowerCameCaseString(x['name'])}() == other.{Util.snakeCaseToLowerCameCaseString(x['name'])}()",
+              value)
     return ' and '.join(list(res))
+
+
 # endregion
 
 
