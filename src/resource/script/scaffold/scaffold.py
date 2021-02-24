@@ -150,9 +150,9 @@ def generateRoute():
         _createDir(f'{routerFullPath}/{model["path"]}')
         doNotSkip = True if ('skip' in model and 'router' not in model['skip'] and 'all' not in model['skip']) or ('skip' not in model) else False
         if doNotSkip:
-            modelTestName = f'{routerFullPath}/{model["path"]}/{model["name"]}'
+            modelName = f'{routerFullPath}/{model["path"]}/{model["name"]}'
             testTemplate = jinjaEnv.get_template(f'router/model.jinja2')
-            with open(f'{modelTestName}.py', 'w+') as file:
+            with open(f'{modelName}.py', 'w+') as file:
                 file.write(testTemplate.render(model=model))
                 file.write('\n')
 

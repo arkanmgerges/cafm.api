@@ -7,3 +7,5 @@ import "project/subcontractor_app_service.proto";
 import "project/equipment_model_app_service.proto";
 import "project/manufacturer_app_service.proto";
 import "project/equipment_project_category_app_service.proto";
+import "project/equipment_category_app_service.proto";
+import "project/equipment_category_group_app_service.proto";
