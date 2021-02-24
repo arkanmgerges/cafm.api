@@ -5,3 +5,4 @@ import "project/user_app_service.proto";
 import "project/user_lookup_app_service.proto";
 import "project/subcontractor_app_service.proto";
 import "project/equipment_model_app_service.proto";
+import "project/manufacturer_app_service.proto";

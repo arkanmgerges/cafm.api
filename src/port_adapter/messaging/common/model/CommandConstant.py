@@ -68,5 +68,8 @@ class CommandConstant(Enum):
     CREATE_EQUIPMENT_MODEL = 'create_equipment_model'
     UPDATE_EQUIPMENT_MODEL = 'update_equipment_model'
     DELETE_EQUIPMENT_MODEL = 'delete_equipment_model'   
+    CREATE_MANUFACTURER = 'create_manufacturer'
+    UPDATE_MANUFACTURER = 'update_manufacturer'
+    DELETE_MANUFACTURER = 'delete_manufacturer'
 
 # endregion
