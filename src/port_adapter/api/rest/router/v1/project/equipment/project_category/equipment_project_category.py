@@ -17,9 +17,9 @@ from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR,
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.grpc.v1.project.manufacturer.ManufacturerClient import ManufacturerClient
-from src.port_adapter.api.rest.model.response.v1.project.manufacturer.Manufacturers import Manufacturers
-from src.port_adapter.api.rest.model.response.v1.project.manufacturer.Manufacturer import ManufacturerDescriptor
+from src.port_adapter.api.rest.grpc.v1.project.equipment.project_category.EquipmentProjectCategoryClient import EquipmentProjectCategoryClient
+from src.port_adapter.api.rest.model.response.v1.project.equipment.project_category.EquipmentProjectCategorys import EquipmentProjectCategorys
+from src.port_adapter.api.rest.model.response.v1.project.equipment.project_category.EquipmentProjectCategory import EquipmentProjectCategoryDescriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -29,18 +29,18 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="", summary='Get all manufacturer(s)', response_model=Manufacturers)
+@router.get(path="", summary='Get all equipment project category(s)', response_model=EquipmentProjectCategorys)
 @OpenTelemetry.fastApiTraceOTel
-async def getManufacturers(*,
+async def getEquipmentProjectCategorys(*,
                             result_from: int = Query(0, description='Starting offset for fetching data'),
                             result_size: int = Query(10, description='Item count to be fetched'),
                             order: str = Query('', description='e.g. id:asc,email:desc'),
                             _=Depends(CustomHttpBearer())):
     try:
-        client = ManufacturerClient()
+        client = EquipmentProjectCategoryClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.manufacturers(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.equipmentProjectCategorys(resultFrom=result_from, resultSize=result_size, order=order)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -48,23 +48,23 @@ async def getManufacturers(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getManufacturers.__module__}.{getManufacturers.__qualname__}] - error response e: {e}')
+                f'[{getEquipmentProjectCategorys.__module__}.{getEquipmentProjectCategorys.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
 
 
-@router.get(path="/{manufacturer_id}", summary='Get manufacturer by id',
-            response_model=ManufacturerDescriptor)
+@router.get(path="/{equipment_project_category_id}", summary='Get equipment project category by id',
+            response_model=EquipmentProjectCategoryDescriptor)
 @OpenTelemetry.fastApiTraceOTel
-async def getManufacturerById(*, manufacturer_id: str = Path(...,
-                                                                description='manufacturer id that is used to fetch manufacturer data'),
+async def getEquipmentProjectCategoryById(*, equipment_project_category_id: str = Path(...,
+                                                                description='equipment project category id that is used to fetch equipment project category data'),
                                _=Depends(CustomHttpBearer())):
-    """Get a manufacturer by id
+    """Get a equipment project category by id
     """
     try:
-        client = ManufacturerClient()
-        return client.manufacturerById(id=manufacturer_id)
+        client = EquipmentProjectCategoryClient()
+        return client.equipmentProjectCategoryById(id=equipment_project_category_id)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -72,21 +72,21 @@ async def getManufacturerById(*, manufacturer_id: str = Path(...,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getManufacturerById.__module__}.{getManufacturerById.__qualname__}] - error response e: {e}')
+                f'[{getEquipmentProjectCategoryById.__module__}.{getEquipmentProjectCategoryById.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
 
 
-@router.post("", summary='Create manufacturer', status_code=status.HTTP_200_OK)
+@router.post("", summary='Create equipment project category', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='name of manufacturer', embed=True),
+                 name: str = Body(..., description='name of equipment project category', embed=True),
                 ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_MANUFACTURER.value,
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_EQUIPMENT_PROJECT_CATEGORY.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
@@ -97,19 +97,19 @@ async def create(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 
-@router.put("/{manufacturer_id}", summary='Update manufacturer', status_code=status.HTTP_200_OK)
+@router.put("/{equipment_project_category_id}", summary='Update equipment project category', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
-                 manufacturer_id: str = Path(..., description='manufacturer id that is used in order to update the manufacturer'),
+                 equipment_project_category_id: str = Path(..., description='equipment project category id that is used in order to update the equipment project category'),
                  name: str = Body(..., description='name of name', embed=True),                 
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MANUFACTURER.value,
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_EQUIPMENT_PROJECT_CATEGORY.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
-                                            {'manufacturer_id': manufacturer_id,
+                                            {'equipment_project_category_id': equipment_project_category_id,
                                             'name': name,
                                              }),
                                         external=[]),
@@ -117,19 +117,19 @@ async def update(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 
-# @router.patch("/{manufacturer_id}", summary='Partial update manufacturer', status_code=status.HTTP_200_OK)
+# @router.patch("/{equipment_project_category_id}", summary='Partial update equipment project category', status_code=status.HTTP_200_OK)
 # @OpenTelemetry.fastApiTraceOTel
 # async def partialUpdate(*, _=Depends(CustomHttpBearer()),
-#                         manufacturer_id: str = Path(..., description='manufacturer id that is used in order to update the manufacturer'),
+#                         equipment_project_category_id: str = Path(..., description='equipment project category id that is used in order to update the equipment project category'),
 #                         name: str = Body(..., description='name of name', embed=True),
 #                         ):
 #     reqId = str(uuid4())
 #     producer = AppDi.instance.get(SimpleProducer)
 #     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-#     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MANUFACTURER.value,
+#     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_EQUIPMENT_PROJECT_CATEGORY.value,
 #                                         metadata=json.dumps({"token": Client.token}),
 #                                         data=json.dumps(
-#                                             {'manufacturer_id': manufacturer_id,
+#                                             {'equipment_project_category_id': equipment_project_category_id,
 #                                             'name': name,
 #                                             }),
 #                                         external=[]),
@@ -137,17 +137,17 @@ async def update(*, _=Depends(CustomHttpBearer()),
 #     return {"request_id": reqId}
 
 
-@router.delete("/{manufacturer_id}", summary='Delete a manufacturers', status_code=status.HTTP_200_OK)
+@router.delete("/{equipment_project_category_id}", summary='Delete a equipment project categorys', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
-                 manufacturer_id: str = Path(..., description='manufacturer id that is used in order to delete the manufacturer'), ):
+                 equipment_project_category_id: str = Path(..., description='equipment project category id that is used in order to delete the equipment project category'), ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_MANUFACTURER.value,
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_EQUIPMENT_PROJECT_CATEGORY.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
-                                            {'manufacturer_id': manufacturer_id}),
+                                            {'equipment_project_category_id': equipment_project_category_id}),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
     return {"request_id": reqId}

@@ -29,6 +29,7 @@ from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.port_adapter.api.rest.router.v1.project.equipment.model import equipment_model as project_equipment_model
 from src.port_adapter.api.rest.router.v1.project.manufacturer import manufacturer as project_manufacturer
+from src.port_adapter.api.rest.router.v1.project.equipment.project_category import equipment_project_category as project_equipment_project_category
 
 # from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
@@ -140,5 +141,7 @@ app.include_router(project_subcontractor.router, prefix="/v1/project/subcontract
 app.include_router(project_equipment_model.router, prefix="/v1/project/equipment_models", tags=["Project/Equipment"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(project_manufacturer.router, prefix="/v1/project/manufacturers", tags=["Project/Manufacturer"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+app.include_router(project_equipment_project_category.router, prefix="/v1/project/equipment_project_categories", tags=["Project/Equipment"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 # endregion

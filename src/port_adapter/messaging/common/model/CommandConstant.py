@@ -71,5 +71,8 @@ class CommandConstant(Enum):
     CREATE_MANUFACTURER = 'create_manufacturer'
     UPDATE_MANUFACTURER = 'update_manufacturer'
     DELETE_MANUFACTURER = 'delete_manufacturer'
+    CREATE_EQUIPMENT_PROJECT_CATEGORY = 'create_equipment_project_category'
+    UPDATE_EQUIPMENT_PROJECT_CATEGORY = 'update_equipment_project_category'
+    DELETE_EQUIPMENT_PROJECT_CATEGORY = 'delete_equipment_project_category'
 
 # endregion

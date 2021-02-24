@@ -111,7 +111,7 @@ def generateProtoBuffer():
     _createDir(path=protoFullPath)
     for modelConfig in Config.configData['domain_model']:
         model = modelConfig['model']
-        doNotSkip = True if ('skip' in model and 'proto' not in model['skip']) or ('skip' not in model) else False
+        doNotSkip = True if ('skip' in model and 'proto' not in model['skip'] and 'all' not in model['skip']) or ('skip' not in model) else False
         if doNotSkip:
             modelProtoName = f'{protoFullPath}/{model["microservice"]}/{model["name"]}'
             modelTemplate = jinjaEnv.get_template(f'proto/model.jinja2')
@@ -130,7 +130,7 @@ def generateCommandConstant():
     _createDir(path=messageFullPath)
     for modelConfig in Config.configData['domain_model']:
         model = modelConfig['model']
-        doNotSkip = True if ('skip' in model and 'command_constant' not in model['skip']) or ('skip' not in model) else False
+        doNotSkip = True if ('skip' in model and 'command_constant' not in model['skip'] and 'all' not in model['skip']) or ('skip' not in model) else False
         if doNotSkip:
             _addTemplateBeforeSignatureEnd(fullFilePath=f'{messageFullPath}/common/model/CommandConstant',
                                            template=jinjaEnv.get_template(f'messaging/command_constant.jinja2'),
@@ -148,7 +148,7 @@ def generateRoute():
     for modelConfig in Config.configData['domain_model']:
         model = modelConfig['model']
         _createDir(f'{routerFullPath}/{model["path"]}')
-        doNotSkip = True if ('skip' in model and 'router' not in model['skip']) or ('skip' not in model) else False
+        doNotSkip = True if ('skip' in model and 'router' not in model['skip'] and 'all' not in model['skip']) or ('skip' not in model) else False
         if doNotSkip:
             modelTestName = f'{routerFullPath}/{model["path"]}/{model["name"]}'
             testTemplate = jinjaEnv.get_template(f'router/model.jinja2')
@@ -165,7 +165,7 @@ def generateRouterModelResponse():
     for modelConfig in Config.configData['domain_model']:
         model = modelConfig['model']
         _createDir(f'{modelResponseFullPath}/{model["path"]}')
-        doNotSkip = True if ('skip' in model and 'model_response' not in model['skip']) or (
+        doNotSkip = True if ('skip' in model and 'model_response' not in model['skip'] and 'all' not in model['skip']) or (
                 'skip' not in model) else False
         if doNotSkip:
             modelTestName = f'{modelResponseFullPath}/{model["path"]}/{Util.snakeCaseToUpperCameCaseString(model["name"])}'
@@ -187,7 +187,7 @@ def generateGrpcApiClient():
     for modelConfig in Config.configData['domain_model']:
         model = modelConfig['model']
         _createDir(f'{grpcClientFullPath}/{model["path"]}')
-        doNotSkip = True if ('skip' in model and 'grpc_client' not in model['skip']) or ('skip' not in model) else False
+        doNotSkip = True if ('skip' in model and 'grpc_client' not in model['skip'] and 'all' not in model['skip']) or ('skip' not in model) else False
         if doNotSkip:
             modelTestName = f'{grpcClientFullPath}/{model["path"]}/{Util.snakeCaseToUpperCameCaseString(model["name"])}'
             template = jinjaEnv.get_template(f'grpc/model.jinja2')

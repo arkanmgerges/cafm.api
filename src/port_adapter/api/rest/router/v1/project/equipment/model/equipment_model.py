@@ -117,24 +117,24 @@ async def update(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 
-@router.patch("/{equipment_model_id}", summary='Partial update equipment model', status_code=status.HTTP_200_OK)
-@OpenTelemetry.fastApiTraceOTel
-async def partialUpdate(*, _=Depends(CustomHttpBearer()),
-                        equipment_model_id: str = Path(..., description='equipment model id that is used in order to update the equipment model'),
-                        name: str = Body(..., description='name of name', embed=True),
-                        ):
-    reqId = str(uuid4())
-    producer = AppDi.instance.get(SimpleProducer)
-    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_EQUIPMENT_MODEL.value,
-                                        metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps(
-                                            {'equipment_model_id': equipment_model_id,
-                                            'name': name,
-                                            }),
-                                        external=[]),
-                     schema=ProjectCommand.get_schema())
-    return {"request_id": reqId}
+# @router.patch("/{equipment_model_id}", summary='Partial update equipment model', status_code=status.HTTP_200_OK)
+# @OpenTelemetry.fastApiTraceOTel
+# async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+#                         equipment_model_id: str = Path(..., description='equipment model id that is used in order to update the equipment model'),
+#                         name: str = Body(..., description='name of name', embed=True),
+#                         ):
+#     reqId = str(uuid4())
+#     producer = AppDi.instance.get(SimpleProducer)
+#     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+#     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_EQUIPMENT_MODEL.value,
+#                                         metadata=json.dumps({"token": Client.token}),
+#                                         data=json.dumps(
+#                                             {'equipment_model_id': equipment_model_id,
+#                                             'name': name,
+#                                             }),
+#                                         external=[]),
+#                      schema=ProjectCommand.get_schema())
+#     return {"request_id": reqId}
 
 
 @router.delete("/{equipment_model_id}", summary='Delete a equipment models', status_code=status.HTTP_200_OK)
