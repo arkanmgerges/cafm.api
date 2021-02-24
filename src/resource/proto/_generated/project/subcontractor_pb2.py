@@ -15,11 +15,11 @@ _sym_db = _symbol_database.Default()
 
 DESCRIPTOR = _descriptor.FileDescriptor(
   name='project/subcontractor.proto',
-  package='cafm.project.organization',
+  package='cafm.project.subcontractor',
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1bproject/subcontractor.proto\x12\x19\x63\x61\x66m.project.organization\"\xa7\x01\n\rSubcontractor\x12\n\n\x02id\x18\x01 \x01(\t\x12\x13\n\x0b\x63ompanyName\x18\x02 \x01(\t\x12\x12\n\nwebsiteUrl\x18\x03 \x01(\t\x12\x15\n\rcontactPerson\x18\x04 \x01(\t\x12\r\n\x05\x65mail\x18\x05 \x01(\t\x12\x13\n\x0bphoneNumber\x18\x06 \x01(\t\x12\x12\n\naddressOne\x18\x07 \x01(\t\x12\x12\n\naddressTwo\x18\x08 \x01(\tb\x06proto3'
+  serialized_pb=b'\n\x1bproject/subcontractor.proto\x12\x1a\x63\x61\x66m.project.subcontractor\"\xa7\x01\n\rSubcontractor\x12\n\n\x02id\x18\x01 \x01(\t\x12\x13\n\x0b\x63ompanyName\x18\x02 \x01(\t\x12\x12\n\nwebsiteUrl\x18\x03 \x01(\t\x12\x15\n\rcontactPerson\x18\x04 \x01(\t\x12\r\n\x05\x65mail\x18\x05 \x01(\t\x12\x13\n\x0bphoneNumber\x18\x06 \x01(\t\x12\x12\n\naddressOne\x18\x07 \x01(\t\x12\x12\n\naddressTwo\x18\x08 \x01(\tb\x06proto3'
 )
 
 
@@ -27,63 +27,63 @@ DESCRIPTOR = _descriptor.FileDescriptor(
 
 _SUBCONTRACTOR = _descriptor.Descriptor(
   name='Subcontractor',
-  full_name='cafm.project.organization.Subcontractor',
+  full_name='cafm.project.subcontractor.Subcontractor',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='id', full_name='cafm.project.organization.Subcontractor.id', index=0,
+      name='id', full_name='cafm.project.subcontractor.Subcontractor.id', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='companyName', full_name='cafm.project.organization.Subcontractor.companyName', index=1,
+      name='companyName', full_name='cafm.project.subcontractor.Subcontractor.companyName', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='websiteUrl', full_name='cafm.project.organization.Subcontractor.websiteUrl', index=2,
+      name='websiteUrl', full_name='cafm.project.subcontractor.Subcontractor.websiteUrl', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='contactPerson', full_name='cafm.project.organization.Subcontractor.contactPerson', index=3,
+      name='contactPerson', full_name='cafm.project.subcontractor.Subcontractor.contactPerson', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='email', full_name='cafm.project.organization.Subcontractor.email', index=4,
+      name='email', full_name='cafm.project.subcontractor.Subcontractor.email', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='phoneNumber', full_name='cafm.project.organization.Subcontractor.phoneNumber', index=5,
+      name='phoneNumber', full_name='cafm.project.subcontractor.Subcontractor.phoneNumber', index=5,
       number=6, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='addressOne', full_name='cafm.project.organization.Subcontractor.addressOne', index=6,
+      name='addressOne', full_name='cafm.project.subcontractor.Subcontractor.addressOne', index=6,
       number=7, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='addressTwo', full_name='cafm.project.organization.Subcontractor.addressTwo', index=7,
+      name='addressTwo', full_name='cafm.project.subcontractor.Subcontractor.addressTwo', index=7,
       number=8, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -101,8 +101,8 @@ _SUBCONTRACTOR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=59,
-  serialized_end=226,
+  serialized_start=60,
+  serialized_end=227,
 )
 
 DESCRIPTOR.message_types_by_name['Subcontractor'] = _SUBCONTRACTOR
@@ -111,7 +111,7 @@ _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 Subcontractor = _reflection.GeneratedProtocolMessageType('Subcontractor', (_message.Message,), {
   'DESCRIPTOR' : _SUBCONTRACTOR,
   '__module__' : 'project.subcontractor_pb2'
-  # @@protoc_insertion_point(class_scope:cafm.project.organization.Subcontractor)
+  # @@protoc_insertion_point(class_scope:cafm.project.subcontractor.Subcontractor)
   })
 _sym_db.RegisterMessage(Subcontractor)
 

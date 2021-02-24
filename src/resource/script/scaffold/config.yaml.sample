@@ -18,58 +18,14 @@ global:
 
 domain_model:
   - model:
-#      skip: [router, model_response, grpc_client, proto]
-      path: laptop
-      name: laptop
+#      skip: [router, model_response, grpc_client, proto, command_constant]
+      message_command: ProjectCommand
+      path: project/equipment/model
+      microservice: project
+      name: equipment_model
       field:
         - name: name
           type: str
-          default: None
-          db:
-            type: 'String(40)'
-            extra: "ForeignKey('building.id'), nullable=False"
+#          optional: True
           proto:
             type: string
-        - name: web_url
-          type: str
-          default: None
-          db:
-            type: 'String(40)'
-          proto:
-            type: string
-  - model:
-      path: laptop/newone
-      name: laptop2
-      field:
-        - name: name
-          type: str
-          default: None
-          db:
-            type: 'String(40)'
-          proto:
-            type: string
-        - name: quantity
-          type: int
-          default: -1
-          db:
-            type: 'Integer'
-          proto:
-            type: int32
-  - model:
-      path: laptop/newone2
-      name: laptop_very_good
-      field:
-        - name: name
-          type: str
-          default: None
-          db:
-            type: 'String(40)'
-          proto:
-            type: string
-        - name: quantity
-          type: int
-          default: None
-          db:
-            type: 'Integer'
-          proto:
-            type: int32

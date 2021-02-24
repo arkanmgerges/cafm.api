@@ -100,7 +100,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.{{ model.message_command }} import {{ model.message_command }}
-    producer.produce(obj={{ model.message_command }}(id=reqId, name=CommandConstant.CREATE_{{ className }}.value,
+    producer.produce(obj={{ model.message_command }}(id=reqId, name=CommandConstant.CREATE_{{ model.name | upper }}.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
@@ -124,7 +124,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.{{ model.message_command }} import {{ model.message_command }}
-    producer.produce(obj={{ model.message_command }}(id=reqId, name=CommandConstant.UPDATE_{{ className }}.value,
+    producer.produce(obj={{ model.message_command }}(id=reqId, name=CommandConstant.UPDATE_{{ model.name | upper }}.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {'{{ model.name }}_id': {{ model.name }}_id,
@@ -148,7 +148,7 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.{{ model.message_command }} import {{ model.message_command }}
-    producer.produce(obj={{ model.message_command }}(id=reqId, name=CommandConstant.UPDATE_{{ className }}.value,
+    producer.produce(obj={{ model.message_command }}(id=reqId, name=CommandConstant.UPDATE_{{ model.name | upper }}.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {'{{ model.name }}_id': {{ model.name }}_id,
@@ -168,7 +168,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.{{ model.message_command }} import {{ model.message_command }}
-    producer.produce(obj={{ model.message_command }}(id=reqId, name=CommandConstant.DELETE_{{ className }}.value,
+    producer.produce(obj={{ model.message_command }}(id=reqId, name=CommandConstant.DELETE_{{ model.name | upper }}.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {'{{ model.name }}_id': {{ model.name }}_id}),

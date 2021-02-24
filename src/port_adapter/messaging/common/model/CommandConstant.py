@@ -5,6 +5,7 @@
 from enum import Enum
 
 
+# region Command constants
 class CommandConstant(Enum):
     CREATE_USER = 'create_user'
     DELETE_USER = 'delete_user'
@@ -64,3 +65,8 @@ class CommandConstant(Enum):
     ASSIGN_SUBCONTRACTOR_TO_ORGANIZATION = 'assign_subcontractor_to_organization'
     REVOKE_ASSIGNMENT_SUBCONTRACTOR_TO_ORGANIZATION = 'revoke_assignment_subcontractor_to_organization'
     UPDATE_ORGANIZATION = 'update_organization'
+    CREATE_EQUIPMENT_MODEL = 'create_equipment_model'
+    UPDATE_EQUIPMENT_MODEL = 'update_equipment_model'
+    DELETE_EQUIPMENT_MODEL = 'delete_equipment_model'   
+
+# endregion

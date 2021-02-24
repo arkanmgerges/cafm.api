@@ -15,12 +15,12 @@ class SubcontractorAppServiceStub(object):
             channel: A grpc.Channel.
         """
         self.subcontractorById = channel.unary_unary(
-                '/cafm.project.organization.SubcontractorAppService/subcontractorById',
+                '/cafm.project.subcontractor.SubcontractorAppService/subcontractorById',
                 request_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorppService_subcontractorByIdRequest.SerializeToString,
                 response_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorppService_subcontractorByIdResponse.FromString,
                 )
         self.subcontractors = channel.unary_unary(
-                '/cafm.project.organization.SubcontractorAppService/subcontractors',
+                '/cafm.project.subcontractor.SubcontractorAppService/subcontractors',
                 request_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsRequest.SerializeToString,
                 response_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsResponse.FromString,
                 )
@@ -56,7 +56,7 @@ def add_SubcontractorAppServiceServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'cafm.project.organization.SubcontractorAppService', rpc_method_handlers)
+            'cafm.project.subcontractor.SubcontractorAppService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
@@ -75,7 +75,7 @@ class SubcontractorAppService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.project.organization.SubcontractorAppService/subcontractorById',
+        return grpc.experimental.unary_unary(request, target, '/cafm.project.subcontractor.SubcontractorAppService/subcontractorById',
             project_dot_subcontractor__app__service__pb2.SubcontractorppService_subcontractorByIdRequest.SerializeToString,
             project_dot_subcontractor__app__service__pb2.SubcontractorppService_subcontractorByIdResponse.FromString,
             options, channel_credentials,
@@ -92,7 +92,7 @@ class SubcontractorAppService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.project.organization.SubcontractorAppService/subcontractors',
+        return grpc.experimental.unary_unary(request, target, '/cafm.project.subcontractor.SubcontractorAppService/subcontractors',
             project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsRequest.SerializeToString,
             project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsResponse.FromString,
             options, channel_credentials,

@@ -67,6 +67,8 @@ def generate(config_file):
     generateGrpcApiClient()
     # Generate protocol buffer files
     generateProtoBuffer()
+    # Generate command constants
+    generateCommandConstant()
 
 
 @cli.command(help='Print config data')
@@ -120,6 +122,22 @@ def generateProtoBuffer():
             with open(f'{modelProtoName}_app_service.proto', 'w+') as file:
                 file.write(modelAppTemplate.render(model=model))
                 file.write('\n')
+
+# Generate protocol buffer files
+def generateCommandConstant():
+    messagePath = Config.configData['global']['path']['messaging']
+    messageFullPath = f'{Config.projectPath}/{messagePath}'
+    _createDir(path=messageFullPath)
+    for modelConfig in Config.configData['domain_model']:
+        model = modelConfig['model']
+        doNotSkip = True if ('skip' in model and 'command_constant' not in model['skip']) or ('skip' not in model) else False
+        if doNotSkip:
+            _addTemplateBeforeSignatureEnd(fullFilePath=f'{messageFullPath}/common/model/CommandConstant',
+                                           template=jinjaEnv.get_template(f'messaging/command_constant.jinja2'),
+                                           model=model,
+                                           signatureStart='# region Command constants',
+                                           signatureEnd='# endregion'
+                                           )
 
 
 # Generate routes for the models

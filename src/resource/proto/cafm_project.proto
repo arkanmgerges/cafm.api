@@ -3,3 +3,5 @@ syntax = "proto3";
 import "project/project_app_service.proto";
 import "project/user_app_service.proto";
 import "project/user_lookup_app_service.proto";
+import "project/subcontractor_app_service.proto";
+import "project/equipment_model_app_service.proto";

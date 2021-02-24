@@ -27,6 +27,7 @@ from src.port_adapter.api.rest.router.v1.project import project as project_proje
     organization as project_organization, lookup as project_lookup, subcontractor as project_subcontractor
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
+from src.port_adapter.api.rest.router.v1.project.equipment.model import equipment_model as project_equipment_model
 
 # from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
@@ -133,6 +134,8 @@ app.include_router(project_lookup.router, prefix="/v1/project/lookups", tags=["P
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(project_organization.router, prefix="/v1/project/organizations", tags=["Project/Organization"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(project_subcontractor.router, prefix="/v1/project/subcontractor", tags=["Project/SubContractor"],
+app.include_router(project_subcontractor.router, prefix="/v1/project/subcontractors", tags=["Project/SubContractor"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+app.include_router(project_equipment_model.router, prefix="/v1/project/equipment_models", tags=["Project/Equipment"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 # endregion

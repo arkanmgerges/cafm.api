@@ -59,7 +59,7 @@ class {{ className }}Client(Client):
                 logger.debug(
                     f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName }}s.__qualname__}] - grpc response: {response}')
 
-                return {{ className }}s({{ lowerCamelModelName }}s=[self._descriptorByObject(obj={{ lowerCamelModelName }}) for {{ lowerCamelModelName }} in
+                return {{ className }}s({{ model.name }}s=[self._descriptorByObject(obj={{ lowerCamelModelName }}) for {{ lowerCamelModelName }} in
                                                     response[0].{{ lowerCamelModelName }}s],
                                      item_count=response[0].itemCount)
             except Exception as e:
