@@ -32,6 +32,7 @@ from src.port_adapter.api.rest.router.v1.project.manufacturer import manufacture
 from src.port_adapter.api.rest.router.v1.project.equipment.project_category import equipment_project_category as project_equipment_project_category
 from src.port_adapter.api.rest.router.v1.project.equipment.category import equipment_category as project_equipment_category
 from src.port_adapter.api.rest.router.v1.project.equipment.category.group import equipment_category_group as project_equipment_category_group
+from src.port_adapter.api.rest.router.v1.project.equipment import equipment as project_equipment
 
 # from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
@@ -139,6 +140,8 @@ app.include_router(project_lookup.router, prefix="/v1/project/lookups", tags=["P
 app.include_router(project_organization.router, prefix="/v1/project/organizations", tags=["Project/Organization"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(project_subcontractor.router, prefix="/v1/project/subcontractors", tags=["Project/SubContractor"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+app.include_router(project_equipment.router, prefix="/v1/project/equipments", tags=["Project/Equipment"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(project_equipment_model.router, prefix="/v1/project/equipment_models", tags=["Project/Equipment"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})

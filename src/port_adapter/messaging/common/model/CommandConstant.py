@@ -80,5 +80,8 @@ class CommandConstant(Enum):
     CREATE_EQUIPMENT_CATEGORY_GROUP = 'create_equipment_category_group'
     UPDATE_EQUIPMENT_CATEGORY_GROUP = 'update_equipment_category_group'
     DELETE_EQUIPMENT_CATEGORY_GROUP = 'delete_equipment_category_group'
+    CREATE_EQUIPMENT = 'create_equipment'
+    UPDATE_EQUIPMENT = 'update_equipment'
+    DELETE_EQUIPMENT = 'delete_equipment'
 
 # endregion

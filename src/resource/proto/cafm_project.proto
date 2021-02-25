@@ -9,3 +9,4 @@ import "project/manufacturer_app_service.proto";
 import "project/equipment_project_category_app_service.proto";
 import "project/equipment_category_app_service.proto";
 import "project/equipment_category_group_app_service.proto";
+import "project/equipment_app_service.proto";
