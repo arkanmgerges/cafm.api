@@ -16,6 +16,7 @@ import traceback
 from pathlib import Path
 
 import click
+import emoji
 import yaml
 from jinja2.environment import Environment
 from jinja2.loaders import FileSystemLoader
@@ -24,12 +25,30 @@ from src.resource.common.Util import Util
 
 
 # region Global config & settings
-class TerminalColor:
-    BLUE = "\x1b[34;21m"
-    GREEN = "\x1b[32;21m"
-    YELLOW = "\x1b[33;21m"
-    RED = "\x1b[31;21m"
+class FrontTextTerminalColor:
+    BLUE = "\x1b[34m"
+    GREEN = "\x1b[32m"
+    YELLOW = "\x1b[33m"
+    RED = "\x1b[31m"
     RESET = "\x1b[0m"
+    BLACK = "\x1B[30m"
+    CYAN = "\x1b[36m"
+    BOLD = "\x1B[1m"
+    MAGENTA = "\x1b[35m"
+    UNDERLINE_ON = "\x1b[4m"
+    UNDERLINE_OFF = "\x1b[24m"
+
+class BackgroundTextTerminalColor:
+    BLUE = "\x1B[44m"
+    GREEN = "\x1B[42m"
+    YELLOW = "\x1B[43m"
+    RED = "\x1B[41m"
+    RESET = "\x1b[0m"
+    CYAN = "\x1b[46m"
+    BLACK = "\x1B[40m"
+    MAGENTA = "\x1b[45m"
+    UNDERLINE_ON = "\x1b[4m"
+    UNDERLINE_OFF = "\x1b[24m"
 
 
 class Config:
@@ -40,10 +59,10 @@ class Config:
 
     @staticmethod
     def __repr__():
-        return f'{TerminalColor.GREEN}projectPath:{TerminalColor.RESET} {Config.projectPath}\n' \
-               f'{TerminalColor.GREEN}templatePath:{TerminalColor.RESET} {Config.templatePath}\n' \
-               f'{TerminalColor.GREEN}configFilePath:{TerminalColor.RESET} {Config.configFilePath}\n' \
-               f'{TerminalColor.GREEN}configData:{TerminalColor.RESET} {json.dumps(Config.configData, indent=2)}\n'
+        return f'{FrontTextTerminalColor.GREEN}projectPath:{FrontTextTerminalColor.RESET} {Config.projectPath}\n' \
+               f'{FrontTextTerminalColor.GREEN}templatePath:{FrontTextTerminalColor.RESET} {Config.templatePath}\n' \
+               f'{FrontTextTerminalColor.GREEN}configFilePath:{FrontTextTerminalColor.RESET} {Config.configFilePath}\n' \
+               f'{FrontTextTerminalColor.GREEN}configData:{FrontTextTerminalColor.RESET} {json.dumps(Config.configData, indent=2)}\n'
 
 
 # endregion
@@ -142,58 +161,84 @@ def generateCommandConstant():
 
 # Generate routes for the models
 def generateRoute():
+    _print(modelName='', message=':gear: Generating routes')
     routerPath = Config.configData['global']['path']['router']
     routerFullPath = f'{Config.projectPath}/{routerPath}'
     _createDir(path=routerFullPath)
     for modelConfig in Config.configData['domain_model']:
+        isGenerated = False
         model = modelConfig['model']
         _createDir(f'{routerFullPath}/{model["path"]}')
         doNotSkip = True if ('skip' in model and 'router' not in model['skip'] and 'all' not in model['skip']) or ('skip' not in model) else False
         if doNotSkip:
+            isGenerated = True
             modelName = f'{routerFullPath}/{model["path"]}/{model["name"]}'
+            _print(modelName=f'{model["name"]}', message=f'generating {modelName} for #modelName', innerDepth=1)
             testTemplate = jinjaEnv.get_template(f'router/model.jinja2')
             with open(f'{modelName}.py', 'w+') as file:
                 file.write(testTemplate.render(model=model))
                 file.write('\n')
+        if isGenerated:
+            _print(modelName='', message='done :thumbs_up:', innerDepth=1)
+        else:
+            _print(modelName=model["name"], message='nothing is generated for #modelName :frog:', innerDepth=1)
 
 
 # Generate api response models
 def generateRouterModelResponse():
+    _print(modelName='', message=':gear: Generating router model responses')
     modelResponsePath = Config.configData['global']['path']['router_model_response']
     modelResponseFullPath = f'{Config.projectPath}/{modelResponsePath}'
     _createDir(path=modelResponseFullPath)
     for modelConfig in Config.configData['domain_model']:
+        isGenerated = False
         model = modelConfig['model']
         _createDir(f'{modelResponseFullPath}/{model["path"]}')
         doNotSkip = True if ('skip' in model and 'model_response' not in model['skip'] and 'all' not in model['skip']) or (
                 'skip' not in model) else False
         if doNotSkip:
+            isGenerated = True
+            _print(modelName=f'{model["name"]}', message=f'generating files for #modelName', innerDepth=1)
             modelTestName = f'{modelResponseFullPath}/{model["path"]}/{Util.snakeCaseToUpperCameCaseString(model["name"])}'
             template = jinjaEnv.get_template(f'router/model_response/model.jinja2')
+            _print(modelName=f'{model["name"]}', message=f'{modelTestName}.py for #modelName', innerDepth=2)
             with open(f'{modelTestName}.py', 'w+') as file:
                 file.write(template.render(model=model))
                 file.write('\n')
             template = jinjaEnv.get_template(f'router/model_response/models.jinja2')
+            _print(modelName=f'{model["name"]}', message=f'{modelTestName}s.py for #modelName', innerDepth=2)
             with open(f'{modelTestName}s.py', 'w+') as file:
                 file.write(template.render(model=model))
                 file.write('\n')
+        if isGenerated:
+            _print(modelName=model["name"], message='done generating code for #modelName :thumbs_up:', innerDepth=1)
+        else:
+            _print(modelName=model["name"], message='nothing is generated for #modelName :frog:', innerDepth=1)
 
 
 # Generate grpc client files
 def generateGrpcApiClient():
+    _print(modelName='', message=':gear: Generating grpc api clients')
     grpcClientPath = Config.configData['global']['path']['grpc_api_client']
     grpcClientFullPath = f'{Config.projectPath}/{grpcClientPath}'
     _createDir(path=grpcClientFullPath)
     for modelConfig in Config.configData['domain_model']:
+        isGenerated = False
         model = modelConfig['model']
         _createDir(f'{grpcClientFullPath}/{model["path"]}')
         doNotSkip = True if ('skip' in model and 'grpc_client' not in model['skip'] and 'all' not in model['skip']) or ('skip' not in model) else False
         if doNotSkip:
+            isGenerated = True
             modelTestName = f'{grpcClientFullPath}/{model["path"]}/{Util.snakeCaseToUpperCameCaseString(model["name"])}'
             template = jinjaEnv.get_template(f'grpc/model.jinja2')
+            _print(modelName=f'{model["name"]}', message=f'{modelTestName}Client.py for #modelName', innerDepth=1)
             with open(f'{modelTestName}Client.py', 'w+') as file:
                 file.write(template.render(model=model))
                 file.write('\n')
+        if isGenerated:
+            _print(modelName=model["name"], message='done generating code for #modelName :thumbs_up:', innerDepth=1)
+        else:
+            _print(modelName=model["name"], message='nothing is generated for #modelName :frog:', innerDepth=1)
 
 
 def _addTemplateBeforeSignatureEnd(fullFilePath, template, model, signatureStart, signatureEnd):
@@ -217,6 +262,17 @@ def _addTemplateBeforeSignatureEnd(fullFilePath, template, model, signatureStart
                             break
                     break
         file.writelines(fileLines)
+
+def _print(modelName, message, innerDepth: int = 0):
+    colorIndex = {0: FrontTextTerminalColor.MAGENTA, 1: FrontTextTerminalColor.CYAN, 2: FrontTextTerminalColor.BLUE}
+    modelString = f'{FrontTextTerminalColor.GREEN}{FrontTextTerminalColor.BOLD}{modelName}{FrontTextTerminalColor.RESET}'
+    messageString = message.replace('#modelName', modelString)
+    if innerDepth > 0:
+        messageString = f'{FrontTextTerminalColor.RESET}{colorIndex[innerDepth]}{messageString}{FrontTextTerminalColor.RESET}'
+        tabs = '\t' * innerDepth
+        print(emoji.emojize(f'{tabs}---> {messageString}'))
+    else:
+        print(emoji.emojize(f'{FrontTextTerminalColor.RESET}{FrontTextTerminalColor.UNDERLINE_ON}{FrontTextTerminalColor.MAGENTA}{messageString}{FrontTextTerminalColor.RESET}'))
 
 
 def _createDir(path: str):
