@@ -19,6 +19,8 @@ global:
 domain_model:
   - model:
 #      skip: [router, model_response, grpc_client, proto, command_constant]
+#     Overwrite the file even if it was modified manually, otherwise, the file will not be overwritten
+#     file_overwrite: True
       message_command: ProjectCommand
       path: project/equipment/model
       microservice: project
