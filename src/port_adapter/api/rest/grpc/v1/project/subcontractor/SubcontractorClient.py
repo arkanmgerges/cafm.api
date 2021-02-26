@@ -71,7 +71,7 @@ class SubcontractorClient(Client):
 
     def _descriptorByObject(self, obj: Any) -> SubcontractorDescriptor:
         return SubcontractorDescriptor(id=obj.id,
-                                       company_name=obj.name,
+                                       company_name=obj.companyName,
                                        website_url=obj.websiteUrl,
                                        contact_person=obj.contactPerson,
                                        email=obj.email,

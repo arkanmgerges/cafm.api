@@ -144,7 +144,7 @@ app.include_router(project_lookup.router, prefix="/v1/project/lookups", tags=["P
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(project_organization.router, prefix="/v1/project/organizations", tags=["Project/Organization"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(project_subcontractor.router, prefix="/v1/project/subcontractors", tags=["Project/SubContractor"],
+app.include_router(project_subcontractor.router, prefix="/v1/project/subcontractors", tags=["Project/Subcontractor"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(project_equipment.router, prefix="/v1/project/equipments", tags=["Project/Equipment"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})

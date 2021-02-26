@@ -21,6 +21,8 @@ from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.M
 from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.MaintenanceProcedureOperations import MaintenanceProcedureOperations
 from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.MaintenanceProcedureOperation import MaintenanceProcedureOperationDescriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.operation.MaintenanceProcedureOperationType import \
+    MaintenanceProcedureOperationType
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
@@ -87,7 +89,7 @@ async def createMaintenanceProcedureOperation(*,
                  _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='name of maintenance procedure operation', embed=True),
                  description: str = Body(..., description='description of maintenance procedure operation', embed=True),
-                 type: str = Body(..., description='type of maintenance procedure operation', embed=True),
+                 type: MaintenanceProcedureOperationType = Body(..., description='type of maintenance procedure operation', embed=True),
                 ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
@@ -113,7 +115,7 @@ async def updateMaintenanceProcedureOperation(*, _=Depends(CustomHttpBearer()),
                  maintenance_procedure_operation_id: str = Path(..., description='maintenance procedure operation id that is used in order to update the maintenance procedure operation'),
                  name: str = Body(..., description='name of name', embed=True),
                  description: str = Body(..., description='description of description', embed=True),
-                 type: str = Body(..., description='type of type', embed=True),
+                 type: MaintenanceProcedureOperationType = Body(..., description='type of type', embed=True),
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
@@ -139,7 +141,7 @@ async def partialUpdateMaintenanceProcedureOperation(*, _=Depends(CustomHttpBear
                         maintenance_procedure_operation_id: str = Path(..., description='maintenance procedure operation id that is used in order to update the maintenance procedure operation'),
                         name: str = Body(..., description='name of name', embed=True),
                         description: str = Body(..., description='description of description', embed=True),
-                        type: str = Body(..., description='type of type', embed=True),
+                        type: MaintenanceProcedureOperationType = Body(..., description='type of type', embed=True),
                         ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)

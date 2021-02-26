@@ -28,6 +28,7 @@ from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.Maintenan
     MaintenanceProcedureType
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
+from src.resource.common.DateTimeHelper import DateTimeHelper
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -92,6 +93,7 @@ async def createMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                  equipment_id: str = Body(..., description='equipment id of maintenance procedure', embed=True),
                 ):
     reqId = str(uuid4())
+    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSeconds() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_MAINTENANCE_PROCEDURE.value,
@@ -118,9 +120,11 @@ async def updateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                  type: MaintenanceProcedureType = Body(..., description='hard or soft', embed=True),
                  frequency: MaintenanceProcedureFrequency = Body(..., description='procedure frequency', embed=True),
                  start_date: int = Body(..., description='start date of start date', embed=True),
-                 subcontractor_id: str = Body(..., description='subcontractor id of subcontractor id', embed=True),                 
+                 subcontractor_id: str = Body(..., description='subcontractor id of subcontractor id', embed=True),
+                 equipment_id: str = Body(..., description='equipment id of maintenance procedure', embed=True),
                  ):
     reqId = str(uuid4())
+    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSeconds() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE.value,
@@ -131,6 +135,7 @@ async def updateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                             'type': type,
                                             'frequency': frequency,
                                             'start_date': start_date,
+                                            'equipment_id': equipment_id,
                                             'subcontractor_id': subcontractor_id,
                                              }),
                                         external=[]),
@@ -150,8 +155,10 @@ async def partialUpdateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                                                                             embed=True),
                         start_date: int = Body(..., description='start date of start date', embed=True),
                         subcontractor_id: str = Body(..., description='subcontractor id of subcontractor id', embed=True),
+                        equipment_id: str = Body(..., description='equipment id of maintenance procedure', embed=True),
                         ):
     reqId = str(uuid4())
+    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSeconds() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE.value,
@@ -163,6 +170,7 @@ async def partialUpdateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                             'frequency': frequency,
                                             'start_date': start_date,
                                             'subcontractor_id': subcontractor_id,
+                                             'equipment_id': equipment_id,
                                             }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())

@@ -95,8 +95,8 @@ async def createMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBe
                  maintenance_procedure_operation_id: str = Path(..., description='maintenance procedure operation id as a parent id'),
                  name: str = Body(..., description='name of maintenance procedure operation parameter', embed=True),
                  unit_id: str = Body(..., description='unit id of maintenance procedure operation parameter', embed=True),
-                 min_value: str = Body(..., description='min value of maintenance procedure operation parameter', embed=True),
-                 max_value: str = Body(..., description='max value of maintenance procedure operation parameter', embed=True),
+                 min_value: float = Body(..., description='min value of maintenance procedure operation parameter', embed=True),
+                 max_value: float = Body(..., description='max value of maintenance procedure operation parameter', embed=True),
                 ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
@@ -124,8 +124,8 @@ async def updateMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBe
                  maintenance_procedure_operation_parameter_id: str = Path(..., description='maintenance procedure operation parameter id that is used in order to update the maintenance procedure operation parameter'),
                  name: str = Body(..., description='name of name', embed=True),
                  unit_id: str = Body(..., description='unit id of unit id', embed=True),
-                 min_value: str = Body(..., description='min value of min value', embed=True),
-                 max_value: str = Body(..., description='max value of max value', embed=True),
+                 min_value: float = Body(..., description='min value of min value', embed=True),
+                 max_value: float = Body(..., description='max value of max value', embed=True),
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
@@ -153,8 +153,8 @@ async def partialUpdateMaintenanceProcedureOperationParameter(*, _=Depends(Custo
                         maintenance_procedure_operation_parameter_id: str = Path(..., description='maintenance procedure operation parameter id that is used in order to update the maintenance procedure operation parameter'),
                         name: str = Body(..., description='name of name', embed=True),
                         unit_id: str = Body(..., description='unit id of unit id', embed=True),
-                        min_value: str = Body(..., description='min value of min value', embed=True),
-                        max_value: str = Body(..., description='max value of max value', embed=True),
+                        min_value: float = Body(..., description='min value of min value', embed=True),
+                        max_value: float = Body(..., description='max value of max value', embed=True),
                         ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
