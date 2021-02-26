@@ -144,7 +144,7 @@ def generateProtoBuffer():
             if ('file_overwrite' not in model) or ('file_overwrite' in model and model['file_overwrite'] is False):
                 if _isManuallyModified(fileFullPath=f'{modelProtoName}.proto', templateString=renderedTemplate):
                     _print(modelName='',
-                           message=f':locked: the file {modelProtoName}.proto is modified manually, enable file_overwrite to overwrite it',
+                           message=f':locked: the current file {modelProtoName}.proto is different from the template, enable file_overwrite to overwrite it',
                            innerDepth=1, error=True)
                     skipGeneratingFile = True
             if not skipGeneratingFile:
@@ -159,7 +159,7 @@ def generateProtoBuffer():
                 if _isManuallyModified(fileFullPath=f'{modelProtoName}_app_service.proto',
                                        templateString=renderedTemplate):
                     _print(modelName='',
-                           message=f':locked: the file {modelProtoName}_app_service.proto is modified manually, enable file_overwrite to overwrite it',
+                           message=f':locked: the current file {modelProtoName}_app_service.proto is different from the template, enable file_overwrite to overwrite it',
                            innerDepth=1, error=True)
                     skipGeneratingFile = True
             if not skipGeneratingFile:
@@ -210,7 +210,7 @@ def generateRoute():
             if ('file_overwrite' not in model) or ('file_overwrite' in model and model['file_overwrite'] is False):
                 if _isManuallyModified(fileFullPath=f'{modelName}.py', templateString=renderedTemplate):
                     _print(modelName='',
-                           message=f':locked: the file {modelName}.py is modified manually, enable file_overwrite to overwrite it',
+                           message=f':locked: the current file {modelName}.py is different from the template, enable file_overwrite to overwrite it',
                            innerDepth=1, error=True)
                     continue
             isGenerated = True
@@ -246,7 +246,7 @@ def generateRouterModelResponse():
             if ('file_overwrite' not in model) or ('file_overwrite' in model and model['file_overwrite'] is False):
                 if _isManuallyModified(fileFullPath=f'{modelTestName}.py', templateString=renderedTemplate):
                     _print(modelName='',
-                           message=f':locked: the file {modelTestName}.py is modified manually, enable file_overwrite to overwrite it',
+                           message=f':locked: the current file {modelTestName}.py is different from the template, enable file_overwrite to overwrite it',
                            innerDepth=2, error=True)
                     skipGeneratingFile = True
             if not skipGeneratingFile:
@@ -262,7 +262,7 @@ def generateRouterModelResponse():
             if ('file_overwrite' not in model) or ('file_overwrite' in model and model['file_overwrite'] is False):
                 if _isManuallyModified(fileFullPath=f'{modelTestName}s.py', templateString=renderedTemplate):
                     _print(modelName='',
-                           message=f':locked: the file {modelTestName}s.py is modified manually, enable file_overwrite to overwrite it',
+                           message=f':locked: the current file {modelTestName}s.py is different from the template, enable file_overwrite to overwrite it',
                            innerDepth=2, error=True)
                     skipGeneratingFile = True
             if not skipGeneratingFile:
@@ -297,7 +297,7 @@ def generateGrpcApiClient():
             if ('file_overwrite' not in model) or ('file_overwrite' in model and model['file_overwrite'] is False):
                 if _isManuallyModified(fileFullPath=f'{fullPathModelName}Client.py', templateString=renderedTemplate):
                     _print(modelName='',
-                           message=f':locked: the file {fullPathModelName}Client.py is modified manually, enable file_overwrite to overwrite it',
+                           message=f':locked: the current file {fullPathModelName}Client.py is different from the template, enable file_overwrite to overwrite it',
                            innerDepth=1, error=True)
                     continue
 
