@@ -35,6 +35,9 @@ from src.port_adapter.api.rest.router.v1.project.equipment.category.group import
 from src.port_adapter.api.rest.router.v1.project.equipment import equipment as project_equipment
 from src.port_adapter.api.rest.router.v1.project.unit import unit as project_unit
 from src.port_adapter.api.rest.router.v1.project.equipment.input import equipment_input as project_equipment_input
+from src.port_adapter.api.rest.router.v1.project.maintenance.procedure import maintenance_procedure as project_maintenance_procedure
+from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.operation import maintenance_procedure_operation as project_maintenance_procedure_operation
+from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.operation.parameter import maintenance_procedure_operation_parameter as project_maintenance_procedure_operation_parameter
 
 # from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
@@ -158,5 +161,13 @@ app.include_router(project_equipment_category.router, prefix="/v1/project/equipm
 app.include_router(project_equipment_input.router, prefix="/v1/project/equipment_inputs", tags=["Project/Equipment"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 app.include_router(project_equipment_category_group.router, prefix="/v1/project/equipment_category_groups", tags=["Project/Equipment"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+
+
+app.include_router(project_maintenance_procedure.router, prefix="/v1/project/maintenance_procedures", tags=["Project/Maintenance"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+app.include_router(project_maintenance_procedure_operation.router, prefix="/v1/project/maintenance_procedures", tags=["Project/Maintenance"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+app.include_router(project_maintenance_procedure_operation_parameter.router, prefix="/v1/project/maintenance_procedures", tags=["Project/Maintenance"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 # endregion

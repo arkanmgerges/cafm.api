@@ -85,6 +85,7 @@ class ProjectClient(Client):
                                  country_id=obj.countryId,
                                  address_line=obj.addressLine,
                                  beneficiary_id=obj.beneficiaryId,
+                                 start_date=obj.startDate,
                                  state=obj.state
                                  )
 
