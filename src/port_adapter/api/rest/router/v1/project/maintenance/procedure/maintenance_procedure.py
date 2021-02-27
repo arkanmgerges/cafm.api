@@ -93,7 +93,7 @@ async def createMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                  equipment_id: str = Body(..., description='equipment id of maintenance procedure', embed=True),
                 ):
     reqId = str(uuid4())
-    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSeconds() else None
+    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_MAINTENANCE_PROCEDURE.value,
@@ -124,7 +124,7 @@ async def updateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                  equipment_id: str = Body(..., description='equipment id of maintenance procedure', embed=True),
                  ):
     reqId = str(uuid4())
-    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSeconds() else None
+    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE.value,
@@ -158,7 +158,7 @@ async def partialUpdateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                         equipment_id: str = Body(..., description='equipment id of maintenance procedure', embed=True),
                         ):
     reqId = str(uuid4())
-    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSeconds() else None
+    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE.value,
