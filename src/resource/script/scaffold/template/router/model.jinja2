@@ -92,7 +92,7 @@ async def get{{ className }}ById(*, {{ model.name }}_id: str = Path(...,
 
 @router.post("", summary='Create {{ model.name | spacedWords }}', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def create{{ className }}(*, _=Depends(CustomHttpBearer()),
                 {%- for field in model.field %}
                  {{ field.name }}: {{ field.type }} = Body(..., description='{{ field.name | spacedWords }} of {{ model.name | spacedWords }}', embed=True),
                 {%- endfor %}
@@ -115,7 +115,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 @router.put("/{{ '{' }}{{ model.name }}_id}", summary='Update {{ model.name | spacedWords }}', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
+async def update{{ className }}(*, _=Depends(CustomHttpBearer()),
                  {{ model.name }}_id: str = Path(..., description='{{ model.name | spacedWords }} id that is used in order to update the {{ model.name | spacedWords }}'),
                 {%- for field in model.field %}
                  {{ field.name }}: {{ field.type }} = Body(..., description='{{ field.name | spacedWords }} of {{ field.name | spacedWords }}', embed=True),
@@ -139,7 +139,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
 
 @router.patch("/{{ '{' }}{{ model.name }}_id}", summary='Partial update {{ model.name | spacedWords }}', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+async def partialUpdate{{ className }}(*, _=Depends(CustomHttpBearer()),
                         {{ model.name }}_id: str = Path(..., description='{{ model.name | spacedWords }} id that is used in order to update the {{ model.name | spacedWords }}'),
                         {%- for field in model.field %}
                         {{ field.name }}: {{ field.type }} = Body(..., description='{{ field.name | spacedWords }} of {{ field.name | spacedWords }}', embed=True),
@@ -163,7 +163,7 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
 
 @router.delete("/{{ '{' }}{{ model.name }}_id}", summary='Delete a {{ model.name | spacedWords }}s', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def delete{{ className }}(*, _=Depends(CustomHttpBearer()),
                  {{ model.name }}_id: str = Path(..., description='{{ model.name | spacedWords }} id that is used in order to delete the {{ model.name | spacedWords }}'), ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)

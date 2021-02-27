@@ -15,3 +15,6 @@ import "project/equipment_input_app_service.proto";
 import "project/maintenance_procedure_app_service.proto";
 import "project/maintenance_procedure_operation_app_service.proto";
 import "project/maintenance_procedure_operation_parameter_app_service.proto";
+import "project/daily_check_procedure_app_service.proto";
+import "project/daily_check_procedure_operation_app_service.proto";
+import "project/daily_check_procedure_operation_parameter_app_service.proto";
