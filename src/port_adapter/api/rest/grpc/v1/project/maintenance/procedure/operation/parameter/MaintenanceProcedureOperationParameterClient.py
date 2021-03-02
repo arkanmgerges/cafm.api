@@ -21,7 +21,8 @@ from src.resource.proto._generated.project.maintenance_procedure_operation_param
     MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParametersRequest, MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParameterByIdRequest, \
     MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParameterByIdResponse
 from src.resource.proto._generated.project.maintenance_procedure_operation_parameter_app_service_pb2_grpc import MaintenanceProcedureOperationParameterAppServiceStub
-
+from src.resource.proto._generated.project.maintenance_procedure_operation_parameter_app_service_pb2 import MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParametersByMaintenanceProcedureOperationIdRequest
+from src.resource.proto._generated.project.maintenance_procedure_operation_parameter_app_service_pb2 import MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParametersByMaintenanceProcedureOperationIdResponse
 
 class MaintenanceProcedureOperationParameterClient(Client):
     def __init__(self):
@@ -70,6 +71,32 @@ class MaintenanceProcedureOperationParameterClient(Client):
                     f'[{MaintenanceProcedureOperationParameterClient.maintenanceProcedureOperationParameterById.__qualname__}] - grpc response: {response}')
                 maintenanceProcedureOperationParameter = response[0].maintenanceProcedureOperationParameter
                 return self._descriptorByObject(obj=maintenanceProcedureOperationParameter)
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def maintenanceProcedureOperationParametersByMaintenanceProcedureOperationId(self, maintenanceProcedureOperationId: str = None, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> MaintenanceProcedureOperationParameters:
+        order = [] if order is None else order
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = MaintenanceProcedureOperationParameterAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{MaintenanceProcedureOperationParameterClient.maintenanceProcedureOperationParameters.__qualname__}] - grpc call to retrieve maintenanceProcedureOperationParameters from server {self._server}:{self._port}')
+                request = MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParametersByMaintenanceProcedureOperationIdRequest(maintenanceProcedureOperationId=maintenanceProcedureOperationId, resultFrom=resultFrom, resultSize=resultSize)
+                [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
+                response: MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParametersByMaintenanceProcedureOperationIdResponse = stub.maintenanceProcedureOperationParameters.with_call(
+                    request,
+                    metadata=(('token', self.token), (
+                        'opentel',
+                        AppDi.instance.get(OpenTelemetry).serializedContext(
+                            MaintenanceProcedureOperationParameterClient.maintenanceProcedureOperationParameters.__qualname__)),))
+                logger.debug(
+                    f'[{MaintenanceProcedureOperationParameterClient.maintenanceProcedureOperationParametersByMaintenanceProcedureOperationId.__qualname__}] - grpc response: {response}')
+
+                return MaintenanceProcedureOperationParameters(maintenance_procedure_operation_parameters=[self._descriptorByObject(obj=maintenanceProcedureOperationParameter) for maintenanceProcedureOperationParameter in
+                                                    response[0].maintenanceProcedureOperationParameters],
+                                     item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e

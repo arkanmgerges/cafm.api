@@ -21,7 +21,8 @@ from src.resource.proto._generated.project.maintenance_procedure_app_service_pb2
     MaintenanceProcedureAppService_maintenanceProceduresRequest, MaintenanceProcedureAppService_maintenanceProcedureByIdRequest, \
     MaintenanceProcedureAppService_maintenanceProcedureByIdResponse
 from src.resource.proto._generated.project.maintenance_procedure_app_service_pb2_grpc import MaintenanceProcedureAppServiceStub
-
+from src.resource.proto._generated.project.maintenance_procedure_app_service_pb2 import MaintenanceProcedureAppService_maintenanceProceduresByEquipmentIdRequest
+from src.resource.proto._generated.project.maintenance_procedure_app_service_pb2 import MaintenanceProcedureAppService_maintenanceProceduresByEquipmentIdResponse
 
 class MaintenanceProcedureClient(Client):
     def __init__(self):
@@ -70,6 +71,32 @@ class MaintenanceProcedureClient(Client):
                     f'[{MaintenanceProcedureClient.maintenanceProcedureById.__qualname__}] - grpc response: {response}')
                 maintenanceProcedure = response[0].maintenanceProcedure
                 return self._descriptorByObject(obj=maintenanceProcedure)
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def maintenanceProceduresByEquipmentId(self, equipmentId: str = None, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> MaintenanceProcedures:
+        order = [] if order is None else order
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = MaintenanceProcedureAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{MaintenanceProcedureClient.maintenanceProcedures.__qualname__}] - grpc call to retrieve maintenanceProcedures from server {self._server}:{self._port}')
+                request = MaintenanceProcedureAppService_maintenanceProceduresByEquipmentIdRequest(equipmentId=equipmentId, resultFrom=resultFrom, resultSize=resultSize)
+                [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
+                response: MaintenanceProcedureAppService_maintenanceProceduresByEquipmentIdResponse = stub.maintenanceProcedures.with_call(
+                    request,
+                    metadata=(('token', self.token), (
+                        'opentel',
+                        AppDi.instance.get(OpenTelemetry).serializedContext(
+                            MaintenanceProcedureClient.maintenanceProcedures.__qualname__)),))
+                logger.debug(
+                    f'[{MaintenanceProcedureClient.maintenanceProceduresByEquipmentId.__qualname__}] - grpc response: {response}')
+
+                return MaintenanceProcedures(maintenance_procedures=[self._descriptorByObject(obj=maintenanceProcedure) for maintenanceProcedure in
+                                                    response[0].maintenanceProcedures],
+                                     item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
