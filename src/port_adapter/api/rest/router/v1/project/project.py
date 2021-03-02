@@ -713,11 +713,11 @@ c4model:Rel(api__project_project_py__changeProjectState, project__messaging_proj
 """
 
 
-@router.post("/project/projects/change_state",
+@router.post("/project/projects/{project_id}/change_state",
              summary='Change project state', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def changeProjectState(*, _=Depends(CustomHttpBearer()),
-                             project_id: str = Body(..., description='Project id'),
+                             project_id: str = Path(..., description='Project id'),
                              state: str = Body(..., description='The state can be active and archived')):
     reqId = str(uuid4())
     state = state.lower()
