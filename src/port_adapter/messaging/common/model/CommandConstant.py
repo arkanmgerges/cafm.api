@@ -67,7 +67,7 @@ class CommandConstant(Enum):
     UPDATE_ORGANIZATION = 'update_organization'
     CREATE_EQUIPMENT_MODEL = 'create_equipment_model'
     UPDATE_EQUIPMENT_MODEL = 'update_equipment_model'
-    DELETE_EQUIPMENT_MODEL = 'delete_equipment_model'   
+    DELETE_EQUIPMENT_MODEL = 'delete_equipment_model'
     CREATE_MANUFACTURER = 'create_manufacturer'
     UPDATE_MANUFACTURER = 'update_manufacturer'
     DELETE_MANUFACTURER = 'delete_manufacturer'
@@ -107,5 +107,6 @@ class CommandConstant(Enum):
     CREATE_DAILY_CHECK_PROCEDURE_OPERATION_PARAMETER = 'create_daily_check_procedure_operation_parameter'
     UPDATE_DAILY_CHECK_PROCEDURE_OPERATION_PARAMETER = 'update_daily_check_procedure_operation_parameter'
     DELETE_DAILY_CHECK_PROCEDURE_OPERATION_PARAMETER = 'delete_daily_check_procedure_operation_parameter'
+    CHANGE_PROJECT_STATE = 'change_project_state'
 
 # endregion
