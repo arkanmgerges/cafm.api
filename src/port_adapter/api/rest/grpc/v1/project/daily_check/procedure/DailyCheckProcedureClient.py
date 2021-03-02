@@ -85,7 +85,7 @@ class DailyCheckProcedureClient(Client):
                     f'[{DailyCheckProcedureClient.dailyCheckProcedures.__qualname__}] - grpc call to retrieve dailyCheckProcedures from server {self._server}:{self._port}')
                 request = DailyCheckProcedureAppService_dailyCheckProceduresByEquipmentIdRequest(equipmentId=equipmentId, resultFrom=resultFrom, resultSize=resultSize)
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
-                response: DailyCheckProcedureAppService_dailyCheckProceduresByEquipmentIdResponse = stub.dailyCheckProcedures.with_call(
+                response: DailyCheckProcedureAppService_dailyCheckProceduresByEquipmentIdResponse = stub.dailyCheckProceduresByEquipmentId.with_call(
                     request,
                     metadata=(('token', self.token), (
                         'opentel',

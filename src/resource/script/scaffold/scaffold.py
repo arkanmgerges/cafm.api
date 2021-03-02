@@ -205,8 +205,8 @@ def generateRoute():
                 'skip' not in model) else False
         if doNotSkip:
             modelName = f'{routerFullPath}/{model["path"]}/{model["name"]}'
-            testTemplate = jinjaEnv.get_template(f'router/model.jinja2')
-            renderedTemplate = testTemplate.render(model=model)
+            testTemplate = jinjaEnv.get_template(f'router/segment.jinja2')
+            renderedTemplate = testTemplate.render(model=model, segment=Config.configData['segment'])
             if ('file_overwrite' not in model) or ('file_overwrite' in model and model['file_overwrite'] is False):
                 if _isManuallyModified(fileFullPath=f'{modelName}.py', templateString=renderedTemplate):
                     _print(modelName='',

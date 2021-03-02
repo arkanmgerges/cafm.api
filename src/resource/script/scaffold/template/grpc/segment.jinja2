@@ -38,7 +38,7 @@ from src.resource.proto._generated.{{model.microservice}}.{{model.name}}_app_ser
                     f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName }}s.__qualname__}] - grpc call to retrieve {{ lowerCamelModelName }}s from server {self._server}:{self._port}')
                 request = {{ className }}AppService_{{ lowerCamelModelName }}sBy{{foreignModelName}}IdRequest({{lowerForeignModelName}}Id={{lowerForeignModelName}}Id, resultFrom=resultFrom, resultSize=resultSize)
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
-                response: {{ className }}AppService_{{ lowerCamelModelName }}sBy{{foreignModelName}}IdResponse = stub.{{ lowerCamelModelName }}s.with_call(
+                response: {{ className }}AppService_{{ lowerCamelModelName }}sBy{{foreignModelName}}IdResponse = stub.{{ lowerCamelModelName }}sBy{{foreignModelName}}Id.with_call(
                     request,
                     metadata=(('token', self.token), (
                         'opentel',

@@ -17,12 +17,9 @@ from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR,
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameterClient import \
-    MaintenanceProcedureOperationParameterClient
-from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameter import \
-    MaintenanceProcedureOperationParameterDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameters import \
-    MaintenanceProcedureOperationParameters
+from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameterClient import MaintenanceProcedureOperationParameterClient
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameters import MaintenanceProcedureOperationParameters
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameter import MaintenanceProcedureOperationParameterDescriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -32,11 +29,12 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="/{maintenance_procedure_id}/operations/{maintenance_procedure_operation_id}/parameters", summary='Get all maintenance procedure operation parameter(s)', response_model=MaintenanceProcedureOperationParameters)
+
+@router.get(path="/{maintenance_procedure_id}/operations/{maintenance_procedure_operation_id}/parameters", summary='Get all maintenance procedure operation parameter by maintenance procedure operation id', response_model=MaintenanceProcedureOperationParameters)
 @OpenTelemetry.fastApiTraceOTel
-async def getMaintenanceProcedureOperationParameters(*,
-                            maintenance_procedure_id: str = Path(..., description='maintenance procedure id as a parent id of operation'),
-                            maintenance_procedure_operation_id: str = Path(..., description='maintenance procedure operation id as a parent id'),
+async def getMaintenanceProcedureOperationParametersByMaintenanceProcedureOperationId(*,
+                          maintenance_procedure_id: str = Path(...,description='maintenance procedure id as a parent id of operation'),
+                          maintenance_procedure_operation_id: str = Path(..., description='maintenance procedure operation id that is used to fetch maintenance procedure operation parameter data'),
                             result_from: int = Query(0, description='Starting offset for fetching data'),
                             result_size: int = Query(10, description='Item count to be fetched'),
                             order: str = Query('', description='e.g. id:asc,email:desc'),
@@ -45,7 +43,7 @@ async def getMaintenanceProcedureOperationParameters(*,
         client = MaintenanceProcedureOperationParameterClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.maintenanceProcedureOperationParameters(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.maintenanceProcedureOperationParametersByMaintenanceProcedureOperationId(maintenanceProcedureOperationId=maintenance_procedure_operation_id, resultFrom=result_from, resultSize=result_size, order=order)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -53,7 +51,7 @@ async def getMaintenanceProcedureOperationParameters(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getMaintenanceProcedureOperationParameters.__module__}.{getMaintenanceProcedureOperationParameters.__qualname__}] - error response e: {e}')
+                f'[{getMaintenanceProcedureOperationParametersByMaintenanceProcedureOperationId.__module__}.{getMaintenanceProcedureOperationParametersByMaintenanceProcedureOperationId.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)

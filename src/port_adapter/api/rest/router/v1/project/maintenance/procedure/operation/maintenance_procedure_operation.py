@@ -31,10 +31,11 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="/{maintenance_procedure_id}/operations", summary='Get all maintenance procedure operation(s)', response_model=MaintenanceProcedureOperations)
+
+@router.get(path="/{maintenance_procedure_id}/operations", summary='Get all maintenance procedure operation by maintenance procedure id', response_model=MaintenanceProcedureOperations)
 @OpenTelemetry.fastApiTraceOTel
-async def getMaintenanceProcedureOperations(*,
-                            maintenance_procedure_id: str = Path(..., description='maintenance procedure id as a parent id'),
+async def getMaintenanceProcedureOperationsByMaintenanceProcedureId(*,
+                            maintenance_procedure_id: str = Path(..., description='maintenance procedure id that is used to fetch maintenance procedure operation data'),
                             result_from: int = Query(0, description='Starting offset for fetching data'),
                             result_size: int = Query(10, description='Item count to be fetched'),
                             order: str = Query('', description='e.g. id:asc,email:desc'),
@@ -43,7 +44,7 @@ async def getMaintenanceProcedureOperations(*,
         client = MaintenanceProcedureOperationClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.maintenanceProcedureOperations(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.maintenanceProcedureOperationsByMaintenanceProcedureId(maintenanceProcedureId=maintenance_procedure_id, resultFrom=result_from, resultSize=result_size, order=order)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -51,11 +52,10 @@ async def getMaintenanceProcedureOperations(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getMaintenanceProcedureOperations.__module__}.{getMaintenanceProcedureOperations.__qualname__}] - error response e: {e}')
+                f'[{getMaintenanceProcedureOperationsByMaintenanceProcedureId.__module__}.{getMaintenanceProcedureOperationsByMaintenanceProcedureId.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
-
 
 @router.get(path="/{maintenance_procedure_id}/operations/{maintenance_procedure_operation_id}", summary='Get maintenance procedure operation by id',
             response_model=MaintenanceProcedureOperationDescriptor)

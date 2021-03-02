@@ -31,10 +31,11 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="/{daily_check_procedure_id}/operations", summary='Get all daily check procedure operation(s)', response_model=DailyCheckProcedureOperations)
+
+@router.get(path="/by_daily_check_procedure_id/{daily_check_procedure_id}", summary='Get all daily check procedure operation by daily check procedure id', response_model=DailyCheckProcedureOperations)
 @OpenTelemetry.fastApiTraceOTel
-async def getDailyCheckProcedureOperations(*,
-                            daily_check_procedure_id: str = Path(..., description='daily check procedure id as a parent id'),
+async def getDailyCheckProcedureOperationsByDailyCheckProcedureId(*,
+                            daily_check_procedure_id: str = Path(..., description='daily check procedure id that is used to fetch daily check procedure operation data'),
                             result_from: int = Query(0, description='Starting offset for fetching data'),
                             result_size: int = Query(10, description='Item count to be fetched'),
                             order: str = Query('', description='e.g. id:asc,email:desc'),
@@ -43,7 +44,7 @@ async def getDailyCheckProcedureOperations(*,
         client = DailyCheckProcedureOperationClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.dailyCheckProcedureOperations(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.dailyCheckProcedureOperationsByDailyCheckProcedureId(dailyCheckProcedureId=daily_check_procedure_id, resultFrom=result_from, resultSize=result_size, order=order)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -51,7 +52,7 @@ async def getDailyCheckProcedureOperations(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getDailyCheckProcedureOperations.__module__}.{getDailyCheckProcedureOperations.__qualname__}] - error response e: {e}')
+                f'[{getDailyCheckProcedureOperationsByDailyCheckProcedureId.__module__}.{getDailyCheckProcedureOperationsByDailyCheckProcedureId.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)

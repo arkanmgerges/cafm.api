@@ -29,13 +29,12 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="/{daily_check_procedure_id}/operations/{daily_check_procedure_operation_id}/parameters", summary='Get all daily check procedure operation parameter(s)', response_model=DailyCheckProcedureOperationParameters)
+
+
+@router.get(path="/by_daily_check_procedure_operation_id/{daily_check_procedure_operation_id}", summary='Get all daily check procedure operation parameter by daily check procedure operation id', response_model=DailyCheckProcedureOperationParameters)
 @OpenTelemetry.fastApiTraceOTel
-async def getDailyCheckProcedureOperationParameters(*,
-                                                    daily_check_procedure_id: str = Path(...,
-                                                                                         description='daily check procedure id as a parent id of operation'),
-                                                    daily_check_procedure_operation_id: str = Path(...,
-                                                                                                   description='daily check procedure operation id as a parent id'),
+async def getDailyCheckProcedureOperationParametersByDailyCheckProcedureOperationId(*,
+                            daily_check_procedure_operation_id: str = Path(..., description='daily check procedure operation id that is used to fetch daily check procedure operation parameter data'),
                             result_from: int = Query(0, description='Starting offset for fetching data'),
                             result_size: int = Query(10, description='Item count to be fetched'),
                             order: str = Query('', description='e.g. id:asc,email:desc'),
@@ -44,7 +43,7 @@ async def getDailyCheckProcedureOperationParameters(*,
         client = DailyCheckProcedureOperationParameterClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.dailyCheckProcedureOperationParameters(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.dailyCheckProcedureOperationParametersByDailyCheckProcedureOperationId(dailyCheckProcedureOperationId=daily_check_procedure_operation_id, resultFrom=result_from, resultSize=result_size, order=order)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -52,7 +51,7 @@ async def getDailyCheckProcedureOperationParameters(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getDailyCheckProcedureOperationParameters.__module__}.{getDailyCheckProcedureOperationParameters.__qualname__}] - error response e: {e}')
+                f'[{getDailyCheckProcedureOperationParametersByDailyCheckProcedureOperationId.__module__}.{getDailyCheckProcedureOperationParametersByDailyCheckProcedureOperationId.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)

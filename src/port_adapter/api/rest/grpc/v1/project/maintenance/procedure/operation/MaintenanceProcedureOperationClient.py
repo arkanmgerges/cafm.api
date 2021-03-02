@@ -85,7 +85,7 @@ class MaintenanceProcedureOperationClient(Client):
                     f'[{MaintenanceProcedureOperationClient.maintenanceProcedureOperations.__qualname__}] - grpc call to retrieve maintenanceProcedureOperations from server {self._server}:{self._port}')
                 request = MaintenanceProcedureOperationAppService_maintenanceProcedureOperationsByMaintenanceProcedureIdRequest(maintenanceProcedureId=maintenanceProcedureId, resultFrom=resultFrom, resultSize=resultSize)
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
-                response: MaintenanceProcedureOperationAppService_maintenanceProcedureOperationsByMaintenanceProcedureIdResponse = stub.maintenanceProcedureOperations.with_call(
+                response: MaintenanceProcedureOperationAppService_maintenanceProcedureOperationsByMaintenanceProcedureIdResponse = stub.maintenanceProcedureOperationsByMaintenanceProcedureId.with_call(
                     request,
                     metadata=(('token', self.token), (
                         'opentel',

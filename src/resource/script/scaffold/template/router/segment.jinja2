@@ -1,4 +1,4 @@
-{% extends "./grpc/model.jinja2" %}
+{% extends "./router/model.jinja2" %}
 {%set className= model.name | upperCamelCase%}
 {%-set lowerCamelModelName= model.name | lowerCamelCase-%}
 {%-set funcParams= model.field | mapFuncParams-%}
@@ -28,9 +28,10 @@ from src.resource.proto._generated.{{model.microservice}}.{{model.name}}_app_ser
       {%-set foreignModelName = segmentItem.foreign.model.name | upperCamelCase%}
       {%-set lowerForeignModelName = segmentItem.foreign.model.name | lowerCamelCase%}
 
-    @router.get(path="", summary='Get all {{ model.name | spacedWords }} by {{segmentItem.foreign.model.name | spacedWords}} id', response_model={{ className }}s)
+@router.get(path="/by_{{segmentItem.foreign.model.name}}_id/{{'{'}}{{segmentItem.foreign.model.name}}_id}", summary='Get all {{ model.name | spacedWords }} by {{segmentItem.foreign.model.name | spacedWords}} id', response_model={{ className }}s)
 @OpenTelemetry.fastApiTraceOTel
-async def get{{ className }}s(*,
+async def get{{ className }}sBy{{foreignModelName}}Id(*,
+                            {{segmentItem.foreign.model.name}}_id: str = Path(..., description='{{segmentItem.foreign.model.name | spacedWords}} id that is used to fetch {{ model.name | spacedWords }} data'),
                             result_from: int = Query(0, description='Starting offset for fetching data'),
                             result_size: int = Query(10, description='Item count to be fetched'),
                             order: str = Query('', description='e.g. id:asc,email:desc'),
@@ -39,7 +40,7 @@ async def get{{ className }}s(*,
         client = {{ className }}Client()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.{{ lowerCamelModelName }}s(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.{{ lowerCamelModelName }}sBy{{foreignModelName}}Id({{lowerForeignModelName}}Id={{segmentItem.foreign.model.name}}_id, resultFrom=result_from, resultSize=result_size, order=order)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -47,7 +48,7 @@ async def get{{ className }}s(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{get{{ className }}s.__module__}.{get{{ className }}s.__qualname__}] - error response e: {e}')
+                f'[{get{{ className }}sBy{{foreignModelName}}Id.__module__}.{get{{ className }}sBy{{foreignModelName}}Id.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
