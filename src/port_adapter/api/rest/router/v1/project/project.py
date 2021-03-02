@@ -703,4 +703,31 @@ async def updateBuildingLevelRoomIndex(*, _=Depends(CustomHttpBearer()),
                                              'index': index
                                              }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
+
+
+# endregion
+
+"""  
+c4model|cb|api:Component(api__project_project_py__changeProjectState, "Change Project State", "http(s)", "")
+c4model:Rel(api__project_project_py__changeProjectState, project__messaging_project_command_handler__ChangeProjectStateHandler, "CommonCommandConstant.CHANGE_PROJECT_STATE.value", "message")
+"""
+
+
+@router.post("/project/projects/{project_id}/change_state",
+             summary='Change project state', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def changeProjectState(*, _=Depends(CustomHttpBearer()),
+                             project_id: str = Path(..., description='Project id'),
+                             state: str = Body(..., description='The state can be active and archived')):
+    reqId = str(uuid4())
+    state = state.lower()
+    if state not in ['active', 'archived']:
+        raise ValueError('Invalid state, it should be one of these: active, archived')
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CHANGE_PROJECT_STATE.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'id': project_id,
+                                             'state': state}), external=[]), schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
 # endregion
