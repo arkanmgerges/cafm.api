@@ -65,6 +65,7 @@ async def get{{ className }}s(*,
     except Exception as e:
         logger.info(e)
 
+{%-block modelByForeignModelId %}{%-endblock%}
 
 @router.get(path="/{{ '{' }}{{ model.name }}_id}", summary='Get {{ model.name | spacedWords }} by id',
             response_model={{ className }}Descriptor)

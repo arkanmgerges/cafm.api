@@ -138,7 +138,7 @@ def generateProtoBuffer():
         if doNotSkip:
             modelProtoName = f'{protoFullPath}/{model["microservice"]}/{model["name"]}'
             modelTemplate = jinjaEnv.get_template(f'proto/model.jinja2')
-            modelAppTemplate = jinjaEnv.get_template(f'proto/model_app.jinja2')
+            modelAppTemplate = jinjaEnv.get_template(f'proto/segment.jinja2')
             renderedTemplate = modelTemplate.render(model=model)
             skipGeneratingFile = False
             if ('file_overwrite' not in model) or ('file_overwrite' in model and model['file_overwrite'] is False):
@@ -153,7 +153,7 @@ def generateProtoBuffer():
                     file.write(renderedTemplate)
                     file.write('\n')
                 _print(modelName=f'{model["name"]}', message=f'{modelProtoName}.proto', innerDepth=1)
-            renderedTemplate = modelAppTemplate.render(model=model)
+            renderedTemplate = modelAppTemplate.render(model=model, segment=Config.configData['segment'])
             skipGeneratingFile = False
             if ('file_overwrite' not in model) or ('file_overwrite' in model and model['file_overwrite'] is False):
                 if _isManuallyModified(fileFullPath=f'{modelProtoName}_app_service.proto',
@@ -292,8 +292,8 @@ def generateGrpcApiClient():
                 'skip' not in model) else False
         if doNotSkip:
             fullPathModelName = f'{grpcClientFullPath}/{model["path"]}/{Util.snakeCaseToUpperCameCaseString(model["name"])}'
-            template = jinjaEnv.get_template(f'grpc/model.jinja2')
-            renderedTemplate = template.render(model=model)
+            template = jinjaEnv.get_template(f'grpc/segment.jinja2')
+            renderedTemplate = template.render(model=model, segment=Config.configData['segment'])
             if ('file_overwrite' not in model) or ('file_overwrite' in model and model['file_overwrite'] is False):
                 if _isManuallyModified(fileFullPath=f'{fullPathModelName}Client.py', templateString=renderedTemplate):
                     _print(modelName='',

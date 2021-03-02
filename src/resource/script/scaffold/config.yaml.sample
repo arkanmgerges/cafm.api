@@ -31,3 +31,9 @@ domain_model:
 #          optional: True
           proto:
             type: string
+
+segment:
+# This can introduce in this example route to get maintenance procedures by equipment id
+  - name: maintenance_procedure
+    foreign:
+        model: *equipment_model

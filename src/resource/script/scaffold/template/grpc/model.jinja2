@@ -33,7 +33,7 @@ from src.resource.proto._generated.{{ model.microservice }}.{{ model.name }}_app
     {{ className }}AppService_{{ lowerCamelModelName }}sRequest, {{ className }}AppService_{{ lowerCamelModelName }}ByIdRequest, \
     {{ className }}AppService_{{ lowerCamelModelName }}ByIdResponse
 from src.resource.proto._generated.{{ model.microservice }}.{{ model.name }}_app_service_pb2_grpc import {{ className }}AppServiceStub
-
+{%-block segmentImport %}{%-endblock%}
 
 class {{ className }}Client(Client):
     def __init__(self):
@@ -85,6 +85,8 @@ class {{ className }}Client(Client):
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
+
+    {%-block modelByForeignModelId %}{%-endblock%}
 
     def _descriptorByObject(self, obj: Any) -> {{ className }}Descriptor:
         return {{ className }}Descriptor(id=obj.id,
