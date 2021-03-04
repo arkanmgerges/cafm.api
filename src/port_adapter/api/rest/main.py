@@ -36,12 +36,8 @@ from src.port_adapter.api.rest.router.v1.project.equipment import equipment as p
 from src.port_adapter.api.rest.router.v1.project.unit import unit as project_unit
 from src.port_adapter.api.rest.router.v1.project.equipment.input import equipment_input as project_equipment_input
 from src.port_adapter.api.rest.router.v1.project.maintenance.procedure import maintenance_procedure as project_maintenance_procedure
-from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.operation import maintenance_procedure_operation as project_maintenance_procedure_operation
-from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.operation.parameter import maintenance_procedure_operation_parameter as project_maintenance_procedure_operation_parameter
 
 from src.port_adapter.api.rest.router.v1.project.daily_check.procedure import daily_check_procedure as project_daily_check_procedure
-from src.port_adapter.api.rest.router.v1.project.daily_check.procedure.operation import daily_check_procedure_operation as project_daily_check_procedure_operation
-from src.port_adapter.api.rest.router.v1.project.daily_check.procedure.operation.parameter import daily_check_procedure_operation_parameter as project_daily_check_procedure_operation_parameter
 # from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 app = FastAPI(
@@ -166,18 +162,9 @@ app.include_router(project_equipment_input.router, prefix="/v1/project/equipment
 app.include_router(project_equipment_category_group.router, prefix="/v1/project/equipment_category_groups", tags=["Project/Equipment"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 
-
 app.include_router(project_maintenance_procedure.router, prefix="/v1/project/maintenance_procedures", tags=["Project/Maintenance"],
-                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(project_maintenance_procedure_operation.router, prefix="/v1/project/maintenance_procedures", tags=["Project/Maintenance"],
-                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(project_maintenance_procedure_operation_parameter.router, prefix="/v1/project/maintenance_procedures", tags=["Project/Maintenance"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 
 app.include_router(project_daily_check_procedure.router, prefix="/v1/project/daily_check_procedures", tags=["Project/DailyCheck"],
-                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(project_daily_check_procedure_operation.router, prefix="/v1/project/daily_check_procedures", tags=["Project/DailyCheck"],
-                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
-app.include_router(project_daily_check_procedure_operation_parameter.router, prefix="/v1/project/daily_check_procedures", tags=["Project/DailyCheck"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 # endregion
