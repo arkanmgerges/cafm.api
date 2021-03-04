@@ -77,7 +77,7 @@ class {{ className }}Client(Client):
                     {{ className }}AppService_{{ lowerCamelModelName }}ByIdRequest(id=id),
                     metadata=(('token', self.token), (
                         'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
-                            {{ className }}Client.{{ lowerCamelModelName }}s.__qualname__))))
+                            {{ className }}Client.{{ lowerCamelModelName }}ById.__qualname__))))
                 logger.debug(
                     f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName }}ById.__qualname__}] - grpc response: {response}')
                 {{ lowerCamelModelName }} = response[0].{{ lowerCamelModelName }}

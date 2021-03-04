@@ -35,7 +35,7 @@ from src.resource.proto._generated.{{model.microservice}}.{{model.name}}_app_ser
             stub = {{ className }}AppServiceStub(channel)
             try:
                 logger.debug(
-                    f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName }}s.__qualname__}] - grpc call to retrieve {{ lowerCamelModelName }}s from server {self._server}:{self._port}')
+                    f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName }}sBy{{foreignModelName}}Id.__qualname__}] - grpc call to retrieve {{ lowerCamelModelName }}s from server {self._server}:{self._port}')
                 request = {{ className }}AppService_{{ lowerCamelModelName }}sBy{{foreignModelName}}IdRequest({{lowerForeignModelName}}Id={{lowerForeignModelName}}Id, resultFrom=resultFrom, resultSize=resultSize)
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: {{ className }}AppService_{{ lowerCamelModelName }}sBy{{foreignModelName}}IdResponse = stub.{{ lowerCamelModelName }}sBy{{foreignModelName}}Id.with_call(
@@ -43,7 +43,7 @@ from src.resource.proto._generated.{{model.microservice}}.{{model.name}}_app_ser
                     metadata=(('token', self.token), (
                         'opentel',
                         AppDi.instance.get(OpenTelemetry).serializedContext(
-                            {{ className }}Client.{{ lowerCamelModelName }}s.__qualname__)),))
+                            {{ className }}Client.{{ lowerCamelModelName }}sBy{{foreignModelName}}Id.__qualname__)),))
                 logger.debug(
                     f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName }}sBy{{foreignModelName}}Id.__qualname__}] - grpc response: {response}')
 

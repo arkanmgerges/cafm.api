@@ -72,12 +72,12 @@ async def getDailyCheckProcedures(*,
     except Exception as e:
         logger.info(e)
 
-@router.get(path="/by_equipment_id/{equipment_id}", summary='Get all daily check procedure by equipment id',
+@router.get(path="/by_equipment_or_group_id/{equipment_or_group_id}", summary='Get all daily check procedure by equipment or group id',
             response_model=DailyCheckProcedures)
 @OpenTelemetry.fastApiTraceOTel
-async def getDailyCheckProceduresByEquipmentId(*,
-                                               equipment_id: str = Path(...,
-                                                                        description='equipment id that is used to fetch daily check procedure data'),
+async def getDailyCheckProceduresByEquipmentOrGroupId(*,
+                                               equipment_or_group_id: str = Path(...,
+                                                                        description='equipment or group id that is used to fetch daily check procedure data'),
                                                result_from: int = Query(0,
                                                                         description='Starting offset for fetching data'),
                                                result_size: int = Query(10, description='Item count to be fetched'),
@@ -87,7 +87,7 @@ async def getDailyCheckProceduresByEquipmentId(*,
         client = DailyCheckProcedureClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.dailyCheckProceduresByEquipmentId(equipmentId=equipment_id, resultFrom=result_from,
+        return client.dailyCheckProceduresByEquipmentOrGroupId(equipmentOrGroupId=equipment_or_group_id, resultFrom=result_from,
                                                         resultSize=result_size, order=order)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
@@ -96,7 +96,7 @@ async def getDailyCheckProceduresByEquipmentId(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getDailyCheckProceduresByEquipmentId.__module__}.{getDailyCheckProceduresByEquipmentId.__qualname__}] - error response e: {e}')
+                f'[{getDailyCheckProceduresByEquipmentOrGroupId.__module__}.{getDailyCheckProceduresByEquipmentOrGroupId.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
