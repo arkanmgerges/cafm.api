@@ -19,6 +19,8 @@ from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.equipment.project_category.EquipmentProjectCategoryClient import \
     EquipmentProjectCategoryClient
+from src.port_adapter.api.rest.model.response.v1.project.equipment.category.group.EquipmentCategoryGroups import \
+    EquipmentCategoryGroups
 from src.port_adapter.api.rest.model.response.v1.project.equipment.project_category.EquipmentProjectCategorys import \
     EquipmentProjectCategorys
 from src.port_adapter.api.rest.model.response.v1.project.equipment.project_category.EquipmentProjectCategory import \
@@ -194,3 +196,33 @@ async def unlink(*, _=Depends(CustomHttpBearer()),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
+
+
+@router.get(path="/{equipment_project_category_id}/equipment_category_groups",
+            summary='Get all equipment category Groups', response_model=EquipmentCategoryGroups)
+@OpenTelemetry.fastApiTraceOTel
+async def getCategoryGroupsByProjectCategoryId(*,
+                                               equipment_project_category_id: str = Path(...,
+                                                                                         description='id of equipment project category'),
+                                               result_from: int = Query(0,
+                                                                        description='Starting offset for fetching data'),
+                                               result_size: int = Query(10, description='Item count to be fetched'),
+                                               order: str = Query('', description='e.g. id:asc,email:desc'),
+                                               _=Depends(CustomHttpBearer())):
+    try:
+        client = EquipmentProjectCategoryClient()
+        orderService = AppDi.instance.get(OrderService)
+        order = orderService.orderStringToListOfDict(order)
+        return client.categoryGroupsByProjectCategoryId(id=equipment_project_category_id, resultFrom=result_from,
+                                                        resultSize=result_size, order=order)
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f'[{getCategoryGroupsByProjectCategoryId.__module__}.{getCategoryGroupsByProjectCategoryId.__qualname__}] - error response e: {e}')
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
