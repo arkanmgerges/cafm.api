@@ -93,9 +93,10 @@ async def create(*, _=Depends(CustomHttpBearer()),
     from src.port_adapter.messaging.listener.CacheType import CacheType
     reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
     producer = AppDi.instance.get(SimpleProducer)
+    client = RoleClient()
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_ROLE.value,
                                     metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps({'name': name, 'title': title})), schema=ApiCommand.get_schema())
+                                    data=json.dumps({'id': client.newId(), 'name': name, 'title': title})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 """

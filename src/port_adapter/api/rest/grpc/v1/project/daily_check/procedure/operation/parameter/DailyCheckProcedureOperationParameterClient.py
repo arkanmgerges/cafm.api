@@ -18,8 +18,11 @@ from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.daily_check_procedure_operation_parameter_app_service_pb2 import \
     DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParametersResponse, \
-    DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParametersRequest, DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParameterByIdRequest, \
-    DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParameterByIdResponse
+    DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParametersRequest, \
+    DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParameterByIdRequest, \
+    DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParameterByIdResponse, \
+    DailyCheckProcedureOperationParameterAppService_newIdRequest, \
+    DailyCheckProcedureOperationParameterAppService_newIdResponse
 from src.resource.proto._generated.project.daily_check_procedure_operation_parameter_app_service_pb2_grpc import DailyCheckProcedureOperationParameterAppServiceStub
 from src.resource.proto._generated.project.daily_check_procedure_operation_parameter_app_service_pb2 import DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParametersByDailyCheckProcedureOperationIdRequest
 from src.resource.proto._generated.project.daily_check_procedure_operation_parameter_app_service_pb2 import DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParametersByDailyCheckProcedureOperationIdResponse
@@ -29,6 +32,23 @@ class DailyCheckProcedureOperationParameterClient(Client):
         self._server = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE', '')
         self._port = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE_PORT', '')
 
+    @OpenTelemetry.grpcTraceOTel
+    def newId(self) -> str:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = DailyCheckProcedureOperationParameterAppServiceStub(channel)
+            try:
+                request = DailyCheckProcedureOperationParameterAppService_newIdRequest()
+                response: DailyCheckProcedureOperationParameterAppService_newIdResponse = stub.newId.with_call(
+                    request,
+                    metadata=(('token', self.token), (
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(DailyCheckProcedureOperationParameterClient.newId.__qualname__))))
+                logger.debug(
+                    f'[{DailyCheckProcedureOperationParameterClient.newId.__qualname__}] - grpc response: {response}')
+                return response[0].id
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+            
     @OpenTelemetry.grpcTraceOTel
     def dailyCheckProcedureOperationParameters(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> DailyCheckProcedureOperationParameters:
         order = [] if order is None else order

@@ -19,7 +19,8 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.equipment_input_app_service_pb2 import \
     EquipmentInputAppService_equipmentInputsResponse, \
     EquipmentInputAppService_equipmentInputsRequest, EquipmentInputAppService_equipmentInputByIdRequest, \
-    EquipmentInputAppService_equipmentInputByIdResponse
+    EquipmentInputAppService_equipmentInputByIdResponse, EquipmentInputAppService_newIdRequest, \
+    EquipmentInputAppService_newIdResponse
 from src.resource.proto._generated.project.equipment_input_app_service_pb2_grpc import EquipmentInputAppServiceStub
 
 
@@ -28,6 +29,23 @@ class EquipmentInputClient(Client):
         self._server = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE', '')
         self._port = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE_PORT', '')
 
+    @OpenTelemetry.grpcTraceOTel
+    def newId(self) -> str:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = EquipmentInputAppServiceStub(channel)
+            try:
+                request = EquipmentInputAppService_newIdRequest()
+                response: EquipmentInputAppService_newIdResponse = stub.newId.with_call(
+                    request,
+                    metadata=(('token', self.token), (
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(EquipmentInputClient.newId.__qualname__))))
+                logger.debug(
+                    f'[{EquipmentInputClient.newId.__qualname__}] - grpc response: {response}')
+                return response[0].id
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+            
     @OpenTelemetry.grpcTraceOTel
     def equipmentInputs(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> EquipmentInputs:
         order = [] if order is None else order

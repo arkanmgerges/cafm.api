@@ -213,11 +213,13 @@ async def createDailyCheckProcedureOperationParameter(*, _=Depends(CustomHttpBea
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    client = DailyCheckProcedureOperationParameterClient()
     producer.produce(
         obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_DAILY_CHECK_PROCEDURE_OPERATION_PARAMETER.value,
                            metadata=json.dumps({"token": Client.token}),
                            data=json.dumps(
                                {
+                                   'id': client.newId(),
                                    'name': name,
                                    'unit_id': unit_id,
                                    'daily_check_procedure_operation_id': daily_check_procedure_operation_id,
@@ -400,10 +402,12 @@ async def createDailyCheckProcedure(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    client = DailyCheckProcedureClient()
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_DAILY_CHECK_PROCEDURE.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
+                                                'id': client.newId(),
                                                 'name': name,
                                                 'description': description,
                                                 'equipment_id': equipment_id,
@@ -550,10 +554,12 @@ async def createDailyCheckProcedureOperation(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    client = DailyCheckProcedureOperationClient()
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_DAILY_CHECK_PROCEDURE_OPERATION.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
+                                                'id': client.newId(),
                                                 'name': name,
                                                 'description': description,
                                                 'type': type,

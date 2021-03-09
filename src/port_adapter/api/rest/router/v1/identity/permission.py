@@ -113,10 +113,11 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
+    client = PermissionClient()
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_PERMISSION.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'name': name, 'allowed_actions': allowed_actions,
+                                        {'id': client.newId(), 'name': name, 'allowed_actions': allowed_actions,
                                          'denied_actions': denied_actions})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 

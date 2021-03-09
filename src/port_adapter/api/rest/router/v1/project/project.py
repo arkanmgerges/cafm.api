@@ -242,10 +242,13 @@ async def createBuilding(*, _=Depends(CustomHttpBearer()),
                          ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
+    client = ProjectClient()
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_BUILDING.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
-                                            {'project_id': project_id,
+                                            {
+                                                'id': client.newBuildingId(),
+                                                'project_id': project_id,
                                              'name': name,
                                              }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
@@ -390,10 +393,13 @@ async def createBuildingLevel(*, _=Depends(CustomHttpBearer()),
                               ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
+    client = ProjectClient()
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_BUILDING_LEVEL.value,
                                         metadata=json.dumps({"token": Client.token, "msg_key": building_id}),
                                         data=json.dumps(
-                                            {'project_id': project_id,
+                                            {
+                                             'id': client.newBuildingLevelId(),
+                                             'project_id': project_id,
                                              'building_id': building_id,
                                              'name': name,
                                              }), external=[]), schema=ProjectCommand.get_schema())
@@ -601,11 +607,14 @@ async def createBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
                                                           embed=True),
                                   ):
     reqId = str(uuid4())
+    client = ProjectClient()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_BUILDING_LEVEL_ROOM.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
-                                            {'project_id': project_id,
+                                            {
+                                             'id': client.newBuildingLevelRoomId(),
+                                             'project_id': project_id,
                                              'building_id': building_id,
                                              'building_level_id': level_id,
                                              'name': name,

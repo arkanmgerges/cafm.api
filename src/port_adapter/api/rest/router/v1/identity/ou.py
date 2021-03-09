@@ -100,11 +100,12 @@ c4model:Rel(api__identity_ou_py__create, api__identity_ou_py__create__api_comman
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the ou', embed=True)):
     reqId = str(uuid4())
+    client = OuClient()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_OU.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'name': name})), schema=ApiCommand.get_schema())
+                                        {'id': client.newId(), 'name': name})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 

@@ -18,7 +18,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.equipment.category.EquipmentCategoryClient import EquipmentCategoryClient
-from src.port_adapter.api.rest.model.response.v1.project.equipment.category.EquipmentCategorys import EquipmentCategorys
+from src.port_adapter.api.rest.model.response.v1.project.equipment.category.EquipmentCategories import EquipmentCategories
 from src.port_adapter.api.rest.model.response.v1.project.equipment.category.EquipmentCategory import EquipmentCategoryDescriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -29,9 +29,9 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="", summary='Get all equipment category(s)', response_model=EquipmentCategorys)
+@router.get(path="", summary='Get all equipment category(s)', response_model=EquipmentCategories)
 @OpenTelemetry.fastApiTraceOTel
-async def getEquipmentCategorys(*,
+async def getEquipmentCategories(*,
                             result_from: int = Query(0, description='Starting offset for fetching data'),
                             result_size: int = Query(10, description='Item count to be fetched'),
                             order: str = Query('', description='e.g. id:asc,email:desc'),
@@ -40,7 +40,7 @@ async def getEquipmentCategorys(*,
         client = EquipmentCategoryClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.equipmentCategorys(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.equipmentCategories(resultFrom=result_from, resultSize=result_size, order=order)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -48,7 +48,7 @@ async def getEquipmentCategorys(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getEquipmentCategorys.__module__}.{getEquipmentCategorys.__qualname__}] - error response e: {e}')
+                f'[{getEquipmentCategories.__module__}.{getEquipmentCategories.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -86,10 +86,12 @@ async def create(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    client = EquipmentCategoryClient()
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_EQUIPMENT_CATEGORY.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
+                                             'id': client.newId(),
                                              'name': name,
                                              }),
                                         external=[]),
@@ -137,7 +139,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
 #     return {"request_id": reqId}
 
 
-@router.delete("/{equipment_category_id}", summary='Delete a equipment categorys', status_code=status.HTTP_200_OK)
+@router.delete("/{equipment_category_id}", summary='Delete a equipment categories', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
                  equipment_category_id: str = Path(..., description='equipment category id that is used in order to delete the equipment category'), ):

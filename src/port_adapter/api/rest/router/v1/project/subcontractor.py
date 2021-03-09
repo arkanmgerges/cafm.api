@@ -88,11 +88,14 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  address_two: str = Body(..., description='subcontractor second address', embed=True), ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
+    client = SubcontractorClient()
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_SUBCONTRACTOR.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
-                                            {'company_name': company_name,
+                                            {
+                                             'id': client.newId(),
+                                             'company_name': company_name,
                                              'website_url': website_url,
                                              'contact_person': contact_person,
                                              'email': email,

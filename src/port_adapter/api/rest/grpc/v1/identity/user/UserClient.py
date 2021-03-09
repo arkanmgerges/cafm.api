@@ -13,7 +13,8 @@ from src.port_adapter.api.rest.model.response.v1.identity.Users import Users
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.identity.user_app_service_pb2 import UserAppService_usersResponse, \
-    UserAppService_usersRequest, UserAppService_userByIdRequest, UserAppService_userByIdResponse
+    UserAppService_usersRequest, UserAppService_userByIdRequest, UserAppService_userByIdResponse, \
+    UserAppService_newIdRequest, UserAppService_newIdResponse
 from src.resource.proto._generated.identity.user_app_service_pb2_grpc import UserAppServiceStub
 
 
@@ -21,6 +22,25 @@ class UserClient(Client):
     def __init__(self):
         self._server = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE', '')
         self._port = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE_PORT', '')
+        
+    @OpenTelemetry.grpcTraceOTel
+    def newId(self) -> str:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = UserAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{UserClient.newId.__qualname__}] - grpc call to retrieve users from server {self._server}:{self._port}')
+                request = UserAppService_newIdRequest()
+                response: UserAppService_newIdResponse = stub.newId.with_call(
+                    request,
+                    metadata=(('token', self.token), (
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(UserClient.newId.__qualname__))))
+                logger.debug(
+                    f'[{UserClient.newId.__qualname__}] - grpc response: {response}')
+                return response[0].id
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
 
     @OpenTelemetry.grpcTraceOTel
     def users(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> Users:

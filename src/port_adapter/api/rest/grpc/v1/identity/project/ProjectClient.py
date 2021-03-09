@@ -13,7 +13,8 @@ from src.port_adapter.api.rest.model.response.v1.identity.Projects import Projec
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.identity.project_app_service_pb2 import ProjectAppService_projectsResponse, \
-    ProjectAppService_projectsRequest, ProjectAppService_projectByIdRequest, ProjectAppService_projectByIdResponse
+    ProjectAppService_projectsRequest, ProjectAppService_projectByIdRequest, ProjectAppService_projectByIdResponse, \
+    ProjectAppService_newIdRequest, ProjectAppService_newIdResponse
 from src.resource.proto._generated.identity.project_app_service_pb2_grpc import ProjectAppServiceStub
 
 
@@ -21,6 +22,25 @@ class ProjectClient(Client):
     def __init__(self):
         self._server = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE', '')
         self._port = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE_PORT', '')
+
+    @OpenTelemetry.grpcTraceOTel
+    def newId(self) -> str:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = ProjectAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{ProjectClient.newId.__qualname__}] - grpc call to retrieve projects from server {self._server}:{self._port}')
+                request = ProjectAppService_newIdRequest()
+                response: ProjectAppService_newIdResponse = stub.newId.with_call(
+                    request,
+                    metadata=(('token', self.token), (
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.newId.__qualname__))))
+                logger.debug(
+                    f'[{ProjectClient.newId.__qualname__}] - grpc response: {response}')
+                return response[0].id
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
 
     @OpenTelemetry.grpcTraceOTel
     def projects(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> Projects:

@@ -14,11 +14,6 @@ class ProjectAppServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.projectByName = channel.unary_unary(
-                '/cafm.project.project.ProjectAppService/projectByName',
-                request_serializer=project_dot_project__app__service__pb2.ProjectAppService_projectByNameRequest.SerializeToString,
-                response_deserializer=project_dot_project__app__service__pb2.ProjectAppService_projectByNameResponse.FromString,
-                )
         self.projectById = channel.unary_unary(
                 '/cafm.project.project.ProjectAppService/projectById',
                 request_serializer=project_dot_project__app__service__pb2.ProjectAppService_projectByIdRequest.SerializeToString,
@@ -59,16 +54,30 @@ class ProjectAppServiceStub(object):
                 request_serializer=project_dot_project__app__service__pb2.ProjectAppService_buildingLevelRoomByIdRequest.SerializeToString,
                 response_deserializer=project_dot_project__app__service__pb2.ProjectAppService_buildingLevelRoomByIdResponse.FromString,
                 )
+        self.newId = channel.unary_unary(
+                '/cafm.project.project.ProjectAppService/newId',
+                request_serializer=project_dot_project__app__service__pb2.ProjectAppService_newIdRequest.SerializeToString,
+                response_deserializer=project_dot_project__app__service__pb2.ProjectAppService_newIdResponse.FromString,
+                )
+        self.newBuildingId = channel.unary_unary(
+                '/cafm.project.project.ProjectAppService/newBuildingId',
+                request_serializer=project_dot_project__app__service__pb2.ProjectAppService_newBuildingIdRequest.SerializeToString,
+                response_deserializer=project_dot_project__app__service__pb2.ProjectAppService_newBuildingIdResponse.FromString,
+                )
+        self.newBuildingLevelId = channel.unary_unary(
+                '/cafm.project.project.ProjectAppService/newBuildingLevelId',
+                request_serializer=project_dot_project__app__service__pb2.ProjectAppService_newBuildingLevelIdRequest.SerializeToString,
+                response_deserializer=project_dot_project__app__service__pb2.ProjectAppService_newBuildingLevelIdResponse.FromString,
+                )
+        self.newBuildingLevelRoomId = channel.unary_unary(
+                '/cafm.project.project.ProjectAppService/newBuildingLevelRoomId',
+                request_serializer=project_dot_project__app__service__pb2.ProjectAppService_newBuildingLevelRoomIdRequest.SerializeToString,
+                response_deserializer=project_dot_project__app__service__pb2.ProjectAppService_newBuildingLevelRoomIdResponse.FromString,
+                )
 
 
 class ProjectAppServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
-
-    def projectByName(self, request, context):
-        """Missing associated documentation comment in .proto file."""
-        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
 
     def projectById(self, request, context):
         """Missing associated documentation comment in .proto file."""
@@ -118,14 +127,33 @@ class ProjectAppServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def newId(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def newBuildingId(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def newBuildingLevelId(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def newBuildingLevelRoomId(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_ProjectAppServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'projectByName': grpc.unary_unary_rpc_method_handler(
-                    servicer.projectByName,
-                    request_deserializer=project_dot_project__app__service__pb2.ProjectAppService_projectByNameRequest.FromString,
-                    response_serializer=project_dot_project__app__service__pb2.ProjectAppService_projectByNameResponse.SerializeToString,
-            ),
             'projectById': grpc.unary_unary_rpc_method_handler(
                     servicer.projectById,
                     request_deserializer=project_dot_project__app__service__pb2.ProjectAppService_projectByIdRequest.FromString,
@@ -166,6 +194,26 @@ def add_ProjectAppServiceServicer_to_server(servicer, server):
                     request_deserializer=project_dot_project__app__service__pb2.ProjectAppService_buildingLevelRoomByIdRequest.FromString,
                     response_serializer=project_dot_project__app__service__pb2.ProjectAppService_buildingLevelRoomByIdResponse.SerializeToString,
             ),
+            'newId': grpc.unary_unary_rpc_method_handler(
+                    servicer.newId,
+                    request_deserializer=project_dot_project__app__service__pb2.ProjectAppService_newIdRequest.FromString,
+                    response_serializer=project_dot_project__app__service__pb2.ProjectAppService_newIdResponse.SerializeToString,
+            ),
+            'newBuildingId': grpc.unary_unary_rpc_method_handler(
+                    servicer.newBuildingId,
+                    request_deserializer=project_dot_project__app__service__pb2.ProjectAppService_newBuildingIdRequest.FromString,
+                    response_serializer=project_dot_project__app__service__pb2.ProjectAppService_newBuildingIdResponse.SerializeToString,
+            ),
+            'newBuildingLevelId': grpc.unary_unary_rpc_method_handler(
+                    servicer.newBuildingLevelId,
+                    request_deserializer=project_dot_project__app__service__pb2.ProjectAppService_newBuildingLevelIdRequest.FromString,
+                    response_serializer=project_dot_project__app__service__pb2.ProjectAppService_newBuildingLevelIdResponse.SerializeToString,
+            ),
+            'newBuildingLevelRoomId': grpc.unary_unary_rpc_method_handler(
+                    servicer.newBuildingLevelRoomId,
+                    request_deserializer=project_dot_project__app__service__pb2.ProjectAppService_newBuildingLevelRoomIdRequest.FromString,
+                    response_serializer=project_dot_project__app__service__pb2.ProjectAppService_newBuildingLevelRoomIdResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
             'cafm.project.project.ProjectAppService', rpc_method_handlers)
@@ -175,23 +223,6 @@ def add_ProjectAppServiceServicer_to_server(servicer, server):
  # This class is part of an EXPERIMENTAL API.
 class ProjectAppService(object):
     """Missing associated documentation comment in .proto file."""
-
-    @staticmethod
-    def projectByName(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.project.project.ProjectAppService/projectByName',
-            project_dot_project__app__service__pb2.ProjectAppService_projectByNameRequest.SerializeToString,
-            project_dot_project__app__service__pb2.ProjectAppService_projectByNameResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
     def projectById(request,
@@ -326,5 +357,73 @@ class ProjectAppService(object):
         return grpc.experimental.unary_unary(request, target, '/cafm.project.project.ProjectAppService/buildingLevelRoomById',
             project_dot_project__app__service__pb2.ProjectAppService_buildingLevelRoomByIdRequest.SerializeToString,
             project_dot_project__app__service__pb2.ProjectAppService_buildingLevelRoomByIdResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def newId(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cafm.project.project.ProjectAppService/newId',
+            project_dot_project__app__service__pb2.ProjectAppService_newIdRequest.SerializeToString,
+            project_dot_project__app__service__pb2.ProjectAppService_newIdResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def newBuildingId(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cafm.project.project.ProjectAppService/newBuildingId',
+            project_dot_project__app__service__pb2.ProjectAppService_newBuildingIdRequest.SerializeToString,
+            project_dot_project__app__service__pb2.ProjectAppService_newBuildingIdResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def newBuildingLevelId(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cafm.project.project.ProjectAppService/newBuildingLevelId',
+            project_dot_project__app__service__pb2.ProjectAppService_newBuildingLevelIdRequest.SerializeToString,
+            project_dot_project__app__service__pb2.ProjectAppService_newBuildingLevelIdResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def newBuildingLevelRoomId(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cafm.project.project.ProjectAppService/newBuildingLevelRoomId',
+            project_dot_project__app__service__pb2.ProjectAppService_newBuildingLevelRoomIdRequest.SerializeToString,
+            project_dot_project__app__service__pb2.ProjectAppService_newBuildingLevelRoomIdResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

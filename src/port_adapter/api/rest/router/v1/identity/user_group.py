@@ -101,10 +101,11 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the user group', embed=True)):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
+    client = UserGroupClient()
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'name': name})), schema=ApiCommand.get_schema())
+                                        {'id': client.newId(), 'name': name})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 

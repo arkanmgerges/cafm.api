@@ -108,10 +108,11 @@ async def create(*, _=Depends(CustomHttpBearer()),
     if realm_type not in ['provider', 'beneficiary', 'tenant']:
         raise ValueError('Invalid realm_type, it should be one of these: provider, beneficiary, or tenant')
     producer = AppDi.instance.get(SimpleProducer)
+    client = RealmClient()
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_REALM.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'name': name, 'realm_type': realm_type})), schema=ApiCommand.get_schema())
+                                        {'id': client.newId(), 'name': name, 'realm_type': realm_type})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 

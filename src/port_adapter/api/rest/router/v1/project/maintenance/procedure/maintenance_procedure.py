@@ -198,11 +198,13 @@ async def createMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBe
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    client = MaintenanceProcedureOperationParameterClient()
     producer.produce(
         obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_MAINTENANCE_PROCEDURE_OPERATION_PARAMETER.value,
                            metadata=json.dumps({"token": Client.token}),
                            data=json.dumps(
                                {
+                                   'id': client.newId(),
                                    'name': name,
                                    'unit_id': unit_id,
                                    'maintenance_procedure_operation_id': maintenance_procedure_operation_id,
@@ -356,10 +358,12 @@ async def createMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
     start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    client = MaintenanceProcedureClient()
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_MAINTENANCE_PROCEDURE.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
+                                             'id': client.newId(),
                                              'name': name,
                                              'type': type,
                                              'frequency': frequency,
@@ -491,10 +495,12 @@ async def createMaintenanceProcedureOperation(*,
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    client = MaintenanceProcedureOperationClient()
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_MAINTENANCE_PROCEDURE_OPERATION.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
+                                             'id': client.newId(),
                                              'name': name,
                                              'description': description,
                                              'type': type,

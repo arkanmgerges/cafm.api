@@ -102,10 +102,11 @@ async def create(*, _=Depends(CustomHttpBearer()),
     reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'  # 2 for completion of identity & project
     producer = AppDi.instance.get(SimpleProducer)
     Validator.validateEmail(email=email, fields={'email': email})
+    client = UserClient()
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'email': email, })),
+                                        {'id': client.newId(), 'email': email, })),
                      schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 

@@ -18,8 +18,10 @@ from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.equipment_category_group_app_service_pb2 import \
     EquipmentCategoryGroupAppService_equipmentCategoryGroupsResponse, \
-    EquipmentCategoryGroupAppService_equipmentCategoryGroupsRequest, EquipmentCategoryGroupAppService_equipmentCategoryGroupByIdRequest, \
-    EquipmentCategoryGroupAppService_equipmentCategoryGroupByIdResponse
+    EquipmentCategoryGroupAppService_equipmentCategoryGroupsRequest, \
+    EquipmentCategoryGroupAppService_equipmentCategoryGroupByIdRequest, \
+    EquipmentCategoryGroupAppService_equipmentCategoryGroupByIdResponse, EquipmentCategoryGroupAppService_newIdRequest, \
+    EquipmentCategoryGroupAppService_newIdResponse
 from src.resource.proto._generated.project.equipment_category_group_app_service_pb2_grpc import EquipmentCategoryGroupAppServiceStub
 
 
@@ -28,6 +30,23 @@ class EquipmentCategoryGroupClient(Client):
         self._server = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE', '')
         self._port = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE_PORT', '')
 
+    @OpenTelemetry.grpcTraceOTel
+    def newId(self) -> str:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = EquipmentCategoryGroupAppServiceStub(channel)
+            try:
+                request = EquipmentCategoryGroupAppService_newIdRequest()
+                response: EquipmentCategoryGroupAppService_newIdResponse = stub.newId.with_call(
+                    request,
+                    metadata=(('token', self.token), (
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(EquipmentCategoryGroupClient.newId.__qualname__))))
+                logger.debug(
+                    f'[{EquipmentCategoryGroupClient.newId.__qualname__}] - grpc response: {response}')
+                return response[0].id
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+            
     @OpenTelemetry.grpcTraceOTel
     def equipmentCategoryGroups(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> EquipmentCategoryGroups:
         order = [] if order is None else order

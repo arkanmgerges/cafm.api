@@ -25,7 +25,8 @@ from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.identity.role_app_service_pb2 import RoleAppService_rolesResponse, \
     RoleAppService_rolesRequest, RoleAppService_roleByIdRequest, RoleAppService_roleByIdResponse, \
-    RoleAppService_rolesTreesRequest, RoleAppService_rolesTreesResponse, RoleAppService_roleTreeRequest
+    RoleAppService_rolesTreesRequest, RoleAppService_rolesTreesResponse, RoleAppService_roleTreeRequest, \
+    RoleAppService_newIdRequest, RoleAppService_newIdResponse
 from src.resource.proto._generated.identity.role_app_service_pb2_grpc import RoleAppServiceStub
 
 
@@ -33,6 +34,25 @@ class RoleClient(Client):
     def __init__(self):
         self._server = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE', '')
         self._port = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE_PORT', '')
+
+    @OpenTelemetry.grpcTraceOTel
+    def newId(self) -> str:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = RoleAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{RoleClient.newId.__qualname__}] - grpc call to retrieve roles from server {self._server}:{self._port}')
+                request = RoleAppService_newIdRequest()
+                response: RoleAppService_newIdResponse = stub.newId.with_call(
+                    request,
+                    metadata=(('token', self.token), (
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(RoleClient.newId.__qualname__))))
+                logger.debug(
+                    f'[{RoleClient.newId.__qualname__}] - grpc response: {response}')
+                return response[0].id
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
 
     @OpenTelemetry.grpcTraceOTel
     def rolesTrees(self) -> RoleAccessPermissionDatas:

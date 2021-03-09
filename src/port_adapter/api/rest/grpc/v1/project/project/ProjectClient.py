@@ -25,7 +25,10 @@ from src.resource.proto._generated.project.project_app_service_pb2 import Projec
     ProjectAppService_buildingLevelsResponse, ProjectAppService_buildingByIdRequest, \
     ProjectAppService_buildingByIdResponse, ProjectAppService_buildingLevelByIdRequest, \
     ProjectAppService_buildingLevelByIdResponse, ProjectAppService_buildingLevelRoomByIdRequest, \
-    ProjectAppService_buildingLevelRoomByIdResponse
+    ProjectAppService_buildingLevelRoomByIdResponse, ProjectAppService_newIdRequest, ProjectAppService_newIdResponse, \
+    ProjectAppService_newBuildingIdRequest, ProjectAppService_newBuildingIdResponse, \
+    ProjectAppService_newBuildingLevelIdRequest, ProjectAppService_newBuildingLevelIdResponse, \
+    ProjectAppService_newBuildingLevelRoomIdRequest, ProjectAppService_newBuildingLevelRoomIdResponse
 from src.resource.proto._generated.project.project_app_service_pb2_grpc import ProjectAppServiceStub
 
 
@@ -34,6 +37,23 @@ class ProjectClient(Client):
         self._server = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE', '')
         self._port = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE_PORT', '')
 
+    @OpenTelemetry.grpcTraceOTel
+    def newId(self) -> str:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = ProjectAppServiceStub(channel)
+            try:
+                request = ProjectAppService_newIdRequest()
+                response: ProjectAppService_newIdResponse = stub.newId.with_call(
+                    request,
+                    metadata=(('token', self.token), (
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.newId.__qualname__))))
+                logger.debug(
+                    f'[{ProjectClient.newId.__qualname__}] - grpc response: {response}')
+                return response[0].id
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+            
     # region Project
     @OpenTelemetry.grpcTraceOTel
     def projects(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> Projects:
@@ -119,6 +139,24 @@ class ProjectClient(Client):
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
+
+    @OpenTelemetry.grpcTraceOTel
+    def newBuildingId(self) -> str:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = ProjectAppServiceStub(channel)
+            try:
+                request = ProjectAppService_newBuildingIdRequest()
+                response: ProjectAppService_newBuildingIdResponse = stub.newBuildingId.with_call(
+                    request,
+                    metadata=(('token', self.token), (
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.newBuildingId.__qualname__))))
+                logger.debug(
+                    f'[{ProjectClient.newBuildingId.__qualname__}] - grpc response: {response}')
+                return response[0].id
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
     @OpenTelemetry.grpcTraceOTel
     def buildingById(self, id: str = None, include: List[str] = None) -> Building:
         include = [] if include is None else include
@@ -168,6 +206,23 @@ class ProjectClient(Client):
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
+    def newBuildingLevelId(self) -> str:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = ProjectAppServiceStub(channel)
+            try:
+                request = ProjectAppService_newBuildingLevelIdRequest()
+                response: ProjectAppService_newBuildingLevelIdResponse = stub.newBuildingLevelId.with_call(
+                    request,
+                    metadata=(('token', self.token), (
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.newBuildingLevelId.__qualname__))))
+                logger.debug(
+                    f'[{ProjectClient.newBuildingLevelId.__qualname__}] - grpc response: {response}')
+                return response[0].id
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
     def buildingLevelById(self, id: str = None, include: List[str] = None) -> BuildingLevel:
         include = [] if include is None else include
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
@@ -211,6 +266,23 @@ class ProjectClient(Client):
                     building_level_rooms=[self._buildingLevelRoomDescriptor(obj=obj) for obj in
                                           response[0].buildingLevelRooms],
                     item_count=response[0].itemCount)
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def newBuildingLevelRoomId(self) -> str:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = ProjectAppServiceStub(channel)
+            try:
+                request = ProjectAppService_newBuildingLevelRoomIdRequest()
+                response: ProjectAppService_newBuildingLevelRoomIdResponse = stub.newBuildingLevelRoomId.with_call(
+                    request,
+                    metadata=(('token', self.token), (
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.newBuildingLevelRoomId.__qualname__))))
+                logger.debug(
+                    f'[{ProjectClient.newBuildingLevelRoomId.__qualname__}] - grpc response: {response}')
+                return response[0].id
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e

@@ -87,10 +87,12 @@ async def create(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    client = EquipmentCategoryGroupClient()
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_EQUIPMENT_CATEGORY_GROUP.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
+                                             'id': client.newId(),
                                              'name': name,
                                              'equipment_category_id': equipment_category_id,
                                              }),

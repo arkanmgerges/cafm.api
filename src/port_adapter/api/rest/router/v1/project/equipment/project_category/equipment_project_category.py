@@ -21,8 +21,8 @@ from src.port_adapter.api.rest.grpc.v1.project.equipment.project_category.Equipm
     EquipmentProjectCategoryClient
 from src.port_adapter.api.rest.model.response.v1.project.equipment.category.group.EquipmentCategoryGroups import \
     EquipmentCategoryGroups
-from src.port_adapter.api.rest.model.response.v1.project.equipment.project_category.EquipmentProjectCategorys import \
-    EquipmentProjectCategorys
+from src.port_adapter.api.rest.model.response.v1.project.equipment.project_category.EquipmentProjectCategories import \
+    EquipmentProjectCategories
 from src.port_adapter.api.rest.model.response.v1.project.equipment.project_category.EquipmentProjectCategory import \
     EquipmentProjectCategoryDescriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
@@ -34,9 +34,9 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="", summary='Get all equipment project category(s)', response_model=EquipmentProjectCategorys)
+@router.get(path="", summary='Get all equipment project category(s)', response_model=EquipmentProjectCategories)
 @OpenTelemetry.fastApiTraceOTel
-async def getEquipmentProjectCategorys(*,
+async def getEquipmentProjectCategories(*,
                                        result_from: int = Query(0, description='Starting offset for fetching data'),
                                        result_size: int = Query(10, description='Item count to be fetched'),
                                        order: str = Query('', description='e.g. id:asc,email:desc'),
@@ -45,7 +45,7 @@ async def getEquipmentProjectCategorys(*,
         client = EquipmentProjectCategoryClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.equipmentProjectCategorys(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.equipmentProjectCategories(resultFrom=result_from, resultSize=result_size, order=order)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -53,7 +53,7 @@ async def getEquipmentProjectCategorys(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getEquipmentProjectCategorys.__module__}.{getEquipmentProjectCategorys.__qualname__}] - error response e: {e}')
+                f'[{getEquipmentProjectCategories.__module__}.{getEquipmentProjectCategories.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -91,10 +91,12 @@ async def create(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    client = EquipmentProjectCategoryClient()
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_EQUIPMENT_PROJECT_CATEGORY.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
+                                                'id': client.newId(),
                                                 'name': name,
                                             }),
                                         external=[]),
@@ -144,7 +146,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
 #     return {"request_id": reqId}
 
 
-@router.delete("/{equipment_project_category_id}", summary='Delete a equipment project categorys',
+@router.delete("/{equipment_project_category_id}", summary='Delete a equipment project categories',
                status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),

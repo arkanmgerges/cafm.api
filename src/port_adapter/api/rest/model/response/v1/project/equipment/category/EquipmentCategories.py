@@ -10,6 +10,6 @@ from pydantic import BaseModel
 from src.port_adapter.api.rest.model.response.v1.project.equipment.category.EquipmentCategory import EquipmentCategoryDescriptor
 
 
-class EquipmentCategorys(BaseModel):
-    equipment_categorys: List[EquipmentCategoryDescriptor]
+class EquipmentCategories(BaseModel):
+    equipment_categories: List[EquipmentCategoryDescriptor]
     item_count: int

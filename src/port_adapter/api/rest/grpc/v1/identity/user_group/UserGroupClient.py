@@ -14,7 +14,7 @@ from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.identity.user_group_app_service_pb2 import UserGroupAppService_userGroupsResponse, \
     UserGroupAppService_userGroupsRequest, UserGroupAppService_userGroupByIdRequest, \
-    UserGroupAppService_userGroupByIdResponse
+    UserGroupAppService_userGroupByIdResponse, UserGroupAppService_newIdRequest, UserGroupAppService_newIdResponse
 from src.resource.proto._generated.identity.user_group_app_service_pb2_grpc import UserGroupAppServiceStub
 
 
@@ -23,6 +23,25 @@ class UserGroupClient(Client):
         self._server = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE', '')
         self._port = os.getenv('CAFM_IDENTITY_GRPC_SERVER_SERVICE_PORT', '')
 
+    @OpenTelemetry.grpcTraceOTel
+    def newId(self) -> str:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = UserGroupAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f'[{UserGroupClient.newId.__qualname__}] - grpc call to retrieve user group from server {self._server}:{self._port}')
+                request = UserGroupAppService_newIdRequest()
+                response: UserGroupAppService_newIdResponse = stub.newId.with_call(
+                    request,
+                    metadata=(('token', self.token), (
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(UserGroupClient.newId.__qualname__))))
+                logger.debug(
+                    f'[{UserGroupClient.newId.__qualname__}] - grpc response: {response}')
+                return response[0].id
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+            
     @OpenTelemetry.grpcTraceOTel
     def userGroups(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> UserGroups:
         order = [] if order is None else order

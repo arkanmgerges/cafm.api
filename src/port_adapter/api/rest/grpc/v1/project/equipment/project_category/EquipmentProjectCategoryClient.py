@@ -14,19 +14,20 @@ from src.port_adapter.api.rest.model.response.v1.project.equipment.category.grou
     EquipmentCategoryGroupDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.equipment.project_category.EquipmentProjectCategory import \
     EquipmentProjectCategoryDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.equipment.project_category.EquipmentProjectCategorys import \
-    EquipmentProjectCategorys
+from src.port_adapter.api.rest.model.response.v1.project.equipment.project_category.EquipmentProjectCategories import \
+    EquipmentProjectCategories
 from src.port_adapter.api.rest.model.response.v1.project.equipment.category.group.EquipmentCategoryGroups import \
     EquipmentCategoryGroups
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.equipment_project_category_app_service_pb2 import \
-    EquipmentProjectCategoryAppService_equipmentProjectCategorysResponse, \
-    EquipmentProjectCategoryAppService_equipmentProjectCategorysRequest, \
+    EquipmentProjectCategoryAppService_equipmentProjectCategoriesResponse, \
+    EquipmentProjectCategoryAppService_equipmentProjectCategoriesRequest, \
     EquipmentProjectCategoryAppService_equipmentProjectCategoryByIdRequest, \
     EquipmentProjectCategoryAppService_equipmentProjectCategoryByIdResponse, \
     EquipmentProjectCategoryAppService_equipmentCategoryGroupsByProjectCategoryIdRequest, \
-    EquipmentProjectCategoryAppService_equipmentCategoryGroupsByProjectCategoryIdResponse
+    EquipmentProjectCategoryAppService_equipmentCategoryGroupsByProjectCategoryIdResponse, \
+    EquipmentProjectCategoryAppService_newIdRequest, EquipmentProjectCategoryAppService_newIdResponse
 from src.resource.proto._generated.project.equipment_project_category_app_service_pb2_grpc import \
     EquipmentProjectCategoryAppServiceStub
 
@@ -37,30 +38,47 @@ class EquipmentProjectCategoryClient(Client):
         self._port = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE_PORT', '')
 
     @OpenTelemetry.grpcTraceOTel
-    def equipmentProjectCategorys(self, resultFrom: int = 0, resultSize: int = 10,
-                                  order: List[dict] = None) -> EquipmentProjectCategorys:
+    def newId(self) -> str:
+        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+            stub = EquipmentProjectCategoryAppServiceStub(channel)
+            try:
+                request = EquipmentProjectCategoryAppService_newIdRequest()
+                response: EquipmentProjectCategoryAppService_newIdResponse = stub.newId.with_call(
+                    request,
+                    metadata=(('token', self.token), (
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(EquipmentProjectCategoryClient.newId.__qualname__))))
+                logger.debug(
+                    f'[{EquipmentProjectCategoryClient.newId.__qualname__}] - grpc response: {response}')
+                return response[0].id
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+            
+    @OpenTelemetry.grpcTraceOTel
+    def equipmentProjectCategories(self, resultFrom: int = 0, resultSize: int = 10,
+                                  order: List[dict] = None) -> EquipmentProjectCategories:
         order = [] if order is None else order
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = EquipmentProjectCategoryAppServiceStub(channel)
             try:
                 logger.debug(
-                    f'[{EquipmentProjectCategoryClient.equipmentProjectCategorys.__qualname__}] - grpc call to retrieve equipmentProjectCategorys from server {self._server}:{self._port}')
-                request = EquipmentProjectCategoryAppService_equipmentProjectCategorysRequest(resultFrom=resultFrom,
+                    f'[{EquipmentProjectCategoryClient.equipmentProjectCategories.__qualname__}] - grpc call to retrieve equipment project categories from server {self._server}:{self._port}')
+                request = EquipmentProjectCategoryAppService_equipmentProjectCategoriesRequest(resultFrom=resultFrom,
                                                                                               resultSize=resultSize)
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
-                response: EquipmentProjectCategoryAppService_equipmentProjectCategorysResponse = stub.equipmentProjectCategorys.with_call(
+                response: EquipmentProjectCategoryAppService_equipmentProjectCategoriesResponse = stub.equipmentProjectCategories.with_call(
                     request,
                     metadata=(('token', self.token), (
                         'opentel',
                         AppDi.instance.get(OpenTelemetry).serializedContext(
-                            EquipmentProjectCategoryClient.equipmentProjectCategorys.__qualname__)),))
+                            EquipmentProjectCategoryClient.equipmentProjectCategories.__qualname__)),))
                 logger.debug(
-                    f'[{EquipmentProjectCategoryClient.equipmentProjectCategorys.__qualname__}] - grpc response: {response}')
+                    f'[{EquipmentProjectCategoryClient.equipmentProjectCategories.__qualname__}] - grpc response: {response}')
 
-                return EquipmentProjectCategorys(
-                    equipment_project_categorys=[self._descriptorByObject(obj=equipmentProjectCategory) for
+                return EquipmentProjectCategories(
+                    equipment_project_categories=[self._descriptorByObject(obj=equipmentProjectCategory) for
                                                  equipmentProjectCategory in
-                                                 response[0].equipmentProjectCategorys],
+                                                 response[0].equipmentProjectCategories],
                     item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -77,7 +95,7 @@ class EquipmentProjectCategoryClient(Client):
                     EquipmentProjectCategoryAppService_equipmentProjectCategoryByIdRequest(id=id),
                     metadata=(('token', self.token), (
                         'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
-                            EquipmentProjectCategoryClient.equipmentProjectCategorys.__qualname__))))
+                            EquipmentProjectCategoryClient.equipmentProjectCategories.__qualname__))))
                 logger.debug(
                     f'[{EquipmentProjectCategoryClient.equipmentProjectCategoryById.__qualname__}] - grpc response: {response}')
                 equipmentProjectCategory = response[0].equipmentProjectCategory
@@ -98,7 +116,7 @@ class EquipmentProjectCategoryClient(Client):
             stub = EquipmentProjectCategoryAppServiceStub(channel)
             try:
                 logger.debug(
-                    f'[{EquipmentProjectCategoryClient.categoryGroupsByProjectCategoryId.__qualname__}] - grpc call to retrieve equipmentProjectCategorys from server {self._server}:{self._port}')
+                    f'[{EquipmentProjectCategoryClient.categoryGroupsByProjectCategoryId.__qualname__}] - grpc call to retrieve equipmentProjectCategories from server {self._server}:{self._port}')
                 request = EquipmentProjectCategoryAppService_equipmentCategoryGroupsByProjectCategoryIdRequest(id=id,
                                                                                                                resultFrom=resultFrom,
                                                                                                                resultSize=resultSize)
