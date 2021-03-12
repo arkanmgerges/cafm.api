@@ -127,7 +127,7 @@ async def getCityByCountryId(*,
         logger.info(e)
 
 
-@router.get(path="/{country_id}/states/", summary='Get a country states', response_model=States)
+@router.get(path="/{country_id}/states", summary='Get a country states', response_model=States)
 @OpenTelemetry.fastApiTraceOTel
 async def getStatesByCountryId(*, result_from: int = Query(0, description='Starting offset for fetching data'),
                                result_size: int = Query(10, description='Item count to be fetched'),
