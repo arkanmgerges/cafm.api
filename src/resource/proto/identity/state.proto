@@ -3,6 +3,6 @@ syntax = "proto3";
 package cafm.identity.country;
 
 message State {
-  int32 id = 1;
+  string id = 1;
   string name = 2;
 }

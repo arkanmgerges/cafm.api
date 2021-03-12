@@ -14,7 +14,7 @@ from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.v1.identity.country.CountryClient import CountryClient
 from src.port_adapter.api.rest.model.response.v1.identity.Cities import Cities, CityDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Countries import Countries, CountryDescriptor
-from src.port_adapter.api.rest.model.response.v1.identity.State import StateDescriptor
+from src.port_adapter.api.rest.model.response.v1.identity.States import States
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
@@ -127,7 +127,7 @@ async def getCityByCountryId(*,
         logger.info(e)
 
 
-@router.get(path="/{country_id}/states/", summary='Get a country states', response_model=StateDescriptor)
+@router.get(path="/{country_id}/states/", summary='Get a country states', response_model=States)
 @OpenTelemetry.fastApiTraceOTel
 async def getStatesByCountryId(*, result_from: int = Query(0, description='Starting offset for fetching data'),
                                result_size: int = Query(10, description='Item count to be fetched'),

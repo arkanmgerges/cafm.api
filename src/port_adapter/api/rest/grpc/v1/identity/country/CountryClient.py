@@ -181,7 +181,7 @@ class CountryClient(Client):
                 logger.debug(
                     f'[{CountryClient.statesByCountryId.__qualname__}] - grpc response: {response}')
 
-                return States(states=[State(id=state.id, name=state.localeCode)
+                return States(states=[State(id=state.id, name=state.name)
                                       for state in
                                       response[0].states],
                               item_count=response[0].itemCount)
