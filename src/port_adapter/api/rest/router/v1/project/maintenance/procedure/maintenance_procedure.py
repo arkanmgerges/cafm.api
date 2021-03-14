@@ -351,7 +351,7 @@ async def createMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                  type: MaintenanceProcedureType = Body(..., description='hard or soft', embed=True),
                  frequency: MaintenanceProcedureFrequency = Body(..., description='procedure frequency', embed=True),
                  start_date: int = Body(..., description='start date of maintenance procedure', embed=True),
-                 subcontractor_id: str = Body(..., description='subcontractor id of maintenance procedure', embed=True),
+                 subcontractor_id: str = Body(None, description='subcontractor id of maintenance procedure', embed=True),
                  equipment_id: str = Body(..., description='equipment id of maintenance procedure', embed=True),
                 ):
     reqId = str(uuid4())
