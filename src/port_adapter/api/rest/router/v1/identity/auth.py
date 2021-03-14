@@ -53,7 +53,8 @@ class CustomHttpBearer(HTTPBearer):
 
     async def __call__(self, request: Request):
         ret = await super().__call__(request)
-        authClient = AuthClient()
+        import src.port_adapter.AppDi as AppDi
+        authClient = AppDi.instance.get(AuthClient)
         Client.token = ret.credentials
         if ret is not None and not authClient.isAuthenticated(token=ret.credentials):
             raise HTTPException(

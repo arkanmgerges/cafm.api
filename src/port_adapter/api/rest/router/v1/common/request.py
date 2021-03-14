@@ -22,12 +22,13 @@ router = APIRouter()
 @OpenTelemetry.fastApiTraceOTel
 async def isRequestSuccessful(*,
                               request_id: str = Query(..., description='Request id to check if it is succeeded or not'),
-                              _=Depends(CustomHttpBearer())):
+                              # _=Depends(CustomHttpBearer())
+                              ):
     """Return all roles
     """
     try:
-        cache = RedisCache()
-        cacheClient = cache.client()
+        import src.port_adapter.AppDi as AppDi
+        cache = AppDi.instance.get(RedisCache)
         cacheKey = f'{cache.cacheResponseKeyPrefix}:{request_id}'
         split = request_id.split(':')
         if len(split) == 1:
@@ -66,9 +67,11 @@ async def isRequestSuccessful(*,
 @router.get(path="/result", summary='Get the request id result', response_model=ResultRequestResponse)
 @OpenTelemetry.fastApiTraceOTel
 async def getRequestIdResult(*, request_id: str = Query(..., description='Request id that is used to fetch the result'),
-                             _=Depends(CustomHttpBearer())):
+                             # _=Depends(CustomHttpBearer())
+                             ):
     try:
-        cache = RedisCache()
+        import src.port_adapter.AppDi as AppDi
+        cache = AppDi.instance.get(RedisCache)
         cacheClient = cache.client()
         cacheKey = f'{cache.cacheResponseKeyPrefix}:{request_id}'
         split = request_id.split(':')

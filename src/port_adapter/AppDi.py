@@ -1,9 +1,12 @@
 from uuid import uuid4
 
-from injector import Module, Injector, singleton, provider, inject
+from injector import Module, Injector, singleton, provider
 
-from src.domain_model.AuthenticationService import AuthenticationService
+from src.domain_model.authentication.AuthenticationRepository import AuthenticationRepository
+from src.domain_model.authentication.AuthenticationService import AuthenticationService
 from src.domain_model.OrderService import OrderService
+from src.port_adapter.api.rest.cache.RedisCache import RedisCache
+from src.port_adapter.api.rest.grpc.v1.identity.auth.AuthClient import AuthClient
 from src.port_adapter.messaging.common.Consumer import Consumer
 from src.port_adapter.messaging.common.ConsumerOffsetReset import ConsumerOffsetReset
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -38,11 +41,20 @@ class AppDi(Module):
         return KafkaConsumer(groupId=groupId, autoCommit=autoCommit, partitionEof=partitionEof,
                              autoOffsetReset=autoOffsetReset)
 
+    # region Repository
+    @singleton
+    @provider
+    def provideAuthenticationRepository(self) -> AuthenticationRepository:
+        from src.port_adapter.domain_model.authentication.AuthenticationRepositoryImpl import \
+            AuthenticationRepositoryImpl
+        return AuthenticationRepositoryImpl()
+    # endregion
+
     # region Domain Service
     @singleton
     @provider
     def provideAuthenticationService(self) -> AuthenticationService:
-        return AuthenticationService()
+        return AuthenticationService(self.__injector__.get(AuthenticationRepository))
 
     @singleton
     @provider
@@ -56,6 +68,18 @@ class AppDi(Module):
     def provideOpenTelemetry(self) -> OpenTelemetry:
         return OpenTelemetry()
     # endregion
+
+    # region Grpc
+    @singleton
+    @provider
+    def provideAuthClient(self) -> AuthClient:
+        return AuthClient()
+    # endregion
+
+    @singleton
+    @provider
+    def provideRedisClient(self) -> RedisCache:
+        return RedisCache()
 
 class Builder:
     @classmethod

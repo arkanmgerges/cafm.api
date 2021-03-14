@@ -32,10 +32,11 @@ router = APIRouter()
 @router.get(path="", summary='Get all unit(s)', response_model=Units)
 @OpenTelemetry.fastApiTraceOTel
 async def getUnits(*,
-                            result_from: int = Query(0, description='Starting offset for fetching data'),
-                            result_size: int = Query(10, description='Item count to be fetched'),
-                            order: str = Query('', description='e.g. id:asc,email:desc'),
-                            _=Depends(CustomHttpBearer())):
+                    result_from: int = Query(0, description='Starting offset for fetching data'),
+                    result_size: int = Query(10, description='Item count to be fetched'),
+                    order: str = Query('', description='e.g. id:asc,email:desc'),
+                    _=Depends(CustomHttpBearer())
+                   ):
     try:
         client = UnitClient()
         orderService = AppDi.instance.get(OrderService)

@@ -13,7 +13,7 @@ from starlette import status
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
 
 import src.port_adapter.AppDi as AppDi
-from src.domain_model.AuthenticationService import AuthenticationService
+from src.domain_model.authentication.AuthenticationService import AuthenticationService
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.user.UserClient import UserClient

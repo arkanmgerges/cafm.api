@@ -7,14 +7,13 @@ import os
 import grpc
 
 import src.port_adapter.AppDi as AppDi
-from src.domain_model.AuthenticationService import AuthenticationService
+from src.domain_model.authentication.AuthenticationService import AuthenticationService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.identity.auth_app_service_pb2 import \
     AuthAppService_authenticateUserByEmailAndPasswordRequest, \
-    AuthAppService_authenticateUserByEmailAndPasswordResponse, AuthAppService_isAuthenticatedResponse, \
-    AuthAppService_isAuthenticatedRequest, AuthAppService_logoutRequest
+    AuthAppService_authenticateUserByEmailAndPasswordResponse, AuthAppService_logoutRequest
 from src.resource.proto._generated.identity.auth_app_service_pb2_grpc import AuthAppServiceStub
 
 
@@ -49,24 +48,9 @@ class AuthClient(Client):
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def isAuthenticated(self, token: str) -> str:
-        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
-            stub = AuthAppServiceStub(channel)
-            try:
-                logger.debug(
-                    f'[{AuthClient.isAuthenticated.__qualname__}] - grpc call to check if the token is valid and considered as authenticated token: {token} from server {self._server}:{self._port}')
-                response: AuthAppService_isAuthenticatedResponse = stub.isAuthenticated.with_call(
-                    AuthAppService_isAuthenticatedRequest(token=token),
-                    metadata=(('token', token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
-                        AuthClient.isAuthenticated.__qualname__)),)
-                )
-                logger.debug(
-                    f'[{AuthClient.isAuthenticated.__qualname__}] - grpc response: {response}')
-
-                return response[0].response is True
-            except Exception as e:
-                channel.unsubscribe(lambda ch: ch.close())
-                raise e
+    def isAuthenticated(self, token: str) -> bool:
+        authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
+        return authService.isAuthenticated(token=token)
 
     @OpenTelemetry.grpcTraceOTel
     def logout(self, token: str) -> None:

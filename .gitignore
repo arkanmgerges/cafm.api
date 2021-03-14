@@ -136,3 +136,5 @@ report.html
 # test
 .pytest_cache
 
+# other
+.vs
