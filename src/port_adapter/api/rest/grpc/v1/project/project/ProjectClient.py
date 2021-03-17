@@ -28,7 +28,8 @@ from src.resource.proto._generated.project.project_app_service_pb2 import Projec
     ProjectAppService_buildingLevelRoomByIdResponse, ProjectAppService_newIdRequest, ProjectAppService_newIdResponse, \
     ProjectAppService_newBuildingIdRequest, ProjectAppService_newBuildingIdResponse, \
     ProjectAppService_newBuildingLevelIdRequest, ProjectAppService_newBuildingLevelIdResponse, \
-    ProjectAppService_newBuildingLevelRoomIdRequest, ProjectAppService_newBuildingLevelRoomIdResponse
+    ProjectAppService_newBuildingLevelRoomIdRequest, ProjectAppService_newBuildingLevelRoomIdResponse, \
+    ProjectAppService_buildingLevelRoomsRequest, ProjectAppService_buildingLevelRoomsResponse
 from src.resource.proto._generated.project.project_app_service_pb2_grpc import ProjectAppServiceStub
 
 
@@ -252,10 +253,10 @@ class ProjectClient(Client):
             try:
                 logger.debug(
                     f'[{ProjectClient.buildingLevelRooms.__qualname__}] - grpc call to retrieve data from server {self._server}:{self._port}')
-                request = ProjectAppService_buildingLevelsRequest(resultFrom=resultFrom, resultSize=resultSize,
+                request = ProjectAppService_buildingLevelRoomsRequest(resultFrom=resultFrom, resultSize=resultSize,
                                                                   buildingLevelId=buildingLevelId)
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
-                response: ProjectAppService_buildingLevelsResponse = stub.buildingLevelRooms.with_call(
+                response: ProjectAppService_buildingLevelRoomsResponse = stub.buildingLevelRooms.with_call(
                     request,
                     metadata=(('token', self.token), ('opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
                         ProjectClient.buildingLevelRooms.__qualname__))))

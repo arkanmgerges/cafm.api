@@ -521,7 +521,7 @@ c4model:Rel(api__project_project_py__getBuildingLevelRooms, project__grpc__Proje
 """
 
 
-@router.get(path="/{project_id}/buildings/{building_id}/building_levels/rooms", summary='Get building level rooms',
+@router.get(path="/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/rooms", summary='Get building level rooms',
             response_model=BuildingLevelRooms)
 @OpenTelemetry.fastApiTraceOTel
 async def getBuildingLevelRooms(*, project_id: str = Path(...,
