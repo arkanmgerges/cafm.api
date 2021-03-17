@@ -383,7 +383,7 @@ c4model:Rel(api__project_project_py__createBuildingLevel, project__messaging_pro
 """
 
 
-@router.post("/{project_id}/buildings/{building_id}/levels", summary='Add level to building',
+@router.post("/{project_id}/buildings/{building_id}/building_levels", summary='Add level to building',
              status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def createBuildingLevel(*, _=Depends(CustomHttpBearer()),
@@ -412,7 +412,7 @@ c4model:Rel(api__project_project_py__deleteBuildingLevel, project__messaging_pro
 """
 
 
-@router.delete("/{project_id}/buildings/{building_id}/levels/{level_id}", summary='Delete building level',
+@router.delete("/{project_id}/buildings/{building_id}/building_levels/{level_id}", summary='Delete building level',
                status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def deleteBuildingLevel(*, _=Depends(CustomHttpBearer()),
@@ -438,7 +438,7 @@ c4model:Rel(api__project_project_py__updateBuildingLevel, project__messaging_pro
 """
 
 
-@router.put("/{project_id}/buildings/{building_id}/levels/{level_id}", summary='Update building level',
+@router.put("/{project_id}/buildings/{building_id}/building_levels/{level_id}", summary='Update building level',
             status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def updateBuildingLevel(*, _=Depends(CustomHttpBearer()),
@@ -466,7 +466,7 @@ c4model:Rel(api__project_project_py__linkBuildingLevelToBuilding, project__messa
 """
 
 
-@router.put("/{project_id}/buildings/{building_id}/levels/{level_id}/link", summary='Link building level to building',
+@router.put("/{project_id}/buildings/{building_id}/building_levels/{level_id}/link", summary='Link building level to building',
             status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def linkBuildingLevelToBuilding(*, _=Depends(CustomHttpBearer()),
@@ -492,7 +492,7 @@ c4model:Rel(api__project_project_py__unlinkBuildingLevelFromBuilding, project__m
 """
 
 
-@router.put("/{project_id}/buildings/{building_id}/levels/{level_id}/unlink",
+@router.put("/{project_id}/buildings/{building_id}/building_levels/{level_id}/unlink",
             summary='Unlink building level from building', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def unlinkBuildingLevelFromBuilding(*, _=Depends(CustomHttpBearer()),
@@ -521,7 +521,7 @@ c4model:Rel(api__project_project_py__getBuildingLevelRooms, project__grpc__Proje
 """
 
 
-@router.get(path="/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/rooms", summary='Get building level rooms',
+@router.get(path="/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms", summary='Get building level rooms',
             response_model=BuildingLevelRooms)
 @OpenTelemetry.fastApiTraceOTel
 async def getBuildingLevelRooms(*, project_id: str = Path(...,
@@ -560,7 +560,7 @@ c4model:Rel(api__project_project_py__getBuildingLevelRoomById, project__grpc__Pr
 
 
 @router.get(
-    path="/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/rooms/{building_level_room_id}",
+    path="/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms/{building_level_room_id}",
     summary='Get building level room by id', response_model=BuildingLevelRoom)
 @OpenTelemetry.fastApiTraceOTel
 async def getBuildingLevelRoomById(*,
@@ -595,7 +595,7 @@ c4model:Rel(api__project_project_py__createBuildingLevelRoom, project__messaging
 """
 
 
-@router.post("/{project_id}/buildings/{building_id}/levels/{level_id}/rooms", summary='Add room to building level',
+@router.post("/{project_id}/buildings/{building_id}/building_levels/{level_id}/building_level_rooms", summary='Add room to building level',
              status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def createBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
@@ -629,7 +629,7 @@ c4model:Rel(api__project_project_py__deleteBuildingLevelRoom, project__messaging
 """
 
 
-@router.delete("/{project_id}/buildings/{building_id}/levels/{level_id}/rooms/{room_id}",
+@router.delete("/{project_id}/buildings/{building_id}/building_levels/{level_id}/building_level_rooms/{room_id}",
                summary='Delete building level room', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def deleteBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
@@ -657,7 +657,7 @@ c4model:Rel(api__project_project_py__updateBuildingLevelRoom, project__messaging
 """
 
 
-@router.put("/{project_id}/buildings/{building_id}/levels/{level_id}/rooms/{room_id}",
+@router.put("/{project_id}/buildings/{building_id}/building_levels/{level_id}/building_level_rooms/{room_id}",
             summary='Update building level room', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def updateBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
@@ -690,7 +690,7 @@ c4model:Rel(api__project_project_py__updateBuildingLevelRoomIndex, project__mess
 """
 
 
-@router.put("/{project_id}/buildings/{building_id}/levels/{level_id}/rooms/{room_id}/update_index",
+@router.put("/{project_id}/buildings/{building_id}/building_levels/{level_id}/building_level_rooms/{room_id}/update_index",
             summary='Update building level room index', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def updateBuildingLevelRoomIndex(*, _=Depends(CustomHttpBearer()),
