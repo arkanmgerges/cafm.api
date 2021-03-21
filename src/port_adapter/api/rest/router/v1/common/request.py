@@ -29,6 +29,7 @@ async def isRequestSuccessful(*,
     try:
         import src.port_adapter.AppDi as AppDi
         cache = AppDi.instance.get(RedisCache)
+        cacheClient = cache.client()
         cacheKey = f'{cache.cacheResponseKeyPrefix}:{request_id}'
         split = request_id.split(':')
         if len(split) == 1:
