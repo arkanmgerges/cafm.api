@@ -690,7 +690,7 @@ c4model:Rel(api__project_project_py__updateBuildingLevelRoomIndex, project__mess
 """
 
 
-@router.put("/{project_id}/buildings/{building_id}/building_levels/{level_id}/building_level_rooms/{building_level_room_id}/update_index",
+@router.put("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms/{building_level_room_id}/update_index",
             summary='Update building level room index', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def updateBuildingLevelRoomIndex(*, _=Depends(CustomHttpBearer()),
