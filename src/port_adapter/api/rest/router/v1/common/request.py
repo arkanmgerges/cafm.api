@@ -118,9 +118,9 @@ def _hasAtLeastOneFailed(items):
 
 
 def _resultFromItems(items):
-    result = {'items': [], 'items_count': 0}
+    result = {'items': [], 'item_count': 0}
     for item in items:
         resultDict = json.loads(item.decode('utf-8'))
         result['items'].append({**resultDict['data'], 'creator_service_name': resultDict['creator_service_name']})
-        result['items_count'] += 1
+        result['item_count'] += 1
     return result
