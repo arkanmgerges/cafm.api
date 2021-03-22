@@ -57,7 +57,7 @@ async def isRequestSuccessful(*,
             else:
                 raise UnknownCacheTypeException(f'Request id: {request_id} has unknown cache type {cacheType}')
     except NotFoundException as e:
-        return JSONResponse(status_code=404, content={"detail": [{"msg": e.msg}]})
+        raise NotFoundException(e.message)
     except InProgressException as e:
         raise e
     except Exception as e:
@@ -101,7 +101,7 @@ async def getRequestIdResult(*, request_id: str = Query(..., description='Reques
             else:
                 raise UnknownCacheTypeException(f'Request id: {request_id} has unknown cache type {cacheType}')
     except NotFoundException as e:
-        return JSONResponse(status_code=404, content={"detail": [{"msg": e.msg}]})
+        raise NotFoundException(e.message)
     except InProgressException as e:
         raise e
     except Exception as e:

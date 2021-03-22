@@ -16,6 +16,7 @@ from starlette.responses import JSONResponse
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.model.response.exception.Message import Message, ValidationMessage
 from src.port_adapter.api.rest.resource.exception.InProgressException import InProgressException
+from src.port_adapter.api.rest.resource.exception.NotFoundException import NotFoundException
 from src.port_adapter.api.rest.resource.exception.ValidationErrorException import ValidationErrorException
 from src.port_adapter.api.rest.router.v1.common import request as common_request
 from src.port_adapter.api.rest.router.v1.identity import auth as id_auth, realm as id_realm, ou as id_ou, \
@@ -74,10 +75,16 @@ def addCustomExceptionHandlers(app):
         return JSONResponse(content={"detail": [{"message": str(e)}]}, status_code=status.HTTP_400_BAD_REQUEST)
 
     @app.exception_handler(InProgressException)
-    async def generalExceptionHandler(request: Request, e: Exception):
+    async def inProgressExceptionHandler(request: Request, e: Exception):
         logger.warning(traceback.format_exc())
         return JSONResponse(content={"detail": [{"message": str(e)}]},
                             status_code=status.HTTP_202_ACCEPTED)
+
+    @app.exception_handler(NotFoundException)
+    async def notFoundExceptionHandler(request: Request, e: Exception):
+        logger.warning(traceback.format_exc())
+        return JSONResponse(content={"detail": [{"message": str(e)}]},
+                            status_code=status.HTTP_404_NOT_FOUND)
 
     @app.exception_handler(Exception)
     async def generalExceptionHandler(request: Request, e: Exception):
