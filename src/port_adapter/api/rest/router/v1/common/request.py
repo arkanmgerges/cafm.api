@@ -30,7 +30,7 @@ async def isRequestSuccessful(*,
         import src.port_adapter.AppDi as AppDi
         cache = AppDi.instance.get(RedisCache)
         cacheClient = cache.client()
-        cacheKey = f'{cache.cacheResponseKeyPrefix}:{request_id}'
+        cacheKey = f'{cache.cacheResponseKeyPrefix()}:{request_id}'
         split = request_id.split(':')
         if len(split) == 1:
             result = cacheClient.get(cacheKey)
@@ -74,7 +74,7 @@ async def getRequestIdResult(*, request_id: str = Query(..., description='Reques
         import src.port_adapter.AppDi as AppDi
         cache = AppDi.instance.get(RedisCache)
         cacheClient = cache.client()
-        cacheKey = f'{cache.cacheResponseKeyPrefix}:{request_id}'
+        cacheKey = f'{cache.cacheResponseKeyPrefix()}:{request_id}'
         split = request_id.split(':')
         if len(split) == 1:
             result = cacheClient.get(cacheKey)
