@@ -112,7 +112,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_REALM.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': client.newId(), 'name': name, 'realm_type': realm_type})), schema=ApiCommand.get_schema())
+                                        {'realm_id': client.newId(), 'name': name, 'realm_type': realm_type})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -133,7 +133,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_REALM.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': realm_id})), schema=ApiCommand.get_schema())
+                                        {'realm_id': realm_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -155,7 +155,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_REALM.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': realm_id, 'name': name})), schema=ApiCommand.get_schema())
+                                        {'realm_id': realm_id, 'name': name})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -177,5 +177,5 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_REALM.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': realm_id, 'name': name})), schema=ApiCommand.get_schema())
+                                        {'realm_id': realm_id, 'name': name})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}

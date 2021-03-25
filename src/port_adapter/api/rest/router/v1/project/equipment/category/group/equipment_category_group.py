@@ -80,7 +80,7 @@ async def getEquipmentCategoryGroupById(*, equipment_category_group_id: str = Pa
 
 @router.post("", summary='Create equipment category group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def createEquipmentCategoryGroup(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='name of equipment category group', embed=True),
                  equipment_category_id: str = Body(..., description='equipment category id of equipment category group', embed=True),
                 ):
@@ -92,7 +92,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                             'id': client.newId(),
+                                             'equipment_category_group_id': client.newId(),
                                              'name': name,
                                              'equipment_category_id': equipment_category_id,
                                              }),
@@ -103,7 +103,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 @router.put("/{equipment_category_group_id}", summary='Update equipment category group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
+async def updateEquipmentCategoryGroup(*, _=Depends(CustomHttpBearer()),
                  equipment_category_group_id: str = Path(..., description='equipment category group id that is used in order to update the equipment category group'),
                  name: str = Body(..., description='name of name', embed=True),
                  equipment_category_id: str = Body(..., description='equipment category id of equipment category id', embed=True),                 
@@ -147,7 +147,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
 
 @router.delete("/{equipment_category_group_id}", summary='Delete a equipment category groups', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def deleteEquipmentCategoryGroup(*, _=Depends(CustomHttpBearer()),
                  equipment_category_group_id: str = Path(..., description='equipment category group id that is used in order to delete the equipment category group'), ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)

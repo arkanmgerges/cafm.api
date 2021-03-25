@@ -219,7 +219,7 @@ async def createDailyCheckProcedureOperationParameter(*, _=Depends(CustomHttpBea
                            metadata=json.dumps({"token": Client.token}),
                            data=json.dumps(
                                {
-                                   'id': client.newId(),
+                                   'daily_check_procedure_operation_parameter_id': client.newId(),
                                    'name': name,
                                    'unit_id': unit_id,
                                    'daily_check_procedure_operation_id': daily_check_procedure_operation_id,
@@ -407,7 +407,7 @@ async def createDailyCheckProcedure(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                                'id': client.newId(),
+                                                'daily_check_procedure_id': client.newId(),
                                                 'name': name,
                                                 'description': description,
                                                 'equipment_id': equipment_id,
@@ -559,7 +559,7 @@ async def createDailyCheckProcedureOperation(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                                'id': client.newId(),
+                                                'daily_check_procedure_operation_id': client.newId(),
                                                 'name': name,
                                                 'description': description,
                                                 'type': type,

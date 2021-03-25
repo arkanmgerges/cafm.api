@@ -80,7 +80,7 @@ async def getEquipmentModelById(*, equipment_model_id: str = Path(...,
 
 @router.post("", summary='Create equipment model', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def createEquipmentModel(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='name of equipment model', embed=True),
                 ):
     reqId = str(uuid4())
@@ -91,7 +91,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                             'id': client.newId(),
+                                             'equipment_model_id': client.newId(),
                                              'name': name,
                                              }),
                                         external=[]),
@@ -101,7 +101,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 @router.put("/{equipment_model_id}", summary='Update equipment model', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
+async def updateEquipmentModel(*, _=Depends(CustomHttpBearer()),
                  equipment_model_id: str = Path(..., description='equipment model id that is used in order to update the equipment model'),
                  name: str = Body(..., description='name of name', embed=True),                 
                  ):
@@ -141,7 +141,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
 
 @router.delete("/{equipment_model_id}", summary='Delete a equipment models', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def deleteEquipmentModel(*, _=Depends(CustomHttpBearer()),
                  equipment_model_id: str = Path(..., description='equipment model id that is used in order to delete the equipment model'), ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)

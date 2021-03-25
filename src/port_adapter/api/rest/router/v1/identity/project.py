@@ -98,7 +98,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_PROJECT.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': client.newId(), 'name': name})), schema=ApiCommand.get_schema())
+                                        {'project_id': client.newId(), 'name': name})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 """
@@ -116,5 +116,5 @@ async def delete(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_PROJECT.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': project_id})), schema=ApiCommand.get_schema())
+                                        {'project_id': project_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}

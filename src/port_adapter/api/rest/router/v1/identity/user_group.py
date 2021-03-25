@@ -105,7 +105,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': client.newId(), 'name': name})), schema=ApiCommand.get_schema())
+                                        {'user_group_id': client.newId(), 'name': name})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -126,7 +126,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': user_group_id})), schema=ApiCommand.get_schema())
+                                        {'user_group_id': user_group_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -148,7 +148,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': user_group_id, 'name': name})), schema=ApiCommand.get_schema())
+                                        {'user_group_id': user_group_id, 'name': name})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -170,5 +170,5 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': user_group_id, 'name': name})), schema=ApiCommand.get_schema())
+                                        {'user_group_id': user_group_id, 'name': name})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}

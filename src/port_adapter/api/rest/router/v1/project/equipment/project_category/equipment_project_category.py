@@ -85,7 +85,7 @@ async def getEquipmentProjectCategoryById(*, equipment_project_category_id: str 
 
 @router.post("", summary='Create equipment project category', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def createEquipmentProjectCategory(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='name of equipment project category', embed=True),
                  ):
     reqId = str(uuid4())
@@ -96,7 +96,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                                'id': client.newId(),
+                                                'equipment_project_category_id': client.newId(),
                                                 'name': name,
                                             }),
                                         external=[]),
@@ -107,7 +107,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 @router.put("/{equipment_project_category_id}", summary='Update equipment project category',
             status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
+async def updateEquipmentProjectCategory(*, _=Depends(CustomHttpBearer()),
                  equipment_project_category_id: str = Path(...,
                                                            description='equipment project category id that is used in order to update the equipment project category'),
                  name: str = Body(..., description='name of name', embed=True),
@@ -149,7 +149,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
 @router.delete("/{equipment_project_category_id}", summary='Delete a equipment project categories',
                status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def deleteEquipmentProjectCategory(*, _=Depends(CustomHttpBearer()),
                  equipment_project_category_id: str = Path(...,
                                                            description='equipment project category id that is used in order to delete the equipment project category'), ):
     reqId = str(uuid4())

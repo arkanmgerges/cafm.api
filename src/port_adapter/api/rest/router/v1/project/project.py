@@ -122,7 +122,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_PROJECT.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': project_id,
+                                        {'project_id': project_id,
                                          'name': name,
                                          'city_id': city_id,
                                          'country_id': country_id,
@@ -149,7 +149,7 @@ async def paritalUpdate(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_PROJECT.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': project_id,
+                                        {'project_id': project_id,
                                          'name': name,
                                          'city_id': city_id,
                                          'country_id': country_id,
@@ -247,9 +247,9 @@ async def createBuilding(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                                'id': client.newBuildingId(),
-                                                'project_id': project_id,
-                                             'name': name,
+                                               'building_id': client.newBuildingId(),
+                                               'project_id': project_id,
+                                               'name': name,
                                              }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 
@@ -398,7 +398,7 @@ async def createBuildingLevel(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token, "msg_key": building_id}),
                                         data=json.dumps(
                                             {
-                                             'id': client.newBuildingLevelId(),
+                                             'building_level_id': client.newBuildingLevelId(),
                                              'project_id': project_id,
                                              'building_id': building_id,
                                              'name': name,
@@ -613,7 +613,7 @@ async def createBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token, "msg_key": building_level_id}),
                                         data=json.dumps(
                                             {
-                                             'id': client.newBuildingLevelRoomId(),
+                                             'building_level_room_id': client.newBuildingLevelRoomId(),
                                              'project_id': project_id,
                                              'building_id': building_id,
                                              'building_level_id': building_level_id,
@@ -736,7 +736,7 @@ async def changeProjectState(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CHANGE_PROJECT_STATE.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
-                                            {'id': project_id,
+                                            {'project_id': project_id,
                                              'state': state}), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 # endregion

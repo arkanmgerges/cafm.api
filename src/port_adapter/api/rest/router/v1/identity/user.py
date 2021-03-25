@@ -96,7 +96,7 @@ c4model:Rel(api__identity_user_py__create, api__identity_user_py__create__api_co
 """
 @router.post("", summary='Create a new user', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def createUser(*, _=Depends(CustomHttpBearer()),
                  email: str = Body(..., description='User email', embed=True),
                  ):
     reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'  # 2 for completion of identity & project
@@ -106,7 +106,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': client.newId(), 'email': email, })),
+                                        {'user_id': client.newId(), 'email': email, })),
                      schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
@@ -117,7 +117,7 @@ c4model:Rel(api__identity_user_py__delete, api__identity_user_py__delete__api_co
 """
 @router.delete("/{user_id}", summary='Delete a user', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def deleteUser(*, _=Depends(CustomHttpBearer()),
                  user_id: str = Path(...,
                                      description='User id that is used in order to delete the user')):
     reqId = str(uuid4())
@@ -125,7 +125,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': user_id})), schema=ApiCommand.get_schema())
+                                        {'user_id': user_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 """
@@ -146,7 +146,7 @@ async def setUserPassword(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.SET_USER_PASSWORD.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': user_id,
+                                        {'user_id': user_id,
                                          'password': authService.hashPassword(password=password)})),
                      schema=ApiCommand.get_schema())
     return {"request_id": reqId}
@@ -168,7 +168,7 @@ async def resetUserPassword(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.RESET_USER_PASSWORD.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': user_id,
+                                        {'user_id': user_id,
                                          'email': email
                                          })),
                      schema=ApiCommand.get_schema())

@@ -52,17 +52,17 @@ async def getSubcontractors(*,
         logger.info(e)
 
 
-@router.get(path="/{subcontractors_id}", summary='Get subcontractors by id',
+@router.get(path="/{subcontractor_id}", summary='Get subcontractors by id',
             response_model=SubcontractorDescriptor)
 @OpenTelemetry.fastApiTraceOTel
-async def getSubcontractorById(*, subcontractors_id: str = Path(...,
+async def getSubcontractorById(*, subcontractor_id: str = Path(...,
                                                                 description='Subcontractor id that is used to fetch subcontractor data'),
                                _=Depends(CustomHttpBearer())):
     """Get a Subcontractor by id
     """
     try:
         client = SubcontractorClient()
-        return client.subcontractorById(id=subcontractors_id)
+        return client.subcontractorById(id=subcontractor_id)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -78,7 +78,7 @@ async def getSubcontractorById(*, subcontractors_id: str = Path(...,
 
 @router.post("", summary='Create a subcontractors', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def createSubcontractor(*, _=Depends(CustomHttpBearer()),
                  company_name: str = Body(..., description='subcontractor name', embed=True),
                  website_url: str = Body(..., description='The website url of the subcontractor', embed=True),
                  contact_person: str = Body(..., description='The contact person of the subcontractor', embed=True),
@@ -94,7 +94,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                             'id': client.newId(),
+                                             'subcontractor_id': client.newId(),
                                              'company_name': company_name,
                                              'website_url': website_url,
                                              'contact_person': contact_person,
@@ -107,10 +107,10 @@ async def create(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 
-@router.put("/{subcontractors_id}", summary='Update a subcontractors', status_code=status.HTTP_200_OK)
+@router.put("/{subcontractor_id}", summary='Update a subcontractors', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
-                 subcontractors_id: str = Path(...,
+                 subcontractor_id: str = Path(...,
                                                description='Subcontractor id that is used in order to update the subcontractor'),
                  company_name: str = Body(..., description='subcontractor name', embed=True),
                  website_url: str = Body(..., description='The website url of the subcontractor', embed=True),
@@ -126,7 +126,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_SUBCONTRACTOR.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
-                                            {'id': subcontractors_id,
+                                            {'subcontractor_id': subcontractor_id,
                                              'company_name': company_name,
                                              'website_url': website_url,
                                              'contact_person': contact_person,
@@ -139,10 +139,10 @@ async def update(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 
-@router.patch("/{subcontractors_id}", summary='Partial update a subcontractors', status_code=status.HTTP_200_OK)
+@router.patch("/{subcontractor_id}", summary='Partial update a subcontractors', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def partialUpdate(*, _=Depends(CustomHttpBearer()),
-                        subcontractors_id: str = Path(...,
+                        subcontractor_id: str = Path(...,
                                                       description='Subcontractor id that is used in order to update the subcontractor'),
                         company_name: str = Body(None, description='subcontractor name', embed=True),
                         website_url: str = Body(None, description='The website url of the subcontractor', embed=True),
@@ -158,7 +158,7 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_SUBCONTRACTOR.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
-                                            {'id': subcontractors_id,
+                                            {'subcontractor_id': subcontractor_id,
                                              'company_name': company_name,
                                              'website_url': website_url,
                                              'contact_person': contact_person,
@@ -171,10 +171,10 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 
-@router.delete("/{subcontractors_id}", summary='Delete a subcontractors', status_code=status.HTTP_200_OK)
+@router.delete("/{subcontractor_id}", summary='Delete a subcontractors', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
-                 subcontractors_id: str = Path(...,
+                 subcontractor_id: str = Path(...,
                                                description='Subcontractor id that is used in order to delete the subcontractor'), ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
@@ -182,39 +182,39 @@ async def delete(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_SUBCONTRACTOR.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
-                                            {'id': subcontractors_id}),
+                                            {'subcontractor_id': subcontractor_id}),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 
 
-@router.post("/{subcontractors_id}/assign_to_oraganization", summary='Assign a subcontractor to a oraganization',
+@router.post("/{subcontractor_id}/assign_to_oraganization", summary='Assign a subcontractor to a oraganization',
              status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def assign(*, _=Depends(CustomHttpBearer()),
-                 subcontractors_id: str = Path(...,
+                 subcontractor_id: str = Path(...,
                                                description='Subcontractor id that is used in order to assign a oraganization'),
-                 oraganization_id: str = Body(..., description='Oraganization id that is need to be assigned',
+                 organization_id: str = Body(..., description='Oraganization id that is need to be assigned',
                                               embed=True), ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.ASSIGN_SUBCONTRACTOR_TO_ORGANIZATION.value,
                                         metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps({'id': subcontractors_id,
-                                                         'org_id': oraganization_id}),
+                                        data=json.dumps({'subcontractor_id': subcontractor_id,
+                                                         'organization_id': organization_id}),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 
 
-@router.delete("/{subcontractors_id}/assign_to_oraganization", summary='Unassign a subcontractor to a oraganization',
+@router.delete("/{subcontractor_id}/assign_to_oraganization", summary='Unassign a subcontractor to a oraganization',
                status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def revoke(*, _=Depends(CustomHttpBearer()),
-                 subcontractors_id: str = Path(...,
+                 subcontractor_id: str = Path(...,
                                                description='Subcontractor id that is used in order to assign a oraganization'),
-                 oraganization_id: str = Body(..., description='Oraganization id that is need to be assigned',
+                 organization_id: str = Body(..., description='Organization id that is need to be assigned',
                                               embed=True), ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
@@ -222,8 +222,8 @@ async def revoke(*, _=Depends(CustomHttpBearer()),
     producer.produce(
         obj=ProjectCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_SUBCONTRACTOR_TO_ORGANIZATION.value,
                            metadata=json.dumps({"token": Client.token}),
-                           data=json.dumps({'id': subcontractors_id,
-                                            'org_id': oraganization_id}),
+                           data=json.dumps({'subcontractor_id': subcontractor_id,
+                                            'organization_id': organization_id}),
                            external=[]),
         schema=ProjectCommand.get_schema())
     return {"request_id": reqId}

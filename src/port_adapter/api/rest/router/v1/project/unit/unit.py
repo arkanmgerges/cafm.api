@@ -81,7 +81,7 @@ async def getUnitById(*, unit_id: str = Path(...,
 
 @router.post("", summary='Create unit', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def createUnit(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='name of unit', embed=True),
                 ):
     reqId = str(uuid4())
@@ -92,7 +92,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                             'id': client.newId(),
+                                             'unit_id': client.newId(),
                                              'name': name,
                                              }),
                                         external=[]),
@@ -102,7 +102,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 @router.put("/{unit_id}", summary='Update unit', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
+async def updateUnit(*, _=Depends(CustomHttpBearer()),
                  unit_id: str = Path(..., description='unit id that is used in order to update the unit'),
                  name: str = Body(..., description='name of name', embed=True),                 
                  ):
@@ -122,7 +122,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
 
 @router.patch("/{unit_id}", summary='Partial update unit', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+async def partialUpdatUnit(*, _=Depends(CustomHttpBearer()),
                         unit_id: str = Path(..., description='unit id that is used in order to update the unit'),
                         name: str = Body(..., description='name of name', embed=True),
                         ):
@@ -142,7 +142,7 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
 
 @router.delete("/{unit_id}", summary='Delete a units', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def deleteUnit(*, _=Depends(CustomHttpBearer()),
                  unit_id: str = Path(..., description='unit id that is used in order to delete the unit'), ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)

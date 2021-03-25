@@ -103,7 +103,7 @@ c4model:Rel(api__identity_permission_py__create, api__identity_permission_py__cr
 """
 @router.post("", summary='Create a new permission', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def createPermission(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the permission', embed=True),
                  allowed_actions: List[str] = Body(..., description='The actions that are allowed by the permission',
                                                    embed=True),
@@ -117,7 +117,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_PERMISSION.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': client.newId(), 'name': name, 'allowed_actions': allowed_actions,
+                                        {'permission_id': client.newId(), 'name': name, 'allowed_actions': allowed_actions,
                                          'denied_actions': denied_actions})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
@@ -128,7 +128,7 @@ c4model:Rel(api__identity_permission_py__delete, api__identity_permission_py__de
 """
 @router.delete("/{permission_id}", summary='Delete a permission', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def deletePermission(*, _=Depends(CustomHttpBearer()),
                  permission_id: str = Path(...,
                                            description='Permission id that is used in order to delete the permission')):
     reqId = str(uuid4())
@@ -136,7 +136,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_PERMISSION.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': permission_id})), schema=ApiCommand.get_schema())
+                                        {'permission_id': permission_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 """
@@ -146,7 +146,7 @@ c4model:Rel(api__identity_permission_py__update, api__identity_permission_py__up
 """
 @router.put("/{permission_id}", summary='Update a permission', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
+async def updatePermission(*, _=Depends(CustomHttpBearer()),
                  permission_id: str = Path(...,
                                            description='Permission id that is used in order to update the permission'),
                  name: str = Body(..., description='Title of the permission', embed=True),
@@ -161,6 +161,6 @@ async def update(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_PERMISSION.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'id': permission_id, 'name': name, 'allowed_actions': allowed_actions,
+                                        {'permission_id': permission_id, 'name': name, 'allowed_actions': allowed_actions,
                                          'denied_actions': denied_actions})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}

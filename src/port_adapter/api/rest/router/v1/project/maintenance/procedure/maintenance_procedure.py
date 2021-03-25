@@ -204,7 +204,7 @@ async def createMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBe
                            metadata=json.dumps({"token": Client.token}),
                            data=json.dumps(
                                {
-                                   'id': client.newId(),
+                                   'maintenance_procedure_operation_parameter_id': client.newId(),
                                    'name': name,
                                    'unit_id': unit_id,
                                    'maintenance_procedure_operation_id': maintenance_procedure_operation_id,
@@ -363,7 +363,7 @@ async def createMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                             'id': client.newId(),
+                                             'maintenance_procedure_id': client.newId(),
                                              'name': name,
                                              'type': type,
                                              'frequency': frequency,
@@ -500,7 +500,7 @@ async def createMaintenanceProcedureOperation(*,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                             'id': client.newId(),
+                                             'maintenance_procedure_operation_id': client.newId(),
                                              'name': name,
                                              'description': description,
                                              'type': type,

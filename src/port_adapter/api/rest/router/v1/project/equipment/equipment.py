@@ -80,7 +80,7 @@ async def getEquipmentById(*, equipment_id: str = Path(...,
 
 @router.post("", summary='Create equipment', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def createEquipment(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='name of equipment', embed=True),
                  project_id: str = Body(..., description='project id of equipment', embed=True),
                  equipment_project_category_id: str = Body(..., description='equipment project category id of equipment', embed=True),
@@ -101,7 +101,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                             'id': client.newId(),
+                                             'equipment_id': client.newId(),
                                              'name': name,
                                              'project_id': project_id,
                                              'equipment_project_category_id': equipment_project_category_id,
@@ -121,7 +121,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 @router.put("/{equipment_id}", summary='Update equipment', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
+async def updateEquipment(*, _=Depends(CustomHttpBearer()),
                  equipment_id: str = Path(..., description='equipment id that is used in order to update the equipment'),
                  name: str = Body(..., description='name of name', embed=True),
                  project_id: str = Body(..., description='project id of project id', embed=True),
@@ -161,7 +161,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
 
 @router.patch("/{equipment_id}", summary='Partial update equipment', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+async def partialUpdateEquipment(*, _=Depends(CustomHttpBearer()),
                         equipment_id: str = Path(..., description='equipment id that is used in order to update the equipment'),
                         name: str = Body(..., description='name of name', embed=True),
                         project_id: str = Body(..., description='project id of project id', embed=True),
@@ -201,7 +201,7 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
 
 @router.delete("/{equipment_id}", summary='Delete a equipments', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def deleteEquipment(*, _=Depends(CustomHttpBearer()),
                  equipment_id: str = Path(..., description='equipment id that is used in order to delete the equipment'), ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
