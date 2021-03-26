@@ -119,7 +119,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
                  ):
     reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_PROJECT.value,
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_PROJECT.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
                                         {'project_id': project_id,
@@ -129,7 +129,8 @@ async def update(*, _=Depends(CustomHttpBearer()),
                                          'address_line': address_line,
                                          'beneficiary_id': beneficiary_id,
                                          'state': state
-                                         })), schema=ApiCommand.get_schema())
+                                         }),
+                                        external=[]), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
