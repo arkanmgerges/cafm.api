@@ -120,16 +120,16 @@ async def update(*, _=Depends(CustomHttpBearer()),
     reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_PROJECT.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'project_id': project_id,
-                                         'name': name,
-                                         'city_id': city_id,
-                                         'country_id': country_id,
-                                         'address_line': address_line,
-                                         'beneficiary_id': beneficiary_id,
-                                         'state': state
-                                         }),
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'project_id': project_id,
+                                             'name': name,
+                                             'city_id': city_id,
+                                             'country_id': country_id,
+                                             'address_line': address_line,
+                                             'beneficiary_id': beneficiary_id,
+                                             'state': state
+                                             }),
                                         external=[]), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
@@ -158,6 +158,31 @@ async def paritalUpdate(*, _=Depends(CustomHttpBearer()),
                                          'beneficiary_id': beneficiary_id,
                                          'state': state
                                          })), schema=ApiCommand.get_schema())
+    return {"request_id": reqId}
+
+
+"""  
+c4model|cb|api:Component(api__project_project_py__changeProjectState, "Change Project State", "http(s)", "")
+c4model:Rel(api__project_project_py__changeProjectState, project__messaging_project_command_handler__ChangeProjectStateHandler, "CommonCommandConstant.CHANGE_PROJECT_STATE.value", "message")
+"""
+
+
+@router.post("/{project_id}/change_state",
+             summary='Change project state', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def changeProjectState(*, _=Depends(CustomHttpBearer()),
+                             project_id: str = Path(..., description='Project id'),
+                             state: str = Body(..., description='The state can be active and archived', embed=True)):
+    reqId = str(uuid4())
+    state = state.lower()
+    if state not in ['active', 'archived']:
+        raise ValueError('Invalid state, it should be one of these: active, archived')
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CHANGE_PROJECT_STATE.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'project_id': project_id,
+                                             'state': state}), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -248,10 +273,10 @@ async def createBuilding(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                               'building_id': client.newBuildingId(),
-                                               'project_id': project_id,
-                                               'name': name,
-                                             }), external=[]), schema=ProjectCommand.get_schema())
+                                                'building_id': client.newBuildingId(),
+                                                'project_id': project_id,
+                                                'name': name,
+                                            }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -391,6 +416,7 @@ async def createBuildingLevel(*, _=Depends(CustomHttpBearer()),
                               project_id: str = Path(..., description='Project id'),
                               building_id: str = Path(..., description='Building id'),
                               name: str = Body(..., description='Building level name', embed=True),
+                              is_sublevel: bool = Body(..., description='Is it a sublevel', embed=True),
                               ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
@@ -399,11 +425,12 @@ async def createBuildingLevel(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token, "msg_key": building_id}),
                                         data=json.dumps(
                                             {
-                                             'building_level_id': client.newBuildingLevelId(),
-                                             'project_id': project_id,
-                                             'building_id': building_id,
-                                             'name': name,
-                                             }), external=[]), schema=ProjectCommand.get_schema())
+                                                'building_level_id': client.newBuildingLevelId(),
+                                                'project_id': project_id,
+                                                'building_id': building_id,
+                                                'name': name,
+                                                'is_sublevel': is_sublevel,
+                                            }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -413,7 +440,8 @@ c4model:Rel(api__project_project_py__deleteBuildingLevel, project__messaging_pro
 """
 
 
-@router.delete("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}", summary='Delete building level',
+@router.delete("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}",
+               summary='Delete building level',
                status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def deleteBuildingLevel(*, _=Depends(CustomHttpBearer()),
@@ -439,7 +467,8 @@ c4model:Rel(api__project_project_py__updateBuildingLevel, project__messaging_pro
 """
 
 
-@router.put("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}", summary='Update building level',
+@router.put("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}",
+            summary='Update building level',
             status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def updateBuildingLevel(*, _=Depends(CustomHttpBearer()),
@@ -447,6 +476,7 @@ async def updateBuildingLevel(*, _=Depends(CustomHttpBearer()),
                               building_id: str = Path(..., description='Building id'),
                               building_level_id: str = Path(..., description='Building level id'),
                               name: str = Body(..., description='Building name', embed=True),
+                              is_sublevel: bool = Body(..., description='Is it a sublevel', embed=True),
                               ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
@@ -456,6 +486,7 @@ async def updateBuildingLevel(*, _=Depends(CustomHttpBearer()),
                                             {'project_id': project_id,
                                              'building_id': building_id,
                                              'building_level_id': building_level_id,
+                                             'is_sublevel': is_sublevel,
                                              'name': name,
                                              }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
@@ -467,7 +498,8 @@ c4model:Rel(api__project_project_py__linkBuildingLevelToBuilding, project__messa
 """
 
 
-@router.put("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/link", summary='Link building level to building',
+@router.put("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/link",
+            summary='Link building level to building',
             status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def linkBuildingLevelToBuilding(*, _=Depends(CustomHttpBearer()),
@@ -522,7 +554,8 @@ c4model:Rel(api__project_project_py__getBuildingLevelRooms, project__grpc__Proje
 """
 
 
-@router.get(path="/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms", summary='Get building level rooms',
+@router.get(path="/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms",
+            summary='Get building level rooms',
             response_model=BuildingLevelRooms)
 @OpenTelemetry.fastApiTraceOTel
 async def getBuildingLevelRooms(*, project_id: str = Path(...,
@@ -596,7 +629,8 @@ c4model:Rel(api__project_project_py__createBuildingLevelRoom, project__messaging
 """
 
 
-@router.post("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms", summary='Add room to building level',
+@router.post("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms",
+             summary='Add room to building level',
              status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def createBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
@@ -614,13 +648,13 @@ async def createBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token, "msg_key": building_level_id}),
                                         data=json.dumps(
                                             {
-                                             'building_level_room_id': client.newBuildingLevelRoomId(),
-                                             'project_id': project_id,
-                                             'building_id': building_id,
-                                             'building_level_id': building_level_id,
-                                             'name': name,
-                                             'description': description,
-                                             }), external=[]), schema=ProjectCommand.get_schema())
+                                                'building_level_room_id': client.newBuildingLevelRoomId(),
+                                                'project_id': project_id,
+                                                'building_id': building_id,
+                                                'building_level_id': building_level_id,
+                                                'name': name,
+                                                'description': description,
+                                            }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -630,8 +664,9 @@ c4model:Rel(api__project_project_py__deleteBuildingLevelRoom, project__messaging
 """
 
 
-@router.delete("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms/{building_level_room_id}",
-               summary='Delete building level room', status_code=status.HTTP_200_OK)
+@router.delete(
+    "/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms/{building_level_room_id}",
+    summary='Delete building level room', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def deleteBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
                                   project_id: str = Path(..., description='Project id'),
@@ -658,8 +693,9 @@ c4model:Rel(api__project_project_py__updateBuildingLevelRoom, project__messaging
 """
 
 
-@router.put("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms/{building_level_room_id}",
-            summary='Update building level room', status_code=status.HTTP_200_OK)
+@router.put(
+    "/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms/{building_level_room_id}",
+    summary='Update building level room', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def updateBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
                                   project_id: str = Path(..., description='Project id'),
@@ -691,8 +727,9 @@ c4model:Rel(api__project_project_py__updateBuildingLevelRoomIndex, project__mess
 """
 
 
-@router.put("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms/{building_level_room_id}/update_index",
-            summary='Update building level room index', status_code=status.HTTP_200_OK)
+@router.put(
+    "/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms/{building_level_room_id}/update_index",
+    summary='Update building level room index', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def updateBuildingLevelRoomIndex(*, _=Depends(CustomHttpBearer()),
                                        project_id: str = Path(..., description='Project id'),
@@ -714,30 +751,4 @@ async def updateBuildingLevelRoomIndex(*, _=Depends(CustomHttpBearer()),
                                              }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 
-
-# endregion
-
-"""  
-c4model|cb|api:Component(api__project_project_py__changeProjectState, "Change Project State", "http(s)", "")
-c4model:Rel(api__project_project_py__changeProjectState, project__messaging_project_command_handler__ChangeProjectStateHandler, "CommonCommandConstant.CHANGE_PROJECT_STATE.value", "message")
-"""
-
-
-@router.post("/{project_id}/change_state",
-             summary='Change project state', status_code=status.HTTP_200_OK)
-@OpenTelemetry.fastApiTraceOTel
-async def changeProjectState(*, _=Depends(CustomHttpBearer()),
-                             project_id: str = Path(..., description='Project id'),
-                             state: str = Body(..., description='The state can be active and archived', embed=True)):
-    reqId = str(uuid4())
-    state = state.lower()
-    if state not in ['active', 'archived']:
-        raise ValueError('Invalid state, it should be one of these: active, archived')
-    producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CHANGE_PROJECT_STATE.value,
-                                        metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps(
-                                            {'project_id': project_id,
-                                             'state': state}), external=[]), schema=ProjectCommand.get_schema())
-    return {"request_id": reqId}
 # endregion
