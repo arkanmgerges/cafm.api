@@ -144,10 +144,11 @@ async def paritalUpdate(*, _=Depends(CustomHttpBearer()),
                         country_id: str = Body(None, description='Country id of this project', embed=True),
                         address_line: str = Body(None, description='Address line of the project', embed=True),
                         beneficiary_id: str = Body(None, description='The id of the beneficiary', embed=True),
+                        start_date: str = Body(None, description='The start date of the project', embed=True),
                         state: str = Body(None, description='The state of the project', embed=True), ):
     reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_PROJECT.value,
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_PROJECT.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
                                         {'project_id': project_id,
@@ -156,8 +157,9 @@ async def paritalUpdate(*, _=Depends(CustomHttpBearer()),
                                          'country_id': country_id,
                                          'address_line': address_line,
                                          'beneficiary_id': beneficiary_id,
+                                         'start_date': start_date,
                                          'state': state
-                                         })), schema=ApiCommand.get_schema())
+                                         }), external=[]), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 

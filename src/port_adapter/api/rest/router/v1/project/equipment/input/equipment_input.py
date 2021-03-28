@@ -131,9 +131,9 @@ async def updateEquipmentInput(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def partialUpdateEquipmentInput(*, _=Depends(CustomHttpBearer()),
                         equipment_input_id: str = Path(..., description='equipment input id that is used in order to update the equipment input'),
-                        name: str = Body(..., description='name of name', embed=True),
-                        value: str = Body(..., description='value of value', embed=True),
-                        unit_id: str = Body(..., description='unit id of unit id', embed=True),
+                        name: str = Body(None, description='name of name', embed=True),
+                        value: str = Body(None, description='value of value', embed=True),
+                        unit_id: str = Body(None, description='unit id of unit id', embed=True),
                         ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
