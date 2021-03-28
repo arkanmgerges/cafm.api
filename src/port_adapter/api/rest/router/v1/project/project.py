@@ -684,6 +684,32 @@ async def updateBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
                                              }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 
+# @router.patch("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms/{building_level_room_id}",
+#             summary='Update building level room', status_code=status.HTTP_200_OK)
+# @OpenTelemetry.fastApiTraceOTel
+# async def updateBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
+#                                   project_id: str = Path(..., description='Project id'),
+#                                   building_id: str = Path(..., description='Building id'),
+#                                   building_level_id: str = Path(..., description='Building level id'),
+#                                   building_level_room_id: str = Path(..., description='Building level room id'),
+#                                   name: str = Body(, description='Building level room name', embed=True),
+#                                   description: str = Body(..., description='Building level room description',
+#                                                           embed=True),
+#                                   ):
+#     reqId = str(uuid4())
+#     producer = AppDi.instance.get(SimpleProducer)
+#     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_BUILDING_LEVEL_ROOM.value,
+#                                         metadata=json.dumps({"token": Client.token, "msg_key": building_level_id}),
+#                                         data=json.dumps(
+#                                             {'project_id': project_id,
+#                                              'building_id': building_id,
+#                                              'building_level_id': building_level_id,
+#                                              'building_level_room_id': building_level_room_id,
+#                                              'name': name,
+#                                              'description': description
+#                                              }), external=[]), schema=ProjectCommand.get_schema())
+#     return {"request_id": reqId}
+
 
 """  
 c4model|cb|api:Component(api__project_project_py__updateBuildingLevelRoomIndex, "Update Building Level Room Index", "http(s)", "")

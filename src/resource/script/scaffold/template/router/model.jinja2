@@ -30,7 +30,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.{{ filePath }}.{{ className }}Client import {{ className }}Client
-from src.port_adapter.api.rest.model.response.v1.{{ filePath }}.{{ className }}s import {{ className }}s
+from src.port_adapter.api.rest.model.response.v1.{{ filePath }}.{{ className | pluralize }} import {{ className | pluralize }}
 from src.port_adapter.api.rest.model.response.v1.{{ filePath }}.{{ className }} import {{ className }}Descriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -41,9 +41,9 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="", summary='Get all {{ model.name | spacedWords }}(s)', response_model={{ className }}s)
+@router.get(path="", summary='Get all {{ model.name | spacedWords }}(s)', response_model={{ className | pluralize }})
 @OpenTelemetry.fastApiTraceOTel
-async def get{{ className }}s(*,
+async def get{{ className | pluralize }}(*,
                             result_from: int = Query(0, description='Starting offset for fetching data'),
                             result_size: int = Query(10, description='Item count to be fetched'),
                             order: str = Query('', description='e.g. id:asc,email:desc'),
@@ -52,7 +52,7 @@ async def get{{ className }}s(*,
         client = {{ className }}Client()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.{{ lowerCamelModelName }}s(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.{{ lowerCamelModelName | pluralize }}(resultFrom=result_from, resultSize=result_size, order=order)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -60,7 +60,7 @@ async def get{{ className }}s(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{get{{ className }}s.__module__}.{get{{ className }}s.__qualname__}] - error response e: {e}')
+                f'[{get{{ className | pluralize }}.__module__}.{get{{ className | pluralize }}.__qualname__}] - error response e: {e}')
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -162,7 +162,7 @@ async def partialUpdate{{ className }}(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 
-@router.delete("/{{ '{' }}{{ model.name }}_id}", summary='Delete a {{ model.name | spacedWords }}s', status_code=status.HTTP_200_OK)
+@router.delete("/{{ '{' }}{{ model.name }}_id}", summary='Delete a {{ model.name | spacedWords | pluralize }}', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def delete{{ className }}(*, _=Depends(CustomHttpBearer()),
                  {{ model.name }}_id: str = Path(..., description='{{ model.name | spacedWords }} id that is used in order to delete the {{ model.name | spacedWords }}'), ):
