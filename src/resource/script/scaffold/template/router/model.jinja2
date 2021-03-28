@@ -143,7 +143,7 @@ async def update{{ className }}(*, _=Depends(CustomHttpBearer()),
 async def partialUpdate{{ className }}(*, _=Depends(CustomHttpBearer()),
                         {{ model.name }}_id: str = Path(..., description='{{ model.name | spacedWords }} id that is used in order to update the {{ model.name | spacedWords }}'),
                         {%- for field in model.field %}
-                        {{ field.name }}: {{ field.type }} = Body(..., description='{{ field.name | spacedWords }} of {{ field.name | spacedWords }}', embed=True),
+                        {{ field.name }}: {{ field.type }} = Body(None, description='{{ field.name | spacedWords }} of {{ field.name | spacedWords }}', embed=True),
                         {%- endfor %}
                         ):
     reqId = str(uuid4())

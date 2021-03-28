@@ -410,7 +410,7 @@ async def updateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
 @router.patch("/{maintenance_procedure_id}", summary='Partial update maintenance procedure', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def partialUpdateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
-                        maintenance_procedure_id: str = Path(..., description='maintenance procedure id that is used in order to update the maintenance procedure'),
+                        maintenance_procedure_id: str = Path(None, description='maintenance procedure id that is used in order to update the maintenance procedure'),
                         name: str = Body(..., description='name of name', embed=True),
                                             type: MaintenanceProcedureType = Body(..., description='hard or soft',
                                                                                   embed=True),
