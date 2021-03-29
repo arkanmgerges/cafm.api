@@ -12,6 +12,7 @@ class MaintenanceProcedure(BaseModel):
     id: str
     name: str
     type: str
+    hard_sub_type: Optional[str]
     frequency: str
     start_date: int
     subcontractor_id: str
