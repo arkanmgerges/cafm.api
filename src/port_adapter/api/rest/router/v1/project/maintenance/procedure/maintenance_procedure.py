@@ -396,7 +396,7 @@ async def getMaintenanceProcedureById(*, maintenance_procedure_id: str = Path(..
 @router.post("", summary='Create maintenance procedure', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def createMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
-                                     name: str = Body(..., description='name of maintenance procedure', embed=True),
+                                     name: str = Body(None, description='name of maintenance procedure', embed=True),
                                      type: MaintenanceProcedureType = Body(..., description='hard or soft', embed=True),
                                      hard_sub_type: MaintenanceProcedureHardSubType = Body(None,
                                                                                            description='Sub type for when you select hard for type',
