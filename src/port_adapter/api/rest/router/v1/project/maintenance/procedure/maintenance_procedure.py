@@ -195,6 +195,15 @@ async def createMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBe
                                                                                description='max value of maintenance procedure operation parameter',
                                                                                embed=True),
                                                        ):
+    try:
+        min_value = float(min_value)
+        max_value = float(max_value)
+    except:
+        raise ValueError(
+            f'Minimum and maximum values must be of type float. min. value: {min_value}, max. value: {max_value}')
+    if min_value > max_value:
+        raise ValueError('Minimum value must be less or equal than maximum value')
+
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
@@ -229,6 +238,14 @@ async def updateMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBe
                  min_value: float = Body(..., description='min value of min value', embed=True),
                  max_value: float = Body(..., description='max value of max value', embed=True),
                  ):
+    try:
+        min_value = float(min_value)
+        max_value = float(max_value)
+    except:
+        raise ValueError(
+            f'Minimum and maximum values must be of type float. min. value: {min_value}, max. value: {max_value}')
+    if min_value > max_value:
+        raise ValueError('Minimum value must be less or equal than maximum value')
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
@@ -250,13 +267,14 @@ async def updateMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBe
 @router.patch("/operations/{maintenance_procedure_operation_id}/parameters/{maintenance_procedure_operation_parameter_id}", summary='Partial update maintenance procedure operation parameter', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def partialUpdateMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBearer()),
-                        maintenance_procedure_operation_id: str = Path(..., description='maintenance procedure operation id as a parent id'),
-                        maintenance_procedure_operation_parameter_id: str = Path(..., description='maintenance procedure operation parameter id that is used in order to update the maintenance procedure operation parameter'),
-                        name: str = Body(..., description='name of name', embed=True),
-                        unit_id: str = Body(..., description='unit id of unit id', embed=True),
-                        min_value: float = Body(..., description='min value of min value', embed=True),
-                        max_value: float = Body(..., description='max value of max value', embed=True),
+                        maintenance_procedure_operation_id: str = Path(None, description='maintenance procedure operation id as a parent id'),
+                        maintenance_procedure_operation_parameter_id: str = Path(None, description='maintenance procedure operation parameter id that is used in order to update the maintenance procedure operation parameter'),
+                        name: str = Body(None, description='name of name', embed=True),
+                        unit_id: str = Body(None, description='unit id of unit id', embed=True),
+                        min_value: float = Body(None, description='min value of min value', embed=True),
+                        max_value: float = Body(None, description='max value of max value', embed=True),
                         ):
+
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand

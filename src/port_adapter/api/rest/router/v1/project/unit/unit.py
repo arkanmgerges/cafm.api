@@ -124,7 +124,7 @@ async def updateUnit(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def partialUpdatUnit(*, _=Depends(CustomHttpBearer()),
                         unit_id: str = Path(..., description='unit id that is used in order to update the unit'),
-                        name: str = Body(..., description='name of name', embed=True),
+                        name: str = Body(None, description='name of name', embed=True),
                         ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)

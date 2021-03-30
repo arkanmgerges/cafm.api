@@ -210,6 +210,15 @@ async def createDailyCheckProcedureOperationParameter(*, _=Depends(CustomHttpBea
                                                                               description='max value of daily check procedure operation parameter',
                                                                               embed=True),
                                                       ):
+    try:
+        min_value = float(min_value)
+        max_value = float(max_value)
+    except:
+        raise ValueError(
+            f'Minimum and maximum values must be of type float. min. value: {min_value}, max. value: {max_value}')
+    if min_value > max_value:
+        raise ValueError('Minimum value must be less or equal than maximum value')
+
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
@@ -255,6 +264,15 @@ async def updateDailyCheckProcedureOperationParameter(*, _=Depends(CustomHttpBea
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    try:
+        min_value = float(min_value)
+        max_value = float(max_value)
+    except:
+        raise ValueError(
+            f'Minimum and maximum values must be of type float. min. value: {min_value}, max. value: {max_value}')
+    if min_value > max_value:
+        raise ValueError('Minimum value must be less or equal than maximum value')
+
     producer.produce(
         obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_DAILY_CHECK_PROCEDURE_OPERATION_PARAMETER.value,
                            metadata=json.dumps({"token": Client.token}),
@@ -282,14 +300,14 @@ async def partialUpdateDailyCheckProcedureOperationParameter(*, _=Depends(Custom
                                                              daily_check_procedure_operation_parameter_id: str = Path(
                                                                  ...,
                                                                  description='daily check procedure operation parameter id that is used in order to update the daily check procedure operation parameter'),
-                                                             name: str = Body(..., description='name of name',
+                                                             name: str = Body(None, description='name of name',
                                                                               embed=True),
-                                                             unit_id: str = Body(..., description='unit id of unit id',
+                                                             unit_id: str = Body(None, description='unit id of unit id',
                                                                                  embed=True),
-                                                             min_value: float = Body(...,
+                                                             min_value: float = Body(None,
                                                                                      description='min value of min value',
                                                                                      embed=True),
-                                                             max_value: float = Body(...,
+                                                             max_value: float = Body(None,
                                                                                      description='max value of max value',
                                                                                      embed=True),
                                                              ):
@@ -455,12 +473,12 @@ async def updateDailyCheckProcedure(*, _=Depends(CustomHttpBearer()),
 async def partialUpdateDailyCheckProcedure(*, _=Depends(CustomHttpBearer()),
                                            daily_check_procedure_id: str = Path(...,
                                                                                 description='daily check procedure id that is used in order to update the daily check procedure'),
-                                           name: str = Body(..., description='name of name', embed=True),
-                                           description: str = Body(..., description='description of description',
+                                           name: str = Body(None, description='name of name', embed=True),
+                                           description: str = Body(None, description='description of description',
                                                                    embed=True),
-                                           equipment_id: str = Body(..., description='equipment id of equipment id',
+                                           equipment_id: str = Body(None, description='equipment id of equipment id',
                                                                     embed=True),
-                                           equipment_category_group_id: str = Body(...,
+                                           equipment_category_group_id: str = Body(None,
                                                                                    description='equipment category group id of equipment category group id',
                                                                                    embed=True),
                                            ):
@@ -613,11 +631,11 @@ async def partialUpdateDailyCheckProcedureOperation(*, _=Depends(CustomHttpBeare
                                                                                          description='daily check procedure id of daily check procedure id'),
                                                     daily_check_procedure_operation_id: str = Path(...,
                                                                                                    description='daily check procedure operation id that is used in order to update the daily check procedure operation'),
-                                                    name: str = Body(..., description='name of name', embed=True),
-                                                    description: str = Body(...,
+                                                    name: str = Body(None, description='name of name', embed=True),
+                                                    description: str = Body(None,
                                                                             description='description of description',
                                                                             embed=True),
-                                                    type: DailyCheckProcedureOperationType = Body(...,
+                                                    type: DailyCheckProcedureOperationType = Body(None,
                                                                                                   description='type of type',
                                                                                                   embed=True),
                                                     ):

@@ -136,7 +136,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
 
 @router.patch("/{project_id}", summary='Parital update a project', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def paritalUpdate(*, _=Depends(CustomHttpBearer()),
+async def partialUpdateProject(*, _=Depends(CustomHttpBearer()),
                         project_id: str = Path(...,
                                                description='Project id that is used in order to update the project'),
                         name: str = Body(None, description='Title of the project', embed=True),
