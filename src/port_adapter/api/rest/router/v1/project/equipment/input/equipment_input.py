@@ -138,7 +138,7 @@ async def partialUpdateEquipmentInput(*, _=Depends(CustomHttpBearer()),
                         name: str = Body(None, description='name of name', embed=True),
                         value: str = Body(None, description='value of value', embed=True),
                         unit_id: str = Body(None, description='unit id of unit id', embed=True),
-                        equipment_id: str = Body(..., description='equipment id of equipment input', embed=True),
+                        equipment_id: str = Body(None, description='equipment id of equipment input', embed=True),
                         ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
