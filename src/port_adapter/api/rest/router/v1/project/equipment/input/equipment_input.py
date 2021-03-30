@@ -84,6 +84,7 @@ async def createEquipmentInput(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='name of equipment input', embed=True),
                  value: str = Body(..., description='value of equipment input', embed=True),
                  unit_id: str = Body(..., description='unit id of equipment input', embed=True),
+                 equipment_id: str = Body(..., description='equipment id of equipment input', embed=True),
                 ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
@@ -97,6 +98,7 @@ async def createEquipmentInput(*, _=Depends(CustomHttpBearer()),
                                              'name': name,
                                              'value': value,
                                              'unit_id': unit_id,
+                                             'equipment_id': equipment_id,
                                              }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
@@ -109,7 +111,8 @@ async def updateEquipmentInput(*, _=Depends(CustomHttpBearer()),
                  equipment_input_id: str = Path(..., description='equipment input id that is used in order to update the equipment input'),
                  name: str = Body(..., description='name of name', embed=True),
                  value: str = Body(..., description='value of value', embed=True),
-                 unit_id: str = Body(..., description='unit id of unit id', embed=True),                 
+                 unit_id: str = Body(..., description='unit id of unit id', embed=True),
+                 equipment_id: str = Body(..., description='equipment id of equipment input', embed=True),
                  ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
@@ -121,6 +124,7 @@ async def updateEquipmentInput(*, _=Depends(CustomHttpBearer()),
                                             'name': name,
                                             'value': value,
                                             'unit_id': unit_id,
+                                            'equipment_id': equipment_id,
                                              }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
@@ -134,6 +138,7 @@ async def partialUpdateEquipmentInput(*, _=Depends(CustomHttpBearer()),
                         name: str = Body(None, description='name of name', embed=True),
                         value: str = Body(None, description='value of value', embed=True),
                         unit_id: str = Body(None, description='unit id of unit id', embed=True),
+                        equipment_id: str = Body(..., description='equipment id of equipment input', embed=True),
                         ):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
@@ -145,6 +150,7 @@ async def partialUpdateEquipmentInput(*, _=Depends(CustomHttpBearer()),
                                             'name': name,
                                             'value': value,
                                             'unit_id': unit_id,
+                                            'equipment_id': equipment_id,
                                             }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())

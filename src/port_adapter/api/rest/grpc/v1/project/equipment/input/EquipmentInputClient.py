@@ -97,4 +97,5 @@ class EquipmentInputClient(Client):
                                       name=obj.name,
                                       value=obj.value,
                                       unit_id=obj.unitId,
+                                      equipment_id=obj.equipmentId,
                                       )
