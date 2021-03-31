@@ -24,6 +24,7 @@ from src.port_adapter.api.rest.grpc.v1.project.daily_check.procedure.operation.D
     DailyCheckProcedureOperationClient
 from src.port_adapter.api.rest.grpc.v1.project.daily_check.procedure.operation.parameter.DailyCheckProcedureOperationParameterClient import \
     DailyCheckProcedureOperationParameterClient
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.project.daily_check.procedure.DailyCheckProcedure import \
     DailyCheckProcedureDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.daily_check.procedure.DailyCheckProcedures import \
@@ -51,10 +52,10 @@ router = APIRouter()
 @router.get(path="", summary='Get all daily check procedure(s)', response_model=DailyCheckProcedures)
 @OpenTelemetry.fastApiTraceOTel
 async def getDailyCheckProcedures(*,
-                            result_from: int = Query(0, description='Starting offset for fetching data'),
-                            result_size: int = Query(10, description='Item count to be fetched'),
-                            order: str = Query('', description='e.g. id:asc,email:desc'),
-                            _=Depends(CustomHttpBearer())):
+                                  result_from: int = Query(0, description='Starting offset for fetching data'),
+                                  result_size: int = Query(10, description='Item count to be fetched'),
+                                  order: str = Query('', description='e.g. id:asc,email:desc'),
+                                  _=Depends(CustomHttpBearer())):
     try:
         client = DailyCheckProcedureClient()
         orderService = AppDi.instance.get(OrderService)
@@ -72,23 +73,27 @@ async def getDailyCheckProcedures(*,
     except Exception as e:
         logger.info(e)
 
-@router.get(path="/by_equipment_or_group_id/{equipment_or_group_id}", summary='Get all daily check procedure by equipment or group id',
+
+@router.get(path="/by_equipment_or_group_id/{equipment_or_group_id}",
+            summary='Get all daily check procedure by equipment or group id',
             response_model=DailyCheckProcedures)
 @OpenTelemetry.fastApiTraceOTel
 async def getDailyCheckProceduresByEquipmentOrGroupId(*,
-                                               equipment_or_group_id: str = Path(...,
-                                                                        description='equipment or group id that is used to fetch daily check procedure data'),
-                                               result_from: int = Query(0,
-                                                                        description='Starting offset for fetching data'),
-                                               result_size: int = Query(10, description='Item count to be fetched'),
-                                               order: str = Query('', description='e.g. id:asc,email:desc'),
-                                               _=Depends(CustomHttpBearer())):
+                                                      equipment_or_group_id: str = Path(...,
+                                                                                        description='equipment or group id that is used to fetch daily check procedure data'),
+                                                      result_from: int = Query(0,
+                                                                               description='Starting offset for fetching data'),
+                                                      result_size: int = Query(10,
+                                                                               description='Item count to be fetched'),
+                                                      order: str = Query('', description='e.g. id:asc,email:desc'),
+                                                      _=Depends(CustomHttpBearer())):
     try:
         client = DailyCheckProcedureClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.dailyCheckProceduresByEquipmentOrGroupId(equipmentOrGroupId=equipment_or_group_id, resultFrom=result_from,
-                                                        resultSize=result_size, order=order)
+        return client.dailyCheckProceduresByEquipmentOrGroupId(equipmentOrGroupId=equipment_or_group_id,
+                                                               resultFrom=result_from,
+                                                               resultSize=result_size, order=order)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -138,7 +143,7 @@ async def getDailyCheckProcedureOperationParameterById(*,
 async def deleteDailyCheckProcedureOperationParameter(*, _=Depends(CustomHttpBearer()),
                                                       daily_check_procedure_operation_parameter_id: str = Path(...,
                                                                                                                description='daily check procedure operation parameter id that is used in order to delete the daily check procedure operation parameter'), ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(
@@ -219,7 +224,7 @@ async def createDailyCheckProcedureOperationParameter(*, _=Depends(CustomHttpBea
     if min_value > max_value:
         raise ValueError('Minimum value must be less or equal than maximum value')
 
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     client = DailyCheckProcedureOperationParameterClient()
@@ -261,7 +266,7 @@ async def updateDailyCheckProcedureOperationParameter(*, _=Depends(CustomHttpBea
                                                       max_value: float = Body(..., description='max value of max value',
                                                                               embed=True),
                                                       ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     try:
@@ -311,7 +316,7 @@ async def partialUpdateDailyCheckProcedureOperationParameter(*, _=Depends(Custom
                                                                                      description='max value of max value',
                                                                                      embed=True),
                                                              ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(
@@ -340,7 +345,7 @@ async def partialUpdateDailyCheckProcedureOperationParameter(*, _=Depends(Custom
 async def deleteDailyCheckProcedureOperation(*, _=Depends(CustomHttpBearer()),
                                              daily_check_procedure_operation_id: str = Path(...,
                                                                                             description='daily check procedure operation id that is used in order to delete the daily check procedure operation'), ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_DAILY_CHECK_PROCEDURE_OPERATION.value,
@@ -417,7 +422,7 @@ async def createDailyCheckProcedure(*, _=Depends(CustomHttpBearer()),
                                         description='equipment category group id of daily check procedure', embed=True,
                                         default=None),
                                     ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     client = DailyCheckProcedureClient()
@@ -450,7 +455,7 @@ async def updateDailyCheckProcedure(*, _=Depends(CustomHttpBearer()),
                                                                                       description='equipment category group id of equipment category group id',
                                                                                       embed=True),
                                     ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_DAILY_CHECK_PROCEDURE.value,
@@ -482,7 +487,7 @@ async def partialUpdateDailyCheckProcedure(*, _=Depends(CustomHttpBearer()),
                                                                                    description='equipment category group id of equipment category group id',
                                                                                    embed=True),
                                            ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_DAILY_CHECK_PROCEDURE.value,
@@ -504,7 +509,7 @@ async def partialUpdateDailyCheckProcedure(*, _=Depends(CustomHttpBearer()),
 async def deleteDailyCheckProcedure(*, _=Depends(CustomHttpBearer()),
                                     daily_check_procedure_id: str = Path(...,
                                                                          description='daily check procedure id that is used in order to delete the daily check procedure'), ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_DAILY_CHECK_PROCEDURE.value,
@@ -569,7 +574,7 @@ async def createDailyCheckProcedureOperation(*, _=Depends(CustomHttpBearer()),
                                                                                   description='daily check procedure id of daily check procedure operation',
                                                                                   embed=True),
                                              ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     client = DailyCheckProcedureOperationClient()
@@ -606,7 +611,7 @@ async def updateDailyCheckProcedureOperation(*, _=Depends(CustomHttpBearer()),
                                              daily_check_procedure_id: str = Path(...,
                                                                                   description='daily check procedure id of daily check procedure id'),
                                              ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_DAILY_CHECK_PROCEDURE_OPERATION.value,
@@ -639,7 +644,7 @@ async def partialUpdateDailyCheckProcedureOperation(*, _=Depends(CustomHttpBeare
                                                                                                   description='type of type',
                                                                                                   embed=True),
                                                     ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_DAILY_CHECK_PROCEDURE_OPERATION.value,

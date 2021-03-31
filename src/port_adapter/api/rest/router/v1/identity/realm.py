@@ -2,7 +2,6 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import json
-from uuid import uuid4
 
 import grpc
 from fastapi import APIRouter, Depends, Query, Body
@@ -16,6 +15,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.realm.RealmClient import RealmClient
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.identity.Realm import RealmDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Realms import Realms
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
@@ -102,8 +102,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  realm_type: str = Body(..., description='The type can be provider, beneficiary, or tenant',
                                         embed=True),
                  ):
-    from src.port_adapter.messaging.listener.CacheType import CacheType
-    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'
+    reqId = RequestIdGenerator.generateListId(2)
     realm_type = realm_type.lower()
     if realm_type not in ['provider', 'beneficiary', 'tenant']:
         raise ValueError('Invalid realm_type, it should be one of these: provider, beneficiary, or tenant')
@@ -112,7 +111,8 @@ async def create(*, _=Depends(CustomHttpBearer()),
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_REALM.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'realm_id': client.newId(), 'name': name, 'realm_type': realm_type})), schema=ApiCommand.get_schema())
+                                        {'realm_id': client.newId(), 'name': name, 'realm_type': realm_type})),
+                     schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -128,7 +128,7 @@ c4model:Rel(api__identity_realm_py__delete, api__identity_realm_py__delete__api_
 async def delete(*, _=Depends(CustomHttpBearer()),
                  realm_id: str = Path(...,
                                       description='Realm id that is used in order to delete the realm')):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_REALM.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -150,7 +150,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
                  realm_id: str = Path(...,
                                       description='Realm id that is used in order to update the realm'),
                  name: str = Body(..., description='Title of the realm', embed=True)):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_REALM.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -172,7 +172,7 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
                         realm_id: str = Path(...,
                                              description='Realm id that is used in order to update the realm'),
                         name: str = Body(None, description='Title of the realm', embed=True)):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_REALM.value,
                                     metadata=json.dumps({"token": Client.token}),
