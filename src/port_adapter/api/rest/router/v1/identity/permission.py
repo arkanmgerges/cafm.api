@@ -17,6 +17,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.permission.PermissionClient import PermissionClient
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.identity.Permission import PermissionDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Permissions import Permissions
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
@@ -28,13 +29,14 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
 
-
 # openTelemetry = AppDi.instance.get(OpenTelemetry)
 
 """
 c4model|cb|api:Component(api__identity_permission_py__getPermissions, "Get Permissions", "http(s)", "Get all permissions")
 c4model:Rel(api__identity_permission_py__getPermissions, identity__grpc__PermissionAppServiceListener__permissions, "Get permissions", "grpc")
 """
+
+
 @router.get(path="", summary='Get all permissions', response_model=Permissions)
 @OpenTelemetry.fastApiTraceOTel
 async def getPermissions(*,
@@ -65,10 +67,13 @@ async def getPermissions(*,
     except Exception as e:
         logger.info(e)
 
+
 """
 c4model|cb|api:Component(api__identity_permission_py__getPermission, "Get Permission", "http(s)", "Get permission by id")
 c4model:Rel(api__identity_permission_py__getPermission, identity__grpc__PermissionAppServiceListener__permissionById, "Get permission by id", "grpc")
 """
+
+
 @router.get(path="/{permission_id}", summary='Get permission',
             response_model=PermissionDescriptor)
 @OpenTelemetry.fastApiTraceOTel
@@ -96,42 +101,50 @@ async def getPermission(*, permission_id: str = Path(...,
 def _customFunc(args):
     pass
 
+
 """
 c4model|cb|api:Component(api__identity_permission_py__create, "Create Permission", "http(s)", "")
 c4model|cb|api:ComponentQueue(api__identity_permission_py__create__api_command_topic, "CommonCommandConstant.CREATE_PERMISSION.value", "api command topic", "")
 c4model:Rel(api__identity_permission_py__create, api__identity_permission_py__create__api_command_topic, "CommonCommandConstant.CREATE_PERMISSION.value", "message")
 """
+
+
 @router.post("", summary='Create a new permission', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def createPermission(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='Title of the permission', embed=True),
-                 allowed_actions: List[str] = Body(..., description='The actions that are allowed by the permission',
-                                                   embed=True),
-                 denied_actions: List[str] = Body(...,
-                                                  description='The actions that are denied by the permission and it has higher priority over the allowed actions',
-                                                  embed=True),
-                 ):
-    reqId = str(uuid4())
+                           name: str = Body(..., description='Title of the permission', embed=True),
+                           allowed_actions: List[str] = Body(...,
+                                                             description='The actions that are allowed by the permission',
+                                                             embed=True),
+                           denied_actions: List[str] = Body(...,
+                                                            description='The actions that are denied by the permission and it has higher priority over the allowed actions',
+                                                            embed=True),
+                           ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     client = PermissionClient()
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_PERMISSION.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'permission_id': client.newId(), 'name': name, 'allowed_actions': allowed_actions,
+                                        {'permission_id': client.newId(), 'name': name,
+                                         'allowed_actions': allowed_actions,
                                          'denied_actions': denied_actions})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
+
 
 """
 c4model|cb|api:Component(api__identity_permission_py__delete, "Delete Permission", "http(s)", "")
 c4model|cb|api:ComponentQueue(api__identity_permission_py__delete__api_command_topic, "CommonCommandConstant.DELETE_PERMISSION.value", "api command topic", "")
 c4model:Rel(api__identity_permission_py__delete, api__identity_permission_py__delete__api_command_topic, "CommonCommandConstant.DELETE_PERMISSION.value", "message")
 """
+
+
 @router.delete("/{permission_id}", summary='Delete a permission', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def deletePermission(*, _=Depends(CustomHttpBearer()),
-                 permission_id: str = Path(...,
-                                           description='Permission id that is used in order to delete the permission')):
-    reqId = str(uuid4())
+                           permission_id: str = Path(...,
+                                                     description='Permission id that is used in order to delete the permission')):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_PERMISSION.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -139,28 +152,33 @@ async def deletePermission(*, _=Depends(CustomHttpBearer()),
                                         {'permission_id': permission_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
+
 """
 c4model|cb|api:Component(api__identity_permission_py__update, "Update Permission", "http(s)", "")
 c4model|cb|api:ComponentQueue(api__identity_permission_py__update__api_command_topic, "CommonCommandConstant.UPDATE_PERMISSION.value", "api command topic", "")
 c4model:Rel(api__identity_permission_py__update, api__identity_permission_py__update__api_command_topic, "CommonCommandConstant.UPDATE_PERMISSION.value", "message")
 """
+
+
 @router.put("/{permission_id}", summary='Update a permission', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def updatePermission(*, _=Depends(CustomHttpBearer()),
-                 permission_id: str = Path(...,
-                                           description='Permission id that is used in order to update the permission'),
-                 name: str = Body(..., description='Title of the permission', embed=True),
-                 allowed_actions: List[str] = Body(..., description='The actions that is allowed by the permission',
-                                                   embed=True),
-                 denied_actions: List[str] = Body(...,
-                                                  description='The actions that are denied by the permission and it has higher priority over the allowed actions',
-                                                  embed=True)
-                 ):
-    reqId = str(uuid4())
+                           permission_id: str = Path(...,
+                                                     description='Permission id that is used in order to update the permission'),
+                           name: str = Body(..., description='Title of the permission', embed=True),
+                           allowed_actions: List[str] = Body(...,
+                                                             description='The actions that is allowed by the permission',
+                                                             embed=True),
+                           denied_actions: List[str] = Body(...,
+                                                            description='The actions that are denied by the permission and it has higher priority over the allowed actions',
+                                                            embed=True)
+                           ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_PERMISSION.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'permission_id': permission_id, 'name': name, 'allowed_actions': allowed_actions,
+                                        {'permission_id': permission_id, 'name': name,
+                                         'allowed_actions': allowed_actions,
                                          'denied_actions': denied_actions})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
