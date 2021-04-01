@@ -55,6 +55,33 @@ async def getEquipmentInputs(*,
         logger.info(e)
 
 
+@router.get(path="/by_equipment_id/{equipment_id}", summary='Get all equipment input(s) by equipment id', response_model=EquipmentInputs)
+@OpenTelemetry.fastApiTraceOTel
+async def getEquipmentInputsByEquipmentId(*,
+                            equipment_id: str = Path(..., description='equipment id that is used to fetch equipment input data'),
+                            result_from: int = Query(0, description='Starting offset for fetching data'),
+                            result_size: int = Query(10, description='Item count to be fetched'),
+                            order: str = Query('', description='e.g. id:asc,email:desc'),
+                            _=Depends(CustomHttpBearer())):
+    try:
+        logger.debug(equipment_id)
+        client = EquipmentInputClient()
+        orderService = AppDi.instance.get(OrderService)
+        order = orderService.orderStringToListOfDict(order)
+        return client.equipmentInputsByEquipmentId(equipmentId=equipment_id, resultFrom=result_from, resultSize=result_size, order=order)
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f'[{getEquipmentInputsByEquipmentId.__module__}.{getEquipmentInputsByEquipmentId.__qualname__}] - error response e: {e}')
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
+
+
 @router.get(path="/{equipment_input_id}", summary='Get equipment input by id',
             response_model=EquipmentInputDescriptor)
 @OpenTelemetry.fastApiTraceOTel
