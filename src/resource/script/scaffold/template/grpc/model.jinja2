@@ -25,12 +25,12 @@ import grpc
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.model.response.v1.{{ filePath }}.{{ className }} import {{ className }}Descriptor
-from src.port_adapter.api.rest.model.response.v1.{{ filePath }}.{{ className }}s import {{ className }}s
+from src.port_adapter.api.rest.model.response.v1.{{ filePath }}.{{ className | pluralize }} import {{ className | pluralize }}
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.{{ model.microservice }}.{{ model.name }}_app_service_pb2 import \
-    {{ className }}AppService_{{ lowerCamelModelName }}sResponse, \
-    {{ className }}AppService_{{ lowerCamelModelName }}sRequest, {{ className }}AppService_{{ lowerCamelModelName }}ByIdRequest, \
+    {{ className }}AppService_{{ lowerCamelModelName | pluralize }}Response, \
+    {{ className }}AppService_{{ lowerCamelModelName | pluralize }}Request, {{ className }}AppService_{{ lowerCamelModelName }}ByIdRequest, \
     {{ className }}AppService_{{ lowerCamelModelName }}ByIdResponse
 from src.resource.proto._generated.{{ model.microservice }}.{{ model.name }}_app_service_pb2_grpc import {{ className }}AppServiceStub
 {%-block segmentImport %}{%-endblock%}
@@ -41,26 +41,26 @@ class {{ className }}Client(Client):
         self._port = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE_PORT', '')
 
     @OpenTelemetry.grpcTraceOTel
-    def {{ lowerCamelModelName }}s(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> {{ className }}s:
+    def {{ lowerCamelModelName | pluralize }}(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> {{ className | pluralize }}:
         order = [] if order is None else order
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = {{ className }}AppServiceStub(channel)
             try:
                 logger.debug(
-                    f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName }}s.__qualname__}] - grpc call to retrieve {{ lowerCamelModelName }}s from server {self._server}:{self._port}')
-                request = {{ className }}AppService_{{ lowerCamelModelName }}sRequest(resultFrom=resultFrom, resultSize=resultSize)
+                    f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName | pluralize }}.__qualname__}] - grpc call to retrieve {{ lowerCamelModelName | pluralize }} from server {self._server}:{self._port}')
+                request = {{ className }}AppService_{{ lowerCamelModelName | pluralize }}Request(resultFrom=resultFrom, resultSize=resultSize)
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
-                response: {{ className }}AppService_{{ lowerCamelModelName }}sResponse = stub.{{ lowerCamelModelName }}s.with_call(
+                response: {{ className }}AppService_{{ lowerCamelModelName | pluralize }}Response = stub.{{ lowerCamelModelName | pluralize }}.with_call(
                     request,
                     metadata=(('token', self.token), (
                         'opentel',
                         AppDi.instance.get(OpenTelemetry).serializedContext(
-                            {{ className }}Client.{{ lowerCamelModelName }}s.__qualname__)),))
+                            {{ className }}Client.{{ lowerCamelModelName | pluralize }}.__qualname__)),))
                 logger.debug(
-                    f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName }}s.__qualname__}] - grpc response: {response}')
+                    f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName | pluralize }}.__qualname__}] - grpc response: {response}')
 
-                return {{ className }}s({{ model.name }}s=[self._descriptorByObject(obj={{ lowerCamelModelName }}) for {{ lowerCamelModelName }} in
-                                                    response[0].{{ lowerCamelModelName }}s],
+                return {{ className | pluralize }}({{ model.name | pluralize }}=[self._descriptorByObject(obj={{ lowerCamelModelName }}) for {{ lowerCamelModelName }} in
+                                                    response[0].{{ lowerCamelModelName | pluralize }}],
                                      item_count=response[0].itemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

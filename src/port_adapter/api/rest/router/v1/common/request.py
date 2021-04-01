@@ -3,7 +3,7 @@
 """
 import json
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Query
 from fastapi.responses import JSONResponse
 
 from src.port_adapter.api.rest.cache.RedisCache import RedisCache
@@ -11,12 +11,12 @@ from src.port_adapter.api.rest.model.response.v1.identity.Request import BoolReq
 from src.port_adapter.api.rest.resource.exception.InProgressException import InProgressException
 from src.port_adapter.api.rest.resource.exception.NotFoundException import NotFoundException
 from src.port_adapter.api.rest.resource.exception.UnknownCacheTypeException import UnknownCacheTypeException
-from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.listener.CacheType import CacheType
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 router = APIRouter()
+
 
 @router.get(path="/is_successful", summary='Check if the request has succeeded', response_model=BoolRequestResponse)
 @OpenTelemetry.fastApiTraceOTel

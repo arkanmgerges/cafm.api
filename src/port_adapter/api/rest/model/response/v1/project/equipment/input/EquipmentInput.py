@@ -13,6 +13,7 @@ class EquipmentInput(BaseModel):
     name: str
     value: str
     unit_id: str
+    equipment_id: str
 
 
 class EquipmentInputDescriptor(EquipmentInput):

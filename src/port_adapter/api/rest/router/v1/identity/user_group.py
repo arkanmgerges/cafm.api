@@ -2,7 +2,6 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import json
-from uuid import uuid4
 
 import grpc
 from fastapi import APIRouter, Depends, Query, Body
@@ -16,6 +15,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.user_group.UserGroupClient import UserGroupClient
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.identity.UserGroup import UserGroupDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.UserGroups import UserGroups
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
@@ -99,13 +99,14 @@ c4model:Rel(api__identity_user_group_py__create, api__identity_user_group_py__cr
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the user group', embed=True)):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     client = UserGroupClient()
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'user_group_id': client.newId(), 'name': name})), schema=ApiCommand.get_schema())
+                                        {'user_group_id': client.newId(), 'name': name})),
+                     schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -121,7 +122,7 @@ c4model:Rel(api__identity_user_group_py__delete, api__identity_user_group_py__de
 async def delete(*, _=Depends(CustomHttpBearer()),
                  user_group_id: str = Path(...,
                                            description='User group id that is used in order to delete the user group')):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -143,12 +144,13 @@ async def update(*, _=Depends(CustomHttpBearer()),
                  user_group_id: str = Path(...,
                                            description='User group id that is used in order to update the user group'),
                  name: str = Body(..., description='Title of the user group', embed=True)):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'user_group_id': user_group_id, 'name': name})), schema=ApiCommand.get_schema())
+                                        {'user_group_id': user_group_id, 'name': name})),
+                     schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
 
@@ -165,10 +167,11 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
                         user_group_id: str = Path(...,
                                                   description='User group id that is used in order to update the user group'),
                         name: str = Body(None, description='Title of the user group', embed=True)):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
-                                        {'user_group_id': user_group_id, 'name': name})), schema=ApiCommand.get_schema())
+                                        {'user_group_id': user_group_id, 'name': name})),
+                     schema=ApiCommand.get_schema())
     return {"request_id": reqId}

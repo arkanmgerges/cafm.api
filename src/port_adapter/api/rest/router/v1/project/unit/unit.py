@@ -18,6 +18,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.unit.UnitClient import UnitClient
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.project.unit.Units import Units
 from src.port_adapter.api.rest.model.response.v1.project.unit.Unit import UnitDescriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
@@ -32,10 +33,10 @@ router = APIRouter()
 @router.get(path="", summary='Get all unit(s)', response_model=Units)
 @OpenTelemetry.fastApiTraceOTel
 async def getUnits(*,
-                    result_from: int = Query(0, description='Starting offset for fetching data'),
-                    result_size: int = Query(10, description='Item count to be fetched'),
-                    order: str = Query('', description='e.g. id:asc,email:desc'),
-                    _=Depends(CustomHttpBearer())
+                   result_from: int = Query(0, description='Starting offset for fetching data'),
+                   result_size: int = Query(10, description='Item count to be fetched'),
+                   order: str = Query('', description='e.g. id:asc,email:desc'),
+                   _=Depends(CustomHttpBearer())
                    ):
     try:
         client = UnitClient()
@@ -59,8 +60,8 @@ async def getUnits(*,
             response_model=UnitDescriptor)
 @OpenTelemetry.fastApiTraceOTel
 async def getUnitById(*, unit_id: str = Path(...,
-                                                                description='unit id that is used to fetch unit data'),
-                               _=Depends(CustomHttpBearer())):
+                                             description='unit id that is used to fetch unit data'),
+                      _=Depends(CustomHttpBearer())):
     """Get a unit by id
     """
     try:
@@ -82,9 +83,9 @@ async def getUnitById(*, unit_id: str = Path(...,
 @router.post("", summary='Create unit', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def createUnit(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='name of unit', embed=True),
-                ):
-    reqId = str(uuid4())
+                     name: str = Body(..., description='name of unit', embed=True),
+                     ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     client = UnitClient()
@@ -92,9 +93,9 @@ async def createUnit(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                             'unit_id': client.newId(),
-                                             'name': name,
-                                             }),
+                                                'unit_id': client.newId(),
+                                                'name': name,
+                                            }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
@@ -103,17 +104,17 @@ async def createUnit(*, _=Depends(CustomHttpBearer()),
 @router.put("/{unit_id}", summary='Update unit', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def updateUnit(*, _=Depends(CustomHttpBearer()),
-                 unit_id: str = Path(..., description='unit id that is used in order to update the unit'),
-                 name: str = Body(..., description='name of name', embed=True),                 
-                 ):
-    reqId = str(uuid4())
+                     unit_id: str = Path(..., description='unit id that is used in order to update the unit'),
+                     name: str = Body(..., description='name of name', embed=True),
+                     ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_UNIT.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {'unit_id': unit_id,
-                                            'name': name,
+                                             'name': name,
                                              }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
@@ -123,18 +124,18 @@ async def updateUnit(*, _=Depends(CustomHttpBearer()),
 @router.patch("/{unit_id}", summary='Partial update unit', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def partialUpdatUnit(*, _=Depends(CustomHttpBearer()),
-                        unit_id: str = Path(..., description='unit id that is used in order to update the unit'),
-                        name: str = Body(..., description='name of name', embed=True),
-                        ):
-    reqId = str(uuid4())
+                           unit_id: str = Path(..., description='unit id that is used in order to update the unit'),
+                           name: str = Body(None, description='name of name', embed=True),
+                           ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_UNIT.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {'unit_id': unit_id,
-                                            'name': name,
-                                            }),
+                                             'name': name,
+                                             }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
@@ -143,8 +144,8 @@ async def partialUpdatUnit(*, _=Depends(CustomHttpBearer()),
 @router.delete("/{unit_id}", summary='Delete a units', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def deleteUnit(*, _=Depends(CustomHttpBearer()),
-                 unit_id: str = Path(..., description='unit id that is used in order to delete the unit'), ):
-    reqId = str(uuid4())
+                     unit_id: str = Path(..., description='unit id that is used in order to delete the unit'), ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_UNIT.value,

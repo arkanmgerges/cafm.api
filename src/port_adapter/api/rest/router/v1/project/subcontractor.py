@@ -16,6 +16,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.subcontractor.SubcontractorClient import SubcontractorClient
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.project.Subcontractors import Subcontractors
 from src.port_adapter.api.rest.model.response.v1.project.Subcontractor import SubcontractorDescriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
@@ -56,7 +57,7 @@ async def getSubcontractors(*,
             response_model=SubcontractorDescriptor)
 @OpenTelemetry.fastApiTraceOTel
 async def getSubcontractorById(*, subcontractor_id: str = Path(...,
-                                                                description='Subcontractor id that is used to fetch subcontractor data'),
+                                                               description='Subcontractor id that is used to fetch subcontractor data'),
                                _=Depends(CustomHttpBearer())):
     """Get a Subcontractor by id
     """
@@ -79,14 +80,17 @@ async def getSubcontractorById(*, subcontractor_id: str = Path(...,
 @router.post("", summary='Create a subcontractors', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def createSubcontractor(*, _=Depends(CustomHttpBearer()),
-                 company_name: str = Body(..., description='subcontractor name', embed=True),
-                 website_url: str = Body(..., description='The website url of the subcontractor', embed=True),
-                 contact_person: str = Body(..., description='The contact person of the subcontractor', embed=True),
-                 email: str = Body(..., description='Email of the subcontractor', embed=True),
-                 phone_number: str = Body(..., description='Phone number of the subcontractor', embed=True),
-                 address_one: str = Body(..., description='subcontractor first address', embed=True),
-                 address_two: str = Body(..., description='subcontractor second address', embed=True), ):
-    reqId = str(uuid4())
+                              company_name: str = Body(..., description='subcontractor name', embed=True),
+                              website_url: str = Body(..., description='The website url of the subcontractor',
+                                                      embed=True),
+                              contact_person: str = Body(..., description='The contact person of the subcontractor',
+                                                         embed=True),
+                              email: str = Body(..., description='Email of the subcontractor', embed=True),
+                              phone_number: str = Body(..., description='Phone number of the subcontractor',
+                                                       embed=True),
+                              address_one: str = Body(..., description='subcontractor first address', embed=True),
+                              address_two: str = Body(..., description='subcontractor second address', embed=True), ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     client = SubcontractorClient()
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
@@ -94,14 +98,14 @@ async def createSubcontractor(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                             'subcontractor_id': client.newId(),
-                                             'company_name': company_name,
-                                             'website_url': website_url,
-                                             'contact_person': contact_person,
-                                             'email': email,
-                                             'phone_number': phone_number,
-                                             'address_one': address_one,
-                                             'address_two': address_two, }),
+                                                'subcontractor_id': client.newId(),
+                                                'company_name': company_name,
+                                                'website_url': website_url,
+                                                'contact_person': contact_person,
+                                                'email': email,
+                                                'phone_number': phone_number,
+                                                'address_one': address_one,
+                                                'address_two': address_two, }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
@@ -111,7 +115,7 @@ async def createSubcontractor(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def update(*, _=Depends(CustomHttpBearer()),
                  subcontractor_id: str = Path(...,
-                                               description='Subcontractor id that is used in order to update the subcontractor'),
+                                              description='Subcontractor id that is used in order to update the subcontractor'),
                  company_name: str = Body(..., description='subcontractor name', embed=True),
                  website_url: str = Body(..., description='The website url of the subcontractor', embed=True),
                  contact_person: str = Body(..., description='The contact person of the subcontractor', embed=True),
@@ -120,7 +124,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
                  address_one: str = Body(..., description='subcontractor first address', embed=True),
                  address_two: str = Body(..., description='subcontractor second address', embed=True),
                  ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_SUBCONTRACTOR.value,
@@ -143,7 +147,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def partialUpdate(*, _=Depends(CustomHttpBearer()),
                         subcontractor_id: str = Path(...,
-                                                      description='Subcontractor id that is used in order to update the subcontractor'),
+                                                     description='Subcontractor id that is used in order to update the subcontractor'),
                         company_name: str = Body(None, description='subcontractor name', embed=True),
                         website_url: str = Body(None, description='The website url of the subcontractor', embed=True),
                         contact_person: str = Body(None, description='The contact person of the subcontractor',
@@ -152,7 +156,7 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
                         phone_number: str = Body(None, description='Phone number of the subcontractor', embed=True),
                         address_one: str = Body(None, description='subcontractor first address', embed=True),
                         address_two: str = Body(None, description='subcontractor second address', embed=True)):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_SUBCONTRACTOR.value,
@@ -175,8 +179,8 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def delete(*, _=Depends(CustomHttpBearer()),
                  subcontractor_id: str = Path(...,
-                                               description='Subcontractor id that is used in order to delete the subcontractor'), ):
-    reqId = str(uuid4())
+                                              description='Subcontractor id that is used in order to delete the subcontractor'), ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_SUBCONTRACTOR.value,
@@ -193,10 +197,10 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def assign(*, _=Depends(CustomHttpBearer()),
                  subcontractor_id: str = Path(...,
-                                               description='Subcontractor id that is used in order to assign a oraganization'),
+                                              description='Subcontractor id that is used in order to assign a oraganization'),
                  organization_id: str = Body(..., description='Oraganization id that is need to be assigned',
-                                              embed=True), ):
-    reqId = str(uuid4())
+                                             embed=True), ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.ASSIGN_SUBCONTRACTOR_TO_ORGANIZATION.value,
@@ -213,10 +217,10 @@ async def assign(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def revoke(*, _=Depends(CustomHttpBearer()),
                  subcontractor_id: str = Path(...,
-                                               description='Subcontractor id that is used in order to assign a oraganization'),
+                                              description='Subcontractor id that is used in order to assign a oraganization'),
                  organization_id: str = Body(..., description='Organization id that is need to be assigned',
-                                              embed=True), ):
-    reqId = str(uuid4())
+                                             embed=True), ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(

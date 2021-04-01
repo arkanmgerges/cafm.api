@@ -18,6 +18,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.equipment.model.EquipmentModelClient import EquipmentModelClient
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.project.equipment.model.EquipmentModels import EquipmentModels
 from src.port_adapter.api.rest.model.response.v1.project.equipment.model.EquipmentModel import EquipmentModelDescriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
@@ -32,10 +33,10 @@ router = APIRouter()
 @router.get(path="", summary='Get all equipment model(s)', response_model=EquipmentModels)
 @OpenTelemetry.fastApiTraceOTel
 async def getEquipmentModels(*,
-                            result_from: int = Query(0, description='Starting offset for fetching data'),
-                            result_size: int = Query(10, description='Item count to be fetched'),
-                            order: str = Query('', description='e.g. id:asc,email:desc'),
-                            _=Depends(CustomHttpBearer())):
+                             result_from: int = Query(0, description='Starting offset for fetching data'),
+                             result_size: int = Query(10, description='Item count to be fetched'),
+                             order: str = Query('', description='e.g. id:asc,email:desc'),
+                             _=Depends(CustomHttpBearer())):
     try:
         client = EquipmentModelClient()
         orderService = AppDi.instance.get(OrderService)
@@ -58,8 +59,8 @@ async def getEquipmentModels(*,
             response_model=EquipmentModelDescriptor)
 @OpenTelemetry.fastApiTraceOTel
 async def getEquipmentModelById(*, equipment_model_id: str = Path(...,
-                                                                description='equipment model id that is used to fetch equipment model data'),
-                               _=Depends(CustomHttpBearer())):
+                                                                  description='equipment model id that is used to fetch equipment model data'),
+                                _=Depends(CustomHttpBearer())):
     """Get a equipment model by id
     """
     try:
@@ -81,9 +82,9 @@ async def getEquipmentModelById(*, equipment_model_id: str = Path(...,
 @router.post("", summary='Create equipment model', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def createEquipmentModel(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='name of equipment model', embed=True),
-                ):
-    reqId = str(uuid4())
+                               name: str = Body(..., description='name of equipment model', embed=True),
+                               ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     client = EquipmentModelClient()
@@ -91,9 +92,9 @@ async def createEquipmentModel(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                             'equipment_model_id': client.newId(),
-                                             'name': name,
-                                             }),
+                                                'equipment_model_id': client.newId(),
+                                                'name': name,
+                                            }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
@@ -102,17 +103,18 @@ async def createEquipmentModel(*, _=Depends(CustomHttpBearer()),
 @router.put("/{equipment_model_id}", summary='Update equipment model', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def updateEquipmentModel(*, _=Depends(CustomHttpBearer()),
-                 equipment_model_id: str = Path(..., description='equipment model id that is used in order to update the equipment model'),
-                 name: str = Body(..., description='name of name', embed=True),                 
-                 ):
-    reqId = str(uuid4())
+                               equipment_model_id: str = Path(...,
+                                                              description='equipment model id that is used in order to update the equipment model'),
+                               name: str = Body(..., description='name of name', embed=True),
+                               ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_EQUIPMENT_MODEL.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {'equipment_model_id': equipment_model_id,
-                                            'name': name,
+                                             'name': name,
                                              }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
@@ -125,7 +127,7 @@ async def updateEquipmentModel(*, _=Depends(CustomHttpBearer()),
 #                         equipment_model_id: str = Path(..., description='equipment model id that is used in order to update the equipment model'),
 #                         name: str = Body(..., description='name of name', embed=True),
 #                         ):
-#     reqId = str(uuid4())
+#     reqId = RequestIdGenerator.generateId()
 #     producer = AppDi.instance.get(SimpleProducer)
 #     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 #     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_EQUIPMENT_MODEL.value,
@@ -142,8 +144,9 @@ async def updateEquipmentModel(*, _=Depends(CustomHttpBearer()),
 @router.delete("/{equipment_model_id}", summary='Delete a equipment models', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def deleteEquipmentModel(*, _=Depends(CustomHttpBearer()),
-                 equipment_model_id: str = Path(..., description='equipment model id that is used in order to delete the equipment model'), ):
-    reqId = str(uuid4())
+                               equipment_model_id: str = Path(...,
+                                                              description='equipment model id that is used in order to delete the equipment model'), ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_EQUIPMENT_MODEL.value,

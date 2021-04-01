@@ -23,6 +23,8 @@ from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.M
     MaintenanceProcedureOperationClient
 from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameterClient import \
     MaintenanceProcedureOperationParameterClient
+
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.MaintenanceProcedures import \
     MaintenanceProcedures
 from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.MaintenanceProcedure import \
@@ -144,7 +146,8 @@ async def getMaintenanceProcedureOperationParameterById(*,
 async def deleteMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBearer()),
                                                        maintenance_procedure_operation_parameter_id: str = Path(...,
                                                                                                                 description='maintenance procedure operation parameter id that is used in order to delete the maintenance procedure operation parameter'), ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
+
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(
@@ -215,7 +218,16 @@ async def createMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBe
                                                                                description='max value of maintenance procedure operation parameter',
                                                                                embed=True),
                                                        ):
-    reqId = str(uuid4())
+    try:
+        min_value = float(min_value)
+        max_value = float(max_value)
+    except:
+        raise ValueError(
+            f'Minimum and maximum values must be of type float. min. value: {min_value}, max. value: {max_value}')
+    if min_value > max_value:
+        raise ValueError('Minimum value must be less or equal than maximum value')
+
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     client = MaintenanceProcedureOperationParameterClient()
@@ -258,7 +270,16 @@ async def updateMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBe
                                                                                description='max value of max value',
                                                                                embed=True),
                                                        ):
-    reqId = str(uuid4())
+    try:
+        min_value = float(min_value)
+        max_value = float(max_value)
+    except:
+        raise ValueError(
+            f'Minimum and maximum values must be of type float. min. value: {min_value}, max. value: {max_value}')
+    if min_value > max_value:
+        raise ValueError('Minimum value must be less or equal than maximum value')
+    reqId = RequestIdGenerator.generateId()
+
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(
@@ -283,23 +304,25 @@ async def updateMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBe
     summary='Partial update maintenance procedure operation parameter', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def partialUpdateMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBearer()),
-                                                              maintenance_procedure_operation_id: str = Path(...,
+                                                              maintenance_procedure_operation_id: str = Path(None,
                                                                                                              description='maintenance procedure operation id as a parent id'),
                                                               maintenance_procedure_operation_parameter_id: str = Path(
-                                                                  ...,
+                                                                  None,
                                                                   description='maintenance procedure operation parameter id that is used in order to update the maintenance procedure operation parameter'),
-                                                              name: str = Body(..., description='name of name',
+                                                              name: str = Body(None, description='name of name',
                                                                                embed=True),
-                                                              unit_id: str = Body(..., description='unit id of unit id',
+                                                              unit_id: str = Body(None,
+                                                                                  description='unit id of unit id',
                                                                                   embed=True),
-                                                              min_value: float = Body(...,
+                                                              min_value: float = Body(None,
                                                                                       description='min value of min value',
                                                                                       embed=True),
-                                                              max_value: float = Body(...,
+                                                              max_value: float = Body(None,
                                                                                       description='max value of max value',
                                                                                       embed=True),
                                                               ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
+
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(
@@ -354,7 +377,7 @@ async def getMaintenanceProcedureOperationById(*,
 async def deleteMaintenanceProcedureOperation(*, _=Depends(CustomHttpBearer()),
                                               maintenance_procedure_operation_id: str = Path(...,
                                                                                              description='maintenance procedure operation id that is used in order to delete the maintenance procedure operation'), ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_MAINTENANCE_PROCEDURE_OPERATION.value,
@@ -412,7 +435,8 @@ async def createMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                      equipment_id: str = Body(..., description='equipment id of maintenance procedure',
                                                               embed=True),
                                      ):
-    reqId = str(uuid4())
+
+    reqId = RequestIdGenerator.generateId()
     start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
@@ -455,7 +479,9 @@ async def updateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                      equipment_id: str = Body(..., description='equipment id of maintenance procedure',
                                                               embed=True),
                                      ):
-    reqId = str(uuid4())
+
+    reqId = RequestIdGenerator.generateId()
+
     start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
@@ -480,24 +506,25 @@ async def updateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
               status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def partialUpdateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
-                                            maintenance_procedure_id: str = Path(...,
+                                            maintenance_procedure_id: str = Path(None,
                                                                                  description='maintenance procedure id that is used in order to update the maintenance procedure'),
-                                            name: str = Body(..., description='name of name', embed=True),
-                                            type: MaintenanceProcedureType = Body(..., description='hard or soft',
+                                            name: str = Body(None, description='name of name', embed=True),
+                                            type: MaintenanceProcedureType = Body(None, description='hard or soft',
                                                                                   embed=True),
-                                            frequency: MaintenanceProcedureFrequency = Body(...,
+                                            frequency: MaintenanceProcedureFrequency = Body(None,
                                                                                             description='procedure frequency',
                                                                                             embed=True),
-                                            start_date: int = Body(..., description='start date of start date',
+                                            start_date: int = Body(None, description='start date of start date',
                                                                    embed=True),
-                                            subcontractor_id: str = Body(...,
+                                            subcontractor_id: str = Body(None,
                                                                          description='subcontractor id of subcontractor id',
                                                                          embed=True),
-                                            equipment_id: str = Body(...,
+                                            equipment_id: str = Body(None,
                                                                      description='equipment id of maintenance procedure',
                                                                      embed=True),
                                             ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
+
     start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
@@ -522,7 +549,8 @@ async def partialUpdateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
 async def deleteMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                      maintenance_procedure_id: str = Path(...,
                                                                           description='maintenance procedure id that is used in order to delete the maintenance procedure'), ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
+
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_MAINTENANCE_PROCEDURE.value,
@@ -588,7 +616,8 @@ async def createMaintenanceProcedureOperation(*,
                                                                                              description='type of maintenance procedure operation',
                                                                                              embed=True),
                                               ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
+
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     client = MaintenanceProcedureOperationClient()
@@ -626,7 +655,7 @@ async def updateMaintenanceProcedureOperation(*, _=Depends(CustomHttpBearer()),
                                                                                              description='type of type',
                                                                                              embed=True),
                                               ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE_OPERATION.value,
@@ -647,19 +676,19 @@ async def updateMaintenanceProcedureOperation(*, _=Depends(CustomHttpBearer()),
               summary='Partial update maintenance procedure operation', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def partialUpdateMaintenanceProcedureOperation(*, _=Depends(CustomHttpBearer()),
-                                                     maintenance_procedure_id: str = Path(...,
+                                                     maintenance_procedure_id: str = Path(None,
                                                                                           description='maintenance procedure id as a parent id'),
-                                                     maintenance_procedure_operation_id: str = Path(...,
+                                                     maintenance_procedure_operation_id: str = Path(None,
                                                                                                     description='maintenance procedure operation id that is used in order to update the maintenance procedure operation'),
-                                                     name: str = Body(..., description='name of name', embed=True),
-                                                     description: str = Body(...,
+                                                     name: str = Body(None, description='name of name', embed=True),
+                                                     description: str = Body(None,
                                                                              description='description of description',
                                                                              embed=True),
-                                                     type: MaintenanceProcedureOperationType = Body(...,
+                                                     type: MaintenanceProcedureOperationType = Body(None,
                                                                                                     description='type of type',
                                                                                                     embed=True),
                                                      ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE_OPERATION.value,

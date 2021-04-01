@@ -17,6 +17,7 @@ from src.domain_model.authentication.AuthenticationService import Authentication
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.user.UserClient import UserClient
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.helper.Validator import Validator
 from src.port_adapter.api.rest.model.response.v1.identity.User import UserDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Users import Users
@@ -34,6 +35,8 @@ router = APIRouter()
 c4model|cb|api:Component(api__identity_user_py__getUsers, "Get Users", "http(s)", "Get all users")
 c4model:Rel(api__identity_user_py__getUsers, identity__grpc__UserAppServiceListener__users, "Get users", "grpc")
 """
+
+
 @router.get(path="", summary='Get all users', response_model=Users)
 @OpenTelemetry.fastApiTraceOTel
 async def getUsers(*,
@@ -58,10 +61,13 @@ async def getUsers(*,
     except Exception as e:
         logger.info(e)
 
+
 """
 c4model|cb|api:Component(api__identity_user_py__getUser, "Get User", "http(s)", "Get user by id")
 c4model:Rel(api__identity_user_py__getUser, identity__grpc__UserAppServiceListener__userById, "Get user by id", "grpc")
 """
+
+
 @router.get(path="/{user_id}", summary='Get user',
             response_model=UserDescriptor)
 @OpenTelemetry.fastApiTraceOTel
@@ -89,17 +95,20 @@ async def getUser(*, user_id: str = Path(...,
     except Exception as e:
         logger.info(e)
 
+
 """
 c4model|cb|api:Component(api__identity_user_py__create, "Create User", "http(s)", "")
 c4model|cb|api:ComponentQueue(api__identity_user_py__create__api_command_topic, "CommonCommandConstant.CREATE_USER.value", "api command topic", "")
 c4model:Rel(api__identity_user_py__create, api__identity_user_py__create__api_command_topic, "CommonCommandConstant.CREATE_USER.value", "message")
 """
+
+
 @router.post("", summary='Create a new user', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def createUser(*, _=Depends(CustomHttpBearer()),
-                 email: str = Body(..., description='User email', embed=True),
-                 ):
-    reqId = f'{CacheType.LIST.value}:{str(uuid4())}:2'  # 2 for completion of identity & project
+                     email: str = Body(..., description='User email', embed=True),
+                     ):
+    reqId = RequestIdGenerator.generateListId(2)  # 2 for completion of identity & project
     producer = AppDi.instance.get(SimpleProducer)
     Validator.validateEmail(email=email, fields={'email': email})
     client = UserClient()
@@ -110,17 +119,20 @@ async def createUser(*, _=Depends(CustomHttpBearer()),
                      schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
+
 """
 c4model|cb|api:Component(api__identity_user_py__delete, "Delete User", http(s)", "")
 c4model|cb|api:ComponentQueue(api__identity_user_py__delete__api_command_topic, "CommonCommandConstant.DELETE_USER.value", "api command topic", "")
 c4model:Rel(api__identity_user_py__delete, api__identity_user_py__delete__api_command_topic, "CommonCommandConstant.DELETE_USER.value", "message")
 """
+
+
 @router.delete("/{user_id}", summary='Delete a user', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def deleteUser(*, _=Depends(CustomHttpBearer()),
-                 user_id: str = Path(...,
-                                     description='User id that is used in order to delete the user')):
-    reqId = str(uuid4())
+                     user_id: str = Path(...,
+                                         description='User id that is used in order to delete the user')):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -128,11 +140,14 @@ async def deleteUser(*, _=Depends(CustomHttpBearer()),
                                         {'user_id': user_id})), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
+
 """
 c4model|cb|api:Component(api__identity_user_py__setUserPassword, "Set User Password", "http(s)", "")
 c4model|cb|api:ComponentQueue(api__identity_user_py__setUserPassword__api_command_topic, "CommonCommandConstant.SET_USER_PASSWORD.value", "api command topic", "")
 c4model:Rel(api__identity_user_py__setUserPassword, api__identity_user_py__setUserPassword__api_command_topic, "CommonCommandConstant.SET_USER_PASSWORD.value", "message")
 """
+
+
 @router.put("/{user_id}/set_password", summary='Set user password', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def setUserPassword(*, _=Depends(CustomHttpBearer()),
@@ -140,7 +155,7 @@ async def setUserPassword(*, _=Depends(CustomHttpBearer()),
                                               description='User id that is used in order to set up the user password'),
                           password: str = Body(..., description='Password of the user', embed=True),
                           ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.SET_USER_PASSWORD.value,
@@ -151,11 +166,14 @@ async def setUserPassword(*, _=Depends(CustomHttpBearer()),
                      schema=ApiCommand.get_schema())
     return {"request_id": reqId}
 
+
 """
 c4model|cb|api:Component(api__identity_user_py__resetUserPassword, "Reset User Password", "http(s)", "")
 c4model|cb|api:ComponentQueue(api__identity_user_py__resetUserPassword__api_command_topic, "CommonCommandConstant.RESET_USER_PASSWORD.value", "api command topic", "")
 c4model:Rel(api__identity_user_py__resetUserPassword, api__identity_user_py__resetUserPassword__api_command_topic, "CommonCommandConstant.RESET_USER_PASSWORD.value", "message")
 """
+
+
 @router.put("/{user_id}/reset_password", summary='Reset user password', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def resetUserPassword(*, _=Depends(CustomHttpBearer()),
@@ -163,7 +181,7 @@ async def resetUserPassword(*, _=Depends(CustomHttpBearer()),
                                                 description='User id that is used in order to reset the user password'),
                             email: str = Body(..., description='User email', embed=True),
                             ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.RESET_USER_PASSWORD.value,
                                     metadata=json.dumps({"token": Client.token}),

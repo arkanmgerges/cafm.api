@@ -2,7 +2,6 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import json
-from uuid import uuid4
 
 import grpc
 from fastapi import APIRouter, Depends, Query, Body
@@ -16,6 +15,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.organization.OrganizationClient import OrganizationClient
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.project.Organization import OrganizationDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.Organizations import Organizations
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
@@ -72,7 +72,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
                  manager_phone_number: str = Body(..., description='Phone number of the manager', embed=True),
                  manager_avatar: str = Body(..., description='Avatar image of the manager', embed=True),
                  ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_ORGANIZATION.value,
@@ -118,7 +118,7 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
                         manager_email: str = Body(None, description='Email of the manager', embed=True),
                         manager_phone_number: str = Body(None, description='Phone number of the manager', embed=True),
                         manager_avatar: str = Body(None, description='Avatar image of the manager', embed=True)):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_ORGANIZATION.value,
