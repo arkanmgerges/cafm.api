@@ -17,9 +17,13 @@ from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR,
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.grpc.v1.project.equipment.category.group.EquipmentCategoryGroupClient import EquipmentCategoryGroupClient
-from src.port_adapter.api.rest.model.response.v1.project.equipment.category.group.EquipmentCategoryGroups import EquipmentCategoryGroups
-from src.port_adapter.api.rest.model.response.v1.project.equipment.category.group.EquipmentCategoryGroup import EquipmentCategoryGroupDescriptor
+from src.port_adapter.api.rest.grpc.v1.project.equipment.category.group.EquipmentCategoryGroupClient import \
+    EquipmentCategoryGroupClient
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
+from src.port_adapter.api.rest.model.response.v1.project.equipment.category.group.EquipmentCategoryGroups import \
+    EquipmentCategoryGroups
+from src.port_adapter.api.rest.model.response.v1.project.equipment.category.group.EquipmentCategoryGroup import \
+    EquipmentCategoryGroupDescriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -32,10 +36,10 @@ router = APIRouter()
 @router.get(path="", summary='Get all equipment category group(s)', response_model=EquipmentCategoryGroups)
 @OpenTelemetry.fastApiTraceOTel
 async def getEquipmentCategoryGroups(*,
-                            result_from: int = Query(0, description='Starting offset for fetching data'),
-                            result_size: int = Query(10, description='Item count to be fetched'),
-                            order: str = Query('', description='e.g. id:asc,email:desc'),
-                            _=Depends(CustomHttpBearer())):
+                                     result_from: int = Query(0, description='Starting offset for fetching data'),
+                                     result_size: int = Query(10, description='Item count to be fetched'),
+                                     order: str = Query('', description='e.g. id:asc,email:desc'),
+                                     _=Depends(CustomHttpBearer())):
     try:
         client = EquipmentCategoryGroupClient()
         orderService = AppDi.instance.get(OrderService)
@@ -58,8 +62,8 @@ async def getEquipmentCategoryGroups(*,
             response_model=EquipmentCategoryGroupDescriptor)
 @OpenTelemetry.fastApiTraceOTel
 async def getEquipmentCategoryGroupById(*, equipment_category_group_id: str = Path(...,
-                                                                description='equipment category group id that is used to fetch equipment category group data'),
-                               _=Depends(CustomHttpBearer())):
+                                                                                   description='equipment category group id that is used to fetch equipment category group data'),
+                                        _=Depends(CustomHttpBearer())):
     """Get a equipment category group by id
     """
     try:
@@ -81,10 +85,13 @@ async def getEquipmentCategoryGroupById(*, equipment_category_group_id: str = Pa
 @router.post("", summary='Create equipment category group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def createEquipmentCategoryGroup(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='name of equipment category group', embed=True),
-                 equipment_category_id: str = Body(..., description='equipment category id of equipment category group', embed=True),
-                ):
-    reqId = str(uuid4())
+                                       name: str = Body(..., description='name of equipment category group',
+                                                        embed=True),
+                                       equipment_category_id: str = Body(...,
+                                                                         description='equipment category id of equipment category group',
+                                                                         embed=True),
+                                       ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     client = EquipmentCategoryGroupClient()
@@ -92,10 +99,10 @@ async def createEquipmentCategoryGroup(*, _=Depends(CustomHttpBearer()),
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
-                                             'equipment_category_group_id': client.newId(),
-                                             'name': name,
-                                             'equipment_category_id': equipment_category_id,
-                                             }),
+                                                'equipment_category_group_id': client.newId(),
+                                                'name': name,
+                                                'equipment_category_id': equipment_category_id,
+                                            }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
@@ -104,19 +111,22 @@ async def createEquipmentCategoryGroup(*, _=Depends(CustomHttpBearer()),
 @router.put("/{equipment_category_group_id}", summary='Update equipment category group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def updateEquipmentCategoryGroup(*, _=Depends(CustomHttpBearer()),
-                 equipment_category_group_id: str = Path(..., description='equipment category group id that is used in order to update the equipment category group'),
-                 name: str = Body(..., description='name of name', embed=True),
-                 equipment_category_id: str = Body(..., description='equipment category id of equipment category id', embed=True),                 
-                 ):
-    reqId = str(uuid4())
+                                       equipment_category_group_id: str = Path(...,
+                                                                               description='equipment category group id that is used in order to update the equipment category group'),
+                                       name: str = Body(..., description='name of name', embed=True),
+                                       equipment_category_id: str = Body(...,
+                                                                         description='equipment category id of equipment category id',
+                                                                         embed=True),
+                                       ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_EQUIPMENT_CATEGORY_GROUP.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {'equipment_category_group_id': equipment_category_group_id,
-                                            'name': name,
-                                            'equipment_category_id': equipment_category_id,
+                                             'name': name,
+                                             'equipment_category_id': equipment_category_id,
                                              }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
@@ -130,7 +140,7 @@ async def updateEquipmentCategoryGroup(*, _=Depends(CustomHttpBearer()),
 #                         name: str = Body(..., description='name of name', embed=True),
 #                         equipment_category_id: str = Body(..., description='equipment category id of equipment category id', embed=True),
 #                         ):
-#     reqId = str(uuid4())
+#     reqId = RequestIdGenerator.generateId()
 #     producer = AppDi.instance.get(SimpleProducer)
 #     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 #     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_EQUIPMENT_CATEGORY_GROUP.value,
@@ -145,11 +155,13 @@ async def updateEquipmentCategoryGroup(*, _=Depends(CustomHttpBearer()),
 #     return {"request_id": reqId}
 
 
-@router.delete("/{equipment_category_group_id}", summary='Delete a equipment category groups', status_code=status.HTTP_200_OK)
+@router.delete("/{equipment_category_group_id}", summary='Delete a equipment category groups',
+               status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def deleteEquipmentCategoryGroup(*, _=Depends(CustomHttpBearer()),
-                 equipment_category_group_id: str = Path(..., description='equipment category group id that is used in order to delete the equipment category group'), ):
-    reqId = str(uuid4())
+                                       equipment_category_group_id: str = Path(...,
+                                                                               description='equipment category group id that is used in order to delete the equipment category group'), ):
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_EQUIPMENT_CATEGORY_GROUP.value,

@@ -15,6 +15,7 @@ from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR,
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.role.RoleClient import RoleClient
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.identity.Role import RoleDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.RoleAccessPermissionData import \
     RoleAccessPermissionDataDescriptor
@@ -98,7 +99,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id to be assigned to user', embed=True),
                  user_id: str = Body(..., description='User id to have the role', embed=True),
                  ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_ROLE_TO_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -113,7 +114,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id to be disconnected from the user', embed=True),
                  user_id: str = Body(..., description='User id that will be disconnected from the role', embed=True),
                  ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_ROLE_TO_USER.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -128,7 +129,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id to be assigned to user group', embed=True),
                  user_group_id: str = Body(..., description='User group id to have the role', embed=True),
                  ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_ROLE_TO_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -145,7 +146,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
                  user_group_id: str = Body(..., description='User group id that will be disconnected from the role',
                                            embed=True),
                  ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_ROLE_TO_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -161,7 +162,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  user_id: str = Body(..., description='User id to have the user group', embed=True),
                  user_group_id: str = Body(..., description='User group id to be assigned to user', embed=True),
                  ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_USER_TO_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -179,7 +180,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
                  user_group_id: str = Body(..., description='User group id to be disconnected from the user group',
                                            embed=True),
                  ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_USER_TO_USER_GROUP.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -199,7 +200,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  permission_id: str = Body(...,
                                            description='Permission id to be assigned to a role',
                                            embed=True)):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_ROLE_TO_PERMISSION.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -220,7 +221,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  permission_id: str = Body(...,
                                            description='Permission id to be have assignment removed to a role for a resource type',
                                            embed=True)):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(
         obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_ROLE_TO_PERMISSION.value,
@@ -242,7 +243,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  permission_context_id: str = Body(...,
                                                    description='Permission context id to be associated with the permission',
                                                    embed=True)):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_PERMISSION_TO_PERMISSION_CONTEXT.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -266,7 +267,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                                                    description='Permission context id to be dissociated from the permission',
                                                    embed=True)
                  ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(
         obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_PERMISSION_TO_PERMISSION_CONTEXT.value,
@@ -284,7 +285,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  src_resource_id: str = Body(..., description='Source resource id', embed=True),
                  dst_resource_id: str = Body(..., description='Destination resource id', embed=True),
                  ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.ASSIGN_RESOURCE_TO_RESOURCE.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -305,7 +306,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
                                              description='Destination resource to unlink it from the source resource',
                                              embed=True),
                  ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ASSIGNMENT_RESOURCE_TO_RESOURCE.value,
                                     metadata=json.dumps({"token": Client.token}),

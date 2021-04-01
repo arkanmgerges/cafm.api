@@ -16,6 +16,7 @@ import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.ou.OuClient import OuClient
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.identity.Ou import OuDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Ous import Ous
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
@@ -99,7 +100,7 @@ c4model:Rel(api__identity_ou_py__create, api__identity_ou_py__create__api_comman
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the ou', embed=True)):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     client = OuClient()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_OU.value,
@@ -121,7 +122,7 @@ c4model:Rel(api__identity_ou_py__delete, api__identity_ou_py__delete__api_comman
 async def delete(*, _=Depends(CustomHttpBearer()),
                  ou_id: str = Path(...,
                                    description='Ou id that is used in order to delete the ou')):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_OU.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -143,7 +144,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
                  ou_id: str = Path(...,
                                    description='Ou id that is used in order to update the ou'),
                  name: str = Body(..., description='Title of the ou', embed=True)):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_OU.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -165,7 +166,7 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
                         ou_id: str = Path(...,
                                           description='Ou id that is used in order to update the ou'),
                         name: str = Body(None, description='Title of the ou', embed=True)):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_OU.value,
                                     metadata=json.dumps({"token": Client.token}),

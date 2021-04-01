@@ -2,13 +2,13 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import json
-from uuid import uuid4
 
 from fastapi import APIRouter, Depends, Body
 from starlette import status
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
@@ -24,7 +24,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id to link access to a resource', embed=True),
                  resource_id: str = Body(..., description='Resource is for a role to have access to', embed=True),
                  ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.PROVIDE_ACCESS_ROLE_TO_RESOURCE.value,
                                     metadata=json.dumps({"token": Client.token}),
@@ -41,7 +41,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id to remove link access to a resource', embed=True),
                  resource_id: str = Body(..., description='Resource is for a role to remove the access to', embed=True),
                  ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ACCESS_ROLE_TO_RESOURCE.value,
                                     metadata=json.dumps({"token": Client.token}),
