@@ -23,6 +23,7 @@ from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.M
     MaintenanceProcedureOperationClient
 from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameterClient import \
     MaintenanceProcedureOperationParameterClient
+
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.MaintenanceProcedures import \
     MaintenanceProcedures
@@ -43,6 +44,8 @@ from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.Maintenan
     MaintenanceProcedureType
 from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.MaintenanceProcedureOperationType import \
     MaintenanceProcedureOperationType
+from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.MaintenanceProcedureHardSubType import \
+    MaintenanceProcedureHardSubType
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.common.DateTimeHelper import DateTimeHelper
@@ -144,6 +147,7 @@ async def deleteMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBe
                                                        maintenance_procedure_operation_parameter_id: str = Path(...,
                                                                                                                 description='maintenance procedure operation parameter id that is used in order to delete the maintenance procedure operation parameter'), ):
     reqId = RequestIdGenerator.generateId()
+
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(
@@ -275,6 +279,7 @@ async def updateMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBe
     if min_value > max_value:
         raise ValueError('Minimum value must be less or equal than maximum value')
     reqId = RequestIdGenerator.generateId()
+
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(
@@ -288,7 +293,7 @@ async def updateMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBe
                                    'maintenance_procedure_operation_id': maintenance_procedure_operation_id,
                                    'min_value': min_value,
                                    'max_value': max_value,
-                                   }),
+                               }),
                            external=[]),
         schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
@@ -317,6 +322,7 @@ async def partialUpdateMaintenanceProcedureOperationParameter(*, _=Depends(Custo
                                                                                       embed=True),
                                                               ):
     reqId = RequestIdGenerator.generateId()
+
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(
@@ -330,7 +336,7 @@ async def partialUpdateMaintenanceProcedureOperationParameter(*, _=Depends(Custo
                                    'maintenance_procedure_operation_id': maintenance_procedure_operation_id,
                                    'min_value': min_value,
                                    'max_value': max_value,
-                                   }),
+                               }),
                            external=[]),
         schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
@@ -413,8 +419,11 @@ async def getMaintenanceProcedureById(*, maintenance_procedure_id: str = Path(..
 @router.post("", summary='Create maintenance procedure', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def createMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
-                                     name: str = Body(..., description='name of maintenance procedure', embed=True),
+                                     name: str = Body(None, description='name of maintenance procedure', embed=True),
                                      type: MaintenanceProcedureType = Body(..., description='hard or soft', embed=True),
+                                     hard_sub_type: MaintenanceProcedureHardSubType = Body(None,
+                                                                                           description='Sub type for when you select hard for type',
+                                                                                           embed=True),
                                      frequency: MaintenanceProcedureFrequency = Body(...,
                                                                                      description='procedure frequency',
                                                                                      embed=True),
@@ -426,6 +435,7 @@ async def createMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                      equipment_id: str = Body(..., description='equipment id of maintenance procedure',
                                                               embed=True),
                                      ):
+
     reqId = RequestIdGenerator.generateId()
     start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
     producer = AppDi.instance.get(SimpleProducer)
@@ -438,6 +448,7 @@ async def createMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                                 'maintenance_procedure_id': client.newId(),
                                                 'name': name,
                                                 'type': type,
+                                                'sub_type': hard_sub_type,
                                                 'frequency': frequency,
                                                 'start_date': start_date,
                                                 'subcontractor_id': subcontractor_id,
@@ -455,6 +466,9 @@ async def updateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                                                           description='maintenance procedure id that is used in order to update the maintenance procedure'),
                                      name: str = Body(..., description='name of name', embed=True),
                                      type: MaintenanceProcedureType = Body(..., description='hard or soft', embed=True),
+                                     hard_sub_type: MaintenanceProcedureHardSubType = Body(None,
+                                                                                           description='Sub type for when you select hard for type',
+                                                                                           embed=True),
                                      frequency: MaintenanceProcedureFrequency = Body(...,
                                                                                      description='procedure frequency',
                                                                                      embed=True),
@@ -465,7 +479,9 @@ async def updateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                      equipment_id: str = Body(..., description='equipment id of maintenance procedure',
                                                               embed=True),
                                      ):
+
     reqId = RequestIdGenerator.generateId()
+
     start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
@@ -475,6 +491,7 @@ async def updateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                             {'maintenance_procedure_id': maintenance_procedure_id,
                                              'name': name,
                                              'type': type,
+                                             'sub_type': hard_sub_type,
                                              'frequency': frequency,
                                              'start_date': start_date,
                                              'equipment_id': equipment_id,
@@ -507,6 +524,7 @@ async def partialUpdateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                                                      embed=True),
                                             ):
     reqId = RequestIdGenerator.generateId()
+
     start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
@@ -532,6 +550,7 @@ async def deleteMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                      maintenance_procedure_id: str = Path(...,
                                                                           description='maintenance procedure id that is used in order to delete the maintenance procedure'), ):
     reqId = RequestIdGenerator.generateId()
+
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_MAINTENANCE_PROCEDURE.value,
@@ -598,6 +617,7 @@ async def createMaintenanceProcedureOperation(*,
                                                                                              embed=True),
                                               ):
     reqId = RequestIdGenerator.generateId()
+
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     client = MaintenanceProcedureOperationClient()
