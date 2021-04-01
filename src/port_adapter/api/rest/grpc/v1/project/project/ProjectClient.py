@@ -47,14 +47,15 @@ class ProjectClient(Client):
                 response: ProjectAppService_newIdResponse = stub.newId.with_call(
                     request,
                     metadata=(('token', self.token), (
-                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.newId.__qualname__))))
+                        'opentel',
+                        AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.newId.__qualname__))))
                 logger.debug(
                     f'[{ProjectClient.newId.__qualname__}] - grpc response: {response}')
                 return response[0].id
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
-            
+
     # region Project
     @OpenTelemetry.grpcTraceOTel
     def projects(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> Projects:
@@ -140,7 +141,6 @@ class ProjectClient(Client):
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
-
     @OpenTelemetry.grpcTraceOTel
     def newBuildingId(self) -> str:
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
@@ -150,7 +150,8 @@ class ProjectClient(Client):
                 response: ProjectAppService_newBuildingIdResponse = stub.newBuildingId.with_call(
                     request,
                     metadata=(('token', self.token), (
-                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.newBuildingId.__qualname__))))
+                        'opentel',
+                        AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.newBuildingId.__qualname__))))
                 logger.debug(
                     f'[{ProjectClient.newBuildingId.__qualname__}] - grpc response: {response}')
                 return response[0].id
@@ -215,7 +216,8 @@ class ProjectClient(Client):
                 response: ProjectAppService_newBuildingLevelIdResponse = stub.newBuildingLevelId.with_call(
                     request,
                     metadata=(('token', self.token), (
-                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.newBuildingLevelId.__qualname__))))
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                            ProjectClient.newBuildingLevelId.__qualname__))))
                 logger.debug(
                     f'[{ProjectClient.newBuildingLevelId.__qualname__}] - grpc response: {response}')
                 return response[0].id
@@ -254,7 +256,7 @@ class ProjectClient(Client):
                 logger.debug(
                     f'[{ProjectClient.buildingLevelRooms.__qualname__}] - grpc call to retrieve data from server {self._server}:{self._port}')
                 request = ProjectAppService_buildingLevelRoomsRequest(resultFrom=resultFrom, resultSize=resultSize,
-                                                                  buildingLevelId=buildingLevelId)
+                                                                      buildingLevelId=buildingLevelId)
                 [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
                 response: ProjectAppService_buildingLevelRoomsResponse = stub.buildingLevelRooms.with_call(
                     request,
@@ -280,7 +282,8 @@ class ProjectClient(Client):
                 response: ProjectAppService_newBuildingLevelRoomIdResponse = stub.newBuildingLevelRoomId.with_call(
                     request,
                     metadata=(('token', self.token), (
-                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(ProjectClient.newBuildingLevelRoomId.__qualname__))))
+                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
+                            ProjectClient.newBuildingLevelRoomId.__qualname__))))
                 logger.debug(
                     f'[{ProjectClient.newBuildingLevelRoomId.__qualname__}] - grpc response: {response}')
                 return response[0].id
@@ -319,6 +322,7 @@ class ProjectClient(Client):
         logger.debug(f'_buildingLevelDescriptor --> {obj}')
         return BuildingLevelDescriptor(id=obj.id,
                                        name=obj.name,
+                                       is_sublevel=obj.isSubLevel,
                                        building_ids=[x for x in obj.buildingIds],
                                        building_level_rooms=[self._buildingLevelRoomDescriptor(x) for x in
                                                              obj.buildingLevelRooms])

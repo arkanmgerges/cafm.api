@@ -164,6 +164,31 @@ async def partialUpdateProject(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 
+"""  
+c4model|cb|api:Component(api__project_project_py__changeProjectState, "Change Project State", "http(s)", "")
+c4model:Rel(api__project_project_py__changeProjectState, project__messaging_project_command_handler__ChangeProjectStateHandler, "CommonCommandConstant.CHANGE_PROJECT_STATE.value", "message")
+"""
+
+
+@router.post("/{project_id}/change_state",
+             summary='Change project state', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def changeProjectState(*, _=Depends(CustomHttpBearer()),
+                             project_id: str = Path(..., description='Project id'),
+                             state: str = Body(..., description='The state can be active and archived', embed=True)):
+    reqId = str(uuid4())
+    state = state.lower()
+    if state not in ['active', 'archived']:
+        raise ValueError('Invalid state, it should be one of these: active, archived')
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CHANGE_PROJECT_STATE.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'project_id': project_id,
+                                             'state': state}), external=[]), schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
+
+
 # endregion
 
 # region Building
@@ -394,6 +419,7 @@ async def createBuildingLevel(*, _=Depends(CustomHttpBearer()),
                               project_id: str = Path(..., description='Project id'),
                               building_id: str = Path(..., description='Building id'),
                               name: str = Body(..., description='Building level name', embed=True),
+                              is_sublevel: bool = Body(..., description='Is it a sublevel', embed=True),
                               ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -406,6 +432,7 @@ async def createBuildingLevel(*, _=Depends(CustomHttpBearer()),
                                                 'project_id': project_id,
                                                 'building_id': building_id,
                                                 'name': name,
+                                                'is_sublevel': is_sublevel,
                                             }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 
@@ -452,6 +479,7 @@ async def updateBuildingLevel(*, _=Depends(CustomHttpBearer()),
                               building_id: str = Path(..., description='Building id'),
                               building_level_id: str = Path(..., description='Building level id'),
                               name: str = Body(..., description='Building name', embed=True),
+                              is_sublevel: bool = Body(..., description='Is it a sublevel', embed=True),
                               ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -461,6 +489,7 @@ async def updateBuildingLevel(*, _=Depends(CustomHttpBearer()),
                                             {'project_id': project_id,
                                              'building_id': building_id,
                                              'building_level_id': building_level_id,
+                                             'is_sublevel': is_sublevel,
                                              'name': name,
                                              }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
@@ -752,14 +781,13 @@ async def updateBuildingLevelRoomIndex(*, _=Depends(CustomHttpBearer()),
                                              }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 
-
 # endregion
+
 
 """  
 c4model|cb|api:Component(api__project_project_py__changeProjectState, "Change Project State", "http(s)", "")
 c4model:Rel(api__project_project_py__changeProjectState, project__messaging_project_command_handler__ChangeProjectStateHandler, "CommonCommandConstant.CHANGE_PROJECT_STATE.value", "message")
 """
-
 
 @router.post("/{project_id}/change_state",
              summary='Change project state', status_code=status.HTTP_200_OK)
@@ -778,4 +806,5 @@ async def changeProjectState(*, _=Depends(CustomHttpBearer()),
                                             {'project_id': project_id,
                                              'state': state}), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
+
 # endregion
