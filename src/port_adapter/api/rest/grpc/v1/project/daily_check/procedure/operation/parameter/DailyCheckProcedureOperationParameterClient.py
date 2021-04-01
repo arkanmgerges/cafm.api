@@ -126,6 +126,6 @@ class DailyCheckProcedureOperationParameterClient(Client):
                                       name=obj.name,
                                       unit_id=obj.unitId,
                                       daily_check_procedure_operation_id=obj.dailyCheckProcedureOperationId,
-                                      min_value=obj.minValue,
-                                      max_value=obj.maxValue,
+                                      min_value=float(obj.minValue),
+                                      max_value=float(obj.maxValue),
                                       )

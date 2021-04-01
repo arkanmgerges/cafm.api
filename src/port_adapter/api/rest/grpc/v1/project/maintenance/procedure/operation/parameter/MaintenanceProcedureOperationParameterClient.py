@@ -126,6 +126,6 @@ class MaintenanceProcedureOperationParameterClient(Client):
                                       name=obj.name,
                                       unit_id=obj.unitId,
                                       maintenance_procedure_operation_id=obj.maintenanceProcedureOperationId,
-                                      min_value=obj.minValue,
-                                      max_value=obj.maxValue,
+                                      min_value=float(obj.minValue),
+                                      max_value=float(obj.maxValue),
                                       )

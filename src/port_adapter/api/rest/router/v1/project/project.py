@@ -419,7 +419,7 @@ async def createBuildingLevel(*, _=Depends(CustomHttpBearer()),
                               project_id: str = Path(..., description='Project id'),
                               building_id: str = Path(..., description='Building id'),
                               name: str = Body(..., description='Building level name', embed=True),
-                              is_sublevel: bool = Body(..., description='Is it a sublevel', embed=True),
+                              is_sublevel: bool = Body(None, description='Is it a sublevel', embed=True),
                               ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -432,7 +432,7 @@ async def createBuildingLevel(*, _=Depends(CustomHttpBearer()),
                                                 'project_id': project_id,
                                                 'building_id': building_id,
                                                 'name': name,
-                                                'is_sublevel': is_sublevel,
+                                                'is_sublevel': is_sublevel if is_sublevel is not None else False
                                             }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 
@@ -479,7 +479,7 @@ async def updateBuildingLevel(*, _=Depends(CustomHttpBearer()),
                               building_id: str = Path(..., description='Building id'),
                               building_level_id: str = Path(..., description='Building level id'),
                               name: str = Body(..., description='Building name', embed=True),
-                              is_sublevel: bool = Body(..., description='Is it a sublevel', embed=True),
+                              is_sublevel: bool = Body(None, description='Is it a sublevel', embed=True),
                               ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -489,7 +489,7 @@ async def updateBuildingLevel(*, _=Depends(CustomHttpBearer()),
                                             {'project_id': project_id,
                                              'building_id': building_id,
                                              'building_level_id': building_level_id,
-                                             'is_sublevel': is_sublevel,
+                                             'is_sublevel': is_sublevel if is_sublevel is not None else False,
                                              'name': name,
                                              }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}

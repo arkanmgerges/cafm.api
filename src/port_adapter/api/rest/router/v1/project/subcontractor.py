@@ -52,7 +52,6 @@ async def getSubcontractors(*,
     except Exception as e:
         logger.info(e)
 
-
 @router.get(path="/{subcontractor_id}", summary='Get subcontractors by id',
             response_model=SubcontractorDescriptor)
 @OpenTelemetry.fastApiTraceOTel
