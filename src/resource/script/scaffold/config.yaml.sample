@@ -10,15 +10,18 @@ global:
     port_adapter: 'src/port_adapter'
     repository: 'src/port_adapter/repository'
     db_model: 'src/port_adapter/repository/db_model'
+    messaging: 'src/port_adapter/messaging'
     messaging_listener: 'src/port_adapter/messaging/listener'
-    grpc_api_listener: 'src/port_adapter/api/grpc/listener'
+    grpc_api_client: 'src/port_adapter/api/rest/grpc/v1'
     proto_buffer: 'src/resource/proto'
+    router: 'src/port_adapter/api/rest/router/v1'
+    router_model_response: 'src/port_adapter/api/rest/model/response/v1'
     test: 'test'
-    app_di: 'app_di'
+    app_di: 'src/port_adapter'
 
 domain_model:
   - model:
-#      skip: [router, model_response, grpc_client, proto, command_constant]
+#      skip: [all, router, model_response, grpc_client, proto, command_constant]
 #     Overwrite the file even if it was modified manually, otherwise, the file will not be overwritten
 #     file_overwrite: True
       message_command: ProjectCommand
