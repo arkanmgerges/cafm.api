@@ -19,11 +19,12 @@ from src.port_adapter.api.rest.resource.exception.InProgressException import InP
 from src.port_adapter.api.rest.resource.exception.NotFoundException import NotFoundException
 from src.port_adapter.api.rest.resource.exception.ValidationErrorException import ValidationErrorException
 from src.port_adapter.api.rest.router.v1.common import request as common_request
-from src.port_adapter.api.rest.router.v1.identity import auth as id_auth, realm as id_realm, ou as id_ou, \
+from src.port_adapter.api.rest.router.v1.identity import auth as id_auth, ou as id_ou, \
     user as id_user, role as id_role, user_group as id_user_group, project as id_project, \
     permission_context as id_permission_context, \
     permission as id_permission, assignment as id_assignment, access as id_access, country as id_country, \
     city as id_city
+from src.port_adapter.api.rest.router.v1.identity.realm import realm as id_realm
 from src.port_adapter.api.rest.router.v1.project import project as project_project, user as project_user, \
     organization as project_organization, lookup as project_lookup, subcontractor as project_subcontractor
 from src.resource.logging.logger import logger
