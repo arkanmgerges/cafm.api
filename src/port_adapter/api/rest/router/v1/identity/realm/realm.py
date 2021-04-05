@@ -19,6 +19,7 @@ from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerat
 from src.port_adapter.api.rest.model.response.v1.identity.Realm import RealmDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Realms import Realms
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.realm.RealmType import RealmType
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -99,13 +100,13 @@ c4model:Rel(api__identity_realm_py__create, api__identity_realm_py__create__api_
 @OpenTelemetry.fastApiTraceOTel
 async def create(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the realm', embed=True),
-                 realm_type: str = Body(..., description='The type can be provider, beneficiary, or tenant',
+                 realm_type: str = Body(..., description='The type can be ' + ', '.join([e.value for e in RealmType]),
                                         embed=True),
                  ):
     reqId = RequestIdGenerator.generateListId(2)
     realm_type = realm_type.lower()
-    if realm_type not in ['provider', 'beneficiary', 'tenant']:
-        raise ValueError('Invalid realm_type, it should be one of these: provider, beneficiary, or tenant')
+    if realm_type not in [e.value for e in RealmType]:
+        raise ValueError('Invalid realm_type, it should be one of these: ' + ', '.join([e.value for e in RealmType]))
     producer = AppDi.instance.get(SimpleProducer)
     client = RealmClient()
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_REALM.value,
