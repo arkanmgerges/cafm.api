@@ -23,6 +23,7 @@ from src.port_adapter.api.rest.model.response.v1.project.maintenance.standard_pr
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
+from src.resource.common.DateTimeHelper import DateTimeHelper
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -88,6 +89,7 @@ async def createStandardMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                  organization_id: str = Body(..., description='organization id of standard maintenance procedure', embed=True),
                 ):
     reqId = str(uuid4())
+    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_STANDARD_MAINTENANCE_PROCEDURE.value,
@@ -118,6 +120,7 @@ async def updateStandardMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                  organization_id: str = Body(..., description='organization id of organization id', embed=True),                 
                  ):
     reqId = str(uuid4())
+    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_STANDARD_MAINTENANCE_PROCEDURE.value,
@@ -148,6 +151,7 @@ async def partialUpdateStandardMaintenanceProcedure(*, _=Depends(CustomHttpBeare
                         organization_id: str = Body(None, description='organization id of organization id', embed=True),
                         ):
     reqId = str(uuid4())
+    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_STANDARD_MAINTENANCE_PROCEDURE.value,
