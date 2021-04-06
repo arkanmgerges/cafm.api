@@ -38,6 +38,7 @@ from src.port_adapter.api.rest.router.v1.project.equipment import equipment as p
 from src.port_adapter.api.rest.router.v1.project.unit import unit as project_unit
 from src.port_adapter.api.rest.router.v1.project.equipment.input import equipment_input as project_equipment_input
 from src.port_adapter.api.rest.router.v1.project.maintenance.procedure import maintenance_procedure as project_maintenance_procedure
+from src.port_adapter.api.rest.router.v1.project.maintenance.standard_procedure import standard_maintenance_procedure as project_standard_maintenance_procedure
 
 from src.port_adapter.api.rest.router.v1.project.daily_check.procedure import daily_check_procedure as project_daily_check_procedure
 # from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
@@ -174,5 +175,8 @@ app.include_router(project_maintenance_procedure.router, prefix="/v1/project/mai
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 
 app.include_router(project_daily_check_procedure.router, prefix="/v1/project/daily_check_procedures", tags=["Project/DailyCheck"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+
+app.include_router(project_standard_maintenance_procedure.router, prefix="/v1/project/standard_maintenance_procedures", tags=["Project/StandardMaintenanceProcedure"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 # endregion

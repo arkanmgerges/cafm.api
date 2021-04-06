@@ -29,7 +29,7 @@ domain_model:
       microservice: project
       name: equipment_model
       field:
-        - name: name
+        - name: namec
           type: str
 #          optional: True
           proto:
