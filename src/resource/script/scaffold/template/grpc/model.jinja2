@@ -31,7 +31,8 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.{{ model.microservice }}.{{ model.name }}_app_service_pb2 import \
     {{ className }}AppService_{{ lowerCamelModelName | pluralize }}Response, \
     {{ className }}AppService_{{ lowerCamelModelName | pluralize }}Request, {{ className }}AppService_{{ lowerCamelModelName }}ByIdRequest, \
-    {{ className }}AppService_{{ lowerCamelModelName }}ByIdResponse
+    {{ className }}AppService_{{ lowerCamelModelName }}ByIdResponse, {{ className }}AppService_newIdResponse, \
+    {{ className }}AppService_newIdRequest
 from src.resource.proto._generated.{{ model.microservice }}.{{ model.name }}_app_service_pb2_grpc import {{ className }}AppServiceStub
 {%-block segmentImport %}{%-endblock%}
 
