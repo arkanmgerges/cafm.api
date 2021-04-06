@@ -30,7 +30,15 @@ message StandardMaintenanceProcedureAppService_standardMaintenanceProceduresResp
   int32 itemCount = 2;
 }
 
+message StandardMaintenanceProcedureAppService_newIdRequest {}
+
+message StandardMaintenanceProcedureAppService_newIdResponse {
+  string id = 1;
+}
+
+
 service StandardMaintenanceProcedureAppService {
   rpc standardMaintenanceProcedureById (StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdRequest) returns (StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdResponse) {}
   rpc standardMaintenanceProcedures (StandardMaintenanceProcedureAppService_standardMaintenanceProceduresRequest) returns (StandardMaintenanceProcedureAppService_standardMaintenanceProceduresResponse) {}
+  rpc newId (StandardMaintenanceProcedureAppService_newIdRequest) returns (StandardMaintenanceProcedureAppService_newIdResponse) {}
 }
