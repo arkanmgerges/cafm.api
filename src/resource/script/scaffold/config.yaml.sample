@@ -31,6 +31,7 @@ domain_model:
       field:
         - name: name
           type: str
+          default: None
 #          optional: True
           proto:
             type: string
@@ -40,3 +41,398 @@ segment:
   - name: maintenance_procedure
     foreign:
         model: *equipment_model
+
+
+# --------------------------------------- More examples
+domain_model:
+# equipment_model
+  - model: &equipment_model_model
+      skip: [all, router, model_response, grpc_client, proto, command_constant]
+      message_command: ProjectCommand
+      path: project/equipment/model
+      microservice: project
+      name: equipment_model
+      field:
+        - name: name
+          type: str
+          default: None
+#          optional: True
+          proto:
+            type: string
+# manufacturer
+  - model:
+      skip: [all, router, model_response, grpc_client, proto, command_constant]
+      message_command: ProjectCommand
+      path: project/manufacturer
+      microservice: project
+      name: manufacturer
+      field:
+        - name: name
+          type: str
+          default: None
+#          optional: True
+          proto:
+            type: string
+# equipment_project_category
+  - model:
+      skip: [all]
+      message_command: ProjectCommand
+      path: project/equipment/project_category
+      microservice: project
+      name: equipment_project_category
+      field:
+        - name: name
+          type: str
+          default: None
+          proto:
+            type: string
+# equipment_category
+  - model:
+      skip: [all]
+      message_command: ProjectCommand
+      path: project/equipment/category
+      microservice: project
+      name: equipment_category
+      field:
+        - name: name
+          type: str
+          default: None
+          proto:
+            type: string
+# equipment_category_group
+  - model:
+      skip: [all]
+      message_command: ProjectCommand
+      path: project/equipment/category/group
+      microservice: project
+      name: equipment_category_group
+      field:
+        - name: name
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: equipment_category_id
+          type: str
+          default: None
+          proto:
+            type: string
+# equipment
+  - model: &equipment_model
+      skip: [all]
+      message_command: ProjectCommand
+      path: project/equipment
+      microservice: project
+      name: equipment
+      field:
+        - name: name
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: project_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: equipment_project_category_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: equipment_category_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: equipment_category_group_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: building_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: building_level_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: building_level_room_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: manufacturer_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: equipment_model_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: quantity
+          type: int
+          default: None
+          proto:
+            type: int32
+# unit
+  - model:
+      skip: [ all ]
+      message_command: ProjectCommand
+      microservice: project
+      path: project/unit
+      name: unit
+      field:
+        - name: name
+          type: str
+          default: None
+          proto:
+            type: string
+# equipment_input
+  - model:
+      skip: [ all]
+      message_command: ProjectCommand
+      microservice: project
+      path: project/equipment/input
+      name: equipment_input
+      field:
+        - name: name
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: value
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: unit_id
+          type: str
+          default: None
+          proto:
+            type: string
+# maintenance_procedure_model
+  - model: &maintenance_procedure_model
+      skip: [ all, model_response, command_constant ]
+      path: project/maintenance/procedure
+#      file_overwrite: True
+      message_command: ProjectCommand
+      microservice: project
+      name: maintenance_procedure
+      field:
+        - name: name
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: type
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: frequency
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: start_date
+          type: int
+          default: None
+          proto:
+            type: int32
+        - name: subcontractor_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: equipment_id
+          type: str
+          default: None
+          proto:
+            type: string
+# maintenance_procedure_operation_model
+  - model: &maintenance_procedure_operation_model
+      skip: [ all, model_response, command_constant ]
+      path: project/maintenance/procedure/operation
+#      file_overwrite: True
+      message_command: ProjectCommand
+      microservice: project
+      name: maintenance_procedure_operation
+      field:
+        - name: name
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: description
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: type
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: maintenance_procedure_id
+          type: str
+          default: None
+          db:
+            type: "String(10)"
+          proto:
+            type: string
+# maintenance_procedure_operation_parameter
+  - model: &maintenance_procedure_operation_parameter
+      skip: [all, model_response, command_constant]
+      path: project/maintenance/procedure/operation/parameter
+#      file_overwrite: True
+      message_command: ProjectCommand
+      microservice: project
+      name: maintenance_procedure_operation_parameter
+      field:
+        - name: name
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: unit_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: maintenance_procedure_operation_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: min_value
+          type: float
+          default: None
+          proto:
+            type: float
+        - name: max_value
+          type: float
+          default: None
+          proto:
+            type: float
+# daily check procedure
+  - model: &daily_check_procedure_model
+      skip: [ all, model_response, command_constant ]
+      path: project/daily_check/procedure
+#      file_overwrite: True
+      message_command: ProjectCommand
+      microservice: project
+      name: daily_check_procedure
+      field:
+        - name: name
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: description
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: equipment_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: equipment_category_group_id
+          type: str
+          default: None
+          proto:
+            type: string
+# daily check procedure operation
+  - model: &daily_check_procedure_operation_model
+      skip: [ all, model_response, command_constant ]
+      path: project/daily_check/procedure/operation
+#      file_overwrite: True
+      message_command: ProjectCommand
+      microservice: project
+      name: daily_check_procedure_operation
+      field:
+        - name: name
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: description
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: type
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: daily_check_procedure_id
+          type: str
+          default: None
+          proto:
+            type: string
+# daily check procedure operation parameter
+  - model: &daily_check_procedure_operation_parameter
+      skip: [ all, model_response, command_constant ]
+      path: project/daily_check/procedure/operation/parameter
+#      file_overwrite: True
+      message_command: ProjectCommand
+      microservice: project
+      name: daily_check_procedure_operation_parameter
+      field:
+        - name: name
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: unit_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: daily_check_procedure_operation_id
+          type: str
+          default: None
+          proto:
+            type: string
+        - name: min_value
+          type: float
+          default: None
+          db:
+            type: 'Float'
+          proto:
+            type: float
+        - name: max_value
+          type: float
+          default: None
+          db:
+            type: 'Float'
+          proto:
+            type: float
+
+segment:
+  - name: maintenance_procedure
+    foreign:
+      model: *equipment_model
+  - name: maintenance_procedure_operation
+    foreign:
+      model: *maintenance_procedure_model
+  - name: maintenance_procedure_operation_parameter
+    foreign:
+      model: *maintenance_procedure_operation_model
+  - name: daily_check_procedure
+    foreign:
+      model: *equipment_model
+  - name: daily_check_procedure_operation
+    foreign:
+      model: *daily_check_procedure_model
+  - name: daily_check_procedure_operation_parameter
+    foreign:
+      model: *daily_check_procedure_operation_model
