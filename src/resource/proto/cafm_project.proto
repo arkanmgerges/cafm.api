@@ -18,3 +18,4 @@ import "project/maintenance_procedure_operation_parameter_app_service.proto";
 import "project/daily_check_procedure_app_service.proto";
 import "project/daily_check_procedure_operation_app_service.proto";
 import "project/daily_check_procedure_operation_parameter_app_service.proto";
+import "project/standard_maintenance_procedure_app_service.proto";
