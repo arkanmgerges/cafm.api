@@ -113,5 +113,8 @@ class CommandConstant(Enum):
     CREATE_STANDARD_MAINTENANCE_PROCEDURE = 'create_standard_maintenance_procedure'
     UPDATE_STANDARD_MAINTENANCE_PROCEDURE = 'update_standard_maintenance_procedure'
     DELETE_STANDARD_MAINTENANCE_PROCEDURE = 'delete_standard_maintenance_procedure'
+    CREATE_SUBCONTRACTOR_CATEGORY = 'create_subcontractor_category'
+    UPDATE_SUBCONTRACTOR_CATEGORY = 'update_subcontractor_category'
+    DELETE_SUBCONTRACTOR_CATEGORY = 'delete_subcontractor_category'
 
 # endregion
