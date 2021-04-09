@@ -38,7 +38,8 @@ services:
   cafm-api-script:
     image: cafm-api:local
     command: >
-      bash -c "python -m src.resource.script.admin_script init-kafka-topics-and-schemas"
+      bash -c "python -m src.resource.script.admin_script check-schema-registry-readiness &&
+      python -m src.resource.script.admin_script init-kafka-topics-and-schemas"
     working_dir: /app
     networks:
       - cafm-infra_default
