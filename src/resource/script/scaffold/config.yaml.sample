@@ -416,6 +416,21 @@ domain_model:
             type: 'Float'
           proto:
             type: float
+  - model:
+#      skip: [all, router, model_response, grpc_client, proto, command_constant]
+#     Overwrite the file even if it was modified manually, otherwise, the file will not be overwritten
+#     file_overwrite: True
+      message_command: ProjectCommand
+      path: project/subcontractor/category
+      microservice: project
+      name: subcontractor_category
+      field:
+        - name: name
+          type: str
+          default: None
+          proto:
+            type: string
+
 
 segment:
   - name: maintenance_procedure
