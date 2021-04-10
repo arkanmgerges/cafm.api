@@ -39,8 +39,10 @@ from src.port_adapter.api.rest.router.v1.project.unit import unit as project_uni
 from src.port_adapter.api.rest.router.v1.project.equipment.input import equipment_input as project_equipment_input
 from src.port_adapter.api.rest.router.v1.project.maintenance.procedure import maintenance_procedure as project_maintenance_procedure
 from src.port_adapter.api.rest.router.v1.project.maintenance.standard_procedure import standard_maintenance_procedure as project_standard_maintenance_procedure
-
 from src.port_adapter.api.rest.router.v1.project.daily_check.procedure import daily_check_procedure as project_daily_check_procedure
+from src.port_adapter.api.rest.router.v1.project.standard_equipment import standard_equipment as standard_equipment
+from src.port_adapter.api.rest.router.v1.project.standard_equipment.standard_category import standard_equipment_category as standard_equipment_category
+from src.port_adapter.api.rest.router.v1.project.standard_equipment.standard_category.standard_group import standard_equipment_category_group as standard_equipment_category_group
 # from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 app = FastAPI(
@@ -178,5 +180,12 @@ app.include_router(project_daily_check_procedure.router, prefix="/v1/project/dai
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 
 app.include_router(project_standard_maintenance_procedure.router, prefix="/v1/project/standard_maintenance_procedures", tags=["Project/StandardMaintenanceProcedure"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+
+app.include_router(standard_equipment.router, prefix="/v1/project/standard_equipments", tags=["Project/StandardEquipment"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+app.include_router(standard_equipment_category.router, prefix="/v1/project/standard_equipment_categories", tags=["Project/StandardEquipment"],
+                   responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
+app.include_router(standard_equipment_category_group.router, prefix="/v1/project/standard_equipment_category_groups", tags=["Project/StandardEquipment"],
                    responses={400: {"model": Message}, 404: {"model": Message}, 500: {"model": Message}})
 # endregion

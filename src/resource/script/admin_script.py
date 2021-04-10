@@ -33,7 +33,9 @@ def init_kafka_topics_and_schemas():
 
     for requiredTopic in requiredTopics:
         if requiredTopic not in installedTopics:
-            newTopics.append(NewTopic(requiredTopic, num_partitions=int(os.getenv('KAFKA_PARTITIONS_COUNT_PER_TOPIC', 1)), replication_factor=1))
+            newTopics.append(
+                NewTopic(requiredTopic, num_partitions=int(os.getenv('KAFKA_PARTITIONS_COUNT_PER_TOPIC', 1)),
+                         replication_factor=1))
     if len(newTopics) > 0:
         fs = admin.create_topics(newTopics)
         for topic, f in fs.items():
@@ -46,7 +48,7 @@ def init_kafka_topics_and_schemas():
     # Create schemas
     c = CachedSchemaRegistryClient({'url': os.getenv('MESSAGE_SCHEMA_REGISTRY_URL', '')})
     requiredSchemas = [{'name': 'cafm.api.Command', 'schema': ApiCommand.get_schema()},
-               {'name': 'cafm.api.Response', 'schema': ApiResponse.get_schema()}]
+                       {'name': 'cafm.api.Response', 'schema': ApiResponse.get_schema()}]
     newSchemas = []
     for requiredSchema in requiredSchemas:
         click.echo(click.style(f'Verify if schema {requiredSchema["name"]} is available', fg='green'))
@@ -59,6 +61,7 @@ def init_kafka_topics_and_schemas():
             click.echo(click.style(f'Schema {requiredSchema["name"]} will be created', fg='green'))
             newSchemas.append(requiredSchema)
     [c.register(schema['name'], schema['schema']) for schema in newSchemas]
+
 
 @cli.command(help='Test kafka schema readiness')
 def test_kafka_schema_readiness():
@@ -100,6 +103,29 @@ def drop_kafka_topics_and_schemas():
     schemas = ['cafm.api.Command', 'cafm.api.Response']
     c = CachedSchemaRegistryClient({'url': os.getenv('MESSAGE_SCHEMA_REGISTRY_URL', '')})
     [c.delete_subject(schema) for schema in schemas]
+
+
+@cli.command(help='Check if schema registry is ready')
+def check_schema_registry_readiness():
+    from confluent_kafka.avro import CachedSchemaRegistryClient
+    click.echo(click.style('Check if schema registry is ready', fg='green', bold=True))
+    counter = 15
+    sleepPeriod = 10
+    while counter > 0:
+        try:
+            counter -= 1
+            click.echo(click.style('Sending a request ...', fg='green', bold=True))
+            c = CachedSchemaRegistryClient({'url': os.getenv('MESSAGE_SCHEMA_REGISTRY_URL', '')})
+            c.get_latest_schema(subject='test')
+            click.echo(click.style('Schema registry is ready', fg='green', bold=True))
+            exit(0)
+        except Exception as e:
+            click.echo(click.style(f'Error thrown ... {e}', fg='red'))
+            click.echo(click.style(f'Sleep {sleepPeriod} seconds ...', fg='green', bold=True))
+            click.echo(click.style(f'Remaining retries: {counter}', fg='green'))
+            sleepPeriod += 3
+            sleep(sleepPeriod)
+    exit(1)
 
 
 if __name__ == '__main__':
