@@ -106,6 +106,7 @@ class ProjectClient(Client):
                                  city_id=obj.cityId,
                                  country_id=obj.countryId,
                                  address_line=obj.addressLine,
+                                 address_line_two=obj.addressLineTwo,
                                  beneficiary_id=obj.beneficiaryId,
                                  start_date=obj.startDate,
                                  state=obj.state
