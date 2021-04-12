@@ -106,10 +106,19 @@ class ProjectClient(Client):
                                  city_id=obj.cityId,
                                  country_id=obj.countryId,
                                  address_line=obj.addressLine,
+                                 address_line_two=obj.addressLineTwo,
                                  beneficiary_id=obj.beneficiaryId,
                                  start_date=obj.startDate,
-                                 state=obj.state
-                                 )
+                                 state=obj.state,
+                                 developerName=obj.developerName,
+                                 developerCityId=obj.developerCityId,
+                                 developerCountryId=obj.developerCountryId,
+                                 developerAddressLineOne=obj.developerAddressLineOne,
+                                 developerAddressLineTwo=obj.developerAddressLineTwo,
+                                 developerContact=obj.developerContact,
+                                 developerEmail=obj.developerEmail,
+                                 developerPhoneNumber=obj.developerPhoneNumber,
+                                 developerWarranty=obj.developerWarranty)
 
     # endregion
 

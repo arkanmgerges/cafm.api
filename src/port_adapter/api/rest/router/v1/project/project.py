@@ -115,6 +115,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
                  city_id: str = Body(..., description='City id of this project', embed=True),
                  country_id: str = Body(..., description='Country id of this project', embed=True),
                  address_line: str = Body(..., description='Address line of the project', embed=True),
+                 address_line_two: str = Body(..., description='Second address line of the project', embed=True),
                  beneficiary_id: str = Body(..., description='The id of the beneficiary', embed=True),
                  state: str = Body(..., description='The state of the project', embed=True),
                  ):
@@ -128,6 +129,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
                                              'city_id': city_id,
                                              'country_id': country_id,
                                              'address_line': address_line,
+                                             'address_line_two': address_line_two,
                                              'beneficiary_id': beneficiary_id,
                                              'state': state
                                              }),
@@ -144,9 +146,24 @@ async def partialUpdateProject(*, _=Depends(CustomHttpBearer()),
                                city_id: str = Body(None, description='City id of this project', embed=True),
                                country_id: str = Body(None, description='Country id of this project', embed=True),
                                address_line: str = Body(None, description='Address line of the project', embed=True),
+                               address_line_two: str = Body(None, description='Second address line of the project',
+                                                            embed=True),
                                beneficiary_id: str = Body(None, description='The id of the beneficiary', embed=True),
                                start_date: str = Body(None, description='The start date of the project', embed=True),
-                               state: str = Body(None, description='The state of the project', embed=True), ):
+                               state: str = Body(None, description='The state of the project', embed=True),
+                               developer_name: str = Body(None, description='Developer company name', embed=True),
+                               developer_city_id: int = Body(None, description='Developer city id', embed=True),
+                               developer_country_id: int = Body(None, description='Developer country id', embed=True),
+                               developer_address_line_one: str = Body(None, description='Developer address line one',
+                                                                      embed=True),
+                               developer_address_line_two: str = Body(None, description='Developer address line two',
+                                                                      embed=True),
+                               developer_contact: str = Body(None, description='Developer representative', embed=True),
+                               developer_email: str = Body(None, description='Developer email', embed=True),
+                               developer_phone_number: str = Body(None, description='Developer phone number',
+                                                                  embed=True),
+                               developer_warranty: str = Body(None, description='Developer warranty file url',
+                                                              embed=True), ):
     reqId = RequestIdGenerator.generateListId(2)
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_PROJECT.value,
@@ -157,14 +174,21 @@ async def partialUpdateProject(*, _=Depends(CustomHttpBearer()),
                                              'city_id': city_id,
                                              'country_id': country_id,
                                              'address_line': address_line,
+                                             'address_line_two': address_line_two,
                                              'beneficiary_id': beneficiary_id,
                                              'start_date': start_date,
-                                             'state': state
+                                             'state': state,
+                                             'developer_name': developer_name,
+                                             'developer_city_id': developer_city_id,
+                                             'developer_country_id': developer_country_id,
+                                             'developer_address_line_one': developer_address_line_one,
+                                             'developer_address_line_two': developer_address_line_two,
+                                             'developer_contact': developer_contact,
+                                             'developer_email': developer_email,
+                                             'developer_phone_number': developer_phone_number,
+                                             'developer_warranty': developer_warranty,
                                              }), external=[]), schema=ApiCommand.get_schema())
     return {"request_id": reqId}
-
-
-
 
 
 # endregion
@@ -761,6 +785,7 @@ async def updateBuildingLevelRoomIndex(*, _=Depends(CustomHttpBearer()),
                                              }), external=[]), schema=ProjectCommand.get_schema())
     return {"request_id": reqId}
 
+
 # endregion
 
 
@@ -768,6 +793,7 @@ async def updateBuildingLevelRoomIndex(*, _=Depends(CustomHttpBearer()),
 c4model|cb|api:Component(api__project_project_py__changeProjectState, "Change Project State", "http(s)", "")
 c4model:Rel(api__project_project_py__changeProjectState, project__messaging_project_command_handler__ChangeProjectStateHandler, "CommonCommandConstant.CHANGE_PROJECT_STATE.value", "message")
 """
+
 
 @router.post("/{project_id}/change_state",
              summary='Change project state', status_code=status.HTTP_200_OK)
