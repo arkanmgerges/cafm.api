@@ -57,7 +57,7 @@ async def getUsers(*,
 
 @router.put("/{user_id}", summary='Update a user', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
+async def updateUser(*, _=Depends(CustomHttpBearer()),
                  user_id: str = Path(...,
                                      description='User id that is used in order to update the user'),
                  email: str = Body(..., description='User email', embed=True),
@@ -100,7 +100,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
 
 @router.patch("/{user_id}", summary='Partial update a user', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+async def partialUpdateUser(*, _=Depends(CustomHttpBearer()),
                         user_id: str = Path(...,
                                             description='User id that is used in order to update the user'),
                         email: Optional[str] = Body(None, description='User email', embed=True),

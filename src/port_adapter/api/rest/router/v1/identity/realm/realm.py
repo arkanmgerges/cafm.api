@@ -98,7 +98,7 @@ c4model:Rel(api__identity_realm_py__create, api__identity_realm_py__create__api_
 
 @router.post("", summary='Create a new realm', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def createRealm(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the realm', embed=True),
                  realm_type: str = Body(..., description='The type can be ' + ', '.join([e.value for e in RealmType]),
                                         embed=True),
@@ -126,7 +126,7 @@ c4model:Rel(api__identity_realm_py__delete, api__identity_realm_py__delete__api_
 
 @router.delete("/{realm_id}", summary='Delete a realm', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def deleteRealm(*, _=Depends(CustomHttpBearer()),
                  realm_id: str = Path(...,
                                       description='Realm id that is used in order to delete the realm')):
     reqId = RequestIdGenerator.generateId()

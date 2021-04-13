@@ -137,7 +137,7 @@ async def createSubcontractor(*, _=Depends(CustomHttpBearer()),
 
 @router.put("/{subcontractor_id}", summary='Update a subcontractors', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
+async def updateSubcontractor(*, _=Depends(CustomHttpBearer()),
                  subcontractor_id: str = Path(...,
                                               description='Subcontractor id that is used in order to update the subcontractor'),
                  company_name: str = Body(..., description='subcontractor name', embed=True),
@@ -169,7 +169,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
 
 @router.patch("/{subcontractor_id}", summary='Partial update a subcontractors', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+async def partialUpdateSubcontractor(*, _=Depends(CustomHttpBearer()),
                         subcontractor_id: str = Path(...,
                                                      description='Subcontractor id that is used in order to update the subcontractor'),
                         company_name: str = Body(None, description='subcontractor name', embed=True),
@@ -201,7 +201,7 @@ async def partialUpdate(*, _=Depends(CustomHttpBearer()),
 
 @router.delete("/{subcontractor_id}", summary='Delete a subcontractors', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def deleteSubcontractor(*, _=Depends(CustomHttpBearer()),
                  subcontractor_id: str = Path(...,
                                               description='Subcontractor id that is used in order to delete the subcontractor'), ):
     reqId = RequestIdGenerator.generateId()
@@ -219,7 +219,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 @router.post("/{subcontractor_id}/assign_to_oraganization", summary='Assign a subcontractor to a oraganization',
              status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def assign(*, _=Depends(CustomHttpBearer()),
+async def assignSubcontractorToOrganization(*, _=Depends(CustomHttpBearer()),
                  subcontractor_id: str = Path(...,
                                               description='Subcontractor id that is used in order to assign a oraganization'),
                  organization_id: str = Body(..., description='Oraganization id that is need to be assigned',
@@ -239,7 +239,7 @@ async def assign(*, _=Depends(CustomHttpBearer()),
 @router.delete("/{subcontractor_id}/assign_to_oraganization", summary='Unassign a subcontractor to a oraganization',
                status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def revoke(*, _=Depends(CustomHttpBearer()),
+async def revokeAssignmentSubcontractorToOrganization(*, _=Depends(CustomHttpBearer()),
                  subcontractor_id: str = Path(...,
                                               description='Subcontractor id that is used in order to assign a oraganization'),
                  organization_id: str = Body(..., description='Organization id that is need to be assigned',

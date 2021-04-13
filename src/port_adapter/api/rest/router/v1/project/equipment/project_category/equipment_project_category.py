@@ -168,7 +168,7 @@ async def deleteEquipmentProjectCategory(*, _=Depends(CustomHttpBearer()),
 @router.post("/{equipment_project_category_id}/relate_to_category_group/{category_group_id}/link",
              summary='Link equipment project category and category group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def link(*, _=Depends(CustomHttpBearer()),
+async def linkEquipmentProjectCategoryToCategoryGroup(*, _=Depends(CustomHttpBearer()),
                equipment_project_category_id: str = Path(..., description='id of equipment project category'),
                category_group_id: str = Path(..., description='id of equipment category group'), ):
     reqId = RequestIdGenerator.generateId()
@@ -186,7 +186,7 @@ async def link(*, _=Depends(CustomHttpBearer()),
 @router.delete("/{equipment_project_category_id}/relate_to_category_group/{category_group_id}/unlink",
                summary='Unlink equipment project category and category group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def unlink(*, _=Depends(CustomHttpBearer()),
+async def unlinkEquipmentProjectCategoryFromCategoryGroup(*, _=Depends(CustomHttpBearer()),
                  equipment_project_category_id: str = Path(..., description='id of equipment project category'),
                  category_group_id: str = Path(..., description='id of equipment category group'), ):
     reqId = RequestIdGenerator.generateId()

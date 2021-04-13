@@ -54,7 +54,7 @@ async def getOrganizations(*,
 
 @router.put("/{organization_id}", summary='Update a organization', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
+async def updateOrganization(*, _=Depends(CustomHttpBearer()),
                  organization_id: str = Path(...,
                                              description='Organization id that is used in order to update the organization'),
                  name: str = Body(..., description='Organization name', embed=True),
@@ -101,7 +101,7 @@ async def update(*, _=Depends(CustomHttpBearer()),
 
 @router.patch("/{organization_id}", summary='Partial update a organization', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+async def partialUpdateOrganization(*, _=Depends(CustomHttpBearer()),
                         organization_id: str = Path(...,
                                                     description='Organization id that is used in order to update the organization'),
                         name: str = Body(None, description='Organization name', embed=True),
