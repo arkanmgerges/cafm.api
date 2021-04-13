@@ -98,7 +98,7 @@ class RoleClient(Client):
                                                                      permissions=tmp,
                                                                      access_tree=self._accessNodeFromProtoBuff(
                                                                          roleAccessPermissionResponse.accessTree)))
-                return RoleAccessPermissionDatas(roleAccessPermissions=result)
+                return RoleAccessPermissionDatas(role_access_permissions=result)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
