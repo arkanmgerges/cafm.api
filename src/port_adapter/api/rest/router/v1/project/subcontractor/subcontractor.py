@@ -17,8 +17,8 @@ from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.subcontractor.SubcontractorClient import SubcontractorClient
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
-from src.port_adapter.api.rest.model.response.v1.project.Subcontractors import Subcontractors
-from src.port_adapter.api.rest.model.response.v1.project.Subcontractor import SubcontractorDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.subcontractor.Subcontractors import Subcontractors
+from src.port_adapter.api.rest.model.response.v1.project.subcontractor.Subcontractor import SubcontractorDescriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant

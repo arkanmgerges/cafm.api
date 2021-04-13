@@ -8,8 +8,8 @@ import grpc
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.model.response.v1.project.Subcontractor import SubcontractorDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.Subcontractors import Subcontractors
+from src.port_adapter.api.rest.model.response.v1.project.subcontractor.Subcontractor import SubcontractorDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.subcontractor.Subcontractors import Subcontractors
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.subcontractor_app_service_pb2_grpc import SubcontractorAppServiceStub
