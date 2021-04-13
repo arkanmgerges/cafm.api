@@ -43,6 +43,7 @@ from src.port_adapter.api.rest.router.v1.project.daily_check.procedure import da
 from src.port_adapter.api.rest.router.v1.project.standard_equipment import standard_equipment as standard_equipment
 from src.port_adapter.api.rest.router.v1.project.standard_equipment.standard_category import standard_equipment_category as standard_equipment_category
 from src.port_adapter.api.rest.router.v1.project.standard_equipment.standard_category.standard_group import standard_equipment_category_group as standard_equipment_category_group
+from src.port_adapter.api.rest.router.v1.util import route as util_route
 # from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 app = FastAPI(
@@ -111,6 +112,12 @@ random.seed(datetime.utcnow().timestamp())
 
 # region Global
 app.include_router(common_request.router, prefix="/v1/common/request", tags=["Common"],
+                   responses={202: {"model": Message}, 400: {"model": Message}, 404: {"model": Message},
+                              500: {"model": Message}})
+# endregion
+
+# region Util
+app.include_router(util_route.router, prefix="/v1/util/route", tags=["Utility"],
                    responses={202: {"model": Message}, 400: {"model": Message}, 404: {"model": Message},
                               500: {"model": Message}})
 # endregion
