@@ -99,6 +99,9 @@ async def createManufacturer(*, _=Depends(CustomHttpBearer()),
     return {"request_id": reqId}
 
 
+
+
+
 @router.put("/{manufacturer_id}", summary='Update manufacturer', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def updateManufacturer(*, _=Depends(CustomHttpBearer()),
