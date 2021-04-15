@@ -20,7 +20,7 @@ async def appRoutes(request: Request):
     if matchers:
         matchers = matchers.split(':')
     urlList = [
-        {'path': route.path, 'name': Util.camelCaseToLoserSnakeCase(route.name), 'methods': route.methods} for route in
+        {'path': route.path, 'name': Util.camelCaseToLoserSnakeCase(route.name), 'methods': list(map(lambda x: x.lower(), route.methods))} for route in
         request.app.routes if any(match in route.path for match in matchers)
     ]
     return Routes(routes=urlList, item_count=len(urlList))
