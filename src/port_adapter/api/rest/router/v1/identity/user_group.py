@@ -97,7 +97,7 @@ c4model:Rel(api__identity_user_group_py__create, api__identity_user_group_py__cr
 
 @router.post("", summary='Create a new user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def createUserGroup(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the user group', embed=True)):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -119,7 +119,7 @@ c4model:Rel(api__identity_user_group_py__delete, api__identity_user_group_py__de
 
 @router.delete("/{user_group_id}", summary='Delete a user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def deleteUserGroup(*, _=Depends(CustomHttpBearer()),
                  user_group_id: str = Path(...,
                                            description='User group id that is used in order to delete the user group')):
     reqId = RequestIdGenerator.generateId()
@@ -140,7 +140,7 @@ c4model:Rel(api__identity_user_group_py__update, api__identity_user_group_py__up
 
 @router.put("/{user_group_id}", summary='Update a user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
+async def updateUserGroup(*, _=Depends(CustomHttpBearer()),
                  user_group_id: str = Path(...,
                                            description='User group id that is used in order to update the user group'),
                  name: str = Body(..., description='Title of the user group', embed=True)):
@@ -163,7 +163,7 @@ c4model:Rel(api__identity_user_group_py__partial_update, api__identity_user_grou
 
 @router.patch("/{user_group_id}", summary='Update a user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+async def partialUpdateUserGroup(*, _=Depends(CustomHttpBearer()),
                         user_group_id: str = Path(...,
                                                   description='User group id that is used in order to update the user group'),
                         name: str = Body(None, description='Title of the user group', embed=True)):

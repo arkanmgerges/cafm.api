@@ -95,7 +95,7 @@ async def getRole(*, role_id: str = Path(...,
 
 @router.post("/role_to_user", summary='Assign role to user', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def AssignRoleToUser(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id to be assigned to user', embed=True),
                  user_id: str = Body(..., description='User id to have the role', embed=True),
                  ):
@@ -110,7 +110,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 @router.delete("/role_to_user", summary='Remove a role assignment to user', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def removeRoleToUserAssignment(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id to be disconnected from the user', embed=True),
                  user_id: str = Body(..., description='User id that will be disconnected from the role', embed=True),
                  ):
@@ -125,7 +125,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 
 @router.post("/role_to_user_group", summary='Assign role to user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def assignRoleToUserGroup(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id to be assigned to user group', embed=True),
                  user_group_id: str = Body(..., description='User group id to have the role', embed=True),
                  ):
@@ -141,7 +141,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 @router.delete("/role_to_user_group", summary='Remove a role assignment to user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def removeRoleToUserGroupAssignment(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id to be disconnected from the user group', embed=True),
                  user_group_id: str = Body(..., description='User group id that will be disconnected from the role',
                                            embed=True),
@@ -158,7 +158,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 
 @router.post("/user_to_user_group", summary='Assign user to user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def assignUserToUserGroup(*, _=Depends(CustomHttpBearer()),
                  user_id: str = Body(..., description='User id to have the user group', embed=True),
                  user_group_id: str = Body(..., description='User group id to be assigned to user', embed=True),
                  ):
@@ -174,7 +174,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 @router.delete("/user_to_user_group", summary='Remove assignment a user to user group', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def removeUserToUserGroupAssignment(*, _=Depends(CustomHttpBearer()),
                  user_id: str = Body(..., description='User id that will be disconnected from the user group',
                                      embed=True),
                  user_group_id: str = Body(..., description='User group id to be disconnected from the user group',
@@ -194,7 +194,7 @@ async def delete(*, _=Depends(CustomHttpBearer()),
 @router.post("/role_to_permission", summary='Assign role to permission',
              status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def assignRoleToPermission(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(..., description='Role id that will have a permission',
                                      embed=True),
                  permission_id: str = Body(...,
@@ -214,7 +214,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                summary='Remove the assignment of a role to permission',
                status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def removeRoleToPermissionAssignment(*, _=Depends(CustomHttpBearer()),
                  role_id: str = Body(...,
                                      description='Role id that will remove the assignment for a permission for resource type',
                                      embed=True),
@@ -236,7 +236,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 @router.post("/permission_to_permission_context", summary='Assign permission to permission context',
              status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def assignPermissionToPermissionContext(*, _=Depends(CustomHttpBearer()),
                  permission_id: str = Body(...,
                                            description='Permission id to be assigned to a resource type',
                                            embed=True),
@@ -259,7 +259,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
                summary='Revoke the assignment of a permission from permission context',
                status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def removePermissionToPermissionContextAssignment(*, _=Depends(CustomHttpBearer()),
                  permission_id: str = Body(...,
                                            description='Permission id to be have assignment removed from the permission context',
                                            embed=True),
@@ -281,7 +281,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 
 @router.post("/resource_to_resource", summary='Assign a resource to another resouce', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def assignResourceToAnotherResource(*, _=Depends(CustomHttpBearer()),
                  src_resource_id: str = Body(..., description='Source resource id', embed=True),
                  dst_resource_id: str = Body(..., description='Destination resource id', embed=True),
                  ):
@@ -298,7 +298,7 @@ async def create(*, _=Depends(CustomHttpBearer()),
 @router.delete("/resource_to_resource", summary='Remove assignment of resource to another resource',
                status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def removeResourceToAnotherResourceAssignment(*, _=Depends(CustomHttpBearer()),
                  src_resource_id: str = Body(...,
                                              description='Source resource to unlink it from the destination resource',
                                              embed=True),

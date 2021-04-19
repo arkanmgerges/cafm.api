@@ -108,7 +108,7 @@ c4model:Rel(api__project_project_py__update, api__project_project_py__update__ap
 
 @router.put("/{project_id}", summary='Update a project', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
+async def updateProject(*, _=Depends(CustomHttpBearer()),
                  project_id: str = Path(...,
                                         description='Project id that is used in order to update the project'),
                  name: str = Body(..., description='Title of the project', embed=True),

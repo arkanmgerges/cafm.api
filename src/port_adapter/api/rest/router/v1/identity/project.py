@@ -98,7 +98,7 @@ c4model:Rel(api__identity_project_py__create, api__identity_project_py__create__
 
 @router.post("", summary='Create a new project', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def createProject(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the project', embed=True)):
     reqId = RequestIdGenerator.generateListId(2)
     producer = AppDi.instance.get(SimpleProducer)
@@ -119,7 +119,7 @@ c4model:Rel(api__identity_project_py__delete, api__identity_project_py__delete__
 
 @router.delete("/{project_id}", summary='Delete a project', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def deleteProject(*, _=Depends(CustomHttpBearer()),
                  project_id: str = Path(...,
                                         description='Project id that is used in order to delete the project')):
     reqId = RequestIdGenerator.generateId()

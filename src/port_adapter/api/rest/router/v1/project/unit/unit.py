@@ -123,7 +123,7 @@ async def updateUnit(*, _=Depends(CustomHttpBearer()),
 
 @router.patch("/{unit_id}", summary='Partial update unit', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdatUnit(*, _=Depends(CustomHttpBearer()),
+async def partialUpdateUnit(*, _=Depends(CustomHttpBearer()),
                            unit_id: str = Path(..., description='unit id that is used in order to update the unit'),
                            name: str = Body(None, description='name of name', embed=True),
                            ):

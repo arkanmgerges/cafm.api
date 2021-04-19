@@ -10,4 +10,4 @@ from src.port_adapter.api.rest.model.response.v1.identity.RoleAccessPermissionDa
 
 
 class RoleAccessPermissionDatas(BaseModel):
-    roleAccessPermissions: List[RoleAccessPermissionDataDescriptor] = []
+    role_access_permissions: List[RoleAccessPermissionDataDescriptor] = []

@@ -98,7 +98,7 @@ c4model:Rel(api__identity_ou_py__create, api__identity_ou_py__create__api_comman
 
 @router.post("", summary='Create a new ou', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create(*, _=Depends(CustomHttpBearer()),
+async def createOu(*, _=Depends(CustomHttpBearer()),
                  name: str = Body(..., description='Title of the ou', embed=True)):
     reqId = RequestIdGenerator.generateId()
     client = OuClient()
@@ -119,7 +119,7 @@ c4model:Rel(api__identity_ou_py__delete, api__identity_ou_py__delete__api_comman
 
 @router.delete("/{ou_id}", summary='Delete a ou', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete(*, _=Depends(CustomHttpBearer()),
+async def deleteOu(*, _=Depends(CustomHttpBearer()),
                  ou_id: str = Path(...,
                                    description='Ou id that is used in order to delete the ou')):
     reqId = RequestIdGenerator.generateId()
@@ -140,7 +140,7 @@ c4model:Rel(api__identity_ou_py__update, api__identity_ou_py__update__api_comman
 
 @router.put("/{ou_id}", summary='Update a ou', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update(*, _=Depends(CustomHttpBearer()),
+async def updateOu(*, _=Depends(CustomHttpBearer()),
                  ou_id: str = Path(...,
                                    description='Ou id that is used in order to update the ou'),
                  name: str = Body(..., description='Title of the ou', embed=True)):
@@ -162,7 +162,7 @@ c4model:Rel(api__identity_ou_py__partial_update, api__identity_ou_py__update__ap
 
 @router.patch("/{ou_id}", summary='Partial update a ou', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+async def partialUpdateOu(*, _=Depends(CustomHttpBearer()),
                         ou_id: str = Path(...,
                                           description='Ou id that is used in order to update the ou'),
                         name: str = Body(None, description='Title of the ou', embed=True)):
