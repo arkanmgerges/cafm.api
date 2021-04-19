@@ -77,6 +77,32 @@ async def getSubcontractorsByOrganizationId(*,
     except Exception as e:
         logger.info(e)
 
+
+@router.get(path="/by_subcontractor_category/{subcontractor_category_id}", summary='Get all subcontractors by subcontractor category id', response_model=Subcontractors)
+@OpenTelemetry.fastApiTraceOTel
+async def getSubcontractorsBySubcontractorCategoryId(*,
+                            subcontractor_category_id: str = Path(..., description='The subcontractor category id that is used to fetch subcontractor category data'),
+                            result_from: int = Query(0, description='Starting offset for fetching data'),
+                            result_size: int = Query(10, description='Item count to be fetched'),
+                            order: str = Query('', description='e.g. id:asc,email:desc'),
+                            _=Depends(CustomHttpBearer())):
+    try:
+        client = SubcontractorClient()
+        orderService = AppDi.instance.get(OrderService)
+        order = orderService.orderStringToListOfDict(order)
+        return client.subcontractorsBySubcontractorCategoryId(subcontractorCategoryId=subcontractor_category_id, resultFrom=result_from, resultSize=result_size, order=order)
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f'[{getSubcontractors.__module__}.{getSubcontractors.__qualname__}] - error response e: {e}')
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
+
 @router.get(path="/{subcontractor_id}", summary='Get subcontractors by id',
             response_model=SubcontractorDescriptor)
 @OpenTelemetry.fastApiTraceOTel
