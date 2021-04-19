@@ -2,7 +2,6 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import json
-from uuid import uuid4
 
 import grpc
 from fastapi import APIRouter, Depends, Query, Body
@@ -13,7 +12,7 @@ from starlette import status
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
 
 import src.port_adapter.AppDi as AppDi
-from src.domain_model.authentication.AuthenticationService import AuthenticationService
+from src.application.AuthenticationApplicationService import AuthenticationApplicationService
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.user.UserClient import UserClient
@@ -25,7 +24,6 @@ from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
-from src.port_adapter.messaging.listener.CacheType import CacheType
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -157,7 +155,7 @@ async def setUserPassword(*, _=Depends(CustomHttpBearer()),
                           ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
-    authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
+    authService: AuthenticationApplicationService = AppDi.instance.get(AuthenticationApplicationService)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.SET_USER_PASSWORD.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(

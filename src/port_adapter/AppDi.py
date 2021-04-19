@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from injector import Module, Injector, singleton, provider
 
+from src.application.AuthenticationApplicationService import AuthenticationApplicationService
 from src.domain_model.authentication.AuthenticationRepository import AuthenticationRepository
 from src.domain_model.authentication.AuthenticationService import AuthenticationService
 from src.domain_model.OrderService import OrderService
@@ -48,6 +49,13 @@ class AppDi(Module):
         from src.port_adapter.domain_model.authentication.AuthenticationRepositoryImpl import \
             AuthenticationRepositoryImpl
         return AuthenticationRepositoryImpl()
+    # endregion
+
+    # region Application service
+    @singleton
+    @provider
+    def provideAuthenticationApplicationService(self) -> AuthenticationApplicationService:
+        return AuthenticationApplicationService(self.__injector__.get(AuthenticationService))
     # endregion
 
     # region Domain Service

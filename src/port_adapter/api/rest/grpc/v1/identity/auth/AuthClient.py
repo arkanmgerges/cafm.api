@@ -7,7 +7,7 @@ import os
 import grpc
 
 import src.port_adapter.AppDi as AppDi
-from src.domain_model.authentication.AuthenticationService import AuthenticationService
+from src.application.AuthenticationApplicationService import AuthenticationApplicationService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
@@ -30,7 +30,7 @@ class AuthClient(Client):
                 logger.debug(
                     f'[{AuthClient.authenticateUserByEmailAndPassword.__qualname__}] - grpc call to authenticate user \
                     email: {email} from server {self._server}:{self._port}')
-                authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
+                authService: AuthenticationApplicationService = AppDi.instance.get(AuthenticationApplicationService)
                 response: AuthAppService_authenticateUserByEmailAndPasswordResponse = \
                     stub.authenticateUserByEmailAndPassword.with_call(
                         AuthAppService_authenticateUserByEmailAndPasswordRequest(email=email,
@@ -49,7 +49,7 @@ class AuthClient(Client):
 
     @OpenTelemetry.grpcTraceOTel
     def isAuthenticated(self, token: str) -> bool:
-        authService: AuthenticationService = AppDi.instance.get(AuthenticationService)
+        authService: AuthenticationApplicationService = AppDi.instance.get(AuthenticationApplicationService)
         return authService.isAuthenticated(token=token)
 
     @OpenTelemetry.grpcTraceOTel
