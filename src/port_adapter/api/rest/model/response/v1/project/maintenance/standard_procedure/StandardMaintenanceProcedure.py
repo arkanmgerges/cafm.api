@@ -16,6 +16,7 @@ class StandardMaintenanceProcedure(BaseModel):
     frequency: str
     start_date: int
     organization_id: str
+    standard_equipment_category_group_id: str
 
 
 class StandardMaintenanceProcedureDescriptor(StandardMaintenanceProcedure):
