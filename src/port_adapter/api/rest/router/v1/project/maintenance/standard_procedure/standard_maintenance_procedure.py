@@ -87,6 +87,7 @@ async def createStandardMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                  frequency: str = Body(..., description='frequency of standard maintenance procedure', embed=True),
                  start_date: int = Body(..., description='start date of standard maintenance procedure', embed=True),
                  organization_id: str = Body(..., description='organization id of standard maintenance procedure', embed=True),
+                 standard_equipment_category_group_id: str = Body(..., description='standard_equipment_category_group_id id of standard equipment category group', embed=True),
                 ):
     reqId = str(uuid4())
     start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
@@ -102,6 +103,7 @@ async def createStandardMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                              'frequency': frequency,
                                              'start_date': start_date,
                                              'organization_id': organization_id,
+                                             'standard_equipment_category_group_id': standard_equipment_category_group_id,
                                              }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
@@ -118,6 +120,7 @@ async def updateStandardMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                  frequency: str = Body(..., description='frequency of frequency', embed=True),
                  start_date: int = Body(..., description='start date of start date', embed=True),
                  organization_id: str = Body(..., description='organization id of organization id', embed=True),                 
+                 standard_equipment_category_group_id: str = Body(..., description='standard_equipment_category_group id of standard_equipment_category_group id', embed=True),
                  ):
     reqId = str(uuid4())
     start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
@@ -133,6 +136,7 @@ async def updateStandardMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
                                             'frequency': frequency,
                                             'start_date': start_date,
                                             'organization_id': organization_id,
+                                            'standard_equipment_category_group_id': standard_equipment_category_group_id,
                                              }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())
@@ -149,6 +153,7 @@ async def partialUpdateStandardMaintenanceProcedure(*, _=Depends(CustomHttpBeare
                         frequency: str = Body(None, description='frequency of frequency', embed=True),
                         start_date: int = Body(None, description='start date of start date', embed=True),
                         organization_id: str = Body(None, description='organization id of organization id', embed=True),
+                        standard_equipment_category_group_id: str = Body(None, description='standard_equipment_category_group id of standard_equipment_category_group id', embed=True),
                         ):
     reqId = str(uuid4())
     start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
@@ -164,6 +169,7 @@ async def partialUpdateStandardMaintenanceProcedure(*, _=Depends(CustomHttpBeare
                                             'frequency': frequency,
                                             'start_date': start_date,
                                             'organization_id': organization_id,
+                                            'standard_equipment_category_group_id': standard_equipment_category_group_id,
                                             }),
                                         external=[]),
                      schema=ProjectCommand.get_schema())

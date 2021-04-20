@@ -100,4 +100,5 @@ class StandardMaintenanceProcedureClient(Client):
                                       frequency=obj.frequency,
                                       start_date=obj.startDate,
                                       organization_id=obj.organizationId,
+                                      standard_equipment_category_group_id=obj.standardEquipmentCategoryGroupId,
                                       )
