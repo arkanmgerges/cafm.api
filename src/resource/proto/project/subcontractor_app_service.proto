@@ -54,7 +54,7 @@ message SubcontractorAppService_newIdResponse {
 }
 
 service SubcontractorAppService {
-  rpc subcontractorsBySubcontractorsCategoryId(SubcontractorAppService_subcontractorsBySubcontractorCategoryIdRequest) returns (SubcontractorAppService_subcontractorsBySubcontractorCategoryIdResponse) {}
+  rpc subcontractorsBySubcontractorCategoryId (SubcontractorAppService_subcontractorsBySubcontractorCategoryIdRequest) returns (SubcontractorAppService_subcontractorsBySubcontractorCategoryIdResponse) {}
   rpc subcontractorsByOrganizationId (SubcontractorAppService_subcontractorsByOrganizationIdRequest) returns (SubcontractorAppService_subcontractorsByOrganizationIdResponse) {}
   rpc subcontractorById (SubcontractorppService_subcontractorByIdRequest) returns (SubcontractorppService_subcontractorByIdResponse) {}
   rpc subcontractors (SubcontractorAppService_subcontractorsRequest) returns (SubcontractorAppService_subcontractorsResponse) {}

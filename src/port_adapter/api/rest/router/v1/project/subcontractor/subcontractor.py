@@ -138,12 +138,17 @@ async def createSubcontractor(*, _=Depends(CustomHttpBearer()),
                               email: str = Body(..., description='Email of the subcontractor', embed=True),
                               phone_number: str = Body(..., description='Phone number of the subcontractor',
                                                        embed=True),
+                              subcontractor_category_id: str = Body(..., description='The category of the subcontractor', embed=True),
                               address_one: str = Body(..., description='subcontractor first address', embed=True),
                               address_two: str = Body(..., description='subcontractor second address', embed=True), ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     client = SubcontractorClient()
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+
+    logger.debug("#################### createSubcontractor")
+    logger.debug(subcontractor_category_id)
+    logger.debug("____________________________")
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_SUBCONTRACTOR.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
@@ -154,6 +159,7 @@ async def createSubcontractor(*, _=Depends(CustomHttpBearer()),
                                                 'contact_person': contact_person,
                                                 'email': email,
                                                 'phone_number': phone_number,
+                                                'subcontractor_category_id': subcontractor_category_id,
                                                 'address_one': address_one,
                                                 'address_two': address_two, }),
                                         external=[]),
@@ -171,6 +177,7 @@ async def updateSubcontractor(*, _=Depends(CustomHttpBearer()),
                  contact_person: str = Body(..., description='The contact person of the subcontractor', embed=True),
                  email: str = Body(..., description='Email of the subcontractor', embed=True),
                  phone_number: str = Body(..., description='Phone number of the subcontractor', embed=True),
+                 subcontractor_category_id: str = Body(..., description='The category of the subcontractor', embed=True),
                  address_one: str = Body(..., description='subcontractor first address', embed=True),
                  address_two: str = Body(..., description='subcontractor second address', embed=True),
                  ):
@@ -186,6 +193,7 @@ async def updateSubcontractor(*, _=Depends(CustomHttpBearer()),
                                              'contact_person': contact_person,
                                              'email': email,
                                              'phone_number': phone_number,
+                                             'subcontractor_category_id': subcontractor_category_id,
                                              'address_one': address_one,
                                              'address_two': address_two, }),
                                         external=[]),
@@ -204,6 +212,7 @@ async def partialUpdateSubcontractor(*, _=Depends(CustomHttpBearer()),
                                                    embed=True),
                         email: str = Body(None, description='Email of the subcontractor', embed=True),
                         phone_number: str = Body(None, description='Phone number of the subcontractor', embed=True),
+                        subcontractor_category_id: str = Body(None, description='The category of the subcontractor', embed=True),
                         address_one: str = Body(None, description='subcontractor first address', embed=True),
                         address_two: str = Body(None, description='subcontractor second address', embed=True)):
     reqId = RequestIdGenerator.generateId()
@@ -218,6 +227,7 @@ async def partialUpdateSubcontractor(*, _=Depends(CustomHttpBearer()),
                                              'contact_person': contact_person,
                                              'email': email,
                                              'phone_number': phone_number,
+                                             'subcontractor_category_id': subcontractor_category_id,
                                              'address_one': address_one,
                                              'address_two': address_two, }),
                                         external=[]),

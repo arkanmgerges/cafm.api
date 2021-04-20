@@ -154,5 +154,6 @@ class SubcontractorClient(Client):
                                        contact_person=obj.contactPerson,
                                        email=obj.email,
                                        phone_number=obj.phoneNumber,
+                                       subcontractorCategoryId=obj.subcontractorCategoryId,
                                        address_one=obj.addressOne,
                                        address_two=obj.addressTwo)

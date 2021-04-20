@@ -15,6 +15,7 @@ class Subcontractor(BaseModel):
     phone_number: Optional[str]
     address_one: Optional[str]
     address_two: Optional[str]
+    subcontractor_category_id: Optional[str]
 
 
 class SubcontractorDescriptor(Subcontractor):
