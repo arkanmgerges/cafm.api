@@ -146,9 +146,6 @@ async def createSubcontractor(*, _=Depends(CustomHttpBearer()),
     client = SubcontractorClient()
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 
-    logger.debug("#################### createSubcontractor")
-    logger.debug(subcontractor_category_id)
-    logger.debug("____________________________")
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_SUBCONTRACTOR.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
