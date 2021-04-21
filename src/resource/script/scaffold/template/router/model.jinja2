@@ -101,10 +101,12 @@ async def create{{ className }}(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.{{ model.message_command }} import {{ model.message_command }}
+    client = {{ className }}Client()
     producer.produce(obj={{ model.message_command }}(id=reqId, name=CommandConstant.CREATE_{{ model.name | upper }}.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
+                                             '{{ model.name }}_id': client.newId(),
                                             {%- for field in model.field %}
                                              '{{ field.name }}': {{ field.name }},
                                              {%- endfor %}
