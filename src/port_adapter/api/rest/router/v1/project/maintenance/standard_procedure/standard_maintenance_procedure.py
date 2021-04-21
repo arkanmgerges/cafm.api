@@ -93,10 +93,12 @@ async def createStandardMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
     start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    client = StandardMaintenanceProcedureClient()
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_STANDARD_MAINTENANCE_PROCEDURE.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
+                                             'standard_maintenance_procedure_id': client.newId(),
                                              'name': name,
                                              'type': type,
                                              'subtype': subtype,
