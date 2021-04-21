@@ -77,6 +77,32 @@ async def getSubcontractorsByOrganizationId(*,
     except Exception as e:
         logger.info(e)
 
+
+@router.get(path="/by_subcontractor_category/{subcontractor_category_id}", summary='Get all subcontractors by subcontractor category id', response_model=Subcontractors)
+@OpenTelemetry.fastApiTraceOTel
+async def getSubcontractorsBySubcontractorCategoryId(*,
+                            subcontractor_category_id: str = Path(..., description='The subcontractor category id that is used to fetch subcontractor category data'),
+                            result_from: int = Query(0, description='Starting offset for fetching data'),
+                            result_size: int = Query(10, description='Item count to be fetched'),
+                            order: str = Query('', description='e.g. id:asc,email:desc'),
+                            _=Depends(CustomHttpBearer())):
+    try:
+        client = SubcontractorClient()
+        orderService = AppDi.instance.get(OrderService)
+        order = orderService.orderStringToListOfDict(order)
+        return client.subcontractorsBySubcontractorCategoryId(subcontractorCategoryId=subcontractor_category_id, resultFrom=result_from, resultSize=result_size, order=order)
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f'[{getSubcontractors.__module__}.{getSubcontractors.__qualname__}] - error response e: {e}')
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
+
 @router.get(path="/{subcontractor_id}", summary='Get subcontractors by id',
             response_model=SubcontractorDescriptor)
 @OpenTelemetry.fastApiTraceOTel
@@ -112,12 +138,14 @@ async def createSubcontractor(*, _=Depends(CustomHttpBearer()),
                               email: str = Body(..., description='Email of the subcontractor', embed=True),
                               phone_number: str = Body(..., description='Phone number of the subcontractor',
                                                        embed=True),
+                              subcontractor_category_id: str = Body(..., description='The category of the subcontractor', embed=True),
                               address_one: str = Body(..., description='subcontractor first address', embed=True),
                               address_two: str = Body(..., description='subcontractor second address', embed=True), ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     client = SubcontractorClient()
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_SUBCONTRACTOR.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
@@ -128,6 +156,7 @@ async def createSubcontractor(*, _=Depends(CustomHttpBearer()),
                                                 'contact_person': contact_person,
                                                 'email': email,
                                                 'phone_number': phone_number,
+                                                'subcontractor_category_id': subcontractor_category_id,
                                                 'address_one': address_one,
                                                 'address_two': address_two, }),
                                         external=[]),
@@ -145,6 +174,7 @@ async def updateSubcontractor(*, _=Depends(CustomHttpBearer()),
                  contact_person: str = Body(..., description='The contact person of the subcontractor', embed=True),
                  email: str = Body(..., description='Email of the subcontractor', embed=True),
                  phone_number: str = Body(..., description='Phone number of the subcontractor', embed=True),
+                 subcontractor_category_id: str = Body(..., description='The category of the subcontractor', embed=True),
                  address_one: str = Body(..., description='subcontractor first address', embed=True),
                  address_two: str = Body(..., description='subcontractor second address', embed=True),
                  ):
@@ -160,6 +190,7 @@ async def updateSubcontractor(*, _=Depends(CustomHttpBearer()),
                                              'contact_person': contact_person,
                                              'email': email,
                                              'phone_number': phone_number,
+                                             'subcontractor_category_id': subcontractor_category_id,
                                              'address_one': address_one,
                                              'address_two': address_two, }),
                                         external=[]),
@@ -178,6 +209,7 @@ async def partialUpdateSubcontractor(*, _=Depends(CustomHttpBearer()),
                                                    embed=True),
                         email: str = Body(None, description='Email of the subcontractor', embed=True),
                         phone_number: str = Body(None, description='Phone number of the subcontractor', embed=True),
+                        subcontractor_category_id: str = Body(None, description='The category of the subcontractor', embed=True),
                         address_one: str = Body(None, description='subcontractor first address', embed=True),
                         address_two: str = Body(None, description='subcontractor second address', embed=True)):
     reqId = RequestIdGenerator.generateId()
@@ -192,6 +224,7 @@ async def partialUpdateSubcontractor(*, _=Depends(CustomHttpBearer()),
                                              'contact_person': contact_person,
                                              'email': email,
                                              'phone_number': phone_number,
+                                             'subcontractor_category_id': subcontractor_category_id,
                                              'address_one': address_one,
                                              'address_two': address_two, }),
                                         external=[]),
