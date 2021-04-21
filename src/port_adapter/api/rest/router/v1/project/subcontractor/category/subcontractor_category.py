@@ -85,10 +85,12 @@ async def createSubcontractorCategory(*, _=Depends(CustomHttpBearer()),
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    client = SubcontractorCategoryClient()
     producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_SUBCONTRACTOR_CATEGORY.value,
                                         metadata=json.dumps({"token": Client.token}),
                                         data=json.dumps(
                                             {
+                                             'subcontractor_category_id': client.newId(),
                                              'name': name,
                                              }),
                                         external=[]),
