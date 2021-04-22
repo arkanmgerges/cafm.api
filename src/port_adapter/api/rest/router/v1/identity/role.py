@@ -10,7 +10,11 @@ from fastapi import Response
 from fastapi.params import Path
 from grpc.beta.interfaces import StatusCode
 from starlette import status
-from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
+from starlette.status import (
+    HTTP_404_NOT_FOUND,
+    HTTP_500_INTERNAL_SERVER_ERROR,
+    HTTP_403_FORBIDDEN,
+)
 
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
@@ -34,13 +38,15 @@ c4model:Rel(api__identity_role_py__getRoles, identity__grpc__RoleAppServiceListe
 """
 
 
-@router.get(path="", summary='Get all roles', response_model=Roles)
+@router.get(path="", summary="Get all roles", response_model=Roles)
 @OpenTelemetry.fastApiTraceOTel
-async def getRoles(*,
-                   result_from: int = Query(0, description='Starting offset for fetching data'),
-                   result_size: int = Query(10, description='Item count to be fetched'),
-                   order: str = Query('', description='e.g. name:asc,age:desc'),
-                   _=Depends(CustomHttpBearer())):
+async def getRoles(
+    *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    order: str = Query("", description="e.g. name:asc,age:desc"),
+    _=Depends(CustomHttpBearer()),
+):
     try:
         client = RoleClient()
         orderService = AppDi.instance.get(OrderService)
@@ -53,7 +59,8 @@ async def getRoles(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getRoles.__module__}.{getRoles.__qualname__}] - error response e: {e}')
+                f"[{getRoles.__module__}.{getRoles.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -65,12 +72,13 @@ c4model:Rel(api__identity_role_py__getRole, identity__grpc__RoleAppServiceListen
 """
 
 
-@router.get(path="/{role_id}", summary='Get role',
-            response_model=RoleDescriptor)
+@router.get(path="/{role_id}", summary="Get role", response_model=RoleDescriptor)
 @OpenTelemetry.fastApiTraceOTel
-async def getRole(*, role_id: str = Path(...,
-                                         description='Role id that is used to fetch role data'),
-                  _=Depends(CustomHttpBearer())):
+async def getRole(
+    *,
+    role_id: str = Path(..., description="Role id that is used to fetch role data"),
+    _=Depends(CustomHttpBearer()),
+):
     try:
         client = RoleClient()
         return client.roleById(roleId=role_id)
@@ -81,7 +89,8 @@ async def getRole(*, role_id: str = Path(...,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getRole.__module__}.{getRole.__qualname__}] - error response e: {e}')
+                f"[{getRole.__module__}.{getRole.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -94,19 +103,28 @@ c4model:Rel(api__identity_role_py__create, api__identity_role_py__create__api_co
 """
 
 
-@router.post("", summary='Create a new role', status_code=status.HTTP_200_OK)
+@router.post("", summary="Create a new role", status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def createRole(*, _=Depends(CustomHttpBearer()),
-                     name: str = Body(..., description='Title of the role', embed=True),
-                     title: str = Body(..., description='Display title of the role', embed=True)):
+async def createRole(
+    *,
+    _=Depends(CustomHttpBearer()),
+    name: str = Body(..., description="Title of the role", embed=True),
+    title: str = Body(..., description="Display title of the role", embed=True),
+):
     from src.port_adapter.messaging.listener.CacheType import CacheType
+
     reqId = RequestIdGenerator.generateListId(2)
     producer = AppDi.instance.get(SimpleProducer)
     client = RoleClient()
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_ROLE.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps({'role_id': client.newId(), 'name': name, 'title': title})),
-                     schema=ApiCommand.get_schema())
+    producer.produce(
+        obj=ApiCommand(
+            id=reqId,
+            name=CommandConstant.CREATE_ROLE.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps({"role_id": client.newId(), "name": name, "title": title}),
+        ),
+        schema=ApiCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
@@ -117,17 +135,26 @@ c4model:Rel(api__identity_role_py__delete, api__identity_role_py__delete__api_co
 """
 
 
-@router.delete("/{role_id}", summary='Delete a role', status_code=status.HTTP_200_OK)
+@router.delete("/{role_id}", summary="Delete a role", status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def deleteRole(*, _=Depends(CustomHttpBearer()),
-                     role_id: str = Path(...,
-                                         description='Role id that is used in order to delete the role')):
+async def deleteRole(
+    *,
+    _=Depends(CustomHttpBearer()),
+    role_id: str = Path(
+        ..., description="Role id that is used in order to delete the role"
+    ),
+):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_ROLE.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'role_id': role_id})), schema=ApiCommand.get_schema())
+    producer.produce(
+        obj=ApiCommand(
+            id=reqId,
+            name=CommandConstant.DELETE_ROLE.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps({"role_id": role_id}),
+        ),
+        schema=ApiCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
@@ -138,18 +165,26 @@ c4model:Rel(api__identity_role_py__update, api__identity_role_py__update__api_co
 """
 
 
-@router.put("/{role_id}", summary='Update a role', status_code=status.HTTP_200_OK)
+@router.put("/{role_id}", summary="Update a role", status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def updateRole(*, _=Depends(CustomHttpBearer()),
-                     role_id: str = Path(...,
-                                         description='Role id that is used in order to update the role'),
-                     name: str = Body(..., description='Title of the role', embed=True),
-                     title: str = Body(..., description='Display title of the role', embed=True)):
+async def updateRole(
+    *,
+    _=Depends(CustomHttpBearer()),
+    role_id: str = Path(
+        ..., description="Role id that is used in order to update the role"
+    ),
+    name: str = Body(..., description="Title of the role", embed=True),
+    title: str = Body(..., description="Display title of the role", embed=True),
+):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_ROLE.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'role_id': role_id, 'name': name, 'title': title})),
-                     schema=ApiCommand.get_schema())
+    producer.produce(
+        obj=ApiCommand(
+            id=reqId,
+            name=CommandConstant.UPDATE_ROLE.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps({"role_id": role_id, "name": name, "title": title}),
+        ),
+        schema=ApiCommand.get_schema(),
+    )
     return {"request_id": reqId}

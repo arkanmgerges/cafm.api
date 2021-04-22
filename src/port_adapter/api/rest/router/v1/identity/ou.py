@@ -10,7 +10,11 @@ from fastapi import Response
 from fastapi.params import Path
 from grpc.beta.interfaces import StatusCode
 from starlette import status
-from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
+from starlette.status import (
+    HTTP_404_NOT_FOUND,
+    HTTP_500_INTERNAL_SERVER_ERROR,
+    HTTP_403_FORBIDDEN,
+)
 
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
@@ -34,13 +38,15 @@ c4model:Rel(api__identity_ou_py__getOus, identity__grpc__OuAppServiceListener__o
 """
 
 
-@router.get(path="", summary='Get all ous', response_model=Ous)
+@router.get(path="", summary="Get all ous", response_model=Ous)
 @OpenTelemetry.fastApiTraceOTel
-async def getOus(*,
-                 result_from: int = Query(0, description='Starting offset for fetching data'),
-                 result_size: int = Query(10, description='Item count to be fetched'),
-                 order: str = Query('', description='e.g. name:asc,age:desc'),
-                 _=Depends(CustomHttpBearer())):
+async def getOus(
+    *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    order: str = Query("", description="e.g. name:asc,age:desc"),
+    _=Depends(CustomHttpBearer()),
+):
     try:
         client = OuClient()
         orderService = AppDi.instance.get(OrderService)
@@ -53,7 +59,8 @@ async def getOus(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getOus.__module__}.{getOus.__qualname__}] - error response e: {e}')
+                f"[{getOus.__module__}.{getOus.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -65,14 +72,14 @@ c4model:Rel(api__identity_ou_py__getOu, identity__grpc__OuAppServiceListener__ou
 """
 
 
-@router.get(path="/{ou_id}", summary='Get ou',
-            response_model=OuDescriptor)
+@router.get(path="/{ou_id}", summary="Get ou", response_model=OuDescriptor)
 @OpenTelemetry.fastApiTraceOTel
-async def getOu(*, ou_id: str = Path(...,
-                                     description='Ou id that is used to fetch ou data'),
-                _=Depends(CustomHttpBearer())):
-    """Get a Ou by id
-    """
+async def getOu(
+    *,
+    ou_id: str = Path(..., description="Ou id that is used to fetch ou data"),
+    _=Depends(CustomHttpBearer()),
+):
+    """Get a Ou by id"""
     try:
         client = OuClient()
         return client.ouById(ouId=ou_id)
@@ -83,7 +90,8 @@ async def getOu(*, ou_id: str = Path(...,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getOu.__module__}.{getOu.__qualname__}] - error response e: {e}')
+                f"[{getOu.__module__}.{getOu.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -96,17 +104,25 @@ c4model:Rel(api__identity_ou_py__create, api__identity_ou_py__create__api_comman
 """
 
 
-@router.post("", summary='Create a new ou', status_code=status.HTTP_200_OK)
+@router.post("", summary="Create a new ou", status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def createOu(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='Title of the ou', embed=True)):
+async def createOu(
+    *,
+    _=Depends(CustomHttpBearer()),
+    name: str = Body(..., description="Title of the ou", embed=True),
+):
     reqId = RequestIdGenerator.generateId()
     client = OuClient()
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_OU.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'ou_id': client.newId(), 'name': name})), schema=ApiCommand.get_schema())
+    producer.produce(
+        obj=ApiCommand(
+            id=reqId,
+            name=CommandConstant.CREATE_OU.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps({"ou_id": client.newId(), "name": name}),
+        ),
+        schema=ApiCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
@@ -117,17 +133,24 @@ c4model:Rel(api__identity_ou_py__delete, api__identity_ou_py__delete__api_comman
 """
 
 
-@router.delete("/{ou_id}", summary='Delete a ou', status_code=status.HTTP_200_OK)
+@router.delete("/{ou_id}", summary="Delete a ou", status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def deleteOu(*, _=Depends(CustomHttpBearer()),
-                 ou_id: str = Path(...,
-                                   description='Ou id that is used in order to delete the ou')):
+async def deleteOu(
+    *,
+    _=Depends(CustomHttpBearer()),
+    ou_id: str = Path(..., description="Ou id that is used in order to delete the ou"),
+):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_OU.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'ou_id': ou_id})), schema=ApiCommand.get_schema())
+    producer.produce(
+        obj=ApiCommand(
+            id=reqId,
+            name=CommandConstant.DELETE_OU.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps({"ou_id": ou_id}),
+        ),
+        schema=ApiCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
@@ -138,18 +161,25 @@ c4model:Rel(api__identity_ou_py__update, api__identity_ou_py__update__api_comman
 """
 
 
-@router.put("/{ou_id}", summary='Update a ou', status_code=status.HTTP_200_OK)
+@router.put("/{ou_id}", summary="Update a ou", status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def updateOu(*, _=Depends(CustomHttpBearer()),
-                 ou_id: str = Path(...,
-                                   description='Ou id that is used in order to update the ou'),
-                 name: str = Body(..., description='Title of the ou', embed=True)):
+async def updateOu(
+    *,
+    _=Depends(CustomHttpBearer()),
+    ou_id: str = Path(..., description="Ou id that is used in order to update the ou"),
+    name: str = Body(..., description="Title of the ou", embed=True),
+):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_OU.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'ou_id': ou_id, 'name': name})), schema=ApiCommand.get_schema())
+    producer.produce(
+        obj=ApiCommand(
+            id=reqId,
+            name=CommandConstant.UPDATE_OU.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps({"ou_id": ou_id, "name": name}),
+        ),
+        schema=ApiCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
@@ -160,16 +190,23 @@ c4model:Rel(api__identity_ou_py__partial_update, api__identity_ou_py__update__ap
 """
 
 
-@router.patch("/{ou_id}", summary='Partial update a ou', status_code=status.HTTP_200_OK)
+@router.patch("/{ou_id}", summary="Partial update a ou", status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdateOu(*, _=Depends(CustomHttpBearer()),
-                        ou_id: str = Path(...,
-                                          description='Ou id that is used in order to update the ou'),
-                        name: str = Body(None, description='Title of the ou', embed=True)):
+async def partialUpdateOu(
+    *,
+    _=Depends(CustomHttpBearer()),
+    ou_id: str = Path(..., description="Ou id that is used in order to update the ou"),
+    name: str = Body(None, description="Title of the ou", embed=True),
+):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.UPDATE_OU.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'ou_id': ou_id, 'name': name})), schema=ApiCommand.get_schema())
+    producer.produce(
+        obj=ApiCommand(
+            id=reqId,
+            name=CommandConstant.UPDATE_OU.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps({"ou_id": ou_id, "name": name}),
+        ),
+        schema=ApiCommand.get_schema(),
+    )
     return {"request_id": reqId}

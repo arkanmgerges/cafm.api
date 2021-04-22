@@ -5,7 +5,9 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.port_adapter.api.rest.model.response.v1.project.Building import BuildingDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.Building import (
+    BuildingDescriptor,
+)
 
 
 class Buildings(BaseModel):

@@ -7,7 +7,9 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.MaintenanceProcedureOperation import MaintenanceProcedureOperationDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.MaintenanceProcedureOperation import (
+    MaintenanceProcedureOperationDescriptor,
+)
 
 
 class MaintenanceProcedureOperations(BaseModel):

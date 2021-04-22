@@ -5,5 +5,5 @@ from enum import Enum
 
 
 class MaintenanceProcedureOperationType(str, Enum):
-    VISUAL = 'visual'
-    PARAMETER = 'parameter'
+    VISUAL = "visual"
+    PARAMETER = "parameter"

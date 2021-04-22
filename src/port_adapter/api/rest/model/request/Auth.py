@@ -8,4 +8,3 @@ class Auth(BaseModel):
     id: str
     name: str
     password: str
-

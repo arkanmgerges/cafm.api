@@ -5,7 +5,9 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.port_adapter.api.rest.model.response.v1.project.Project import ProjectDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.Project import (
+    ProjectDescriptor,
+)
 
 
 class Projects(BaseModel):

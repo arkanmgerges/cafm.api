@@ -7,7 +7,9 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.port_adapter.api.rest.model.response.v1.project.equipment.category.group.EquipmentCategoryGroup import EquipmentCategoryGroupDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.equipment.category.group.EquipmentCategoryGroup import (
+    EquipmentCategoryGroupDescriptor,
+)
 
 
 class EquipmentCategoryGroups(BaseModel):

@@ -10,86 +10,128 @@ import grpc
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.model.response.v1.project.standard_equipment.StandardEquipment import \
-    StandardEquipmentDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.standard_equipment.StandardEquipments import StandardEquipments
+from src.port_adapter.api.rest.model.response.v1.project.standard_equipment.StandardEquipment import (
+    StandardEquipmentDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.standard_equipment.StandardEquipments import (
+    StandardEquipments,
+)
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
-from src.resource.proto._generated.project.standard_equipment_app_service_pb2 import \
-    StandardEquipmentAppService_standardEquipmentsResponse, \
-    StandardEquipmentAppService_standardEquipmentsRequest, StandardEquipmentAppService_standardEquipmentByIdRequest, \
-    StandardEquipmentAppService_standardEquipmentByIdResponse, StandardEquipmentAppService_newIdResponse, \
-    StandardEquipmentAppService_newIdRequest
-from src.resource.proto._generated.project.standard_equipment_app_service_pb2_grpc import \
-    StandardEquipmentAppServiceStub
+from src.resource.proto._generated.project.standard_equipment_app_service_pb2 import (
+    StandardEquipmentAppService_standardEquipmentsResponse,
+    StandardEquipmentAppService_standardEquipmentsRequest,
+    StandardEquipmentAppService_standardEquipmentByIdRequest,
+    StandardEquipmentAppService_standardEquipmentByIdResponse,
+    StandardEquipmentAppService_newIdResponse,
+    StandardEquipmentAppService_newIdRequest,
+)
+from src.resource.proto._generated.project.standard_equipment_app_service_pb2_grpc import (
+    StandardEquipmentAppServiceStub,
+)
 
 
 class StandardEquipmentClient(Client):
     def __init__(self):
-        self._server = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE', '')
-        self._port = os.getenv('CAFM_PROJECT_GRPC_SERVER_SERVICE_PORT', '')
+        self._server = os.getenv("CAFM_PROJECT_GRPC_SERVER_SERVICE", "")
+        self._port = os.getenv("CAFM_PROJECT_GRPC_SERVER_SERVICE_PORT", "")
 
     @OpenTelemetry.grpcTraceOTel
     def newId(self) -> str:
-        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = StandardEquipmentAppServiceStub(channel)
             try:
                 request = StandardEquipmentAppService_newIdRequest()
-                response: StandardEquipmentAppService_newIdResponse = stub.newId.with_call(
-                    request,
-                    metadata=(('token', self.token), (
-                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
-                            StandardEquipmentClient.newId.__qualname__))))
+                response: StandardEquipmentAppService_newIdResponse = (
+                    stub.newId.with_call(
+                        request,
+                        metadata=(
+                            ("token", self.token),
+                            (
+                                "opentel",
+                                AppDi.instance.get(OpenTelemetry).serializedContext(
+                                    StandardEquipmentClient.newId.__qualname__
+                                ),
+                            ),
+                        ),
+                    )
+                )
                 logger.debug(
-                    f'[{StandardEquipmentClient.newId.__qualname__}] - grpc response: {response}')
+                    f"[{StandardEquipmentClient.newId.__qualname__}] - grpc response: {response}"
+                )
                 return response[0].id
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def standardEquipments(self, resultFrom: int = 0, resultSize: int = 10,
-                           order: List[dict] = None) -> StandardEquipments:
+    def standardEquipments(
+        self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None
+    ) -> StandardEquipments:
         order = [] if order is None else order
-        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = StandardEquipmentAppServiceStub(channel)
             try:
                 logger.debug(
-                    f'[{StandardEquipmentClient.standardEquipments.__qualname__}] - grpc call to retrieve standardEquipments from server {self._server}:{self._port}')
-                request = StandardEquipmentAppService_standardEquipmentsRequest(resultFrom=resultFrom,
-                                                                                resultSize=resultSize)
-                [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
+                    f"[{StandardEquipmentClient.standardEquipments.__qualname__}] - grpc call to retrieve standardEquipments from server {self._server}:{self._port}"
+                )
+                request = StandardEquipmentAppService_standardEquipmentsRequest(
+                    resultFrom=resultFrom, resultSize=resultSize
+                )
+                [
+                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
+                    for o in order
+                ]
                 response: StandardEquipmentAppService_standardEquipmentsResponse = stub.standardEquipments.with_call(
                     request,
-                    metadata=(('token', self.token), (
-                        'opentel',
-                        AppDi.instance.get(OpenTelemetry).serializedContext(
-                            StandardEquipmentClient.standardEquipments.__qualname__)),))
+                    metadata=(
+                        ("token", self.token),
+                        (
+                            "opentel",
+                            AppDi.instance.get(OpenTelemetry).serializedContext(
+                                StandardEquipmentClient.standardEquipments.__qualname__
+                            ),
+                        ),
+                    ),
+                )
                 logger.debug(
-                    f'[{StandardEquipmentClient.standardEquipments.__qualname__}] - grpc response: {response}')
+                    f"[{StandardEquipmentClient.standardEquipments.__qualname__}] - grpc response: {response}"
+                )
 
                 return StandardEquipments(
-                    standard_equipments=[self._descriptorByObject(obj=standardEquipment) for standardEquipment in
-                                         response[0].standardEquipments],
-                    item_count=response[0].itemCount)
+                    standard_equipments=[
+                        self._descriptorByObject(obj=standardEquipment)
+                        for standardEquipment in response[0].standardEquipments
+                    ],
+                    item_count=response[0].itemCount,
+                )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
     def standardEquipmentById(self, id) -> StandardEquipmentDescriptor:
-        with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = StandardEquipmentAppServiceStub(channel)
             try:
                 logger.debug(
-                    f'[{StandardEquipmentClient.standardEquipmentById.__qualname__}] - grpc call to retrieve standardEquipment with standardEquipmentId: {id} from server {self._server}:{self._port}')
+                    f"[{StandardEquipmentClient.standardEquipmentById.__qualname__}] - grpc call to retrieve standardEquipment with standardEquipmentId: {id} from server {self._server}:{self._port}"
+                )
                 response: StandardEquipmentAppService_standardEquipmentByIdResponse = stub.standardEquipmentById.with_call(
                     StandardEquipmentAppService_standardEquipmentByIdRequest(id=id),
-                    metadata=(('token', self.token), (
-                        'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
-                            StandardEquipmentClient.standardEquipmentById.__qualname__))))
+                    metadata=(
+                        ("token", self.token),
+                        (
+                            "opentel",
+                            AppDi.instance.get(OpenTelemetry).serializedContext(
+                                StandardEquipmentClient.standardEquipmentById.__qualname__
+                            ),
+                        ),
+                    ),
+                )
                 logger.debug(
-                    f'[{StandardEquipmentClient.standardEquipmentById.__qualname__}] - grpc response: {response}')
+                    f"[{StandardEquipmentClient.standardEquipmentById.__qualname__}] - grpc response: {response}"
+                )
                 standardEquipment = response[0].standardEquipment
                 return self._descriptorByObject(obj=standardEquipment)
             except Exception as e:
@@ -97,10 +139,11 @@ class StandardEquipmentClient(Client):
                 raise e
 
     def _descriptorByObject(self, obj: Any) -> StandardEquipmentDescriptor:
-        return StandardEquipmentDescriptor(id=obj.id,
-                                           name=obj.name,
-                                           standard_equipment_category_id=obj.standardEquipmentCategoryId,
-                                           standard_equipment_category_group_id=obj.standardEquipmentCategoryGroupId,
-                                           manufacturer_id=obj.manufacturerId,
-                                           equipment_model_id=obj.equipmentModelId,
-                                           )
+        return StandardEquipmentDescriptor(
+            id=obj.id,
+            name=obj.name,
+            standard_equipment_category_id=obj.standardEquipmentCategoryId,
+            standard_equipment_category_group_id=obj.standardEquipmentCategoryGroupId,
+            manufacturer_id=obj.manufacturerId,
+            equipment_model_id=obj.equipmentModelId,
+        )

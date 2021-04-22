@@ -7,7 +7,9 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.port_adapter.api.rest.model.response.v1.project.daily_check.procedure.operation.DailyCheckProcedureOperation import DailyCheckProcedureOperationDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.daily_check.procedure.operation.DailyCheckProcedureOperation import (
+    DailyCheckProcedureOperationDescriptor,
+)
 
 
 class DailyCheckProcedureOperations(BaseModel):
