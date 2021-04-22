@@ -21,12 +21,13 @@ router = APIRouter()
 @router.post("/role_to_resource", summary='Link access for a role to a resource', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def createRoleToResource(*, _=Depends(CustomHttpBearer()),
-                 role_id: str = Body(..., description='Role id to link access to a resource', embed=True),
-                 resource_id: str = Body(..., description='Resource is for a role to have access to', embed=True),
-                 ):
+                               role_id: str = Body(..., description='Role id to link access to a resource', embed=True),
+                               resource_id: str = Body(..., description='Resource is for a role to have access to',
+                                                       embed=True),
+                               ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.PROVIDE_ACCESS_ROLE_TO_RESOURCE.value,
+    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.GRANT_ACCESS_ROLE_TO_RESOURCE.value,
                                     metadata=json.dumps({"token": Client.token}),
                                     data=json.dumps(
                                         {'role_id': role_id, 'resource_id': resource_id})),
@@ -38,9 +39,12 @@ async def createRoleToResource(*, _=Depends(CustomHttpBearer()),
                status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
 async def deleteRoleToResource(*, _=Depends(CustomHttpBearer()),
-                 role_id: str = Body(..., description='Role id to remove link access to a resource', embed=True),
-                 resource_id: str = Body(..., description='Resource is for a role to remove the access to', embed=True),
-                 ):
+                               role_id: str = Body(..., description='Role id to remove link access to a resource',
+                                                   embed=True),
+                               resource_id: str = Body(...,
+                                                       description='Resource is for a role to remove the access to',
+                                                       embed=True),
+                               ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.REVOKE_ACCESS_ROLE_TO_RESOURCE.value,
@@ -48,3 +52,4 @@ async def deleteRoleToResource(*, _=Depends(CustomHttpBearer()),
                                     data=json.dumps(
                                         {'role_id': role_id, 'resource_id': resource_id})),
                      schema=ApiCommand.get_schema())
+    return {"request_id": reqId}
