@@ -39,7 +39,7 @@ async def createRoleToResource(
     producer.produce(
         obj=ApiCommand(
             id=reqId,
-            name=CommandConstant.PROVIDE_ACCESS_ROLE_TO_RESOURCE.value,
+            name=CommandConstant.GRANT_ACCESS_ROLE_TO_RESOURCE.value,
             metadata=json.dumps({"token": Client.token}),
             data=json.dumps({"role_id": role_id, "resource_id": resource_id}),
         ),
@@ -75,3 +75,5 @@ async def deleteRoleToResource(
         ),
         schema=ApiCommand.get_schema(),
     )
+    return {"request_id": reqId}
+
