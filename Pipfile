@@ -9,6 +9,7 @@ mock = "==4.0.3"
 pytest-cov = "==2.10.1"
 jinja2 = "==2.11.3"
 emoji = "==1.2.0"
+black = "==20.8b1"
 
 [packages]
 aiofiles = "==0.5.0"
@@ -80,5 +81,6 @@ opentelemetry-instrumentation-asgi = "==0.16b1"
 robotframework = "==3.2.2"
 robotframework-requests = "==0.8.0"
 robotframework-jsonlibrary = "==0.3.1"
+
 [requires]
 python_version = "3.8"

@@ -12,40 +12,57 @@ from fastapi import Response
 from fastapi.params import Path
 from grpc.beta.interfaces import StatusCode
 from starlette import status
-from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
+from starlette.status import (
+    HTTP_404_NOT_FOUND,
+    HTTP_500_INTERNAL_SERVER_ERROR,
+    HTTP_403_FORBIDDEN,
+)
 
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.MaintenanceProcedureClient import \
-    MaintenanceProcedureClient
-from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.MaintenanceProcedureOperationClient import \
-    MaintenanceProcedureOperationClient
-from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameterClient import \
-    MaintenanceProcedureOperationParameterClient
+from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.MaintenanceProcedureClient import (
+    MaintenanceProcedureClient,
+)
+from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.MaintenanceProcedureOperationClient import (
+    MaintenanceProcedureOperationClient,
+)
+from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameterClient import (
+    MaintenanceProcedureOperationParameterClient,
+)
 
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
-from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.MaintenanceProcedures import \
-    MaintenanceProcedures
-from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.MaintenanceProcedure import \
-    MaintenanceProcedureDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.MaintenanceProcedureOperation import \
-    MaintenanceProcedureOperationDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.MaintenanceProcedureOperations import \
-    MaintenanceProcedureOperations
-from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameter import \
-    MaintenanceProcedureOperationParameterDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameters import \
-    MaintenanceProcedureOperationParameters
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.MaintenanceProcedures import (
+    MaintenanceProcedures,
+)
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.MaintenanceProcedure import (
+    MaintenanceProcedureDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.MaintenanceProcedureOperation import (
+    MaintenanceProcedureOperationDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.MaintenanceProcedureOperations import (
+    MaintenanceProcedureOperations,
+)
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameter import (
+    MaintenanceProcedureOperationParameterDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameters import (
+    MaintenanceProcedureOperationParameters,
+)
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
-from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.MaintenanceProcedureFrequency import \
-    MaintenanceProcedureFrequency
-from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.MaintenanceProcedureType import \
-    MaintenanceProcedureType
-from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.MaintenanceProcedureOperationType import \
-    MaintenanceProcedureOperationType
-from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.MaintenanceProcedureHardSubType import \
-    MaintenanceProcedureHardSubType
+from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.MaintenanceProcedureFrequency import (
+    MaintenanceProcedureFrequency,
+)
+from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.MaintenanceProcedureType import (
+    MaintenanceProcedureType,
+)
+from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.MaintenanceProcedureOperationType import (
+    MaintenanceProcedureOperationType,
+)
+from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.MaintenanceProcedureHardSubType import (
+    MaintenanceProcedureHardSubType,
+)
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.common.DateTimeHelper import DateTimeHelper
@@ -56,18 +73,26 @@ router = APIRouter()
 
 
 # region GET /by_XXX/{id}
-@router.get(path="", summary='Get all maintenance procedure(s)', response_model=MaintenanceProcedures)
+@router.get(
+    path="",
+    summary="Get all maintenance procedure(s)",
+    response_model=MaintenanceProcedures,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def getMaintenanceProcedures(*,
-                                   result_from: int = Query(0, description='Starting offset for fetching data'),
-                                   result_size: int = Query(10, description='Item count to be fetched'),
-                                   order: str = Query('', description='e.g. id:asc,email:desc'),
-                                   _=Depends(CustomHttpBearer())):
+async def getMaintenanceProcedures(
+    *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    order: str = Query("", description="e.g. id:asc,email:desc"),
+    _=Depends(CustomHttpBearer()),
+):
     try:
         client = MaintenanceProcedureClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.maintenanceProcedures(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.maintenanceProcedures(
+            resultFrom=result_from, resultSize=result_size, order=order
+        )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -75,29 +100,39 @@ async def getMaintenanceProcedures(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getMaintenanceProcedures.__module__}.{getMaintenanceProcedures.__qualname__}] - error response e: {e}')
+                f"[{getMaintenanceProcedures.__module__}.{getMaintenanceProcedures.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
 
 
-@router.get(path="/by_equipment_id/{equipment_id}", summary='Get all maintenance procedure by equipment id',
-            response_model=MaintenanceProcedures)
+@router.get(
+    path="/by_equipment_id/{equipment_id}",
+    summary="Get all maintenance procedure by equipment id",
+    response_model=MaintenanceProcedures,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def getMaintenanceProceduresByEquipmentId(*,
-                                                equipment_id: str = Path(...,
-                                                                         description='equipment id that is used to fetch maintenance procedure data'),
-                                                result_from: int = Query(0,
-                                                                         description='Starting offset for fetching data'),
-                                                result_size: int = Query(10, description='Item count to be fetched'),
-                                                order: str = Query('', description='e.g. id:asc,email:desc'),
-                                                _=Depends(CustomHttpBearer())):
+async def getMaintenanceProceduresByEquipmentId(
+    *,
+    equipment_id: str = Path(
+        ..., description="equipment id that is used to fetch maintenance procedure data"
+    ),
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    order: str = Query("", description="e.g. id:asc,email:desc"),
+    _=Depends(CustomHttpBearer()),
+):
     try:
         client = MaintenanceProcedureClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.maintenanceProceduresByEquipmentId(equipmentId=equipment_id, resultFrom=result_from,
-                                                         resultSize=result_size, order=order)
+        return client.maintenanceProceduresByEquipmentId(
+            equipmentId=equipment_id,
+            resultFrom=result_from,
+            resultSize=result_size,
+            order=order,
+        )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -105,7 +140,8 @@ async def getMaintenanceProceduresByEquipmentId(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getMaintenanceProcedures.__module__}.{getMaintenanceProcedures.__qualname__}] - error response e: {e}')
+                f"[{getMaintenanceProcedures.__module__}.{getMaintenanceProcedures.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -114,19 +150,26 @@ async def getMaintenanceProceduresByEquipmentId(*,
 # endregion
 
 # region GET/DELETE /operations/parameters/{maintenance_procedure_operation_parameter_id}
-@router.get(path="/operations/parameters/{maintenance_procedure_operation_parameter_id}",
-            summary='Get maintenance procedure operation parameter by id',
-            response_model=MaintenanceProcedureOperationParameterDescriptor)
+@router.get(
+    path="/operations/parameters/{maintenance_procedure_operation_parameter_id}",
+    summary="Get maintenance procedure operation parameter by id",
+    response_model=MaintenanceProcedureOperationParameterDescriptor,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def getMaintenanceProcedureOperationParameterById(*,
-                                                        maintenance_procedure_operation_parameter_id: str = Path(...,
-                                                                                                                 description='maintenance procedure operation parameter id that is used to fetch maintenance procedure operation parameter data'),
-                                                        _=Depends(CustomHttpBearer())):
-    """Get a maintenance procedure operation parameter by id
-    """
+async def getMaintenanceProcedureOperationParameterById(
+    *,
+    maintenance_procedure_operation_parameter_id: str = Path(
+        ...,
+        description="maintenance procedure operation parameter id that is used to fetch maintenance procedure operation parameter data",
+    ),
+    _=Depends(CustomHttpBearer()),
+):
+    """Get a maintenance procedure operation parameter by id"""
     try:
         client = MaintenanceProcedureOperationParameterClient()
-        return client.maintenanceProcedureOperationParameterById(id=maintenance_procedure_operation_parameter_id)
+        return client.maintenanceProcedureOperationParameterById(
+            id=maintenance_procedure_operation_parameter_id
+        )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -134,58 +177,79 @@ async def getMaintenanceProcedureOperationParameterById(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getMaintenanceProcedureOperationParameterById.__module__}.{getMaintenanceProcedureOperationParameterById.__qualname__}] - error response e: {e}')
+                f"[{getMaintenanceProcedureOperationParameterById.__module__}.{getMaintenanceProcedureOperationParameterById.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
 
 
-@router.delete("/operations/parameters/{maintenance_procedure_operation_parameter_id}",
-               summary='Delete a maintenance procedure operation parameters', status_code=status.HTTP_200_OK)
+@router.delete(
+    "/operations/parameters/{maintenance_procedure_operation_parameter_id}",
+    summary="Delete a maintenance procedure operation parameters",
+    status_code=status.HTTP_200_OK,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def deleteMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBearer()),
-                                                       maintenance_procedure_operation_parameter_id: str = Path(...,
-                                                                                                                description='maintenance procedure operation parameter id that is used in order to delete the maintenance procedure operation parameter'), ):
+async def deleteMaintenanceProcedureOperationParameter(
+    *,
+    _=Depends(CustomHttpBearer()),
+    maintenance_procedure_operation_parameter_id: str = Path(
+        ...,
+        description="maintenance procedure operation parameter id that is used in order to delete the maintenance procedure operation parameter",
+    ),
+):
     reqId = RequestIdGenerator.generateId()
 
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+
     producer.produce(
-        obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_MAINTENANCE_PROCEDURE_OPERATION_PARAMETER.value,
-                           metadata=json.dumps({"token": Client.token}),
-                           data=json.dumps(
-                               {
-                                   'maintenance_procedure_operation_parameter_id': maintenance_procedure_operation_parameter_id}),
-                           external=[]),
-        schema=ProjectCommand.get_schema())
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.DELETE_MAINTENANCE_PROCEDURE_OPERATION_PARAMETER.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "maintenance_procedure_operation_parameter_id": maintenance_procedure_operation_parameter_id
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
 # endregion
 
 # region GET/POST /operations/{maintenance_procedure_operation_id}/parameters
-@router.get(path="/operations/{maintenance_procedure_operation_id}/parameters",
-            summary='Get all maintenance procedure operation parameter by maintenance procedure operation id',
-            response_model=MaintenanceProcedureOperationParameters)
+@router.get(
+    path="/operations/{maintenance_procedure_operation_id}/parameters",
+    summary="Get all maintenance procedure operation parameter by maintenance procedure operation id",
+    response_model=MaintenanceProcedureOperationParameters,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def getMaintenanceProcedureOperationParametersByMaintenanceProcedureOperationId(*,
-                                                                                      maintenance_procedure_operation_id: str = Path(
-                                                                                          ...,
-                                                                                          description='maintenance procedure operation id that is used to fetch maintenance procedure operation parameter data'),
-                                                                                      result_from: int = Query(0,
-                                                                                                               description='Starting offset for fetching data'),
-                                                                                      result_size: int = Query(10,
-                                                                                                               description='Item count to be fetched'),
-                                                                                      order: str = Query('',
-                                                                                                         description='e.g. id:asc,email:desc'),
-                                                                                      _=Depends(CustomHttpBearer())):
+async def getMaintenanceProcedureOperationParametersByMaintenanceProcedureOperationId(
+    *,
+    maintenance_procedure_operation_id: str = Path(
+        ...,
+        description="maintenance procedure operation id that is used to fetch maintenance procedure operation parameter data",
+    ),
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    order: str = Query("", description="e.g. id:asc,email:desc"),
+    _=Depends(CustomHttpBearer()),
+):
     try:
         client = MaintenanceProcedureOperationParameterClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
         return client.maintenanceProcedureOperationParametersByMaintenanceProcedureOperationId(
-            maintenanceProcedureOperationId=maintenance_procedure_operation_id, resultFrom=result_from,
-            resultSize=result_size, order=order)
+            maintenanceProcedureOperationId=maintenance_procedure_operation_id,
+            resultFrom=result_from,
+            resultSize=result_size,
+            order=order,
+        )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -193,58 +257,78 @@ async def getMaintenanceProcedureOperationParametersByMaintenanceProcedureOperat
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getMaintenanceProcedureOperationParametersByMaintenanceProcedureOperationId.__module__}.{getMaintenanceProcedureOperationParametersByMaintenanceProcedureOperationId.__qualname__}] - error response e: {e}')
+                f"[{getMaintenanceProcedureOperationParametersByMaintenanceProcedureOperationId.__module__}.{getMaintenanceProcedureOperationParametersByMaintenanceProcedureOperationId.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
 
 
-@router.post("/operations/{maintenance_procedure_operation_id}/parameters",
-             summary='Create maintenance procedure operation parameter', status_code=status.HTTP_200_OK)
+@router.post(
+    "/operations/{maintenance_procedure_operation_id}/parameters",
+    summary="Create maintenance procedure operation parameter",
+    status_code=status.HTTP_200_OK,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def createMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBearer()),
-                                                       maintenance_procedure_operation_id: str = Path(...,
-                                                                                                      description='maintenance procedure operation id as a parent id'),
-                                                       name: str = Body(...,
-                                                                        description='name of maintenance procedure operation parameter',
-                                                                        embed=True),
-                                                       unit_id: str = Body(...,
-                                                                           description='unit id of maintenance procedure operation parameter',
-                                                                           embed=True),
-                                                       min_value: float = Body(...,
-                                                                               description='min value of maintenance procedure operation parameter',
-                                                                               embed=True),
-                                                       max_value: float = Body(...,
-                                                                               description='max value of maintenance procedure operation parameter',
-                                                                               embed=True),
-                                                       ):
+async def createMaintenanceProcedureOperationParameter(
+    *,
+    _=Depends(CustomHttpBearer()),
+    maintenance_procedure_operation_id: str = Path(
+        ..., description="maintenance procedure operation id as a parent id"
+    ),
+    name: str = Body(
+        ..., description="name of maintenance procedure operation parameter", embed=True
+    ),
+    unit_id: str = Body(
+        ...,
+        description="unit id of maintenance procedure operation parameter",
+        embed=True,
+    ),
+    min_value: float = Body(
+        ...,
+        description="min value of maintenance procedure operation parameter",
+        embed=True,
+    ),
+    max_value: float = Body(
+        ...,
+        description="max value of maintenance procedure operation parameter",
+        embed=True,
+    ),
+):
     try:
         min_value = float(min_value)
         max_value = float(max_value)
     except:
         raise ValueError(
-            f'Minimum and maximum values must be of type float. min. value: {min_value}, max. value: {max_value}')
+            f"Minimum and maximum values must be of type float. min. value: {min_value}, max. value: {max_value}"
+        )
     if min_value > max_value:
-        raise ValueError('Minimum value must be less or equal than maximum value')
+        raise ValueError("Minimum value must be less or equal than maximum value")
 
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+
     client = MaintenanceProcedureOperationParameterClient()
     producer.produce(
-        obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_MAINTENANCE_PROCEDURE_OPERATION_PARAMETER.value,
-                           metadata=json.dumps({"token": Client.token}),
-                           data=json.dumps(
-                               {
-                                   'maintenance_procedure_operation_parameter_id': client.newId(),
-                                   'name': name,
-                                   'unit_id': unit_id,
-                                   'maintenance_procedure_operation_id': maintenance_procedure_operation_id,
-                                   'min_value': min_value,
-                                   'max_value': max_value,
-                               }),
-                           external=[]),
-        schema=ProjectCommand.get_schema())
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.CREATE_MAINTENANCE_PROCEDURE_OPERATION_PARAMETER.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "maintenance_procedure_operation_parameter_id": client.newId(),
+                    "name": name,
+                    "unit_id": unit_id,
+                    "maintenance_procedure_operation_id": maintenance_procedure_operation_id,
+                    "min_value": min_value,
+                    "max_value": max_value,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
@@ -253,111 +337,132 @@ async def createMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBe
 # region PUT/PATCH /operations/{maintenance_procedure_operation_id}/parameters/{maintenance_procedure_operation_parameter_id}
 @router.put(
     "/operations/{maintenance_procedure_operation_id}/parameters/{maintenance_procedure_operation_parameter_id}",
-    summary='Update maintenance procedure operation parameter', status_code=status.HTTP_200_OK)
+    summary="Update maintenance procedure operation parameter",
+    status_code=status.HTTP_200_OK,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def updateMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBearer()),
-                                                       maintenance_procedure_operation_id: str = Path(...,
-                                                                                                      description='maintenance procedure operation id as a parent id'),
-                                                       maintenance_procedure_operation_parameter_id: str = Path(...,
-                                                                                                                description='maintenance procedure operation parameter id that is used in order to update the maintenance procedure operation parameter'),
-                                                       name: str = Body(..., description='name of name', embed=True),
-                                                       unit_id: str = Body(..., description='unit id of unit id',
-                                                                           embed=True),
-                                                       min_value: float = Body(...,
-                                                                               description='min value of min value',
-                                                                               embed=True),
-                                                       max_value: float = Body(...,
-                                                                               description='max value of max value',
-                                                                               embed=True),
-                                                       ):
+async def updateMaintenanceProcedureOperationParameter(
+    *,
+    _=Depends(CustomHttpBearer()),
+    maintenance_procedure_operation_id: str = Path(
+        ..., description="maintenance procedure operation id as a parent id"
+    ),
+    maintenance_procedure_operation_parameter_id: str = Path(
+        ...,
+        description="maintenance procedure operation parameter id that is used in order to update the maintenance procedure operation parameter",
+    ),
+    name: str = Body(..., description="name of name", embed=True),
+    unit_id: str = Body(..., description="unit id of unit id", embed=True),
+    min_value: float = Body(..., description="min value of min value", embed=True),
+    max_value: float = Body(..., description="max value of max value", embed=True),
+):
     try:
         min_value = float(min_value)
         max_value = float(max_value)
     except:
         raise ValueError(
-            f'Minimum and maximum values must be of type float. min. value: {min_value}, max. value: {max_value}')
+            f"Minimum and maximum values must be of type float. min. value: {min_value}, max. value: {max_value}"
+        )
     if min_value > max_value:
-        raise ValueError('Minimum value must be less or equal than maximum value')
+        raise ValueError("Minimum value must be less or equal than maximum value")
     reqId = RequestIdGenerator.generateId()
 
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+
     producer.produce(
-        obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE_OPERATION_PARAMETER.value,
-                           metadata=json.dumps({"token": Client.token}),
-                           data=json.dumps(
-                               {
-                                   'maintenance_procedure_operation_parameter_id': maintenance_procedure_operation_parameter_id,
-                                   'name': name,
-                                   'unit_id': unit_id,
-                                   'maintenance_procedure_operation_id': maintenance_procedure_operation_id,
-                                   'min_value': min_value,
-                                   'max_value': max_value,
-                               }),
-                           external=[]),
-        schema=ProjectCommand.get_schema())
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE_OPERATION_PARAMETER.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "maintenance_procedure_operation_parameter_id": maintenance_procedure_operation_parameter_id,
+                    "name": name,
+                    "unit_id": unit_id,
+                    "maintenance_procedure_operation_id": maintenance_procedure_operation_id,
+                    "min_value": min_value,
+                    "max_value": max_value,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
 @router.patch(
     "/operations/{maintenance_procedure_operation_id}/parameters/{maintenance_procedure_operation_parameter_id}",
-    summary='Partial update maintenance procedure operation parameter', status_code=status.HTTP_200_OK)
+    summary="Partial update maintenance procedure operation parameter",
+    status_code=status.HTTP_200_OK,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdateMaintenanceProcedureOperationParameter(*, _=Depends(CustomHttpBearer()),
-                                                              maintenance_procedure_operation_id: str = Path(None,
-                                                                                                             description='maintenance procedure operation id as a parent id'),
-                                                              maintenance_procedure_operation_parameter_id: str = Path(
-                                                                  None,
-                                                                  description='maintenance procedure operation parameter id that is used in order to update the maintenance procedure operation parameter'),
-                                                              name: str = Body(None, description='name of name',
-                                                                               embed=True),
-                                                              unit_id: str = Body(None,
-                                                                                  description='unit id of unit id',
-                                                                                  embed=True),
-                                                              min_value: float = Body(None,
-                                                                                      description='min value of min value',
-                                                                                      embed=True),
-                                                              max_value: float = Body(None,
-                                                                                      description='max value of max value',
-                                                                                      embed=True),
-                                                              ):
+async def partialUpdateMaintenanceProcedureOperationParameter(
+    *,
+    _=Depends(CustomHttpBearer()),
+    maintenance_procedure_operation_id: str = Path(
+        None, description="maintenance procedure operation id as a parent id"
+    ),
+    maintenance_procedure_operation_parameter_id: str = Path(
+        None,
+        description="maintenance procedure operation parameter id that is used in order to update the maintenance procedure operation parameter",
+    ),
+    name: str = Body(None, description="name of name", embed=True),
+    unit_id: str = Body(None, description="unit id of unit id", embed=True),
+    min_value: float = Body(None, description="min value of min value", embed=True),
+    max_value: float = Body(None, description="max value of max value", embed=True),
+):
     reqId = RequestIdGenerator.generateId()
 
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+
     producer.produce(
-        obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE_OPERATION_PARAMETER.value,
-                           metadata=json.dumps({"token": Client.token}),
-                           data=json.dumps(
-                               {
-                                   'maintenance_procedure_operation_parameter_id': maintenance_procedure_operation_parameter_id,
-                                   'name': name,
-                                   'unit_id': unit_id,
-                                   'maintenance_procedure_operation_id': maintenance_procedure_operation_id,
-                                   'min_value': min_value,
-                                   'max_value': max_value,
-                               }),
-                           external=[]),
-        schema=ProjectCommand.get_schema())
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE_OPERATION_PARAMETER.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "maintenance_procedure_operation_parameter_id": maintenance_procedure_operation_parameter_id,
+                    "name": name,
+                    "unit_id": unit_id,
+                    "maintenance_procedure_operation_id": maintenance_procedure_operation_id,
+                    "min_value": min_value,
+                    "max_value": max_value,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
 # endregion
 
 # region GET/DELETE /operations/{maintenance_procedure_operation_id}
-@router.get(path="/operations/{maintenance_procedure_operation_id}",
-            summary='Get maintenance procedure operation by id',
-            response_model=MaintenanceProcedureOperationDescriptor)
+@router.get(
+    path="/operations/{maintenance_procedure_operation_id}",
+    summary="Get maintenance procedure operation by id",
+    response_model=MaintenanceProcedureOperationDescriptor,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def getMaintenanceProcedureOperationById(*,
-                                               maintenance_procedure_operation_id: str = Path(...,
-                                                                                              description='maintenance procedure operation id that is used to fetch maintenance procedure operation data'),
-                                               _=Depends(CustomHttpBearer())):
-    """Get a maintenance procedure operation by id
-    """
+async def getMaintenanceProcedureOperationById(
+    *,
+    maintenance_procedure_operation_id: str = Path(
+        ...,
+        description="maintenance procedure operation id that is used to fetch maintenance procedure operation data",
+    ),
+    _=Depends(CustomHttpBearer()),
+):
+    """Get a maintenance procedure operation by id"""
     try:
         client = MaintenanceProcedureOperationClient()
-        return client.maintenanceProcedureOperationById(id=maintenance_procedure_operation_id)
+        return client.maintenanceProcedureOperationById(
+            id=maintenance_procedure_operation_id
+        )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -365,41 +470,66 @@ async def getMaintenanceProcedureOperationById(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getMaintenanceProcedureOperationById.__module__}.{getMaintenanceProcedureOperationById.__qualname__}] - error response e: {e}')
+                f"[{getMaintenanceProcedureOperationById.__module__}.{getMaintenanceProcedureOperationById.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
 
 
-@router.delete("/operations/{maintenance_procedure_operation_id}",
-               summary='Delete a maintenance procedure operations', status_code=status.HTTP_200_OK)
+@router.delete(
+    "/operations/{maintenance_procedure_operation_id}",
+    summary="Delete a maintenance procedure operations",
+    status_code=status.HTTP_200_OK,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def deleteMaintenanceProcedureOperation(*, _=Depends(CustomHttpBearer()),
-                                              maintenance_procedure_operation_id: str = Path(...,
-                                                                                             description='maintenance procedure operation id that is used in order to delete the maintenance procedure operation'), ):
+async def deleteMaintenanceProcedureOperation(
+    *,
+    _=Depends(CustomHttpBearer()),
+    maintenance_procedure_operation_id: str = Path(
+        ...,
+        description="maintenance procedure operation id that is used in order to delete the maintenance procedure operation",
+    ),
+):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_MAINTENANCE_PROCEDURE_OPERATION.value,
-                                        metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps(
-                                            {'maintenance_procedure_operation_id': maintenance_procedure_operation_id}),
-                                        external=[]),
-                     schema=ProjectCommand.get_schema())
+
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.DELETE_MAINTENANCE_PROCEDURE_OPERATION.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "maintenance_procedure_operation_id": maintenance_procedure_operation_id
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
 # endregion
 
 # region GET/POST/PUT/PATCH/DELETE /{maintenance_procedure_id}
-@router.get(path="/{maintenance_procedure_id}", summary='Get maintenance procedure by id',
-            response_model=MaintenanceProcedureDescriptor)
+@router.get(
+    path="/{maintenance_procedure_id}",
+    summary="Get maintenance procedure by id",
+    response_model=MaintenanceProcedureDescriptor,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def getMaintenanceProcedureById(*, maintenance_procedure_id: str = Path(...,
-                                                                              description='maintenance procedure id that is used to fetch maintenance procedure data'),
-                                      _=Depends(CustomHttpBearer())):
-    """Get a maintenance procedure by id
-    """
+async def getMaintenanceProcedureById(
+    *,
+    maintenance_procedure_id: str = Path(
+        ...,
+        description="maintenance procedure id that is used to fetch maintenance procedure data",
+    ),
+    _=Depends(CustomHttpBearer()),
+):
+    """Get a maintenance procedure by id"""
     try:
         client = MaintenanceProcedureClient()
         return client.maintenanceProcedureById(id=maintenance_procedure_id)
@@ -410,185 +540,263 @@ async def getMaintenanceProcedureById(*, maintenance_procedure_id: str = Path(..
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getMaintenanceProcedureById.__module__}.{getMaintenanceProcedureById.__qualname__}] - error response e: {e}')
+                f"[{getMaintenanceProcedureById.__module__}.{getMaintenanceProcedureById.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
 
 
-@router.post("", summary='Create maintenance procedure', status_code=status.HTTP_200_OK)
+@router.post("", summary="Create maintenance procedure", status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def createMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
-                                     name: str = Body(None, description='name of maintenance procedure', embed=True),
-                                     type: MaintenanceProcedureType = Body(..., description='hard or soft', embed=True),
-                                     hard_sub_type: MaintenanceProcedureHardSubType = Body(None,
-                                                                                           description='Sub type for when you select hard for type',
-                                                                                           embed=True),
-                                     frequency: MaintenanceProcedureFrequency = Body(...,
-                                                                                     description='procedure frequency',
-                                                                                     embed=True),
-                                     start_date: int = Body(..., description='start date of maintenance procedure',
-                                                            embed=True),
-                                     subcontractor_id: str = Body(None,
-                                                                  description='subcontractor id of maintenance procedure',
-                                                                  embed=True),
-                                     equipment_id: str = Body(..., description='equipment id of maintenance procedure',
-                                                              embed=True),
-                                     ):
+async def createMaintenanceProcedure(
+    *,
+    _=Depends(CustomHttpBearer()),
+    name: str = Body(None, description="name of maintenance procedure", embed=True),
+    type: MaintenanceProcedureType = Body(..., description="hard or soft", embed=True),
+    hard_sub_type: MaintenanceProcedureHardSubType = Body(
+        None, description="Sub type for when you select hard for type", embed=True
+    ),
+    frequency: MaintenanceProcedureFrequency = Body(
+        ..., description="procedure frequency", embed=True
+    ),
+    start_date: int = Body(
+        ..., description="start date of maintenance procedure", embed=True
+    ),
+    subcontractor_id: str = Body(
+        None, description="subcontractor id of maintenance procedure", embed=True
+    ),
+    equipment_id: str = Body(
+        ..., description="equipment id of maintenance procedure", embed=True
+    ),
+):
 
     reqId = RequestIdGenerator.generateId()
-    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
+    start_date = (
+        start_date
+        if start_date is not None
+        and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond()
+        else None
+    )
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+
     client = MaintenanceProcedureClient()
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_MAINTENANCE_PROCEDURE.value,
-                                        metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps(
-                                            {
-                                                'maintenance_procedure_id': client.newId(),
-                                                'name': name,
-                                                'type': type,
-                                                'sub_type': hard_sub_type,
-                                                'frequency': frequency,
-                                                'start_date': start_date,
-                                                'subcontractor_id': subcontractor_id,
-                                                'equipment_id': equipment_id,
-                                            }),
-                                        external=[]),
-                     schema=ProjectCommand.get_schema())
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.CREATE_MAINTENANCE_PROCEDURE.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "maintenance_procedure_id": client.newId(),
+                    "name": name,
+                    "type": type,
+                    "sub_type": hard_sub_type,
+                    "frequency": frequency,
+                    "start_date": start_date,
+                    "subcontractor_id": subcontractor_id,
+                    "equipment_id": equipment_id,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
-@router.put("/{maintenance_procedure_id}", summary='Update maintenance procedure', status_code=status.HTTP_200_OK)
+@router.put(
+    "/{maintenance_procedure_id}",
+    summary="Update maintenance procedure",
+    status_code=status.HTTP_200_OK,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def updateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
-                                     maintenance_procedure_id: str = Path(...,
-                                                                          description='maintenance procedure id that is used in order to update the maintenance procedure'),
-                                     name: str = Body(..., description='name of name', embed=True),
-                                     type: MaintenanceProcedureType = Body(..., description='hard or soft', embed=True),
-                                     hard_sub_type: MaintenanceProcedureHardSubType = Body(None,
-                                                                                           description='Sub type for when you select hard for type',
-                                                                                           embed=True),
-                                     frequency: MaintenanceProcedureFrequency = Body(...,
-                                                                                     description='procedure frequency',
-                                                                                     embed=True),
-                                     start_date: int = Body(..., description='start date of start date', embed=True),
-                                     subcontractor_id: str = Body(...,
-                                                                  description='subcontractor id of subcontractor id',
-                                                                  embed=True),
-                                     equipment_id: str = Body(..., description='equipment id of maintenance procedure',
-                                                              embed=True),
-                                     ):
+async def updateMaintenanceProcedure(
+    *,
+    _=Depends(CustomHttpBearer()),
+    maintenance_procedure_id: str = Path(
+        ...,
+        description="maintenance procedure id that is used in order to update the maintenance procedure",
+    ),
+    name: str = Body(..., description="name of name", embed=True),
+    type: MaintenanceProcedureType = Body(..., description="hard or soft", embed=True),
+    hard_sub_type: MaintenanceProcedureHardSubType = Body(
+        None, description="Sub type for when you select hard for type", embed=True
+    ),
+    frequency: MaintenanceProcedureFrequency = Body(
+        ..., description="procedure frequency", embed=True
+    ),
+    start_date: int = Body(..., description="start date of start date", embed=True),
+    subcontractor_id: str = Body(
+        ..., description="subcontractor id of subcontractor id", embed=True
+    ),
+    equipment_id: str = Body(
+        ..., description="equipment id of maintenance procedure", embed=True
+    ),
+):
 
     reqId = RequestIdGenerator.generateId()
 
-    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
+    start_date = (
+        start_date
+        if start_date is not None
+        and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond()
+        else None
+    )
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE.value,
-                                        metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps(
-                                            {'maintenance_procedure_id': maintenance_procedure_id,
-                                             'name': name,
-                                             'type': type,
-                                             'sub_type': hard_sub_type,
-                                             'frequency': frequency,
-                                             'start_date': start_date,
-                                             'equipment_id': equipment_id,
-                                             'subcontractor_id': subcontractor_id,
-                                             }),
-                                        external=[]),
-                     schema=ProjectCommand.get_schema())
+
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "maintenance_procedure_id": maintenance_procedure_id,
+                    "name": name,
+                    "type": type,
+                    "sub_type": hard_sub_type,
+                    "frequency": frequency,
+                    "start_date": start_date,
+                    "equipment_id": equipment_id,
+                    "subcontractor_id": subcontractor_id,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
-@router.patch("/{maintenance_procedure_id}", summary='Partial update maintenance procedure',
-              status_code=status.HTTP_200_OK)
+@router.patch(
+    "/{maintenance_procedure_id}",
+    summary="Partial update maintenance procedure",
+    status_code=status.HTTP_200_OK,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdateMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
-                                            maintenance_procedure_id: str = Path(None,
-                                                                                 description='maintenance procedure id that is used in order to update the maintenance procedure'),
-                                            name: str = Body(None, description='name of name', embed=True),
-                                            type: MaintenanceProcedureType = Body(None, description='hard or soft',
-                                                                                  embed=True),
-                                            hard_sub_type: MaintenanceProcedureHardSubType = Body(None, description='hard subtype',
-                                                                                  embed=True),
-                                            frequency: MaintenanceProcedureFrequency = Body(None,
-                                                                                            description='procedure frequency',
-                                                                                            embed=True),
-                                            start_date: int = Body(None, description='start date of start date',
-                                                                   embed=True),
-                                            subcontractor_id: str = Body(None,
-                                                                         description='subcontractor id of subcontractor id',
-                                                                         embed=True),
-                                            equipment_id: str = Body(None,
-                                                                     description='equipment id of maintenance procedure',
-                                                                     embed=True),
-                                            ):
+async def partialUpdateMaintenanceProcedure(
+    *,
+    _=Depends(CustomHttpBearer()),
+    maintenance_procedure_id: str = Path(
+        None,
+        description="maintenance procedure id that is used in order to update the maintenance procedure",
+    ),
+    name: str = Body(None, description="name of name", embed=True),
+    type: MaintenanceProcedureType = Body(None, description="hard or soft", embed=True),
+    hard_sub_type: MaintenanceProcedureHardSubType = Body(
+        None, description="hard subtype", embed=True
+    ),
+    frequency: MaintenanceProcedureFrequency = Body(
+        None, description="procedure frequency", embed=True
+    ),
+    start_date: int = Body(None, description="start date of start date", embed=True),
+    subcontractor_id: str = Body(
+        None, description="subcontractor id of subcontractor id", embed=True
+    ),
+    equipment_id: str = Body(
+        None, description="equipment id of maintenance procedure", embed=True
+    ),
+):
     reqId = RequestIdGenerator.generateId()
 
-    start_date = start_date if start_date is not None and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond() else None
+    start_date = (
+        start_date
+        if start_date is not None
+        and start_date > DateTimeHelper.intOneYearAfterEpochTimeInSecond()
+        else None
+    )
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE.value,
-                                        metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps(
-                                            {'maintenance_procedure_id': maintenance_procedure_id,
-                                             'name': name,
-                                             'type': type,
-                                             'sub_type': hard_sub_type,
-                                             'frequency': frequency,
-                                             'start_date': start_date,
-                                             'subcontractor_id': subcontractor_id,
-                                             'equipment_id': equipment_id,
-                                             }),
-                                        external=[]),
-                     schema=ProjectCommand.get_schema())
+
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "maintenance_procedure_id": maintenance_procedure_id,
+                    "name": name,
+                    "type": type,
+                    "sub_type": hard_sub_type,
+                    "frequency": frequency,
+                    "start_date": start_date,
+                    "subcontractor_id": subcontractor_id,
+                    "equipment_id": equipment_id,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
-@router.delete("/{maintenance_procedure_id}", summary='Delete a maintenance procedures', status_code=status.HTTP_200_OK)
+@router.delete(
+    "/{maintenance_procedure_id}",
+    summary="Delete a maintenance procedures",
+    status_code=status.HTTP_200_OK,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def deleteMaintenanceProcedure(*, _=Depends(CustomHttpBearer()),
-                                     maintenance_procedure_id: str = Path(...,
-                                                                          description='maintenance procedure id that is used in order to delete the maintenance procedure'), ):
+async def deleteMaintenanceProcedure(
+    *,
+    _=Depends(CustomHttpBearer()),
+    maintenance_procedure_id: str = Path(
+        ...,
+        description="maintenance procedure id that is used in order to delete the maintenance procedure",
+    ),
+):
     reqId = RequestIdGenerator.generateId()
 
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_MAINTENANCE_PROCEDURE.value,
-                                        metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps(
-                                            {'maintenance_procedure_id': maintenance_procedure_id}),
-                                        external=[]),
-                     schema=ProjectCommand.get_schema())
+
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.DELETE_MAINTENANCE_PROCEDURE.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps({"maintenance_procedure_id": maintenance_procedure_id}),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
 # endregion
 
 # region GET/POST /{maintenance_procedure_id}/operations
-@router.get(path="/{maintenance_procedure_id}/operations",
-            summary='Get all maintenance procedure operation by maintenance procedure id',
-            response_model=MaintenanceProcedureOperations)
+@router.get(
+    path="/{maintenance_procedure_id}/operations",
+    summary="Get all maintenance procedure operation by maintenance procedure id",
+    response_model=MaintenanceProcedureOperations,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def getMaintenanceProcedureOperationsByMaintenanceProcedureId(*,
-                                                                    maintenance_procedure_id: str = Path(...,
-                                                                                                         description='maintenance procedure id that is used to fetch maintenance procedure operation data'),
-                                                                    result_from: int = Query(0,
-                                                                                             description='Starting offset for fetching data'),
-                                                                    result_size: int = Query(10,
-                                                                                             description='Item count to be fetched'),
-                                                                    order: str = Query('',
-                                                                                       description='e.g. id:asc,email:desc'),
-                                                                    _=Depends(CustomHttpBearer())):
+async def getMaintenanceProcedureOperationsByMaintenanceProcedureId(
+    *,
+    maintenance_procedure_id: str = Path(
+        ...,
+        description="maintenance procedure id that is used to fetch maintenance procedure operation data",
+    ),
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    order: str = Query("", description="e.g. id:asc,email:desc"),
+    _=Depends(CustomHttpBearer()),
+):
     try:
         client = MaintenanceProcedureOperationClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
         return client.maintenanceProcedureOperationsByMaintenanceProcedureId(
-            maintenanceProcedureId=maintenance_procedure_id, resultFrom=result_from, resultSize=result_size,
-            order=order)
+            maintenanceProcedureId=maintenance_procedure_id,
+            resultFrom=result_from,
+            resultSize=result_size,
+            order=order,
+        )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -596,46 +804,59 @@ async def getMaintenanceProcedureOperationsByMaintenanceProcedureId(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getMaintenanceProcedureOperationsByMaintenanceProcedureId.__module__}.{getMaintenanceProcedureOperationsByMaintenanceProcedureId.__qualname__}] - error response e: {e}')
+                f"[{getMaintenanceProcedureOperationsByMaintenanceProcedureId.__module__}.{getMaintenanceProcedureOperationsByMaintenanceProcedureId.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
 
 
-@router.post("/{maintenance_procedure_id}/operations", summary='Create maintenance procedure operation',
-             status_code=status.HTTP_200_OK)
+@router.post(
+    "/{maintenance_procedure_id}/operations",
+    summary="Create maintenance procedure operation",
+    status_code=status.HTTP_200_OK,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def createMaintenanceProcedureOperation(*,
-                                              maintenance_procedure_id: str = Path(...,
-                                                                                   description='maintenance procedure id as a parent id'),
-                                              _=Depends(CustomHttpBearer()),
-                                              name: str = Body(...,
-                                                               description='name of maintenance procedure operation',
-                                                               embed=True),
-                                              description: str = Body(...,
-                                                                      description='description of maintenance procedure operation',
-                                                                      embed=True),
-                                              type: MaintenanceProcedureOperationType = Body(...,
-                                                                                             description='type of maintenance procedure operation',
-                                                                                             embed=True),
-                                              ):
+async def createMaintenanceProcedureOperation(
+    *,
+    maintenance_procedure_id: str = Path(
+        ..., description="maintenance procedure id as a parent id"
+    ),
+    _=Depends(CustomHttpBearer()),
+    name: str = Body(
+        ..., description="name of maintenance procedure operation", embed=True
+    ),
+    description: str = Body(
+        ..., description="description of maintenance procedure operation", embed=True
+    ),
+    type: MaintenanceProcedureOperationType = Body(
+        ..., description="type of maintenance procedure operation", embed=True
+    ),
+):
     reqId = RequestIdGenerator.generateId()
 
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+
     client = MaintenanceProcedureOperationClient()
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_MAINTENANCE_PROCEDURE_OPERATION.value,
-                                        metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps(
-                                            {
-                                                'maintenance_procedure_operation_id': client.newId(),
-                                                'name': name,
-                                                'description': description,
-                                                'type': type,
-                                                'maintenance_procedure_id': maintenance_procedure_id,
-                                            }),
-                                        external=[]),
-                     schema=ProjectCommand.get_schema())
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.CREATE_MAINTENANCE_PROCEDURE_OPERATION.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "maintenance_procedure_operation_id": client.newId(),
+                    "name": name,
+                    "description": description,
+                    "type": type,
+                    "maintenance_procedure_id": maintenance_procedure_id,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
@@ -643,68 +864,99 @@ async def createMaintenanceProcedureOperation(*,
 
 # region PUT/PATCH /{maintenance_procedure_id}/operations/{maintenance_procedure_operation_id}
 
-@router.put("/{maintenance_procedure_id}/operations/{maintenance_procedure_operation_id}",
-            summary='Update maintenance procedure operation', status_code=status.HTTP_200_OK)
+
+@router.put(
+    "/{maintenance_procedure_id}/operations/{maintenance_procedure_operation_id}",
+    summary="Update maintenance procedure operation",
+    status_code=status.HTTP_200_OK,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def updateMaintenanceProcedureOperation(*, _=Depends(CustomHttpBearer()),
-                                              maintenance_procedure_id: str = Path(...,
-                                                                                   description='maintenance procedure id as a parent id'),
-                                              maintenance_procedure_operation_id: str = Path(...,
-                                                                                             description='maintenance procedure operation id that is used in order to update the maintenance procedure operation'),
-                                              name: str = Body(..., description='name of name', embed=True),
-                                              description: str = Body(..., description='description of description',
-                                                                      embed=True),
-                                              type: MaintenanceProcedureOperationType = Body(...,
-                                                                                             description='type of type',
-                                                                                             embed=True),
-                                              ):
+async def updateMaintenanceProcedureOperation(
+    *,
+    _=Depends(CustomHttpBearer()),
+    maintenance_procedure_id: str = Path(
+        ..., description="maintenance procedure id as a parent id"
+    ),
+    maintenance_procedure_operation_id: str = Path(
+        ...,
+        description="maintenance procedure operation id that is used in order to update the maintenance procedure operation",
+    ),
+    name: str = Body(..., description="name of name", embed=True),
+    description: str = Body(..., description="description of description", embed=True),
+    type: MaintenanceProcedureOperationType = Body(
+        ..., description="type of type", embed=True
+    ),
+):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE_OPERATION.value,
-                                        metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps(
-                                            {'maintenance_procedure_operation_id': maintenance_procedure_operation_id,
-                                             'name': name,
-                                             'description': description,
-                                             'type': type,
-                                             'maintenance_procedure_id': maintenance_procedure_id,
-                                             }),
-                                        external=[]),
-                     schema=ProjectCommand.get_schema())
+
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE_OPERATION.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "maintenance_procedure_operation_id": maintenance_procedure_operation_id,
+                    "name": name,
+                    "description": description,
+                    "type": type,
+                    "maintenance_procedure_id": maintenance_procedure_id,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
-@router.patch("/{maintenance_procedure_id}/operations/{maintenance_procedure_operation_id}",
-              summary='Partial update maintenance procedure operation', status_code=status.HTTP_200_OK)
+@router.patch(
+    "/{maintenance_procedure_id}/operations/{maintenance_procedure_operation_id}",
+    summary="Partial update maintenance procedure operation",
+    status_code=status.HTTP_200_OK,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdateMaintenanceProcedureOperation(*, _=Depends(CustomHttpBearer()),
-                                                     maintenance_procedure_id: str = Path(None,
-                                                                                          description='maintenance procedure id as a parent id'),
-                                                     maintenance_procedure_operation_id: str = Path(None,
-                                                                                                    description='maintenance procedure operation id that is used in order to update the maintenance procedure operation'),
-                                                     name: str = Body(None, description='name of name', embed=True),
-                                                     description: str = Body(None,
-                                                                             description='description of description',
-                                                                             embed=True),
-                                                     type: MaintenanceProcedureOperationType = Body(None,
-                                                                                                    description='type of type',
-                                                                                                    embed=True),
-                                                     ):
+async def partialUpdateMaintenanceProcedureOperation(
+    *,
+    _=Depends(CustomHttpBearer()),
+    maintenance_procedure_id: str = Path(
+        None, description="maintenance procedure id as a parent id"
+    ),
+    maintenance_procedure_operation_id: str = Path(
+        None,
+        description="maintenance procedure operation id that is used in order to update the maintenance procedure operation",
+    ),
+    name: str = Body(None, description="name of name", embed=True),
+    description: str = Body(None, description="description of description", embed=True),
+    type: MaintenanceProcedureOperationType = Body(
+        None, description="type of type", embed=True
+    ),
+):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE_OPERATION.value,
-                                        metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps(
-                                            {'maintenance_procedure_operation_id': maintenance_procedure_operation_id,
-                                             'name': name,
-                                             'description': description,
-                                             'type': type,
-                                             'maintenance_procedure_id': maintenance_procedure_id,
-                                             }),
-                                        external=[]),
-                     schema=ProjectCommand.get_schema())
+
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE_OPERATION.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "maintenance_procedure_operation_id": maintenance_procedure_operation_id,
+                    "name": name,
+                    "description": description,
+                    "type": type,
+                    "maintenance_procedure_id": maintenance_procedure_id,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
+
 
 # endregion

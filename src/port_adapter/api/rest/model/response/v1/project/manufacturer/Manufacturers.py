@@ -7,7 +7,9 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.port_adapter.api.rest.model.response.v1.project.manufacturer.Manufacturer import ManufacturerDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.manufacturer.Manufacturer import (
+    ManufacturerDescriptor,
+)
 
 
 class Manufacturers(BaseModel):

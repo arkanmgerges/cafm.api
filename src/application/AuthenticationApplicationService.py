@@ -32,5 +32,7 @@ class AuthenticationApplicationService:
             bool: True if the user is authenticated, False otherwise
 
         """
-        logger.debug(f'[{AuthenticationApplicationService.isAuthenticated.__qualname__}] - Received token: {token}')
+        logger.debug(
+            f"[{AuthenticationApplicationService.isAuthenticated.__qualname__}] - Received token: {token}"
+        )
         return self._authService.isAuthenticated(token=token)

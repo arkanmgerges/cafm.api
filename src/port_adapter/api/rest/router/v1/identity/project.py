@@ -10,14 +10,22 @@ from fastapi import Response
 from fastapi.params import Path
 from grpc.beta.interfaces import StatusCode
 from starlette import status
-from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
+from starlette.status import (
+    HTTP_404_NOT_FOUND,
+    HTTP_500_INTERNAL_SERVER_ERROR,
+    HTTP_403_FORBIDDEN,
+)
 
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.grpc.v1.identity.project.ProjectClient import ProjectClient
+from src.port_adapter.api.rest.grpc.v1.identity.project.ProjectClient import (
+    ProjectClient,
+)
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
-from src.port_adapter.api.rest.model.response.v1.identity.Project import ProjectDescriptor
+from src.port_adapter.api.rest.model.response.v1.identity.Project import (
+    ProjectDescriptor,
+)
 from src.port_adapter.api.rest.model.response.v1.identity.Projects import Projects
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -35,17 +43,21 @@ c4model:Rel(api__identity_project_py__getProjects, identity__grpc__ProjectAppSer
 """
 
 
-@router.get(path="", summary='Get all projects', response_model=Projects)
-async def getProjects(*,
-                      result_from: int = Query(0, description='Starting offset for fetching data'),
-                      result_size: int = Query(10, description='Item count to be fetched'),
-                      order: str = Query('', description='e.g. name:asc,age:desc'),
-                      _=Depends(CustomHttpBearer())):
+@router.get(path="", summary="Get all projects", response_model=Projects)
+async def getProjects(
+    *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    order: str = Query("", description="e.g. name:asc,age:desc"),
+    _=Depends(CustomHttpBearer()),
+):
     try:
         client = ProjectClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.projects(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.projects(
+            resultFrom=result_from, resultSize=result_size, order=order
+        )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -53,7 +65,8 @@ async def getProjects(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getProjects.__module__}.{getProjects.__qualname__}] - error response e: {e}')
+                f"[{getProjects.__module__}.{getProjects.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -65,14 +78,18 @@ c4model:Rel(api__identity_project_py__getProject, identity__grpc__ProjectAppServ
 """
 
 
-@router.get(path="/{project_id}", summary='Get project',
-            response_model=ProjectDescriptor)
+@router.get(
+    path="/{project_id}", summary="Get project", response_model=ProjectDescriptor
+)
 @OpenTelemetry.fastApiTraceOTel
-async def getProject(*, project_id: str = Path(...,
-                                               description='Project id that is used to fetch project data'),
-                     _=Depends(CustomHttpBearer())):
-    """Get a Project by id
-    """
+async def getProject(
+    *,
+    project_id: str = Path(
+        ..., description="Project id that is used to fetch project data"
+    ),
+    _=Depends(CustomHttpBearer()),
+):
+    """Get a Project by id"""
     try:
         client = ProjectClient()
         return client.projectById(projectId=project_id)
@@ -83,7 +100,8 @@ async def getProject(*, project_id: str = Path(...,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getProject.__module__}.{getProject.__qualname__}] - error response e: {e}')
+                f"[{getProject.__module__}.{getProject.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -96,17 +114,25 @@ c4model:Rel(api__identity_project_py__create, api__identity_project_py__create__
 """
 
 
-@router.post("", summary='Create a new project', status_code=status.HTTP_200_OK)
+@router.post("", summary="Create a new project", status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def createProject(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='Title of the project', embed=True)):
+async def createProject(
+    *,
+    _=Depends(CustomHttpBearer()),
+    name: str = Body(..., description="Title of the project", embed=True),
+):
     reqId = RequestIdGenerator.generateListId(2)
     producer = AppDi.instance.get(SimpleProducer)
     client = ProjectClient()
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_PROJECT.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'project_id': client.newId(), 'name': name})), schema=ApiCommand.get_schema())
+    producer.produce(
+        obj=ApiCommand(
+            id=reqId,
+            name=CommandConstant.CREATE_PROJECT.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps({"project_id": client.newId(), "name": name}),
+        ),
+        schema=ApiCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
@@ -117,15 +143,26 @@ c4model:Rel(api__identity_project_py__delete, api__identity_project_py__delete__
 """
 
 
-@router.delete("/{project_id}", summary='Delete a project', status_code=status.HTTP_200_OK)
+@router.delete(
+    "/{project_id}", summary="Delete a project", status_code=status.HTTP_200_OK
+)
 @OpenTelemetry.fastApiTraceOTel
-async def deleteProject(*, _=Depends(CustomHttpBearer()),
-                 project_id: str = Path(...,
-                                        description='Project id that is used in order to delete the project')):
+async def deleteProject(
+    *,
+    _=Depends(CustomHttpBearer()),
+    project_id: str = Path(
+        ..., description="Project id that is used in order to delete the project"
+    ),
+):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_PROJECT.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'project_id': project_id})), schema=ApiCommand.get_schema())
+    producer.produce(
+        obj=ApiCommand(
+            id=reqId,
+            name=CommandConstant.DELETE_PROJECT.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps({"project_id": project_id}),
+        ),
+        schema=ApiCommand.get_schema(),
+    )
     return {"request_id": reqId}

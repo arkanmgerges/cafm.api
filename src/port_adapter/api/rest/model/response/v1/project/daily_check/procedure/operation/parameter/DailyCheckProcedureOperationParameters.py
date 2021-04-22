@@ -7,9 +7,13 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.port_adapter.api.rest.model.response.v1.project.daily_check.procedure.operation.parameter.DailyCheckProcedureOperationParameter import DailyCheckProcedureOperationParameterDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.daily_check.procedure.operation.parameter.DailyCheckProcedureOperationParameter import (
+    DailyCheckProcedureOperationParameterDescriptor,
+)
 
 
 class DailyCheckProcedureOperationParameters(BaseModel):
-    daily_check_procedure_operation_parameters: List[DailyCheckProcedureOperationParameterDescriptor]
+    daily_check_procedure_operation_parameters: List[
+        DailyCheckProcedureOperationParameterDescriptor
+    ]
     item_count: int

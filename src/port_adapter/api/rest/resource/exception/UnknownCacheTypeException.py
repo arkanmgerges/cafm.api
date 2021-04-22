@@ -9,4 +9,4 @@ class UnknownCacheTypeException(Exception):
         super().__init__()
 
     def __str__(self):
-        return f'<{self.__class__.__qualname__}> {self.message}'
+        return f"<{self.__class__.__qualname__}> {self.message}"

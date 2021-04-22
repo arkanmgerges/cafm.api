@@ -12,14 +12,24 @@ from fastapi import Response
 from fastapi.params import Path
 from grpc.beta.interfaces import StatusCode
 from starlette import status
-from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
+from starlette.status import (
+    HTTP_404_NOT_FOUND,
+    HTTP_500_INTERNAL_SERVER_ERROR,
+    HTTP_403_FORBIDDEN,
+)
 
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.grpc.v1.project.subcontractor.category.SubcontractorCategoryClient import SubcontractorCategoryClient
-from src.port_adapter.api.rest.model.response.v1.project.subcontractor.category.SubcontractorCategories import SubcontractorCategories
-from src.port_adapter.api.rest.model.response.v1.project.subcontractor.category.SubcontractorCategory import SubcontractorCategoryDescriptor
+from src.port_adapter.api.rest.grpc.v1.project.subcontractor.category.SubcontractorCategoryClient import (
+    SubcontractorCategoryClient,
+)
+from src.port_adapter.api.rest.model.response.v1.project.subcontractor.category.SubcontractorCategories import (
+    SubcontractorCategories,
+)
+from src.port_adapter.api.rest.model.response.v1.project.subcontractor.category.SubcontractorCategory import (
+    SubcontractorCategoryDescriptor,
+)
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -29,18 +39,26 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 
-@router.get(path="", summary='Get all subcontractor category(s)', response_model=SubcontractorCategories)
+@router.get(
+    path="",
+    summary="Get all subcontractor category(s)",
+    response_model=SubcontractorCategories,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def getSubcontractorCategories(*,
-                            result_from: int = Query(0, description='Starting offset for fetching data'),
-                            result_size: int = Query(10, description='Item count to be fetched'),
-                            order: str = Query('', description='e.g. id:asc,email:desc'),
-                            _=Depends(CustomHttpBearer())):
+async def getSubcontractorCategories(
+    *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    order: str = Query("", description="e.g. id:asc,email:desc"),
+    _=Depends(CustomHttpBearer()),
+):
     try:
         client = SubcontractorCategoryClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.subcontractorCategories(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.subcontractorCategories(
+            resultFrom=result_from, resultSize=result_size, order=order
+        )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -48,19 +66,28 @@ async def getSubcontractorCategories(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getSubcontractorCategories.__module__}.{getSubcontractorCategories.__qualname__}] - error response e: {e}')
+                f"[{getSubcontractorCategories.__module__}.{getSubcontractorCategories.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
 
-@router.get(path="/{subcontractor_category_id}", summary='Get subcontractor category by id',
-            response_model=SubcontractorCategoryDescriptor)
+
+@router.get(
+    path="/{subcontractor_category_id}",
+    summary="Get subcontractor category by id",
+    response_model=SubcontractorCategoryDescriptor,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def getSubcontractorCategoryById(*, subcontractor_category_id: str = Path(...,
-                                                                description='subcontractor category id that is used to fetch subcontractor category data'),
-                               _=Depends(CustomHttpBearer())):
-    """Get a subcontractor category by id
-    """
+async def getSubcontractorCategoryById(
+    *,
+    subcontractor_category_id: str = Path(
+        ...,
+        description="subcontractor category id that is used to fetch subcontractor category data",
+    ),
+    _=Depends(CustomHttpBearer()),
+):
+    """Get a subcontractor category by id"""
     try:
         client = SubcontractorCategoryClient()
         return client.subcontractorCategoryById(id=subcontractor_category_id)
@@ -71,84 +98,145 @@ async def getSubcontractorCategoryById(*, subcontractor_category_id: str = Path(
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getSubcontractorCategoryById.__module__}.{getSubcontractorCategoryById.__qualname__}] - error response e: {e}')
+                f"[{getSubcontractorCategoryById.__module__}.{getSubcontractorCategoryById.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
 
 
-@router.post("", summary='Create subcontractor category', status_code=status.HTTP_200_OK)
+@router.post(
+    "", summary="Create subcontractor category", status_code=status.HTTP_200_OK
+)
 @OpenTelemetry.fastApiTraceOTel
-async def createSubcontractorCategory(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='name of subcontractor category', embed=True),
-                ):
+async def createSubcontractorCategory(
+    *,
+    _=Depends(CustomHttpBearer()),
+    name: str = Body(..., description="name of subcontractor category", embed=True),
+):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+
     client = SubcontractorCategoryClient()
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_SUBCONTRACTOR_CATEGORY.value,
-                                        metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps(
-                                            {
-                                             'subcontractor_category_id': client.newId(),
-                                             'name': name,
-                                             }),
-                                        external=[]),
-                     schema=ProjectCommand.get_schema())
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.CREATE_SUBCONTRACTOR_CATEGORY.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "subcontractor_category_id": client.newId(),
+                    "name": name,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
-@router.put("/{subcontractor_category_id}", summary='Update subcontractor category', status_code=status.HTTP_200_OK)
+@router.put(
+    "/{subcontractor_category_id}",
+    summary="Update subcontractor category",
+    status_code=status.HTTP_200_OK,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def updateSubcontractorCategory(*, _=Depends(CustomHttpBearer()),
-                 subcontractor_category_id: str = Path(..., description='subcontractor category id that is used in order to update the subcontractor category'),
-                 name: str = Body(..., description='name of name', embed=True),                 
-                 ):
+async def updateSubcontractorCategory(
+    *,
+    _=Depends(CustomHttpBearer()),
+    subcontractor_category_id: str = Path(
+        ...,
+        description="subcontractor category id that is used in order to update the subcontractor category",
+    ),
+    name: str = Body(..., description="name of name", embed=True),
+):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_SUBCONTRACTOR_CATEGORY.value,
-                                        metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps(
-                                            {'subcontractor_category_id': subcontractor_category_id,
-                                            'name': name,
-                                             }),
-                                        external=[]),
-                     schema=ProjectCommand.get_schema())
+
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.UPDATE_SUBCONTRACTOR_CATEGORY.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "subcontractor_category_id": subcontractor_category_id,
+                    "name": name,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
-@router.patch("/{subcontractor_category_id}", summary='Partial update subcontractor category', status_code=status.HTTP_200_OK)
+@router.patch(
+    "/{subcontractor_category_id}",
+    summary="Partial update subcontractor category",
+    status_code=status.HTTP_200_OK,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdateSubcontractorCategory(*, _=Depends(CustomHttpBearer()),
-                        subcontractor_category_id: str = Path(..., description='subcontractor category id that is used in order to update the subcontractor category'),
-                        name: str = Body(None, description='name of name', embed=True),
-                        ):
+async def partialUpdateSubcontractorCategory(
+    *,
+    _=Depends(CustomHttpBearer()),
+    subcontractor_category_id: str = Path(
+        ...,
+        description="subcontractor category id that is used in order to update the subcontractor category",
+    ),
+    name: str = Body(None, description="name of name", embed=True),
+):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_SUBCONTRACTOR_CATEGORY.value,
-                                        metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps(
-                                            {'subcontractor_category_id': subcontractor_category_id,
-                                            'name': name,
-                                            }),
-                                        external=[]),
-                     schema=ProjectCommand.get_schema())
+
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.UPDATE_SUBCONTRACTOR_CATEGORY.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "subcontractor_category_id": subcontractor_category_id,
+                    "name": name,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
-@router.delete("/{subcontractor_category_id}", summary='Delete a subcontractor categories', status_code=status.HTTP_200_OK)
+@router.delete(
+    "/{subcontractor_category_id}",
+    summary="Delete a subcontractor categories",
+    status_code=status.HTTP_200_OK,
+)
 @OpenTelemetry.fastApiTraceOTel
-async def deleteSubcontractorCategory(*, _=Depends(CustomHttpBearer()),
-                 subcontractor_category_id: str = Path(..., description='subcontractor category id that is used in order to delete the subcontractor category'), ):
+async def deleteSubcontractorCategory(
+    *,
+    _=Depends(CustomHttpBearer()),
+    subcontractor_category_id: str = Path(
+        ...,
+        description="subcontractor category id that is used in order to delete the subcontractor category",
+    ),
+):
     reqId = str(uuid4())
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_SUBCONTRACTOR_CATEGORY.value,
-                                        metadata=json.dumps({"token": Client.token}),
-                                        data=json.dumps(
-                                            {'subcontractor_category_id': subcontractor_category_id}),
-                                        external=[]),
-                     schema=ProjectCommand.get_schema())
+
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.DELETE_SUBCONTRACTOR_CATEGORY.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps({"subcontractor_category_id": subcontractor_category_id}),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
     return {"request_id": reqId}

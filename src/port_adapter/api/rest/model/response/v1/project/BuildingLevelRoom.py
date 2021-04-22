@@ -11,5 +11,6 @@ class BuildingLevelRoom(BaseModel):
     index: int
     building_level_id: str
 
+
 class BuildingLevelRoomDescriptor(BuildingLevelRoom):
     pass

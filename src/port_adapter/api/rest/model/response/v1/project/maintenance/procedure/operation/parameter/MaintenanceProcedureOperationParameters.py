@@ -7,9 +7,13 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameter import MaintenanceProcedureOperationParameterDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameter import (
+    MaintenanceProcedureOperationParameterDescriptor,
+)
 
 
 class MaintenanceProcedureOperationParameters(BaseModel):
-    maintenance_procedure_operation_parameters: List[MaintenanceProcedureOperationParameterDescriptor]
+    maintenance_procedure_operation_parameters: List[
+        MaintenanceProcedureOperationParameterDescriptor
+    ]
     item_count: int

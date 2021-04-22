@@ -4,4 +4,4 @@
 
 
 class Client:
-    token = ''
+    token = ""

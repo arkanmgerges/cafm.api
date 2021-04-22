@@ -12,4 +12,5 @@ class RequestIdGenerator:
     @classmethod
     def generateListId(cls, numberOfSuccesses: int = 1):
         from src.port_adapter.messaging.listener.CacheType import CacheType
-        return f'{CacheType.LIST.value}:{str(uuid4())}:{numberOfSuccesses}'
+
+        return f"{CacheType.LIST.value}:{str(uuid4())}:{numberOfSuccesses}"

@@ -2,7 +2,9 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from project import subcontractor_app_service_pb2 as project_dot_subcontractor__app__service__pb2
+from project import (
+    subcontractor_app_service_pb2 as project_dot_subcontractor__app__service__pb2,
+)
 
 
 class SubcontractorAppServiceStub(object):
@@ -15,30 +17,30 @@ class SubcontractorAppServiceStub(object):
             channel: A grpc.Channel.
         """
         self.subcontractorsBySubcontractorCategoryId = channel.unary_unary(
-                '/cafm.project.subcontractor.SubcontractorAppService/subcontractorsBySubcontractorCategoryId',
-                request_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsBySubcontractorCategoryIdRequest.SerializeToString,
-                response_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsBySubcontractorCategoryIdResponse.FromString,
-                )
+            "/cafm.project.subcontractor.SubcontractorAppService/subcontractorsBySubcontractorCategoryId",
+            request_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsBySubcontractorCategoryIdRequest.SerializeToString,
+            response_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsBySubcontractorCategoryIdResponse.FromString,
+        )
         self.subcontractorsByOrganizationId = channel.unary_unary(
-                '/cafm.project.subcontractor.SubcontractorAppService/subcontractorsByOrganizationId',
-                request_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsByOrganizationIdRequest.SerializeToString,
-                response_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsByOrganizationIdResponse.FromString,
-                )
+            "/cafm.project.subcontractor.SubcontractorAppService/subcontractorsByOrganizationId",
+            request_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsByOrganizationIdRequest.SerializeToString,
+            response_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsByOrganizationIdResponse.FromString,
+        )
         self.subcontractorById = channel.unary_unary(
-                '/cafm.project.subcontractor.SubcontractorAppService/subcontractorById',
-                request_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorppService_subcontractorByIdRequest.SerializeToString,
-                response_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorppService_subcontractorByIdResponse.FromString,
-                )
+            "/cafm.project.subcontractor.SubcontractorAppService/subcontractorById",
+            request_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorppService_subcontractorByIdRequest.SerializeToString,
+            response_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorppService_subcontractorByIdResponse.FromString,
+        )
         self.subcontractors = channel.unary_unary(
-                '/cafm.project.subcontractor.SubcontractorAppService/subcontractors',
-                request_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsRequest.SerializeToString,
-                response_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsResponse.FromString,
-                )
+            "/cafm.project.subcontractor.SubcontractorAppService/subcontractors",
+            request_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsRequest.SerializeToString,
+            response_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsResponse.FromString,
+        )
         self.newId = channel.unary_unary(
-                '/cafm.project.subcontractor.SubcontractorAppService/newId',
-                request_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_newIdRequest.SerializeToString,
-                response_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_newIdResponse.FromString,
-                )
+            "/cafm.project.subcontractor.SubcontractorAppService/newId",
+            request_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_newIdRequest.SerializeToString,
+            response_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_newIdResponse.FromString,
+        )
 
 
 class SubcontractorAppServiceServicer(object):
@@ -47,152 +49,213 @@ class SubcontractorAppServiceServicer(object):
     def subcontractorsBySubcontractorCategoryId(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+        context.set_details("Method not implemented!")
+        raise NotImplementedError("Method not implemented!")
 
     def subcontractorsByOrganizationId(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+        context.set_details("Method not implemented!")
+        raise NotImplementedError("Method not implemented!")
 
     def subcontractorById(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+        context.set_details("Method not implemented!")
+        raise NotImplementedError("Method not implemented!")
 
     def subcontractors(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+        context.set_details("Method not implemented!")
+        raise NotImplementedError("Method not implemented!")
 
     def newId(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details('Method not implemented!')
-        raise NotImplementedError('Method not implemented!')
+        context.set_details("Method not implemented!")
+        raise NotImplementedError("Method not implemented!")
 
 
 def add_SubcontractorAppServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'subcontractorsBySubcontractorCategoryId': grpc.unary_unary_rpc_method_handler(
-                    servicer.subcontractorsBySubcontractorCategoryId,
-                    request_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsBySubcontractorCategoryIdRequest.FromString,
-                    response_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsBySubcontractorCategoryIdResponse.SerializeToString,
-            ),
-            'subcontractorsByOrganizationId': grpc.unary_unary_rpc_method_handler(
-                    servicer.subcontractorsByOrganizationId,
-                    request_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsByOrganizationIdRequest.FromString,
-                    response_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsByOrganizationIdResponse.SerializeToString,
-            ),
-            'subcontractorById': grpc.unary_unary_rpc_method_handler(
-                    servicer.subcontractorById,
-                    request_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorppService_subcontractorByIdRequest.FromString,
-                    response_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorppService_subcontractorByIdResponse.SerializeToString,
-            ),
-            'subcontractors': grpc.unary_unary_rpc_method_handler(
-                    servicer.subcontractors,
-                    request_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsRequest.FromString,
-                    response_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsResponse.SerializeToString,
-            ),
-            'newId': grpc.unary_unary_rpc_method_handler(
-                    servicer.newId,
-                    request_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_newIdRequest.FromString,
-                    response_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_newIdResponse.SerializeToString,
-            ),
+        "subcontractorsBySubcontractorCategoryId": grpc.unary_unary_rpc_method_handler(
+            servicer.subcontractorsBySubcontractorCategoryId,
+            request_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsBySubcontractorCategoryIdRequest.FromString,
+            response_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsBySubcontractorCategoryIdResponse.SerializeToString,
+        ),
+        "subcontractorsByOrganizationId": grpc.unary_unary_rpc_method_handler(
+            servicer.subcontractorsByOrganizationId,
+            request_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsByOrganizationIdRequest.FromString,
+            response_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsByOrganizationIdResponse.SerializeToString,
+        ),
+        "subcontractorById": grpc.unary_unary_rpc_method_handler(
+            servicer.subcontractorById,
+            request_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorppService_subcontractorByIdRequest.FromString,
+            response_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorppService_subcontractorByIdResponse.SerializeToString,
+        ),
+        "subcontractors": grpc.unary_unary_rpc_method_handler(
+            servicer.subcontractors,
+            request_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsRequest.FromString,
+            response_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsResponse.SerializeToString,
+        ),
+        "newId": grpc.unary_unary_rpc_method_handler(
+            servicer.newId,
+            request_deserializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_newIdRequest.FromString,
+            response_serializer=project_dot_subcontractor__app__service__pb2.SubcontractorAppService_newIdResponse.SerializeToString,
+        ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'cafm.project.subcontractor.SubcontractorAppService', rpc_method_handlers)
+        "cafm.project.subcontractor.SubcontractorAppService", rpc_method_handlers
+    )
     server.add_generic_rpc_handlers((generic_handler,))
 
 
- # This class is part of an EXPERIMENTAL API.
+# This class is part of an EXPERIMENTAL API.
 class SubcontractorAppService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def subcontractorsBySubcontractorCategoryId(request,
+    def subcontractorsBySubcontractorCategoryId(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_unary(
+            request,
             target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.project.subcontractor.SubcontractorAppService/subcontractorsBySubcontractorCategoryId',
+            "/cafm.project.subcontractor.SubcontractorAppService/subcontractorsBySubcontractorCategoryId",
             project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsBySubcontractorCategoryIdRequest.SerializeToString,
             project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsBySubcontractorCategoryIdResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+        )
 
     @staticmethod
-    def subcontractorsByOrganizationId(request,
+    def subcontractorsByOrganizationId(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_unary(
+            request,
             target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.project.subcontractor.SubcontractorAppService/subcontractorsByOrganizationId',
+            "/cafm.project.subcontractor.SubcontractorAppService/subcontractorsByOrganizationId",
             project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsByOrganizationIdRequest.SerializeToString,
             project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsByOrganizationIdResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+        )
 
     @staticmethod
-    def subcontractorById(request,
+    def subcontractorById(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_unary(
+            request,
             target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.project.subcontractor.SubcontractorAppService/subcontractorById',
+            "/cafm.project.subcontractor.SubcontractorAppService/subcontractorById",
             project_dot_subcontractor__app__service__pb2.SubcontractorppService_subcontractorByIdRequest.SerializeToString,
             project_dot_subcontractor__app__service__pb2.SubcontractorppService_subcontractorByIdResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+        )
 
     @staticmethod
-    def subcontractors(request,
+    def subcontractors(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_unary(
+            request,
             target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.project.subcontractor.SubcontractorAppService/subcontractors',
+            "/cafm.project.subcontractor.SubcontractorAppService/subcontractors",
             project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsRequest.SerializeToString,
             project_dot_subcontractor__app__service__pb2.SubcontractorAppService_subcontractorsResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+        )
 
     @staticmethod
-    def newId(request,
+    def newId(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_unary(
+            request,
             target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.project.subcontractor.SubcontractorAppService/newId',
+            "/cafm.project.subcontractor.SubcontractorAppService/newId",
             project_dot_subcontractor__app__service__pb2.SubcontractorAppService_newIdRequest.SerializeToString,
             project_dot_subcontractor__app__service__pb2.SubcontractorAppService_newIdResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+        )

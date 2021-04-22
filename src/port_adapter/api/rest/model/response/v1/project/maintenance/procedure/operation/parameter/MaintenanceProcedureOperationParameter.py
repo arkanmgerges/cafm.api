@@ -17,5 +17,7 @@ class MaintenanceProcedureOperationParameter(BaseModel):
     max_value: str
 
 
-class MaintenanceProcedureOperationParameterDescriptor(MaintenanceProcedureOperationParameter):
+class MaintenanceProcedureOperationParameterDescriptor(
+    MaintenanceProcedureOperationParameter
+):
     pass

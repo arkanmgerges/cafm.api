@@ -9,7 +9,11 @@ from fastapi import Response
 from fastapi.params import Path
 from grpc.beta.interfaces import StatusCode
 from starlette import status
-from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
+from starlette.status import (
+    HTTP_404_NOT_FOUND,
+    HTTP_500_INTERNAL_SERVER_ERROR,
+    HTTP_403_FORBIDDEN,
+)
 
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
@@ -34,18 +38,22 @@ c4model:Rel(api__identity_realm_py__getRealms, identity__grpc__RealmAppServiceLi
 """
 
 
-@router.get(path="", summary='Get all realms', response_model=Realms)
+@router.get(path="", summary="Get all realms", response_model=Realms)
 @OpenTelemetry.fastApiTraceOTel
-async def getRealms(*,
-                    result_from: int = Query(0, description='Starting offset for fetching data'),
-                    result_size: int = Query(10, description='Item count to be fetched'),
-                    order: str = Query('', description='e.g. name:asc,age:desc'),
-                    _=Depends(CustomHttpBearer())):
+async def getRealms(
+    *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    order: str = Query("", description="e.g. name:asc,age:desc"),
+    _=Depends(CustomHttpBearer()),
+):
     try:
         client = RealmClient()
         orderService = AppDi.instance.get(OrderService)
         order = orderService.orderStringToListOfDict(order)
-        return client.realms(resultFrom=result_from, resultSize=result_size, order=order)
+        return client.realms(
+            resultFrom=result_from, resultSize=result_size, order=order
+        )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -53,7 +61,8 @@ async def getRealms(*,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getRealms.__module__}.{getRealms.__qualname__}] - error response e: {e}')
+                f"[{getRealms.__module__}.{getRealms.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -65,14 +74,14 @@ c4model:Rel(api__identity_realm_py__getRealm, identity__grpc__RealmAppServiceLis
 """
 
 
-@router.get(path="/{realm_id}", summary='Get realm',
-            response_model=RealmDescriptor)
+@router.get(path="/{realm_id}", summary="Get realm", response_model=RealmDescriptor)
 @OpenTelemetry.fastApiTraceOTel
-async def getRealm(*, realm_id: str = Path(...,
-                                           description='Realm id that is used to fetch realm data'),
-                   _=Depends(CustomHttpBearer())):
-    """Get a Realm by id
-    """
+async def getRealm(
+    *,
+    realm_id: str = Path(..., description="Realm id that is used to fetch realm data"),
+    _=Depends(CustomHttpBearer()),
+):
+    """Get a Realm by id"""
     try:
         client = RealmClient()
         return client.realmById(realmId=realm_id)
@@ -83,7 +92,8 @@ async def getRealm(*, realm_id: str = Path(...,
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f'[{getRealm.__module__}.{getRealm.__qualname__}] - error response e: {e}')
+                f"[{getRealm.__module__}.{getRealm.__qualname__}] - error response e: {e}"
+            )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
@@ -96,24 +106,38 @@ c4model:Rel(api__identity_realm_py__create, api__identity_realm_py__create__api_
 """
 
 
-@router.post("", summary='Create a new realm', status_code=status.HTTP_200_OK)
+@router.post("", summary="Create a new realm", status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def createRealm(*, _=Depends(CustomHttpBearer()),
-                 name: str = Body(..., description='Title of the realm', embed=True),
-                 realm_type: str = Body(..., description='The type can be ' + ', '.join([e.value for e in RealmType]),
-                                        embed=True),
-                 ):
+async def createRealm(
+    *,
+    _=Depends(CustomHttpBearer()),
+    name: str = Body(..., description="Title of the realm", embed=True),
+    realm_type: str = Body(
+        ...,
+        description="The type can be " + ", ".join([e.value for e in RealmType]),
+        embed=True,
+    ),
+):
     reqId = RequestIdGenerator.generateListId(2)
     realm_type = realm_type.lower()
     if realm_type not in [e.value for e in RealmType]:
-        raise ValueError('Invalid realm_type, it should be one of these: ' + ', '.join([e.value for e in RealmType]))
+        raise ValueError(
+            "Invalid realm_type, it should be one of these: "
+            + ", ".join([e.value for e in RealmType])
+        )
     producer = AppDi.instance.get(SimpleProducer)
     client = RealmClient()
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.CREATE_REALM.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'realm_id': client.newId(), 'name': name, 'realm_type': realm_type})),
-                     schema=ApiCommand.get_schema())
+    producer.produce(
+        obj=ApiCommand(
+            id=reqId,
+            name=CommandConstant.CREATE_REALM.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {"realm_id": client.newId(), "name": name, "realm_type": realm_type}
+            ),
+        ),
+        schema=ApiCommand.get_schema(),
+    )
     return {"request_id": reqId}
 
 
@@ -124,15 +148,24 @@ c4model:Rel(api__identity_realm_py__delete, api__identity_realm_py__delete__api_
 """
 
 
-@router.delete("/{realm_id}", summary='Delete a realm', status_code=status.HTTP_200_OK)
+@router.delete("/{realm_id}", summary="Delete a realm", status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def deleteRealm(*, _=Depends(CustomHttpBearer()),
-                 realm_id: str = Path(...,
-                                      description='Realm id that is used in order to delete the realm')):
+async def deleteRealm(
+    *,
+    _=Depends(CustomHttpBearer()),
+    realm_id: str = Path(
+        ..., description="Realm id that is used in order to delete the realm"
+    ),
+):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(obj=ApiCommand(id=reqId, name=CommandConstant.DELETE_REALM.value,
-                                    metadata=json.dumps({"token": Client.token}),
-                                    data=json.dumps(
-                                        {'realm_id': realm_id})), schema=ApiCommand.get_schema())
+    producer.produce(
+        obj=ApiCommand(
+            id=reqId,
+            name=CommandConstant.DELETE_REALM.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps({"realm_id": realm_id}),
+        ),
+        schema=ApiCommand.get_schema(),
+    )
     return {"request_id": reqId}

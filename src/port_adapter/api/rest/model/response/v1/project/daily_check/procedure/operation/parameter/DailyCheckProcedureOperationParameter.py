@@ -17,5 +17,7 @@ class DailyCheckProcedureOperationParameter(BaseModel):
     max_value: float
 
 
-class DailyCheckProcedureOperationParameterDescriptor(DailyCheckProcedureOperationParameter):
+class DailyCheckProcedureOperationParameterDescriptor(
+    DailyCheckProcedureOperationParameter
+):
     pass

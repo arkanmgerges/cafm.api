@@ -15,4 +15,3 @@ class User(BaseModel):
 class UserDescriptor(BaseModel):
     id: str
     email: str
-
