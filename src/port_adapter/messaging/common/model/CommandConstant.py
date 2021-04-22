@@ -150,6 +150,8 @@ class CommandConstant(Enum):
     CREATE_STANDARD_EQUIPMENT = "create_standard_equipment"
     UPDATE_STANDARD_EQUIPMENT = "update_standard_equipment"
     DELETE_STANDARD_EQUIPMENT = "delete_standard_equipment"
+    LINK_ORGANIZATION_BUILDING = "link_organization_building"
+    UNLINK_ORGANIZATION_BUILDING = "unlink_organization_building"
 
 
 # endregion

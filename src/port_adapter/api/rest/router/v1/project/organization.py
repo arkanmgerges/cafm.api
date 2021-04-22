@@ -252,3 +252,85 @@ async def getOrganizationById(
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
+
+
+@router.post(
+    path="/{organization_id}/link_to_building",
+    summary="Link organization to a building",
+    status_code=status.HTTP_200_OK,
+)
+async def linkOrganizationToBuilding(
+    *,
+    organization_id: str = Path(
+        ..., description="Organization id that is used to fetch organization data"
+    ),
+    building_id: str = Body(..., description="Building id", embed=True),
+    building_level_id: str = Body(None, description="Building level id", embed=True),
+    building_level_room_id: str = Body(
+        None, description="Building level room id", embed=True
+    ),
+    _=Depends(CustomHttpBearer()),
+):
+    reqId = RequestIdGenerator.generateId()
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.LINK_ORGANIZATION_BUILDING.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "organization_id": organization_id,
+                    "building_id": building_id,
+                    "building_level_id": building_level_id,
+                    "building_level_room_id": building_level_room_id,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
+    return {"request_id": reqId}
+
+
+@router.delete(
+    path="/{organization_id}/link_to_building",
+    summary="Unlink organization from a building",
+    status_code=status.HTTP_200_OK,
+)
+async def unLinkOrganizationToBuilding(
+    *,
+    organization_id: str = Path(
+        ..., description="Organization id that is used to fetch organization data"
+    ),
+    building_id: str = Body(..., description="Building id", embed=True),
+    building_level_id: str = Body(None, description="Building level id", embed=True),
+    building_level_room_id: str = Body(
+        None, description="Building level room id", embed=True
+    ),
+    _=Depends(CustomHttpBearer()),
+):
+    reqId = RequestIdGenerator.generateId()
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.UNLINK_ORGANIZATION_BUILDING.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "organization_id": organization_id,
+                    "building_id": building_id,
+                    "building_level_id": building_level_id,
+                    "building_level_room_id": building_level_room_id,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
+    return {"request_id": reqId}
