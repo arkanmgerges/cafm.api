@@ -152,6 +152,7 @@ class CommandConstant(Enum):
     DELETE_STANDARD_EQUIPMENT = "delete_standard_equipment"
     LINK_ORGANIZATION_BUILDING = "link_organization_building"
     UNLINK_ORGANIZATION_BUILDING = "unlink_organization_building"
+    PROCESS_BULK = "process_bulk"
 
 
 # endregion

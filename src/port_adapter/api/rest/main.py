@@ -27,7 +27,7 @@ from src.port_adapter.api.rest.resource.exception.NotFoundException import (
 from src.port_adapter.api.rest.resource.exception.ValidationErrorException import (
     ValidationErrorException,
 )
-from src.port_adapter.api.rest.router.v1.common import request as common_request
+from src.port_adapter.api.rest.router.v1.common import request as common_request, bulk as common_bulk
 from src.port_adapter.api.rest.router.v1.identity import (
     auth as id_auth,
     ou as id_ou,
@@ -184,6 +184,17 @@ random.seed(datetime.utcnow().timestamp())
 app.include_router(
     common_request.router,
     prefix="/v1/common/request",
+    tags=["Common"],
+    responses={
+        202: {"model": Message},
+        400: {"model": Message},
+        404: {"model": Message},
+        500: {"model": Message},
+    },
+)
+app.include_router(
+    common_bulk.router,
+    prefix="/v1/common",
     tags=["Common"],
     responses={
         202: {"model": Message},

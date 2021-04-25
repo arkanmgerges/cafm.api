@@ -27,6 +27,7 @@ from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
+from src.port_adapter.messaging.common.model.IdentityCommand import IdentityCommand
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -115,13 +116,14 @@ async def createOu(
     client = OuClient()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(
-        obj=ApiCommand(
+        obj=IdentityCommand(
             id=reqId,
             name=CommandConstant.CREATE_OU.value,
             metadata=json.dumps({"token": Client.token}),
             data=json.dumps({"ou_id": client.newId(), "name": name}),
+            external=[],
         ),
-        schema=ApiCommand.get_schema(),
+        schema=IdentityCommand.get_schema(),
     )
     return {"request_id": reqId}
 

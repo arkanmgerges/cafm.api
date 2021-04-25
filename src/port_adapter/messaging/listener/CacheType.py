@@ -7,9 +7,12 @@ from enum import Enum
 class CacheType(Enum):
     KEY = "0"
     LIST = "1"
+    HASH = "2"
 
     @staticmethod
     def valueToEnum(value: str):
         if value == "1":
             return CacheType.LIST
+        elif value == "2":
+            return CacheType.HASH
         return CacheType.KEY
