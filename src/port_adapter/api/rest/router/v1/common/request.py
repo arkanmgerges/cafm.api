@@ -191,6 +191,7 @@ def _hasAtLeastOneFailed(items):
 def _resultForBulk(items):
     resultItems = []
     itemCount = -1
+    exceptionItems = []
     for item in items:
         resultDict = json.loads(item.decode("utf-8"))
         resultData = resultDict["data"]
@@ -199,7 +200,10 @@ def _resultForBulk(items):
             if itemCount == -1:
                 itemCount = resultData["item_count"]
             resultItems.append(dataItem)
-    return {'items': resultItems, 'item_count': itemCount}
+        exceptionItem = resultData["exceptions"] if "exceptions" in resultData else None
+        if exceptionItem is not None:
+            exceptionItems.append(exceptionItem)
+    return {'items': resultItems, 'item_count': itemCount, 'exceptions': exceptionItems}
 
 
 def _resultFromItems(items):
