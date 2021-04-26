@@ -7,12 +7,17 @@ from enum import Enum
 class CacheType(Enum):
     KEY = "0"
     LIST = "1"
-    HASH = "2"
+
+    @staticmethod
+    def listId():
+        return "1"
+
+    @staticmethod
+    def bulkId():
+        return "2"
 
     @staticmethod
     def valueToEnum(value: str):
-        if value == "1":
+        if value == "1" or value == "2":
             return CacheType.LIST
-        elif value == "2":
-            return CacheType.HASH
         return CacheType.KEY

@@ -16,7 +16,33 @@ from src.port_adapter.api.rest.grpc.v1.identity.permission_context.PermissionCon
 from src.port_adapter.api.rest.grpc.v1.identity.project.ProjectClient import ProjectClient
 from src.port_adapter.api.rest.grpc.v1.identity.realm.RealmClient import RealmClient
 from src.port_adapter.api.rest.grpc.v1.identity.role.RoleClient import RoleClient
+from src.port_adapter.api.rest.grpc.v1.identity.user.UserClient import UserClient
 from src.port_adapter.api.rest.grpc.v1.identity.user_group.UserGroupClient import UserGroupClient
+from src.port_adapter.api.rest.grpc.v1.project.daily_check.procedure.DailyCheckProcedureClient import \
+    DailyCheckProcedureClient
+from src.port_adapter.api.rest.grpc.v1.project.equipment.EquipmentClient import EquipmentClient
+from src.port_adapter.api.rest.grpc.v1.project.equipment.category.EquipmentCategoryClient import EquipmentCategoryClient
+from src.port_adapter.api.rest.grpc.v1.project.equipment.category.group.EquipmentCategoryGroupClient import \
+    EquipmentCategoryGroupClient
+from src.port_adapter.api.rest.grpc.v1.project.equipment.input.EquipmentInputClient import EquipmentInputClient
+from src.port_adapter.api.rest.grpc.v1.project.equipment.model.EquipmentModelClient import EquipmentModelClient
+from src.port_adapter.api.rest.grpc.v1.project.equipment.project_category.EquipmentProjectCategoryClient import \
+    EquipmentProjectCategoryClient
+from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.MaintenanceProcedureClient import \
+    MaintenanceProcedureClient
+from src.port_adapter.api.rest.grpc.v1.project.maintenance.standard_procedure.StandardMaintenanceProcedureClient import \
+    StandardMaintenanceProcedureClient
+from src.port_adapter.api.rest.grpc.v1.project.manufacturer.ManufacturerClient import ManufacturerClient
+from src.port_adapter.api.rest.grpc.v1.project.organization.OrganizationClient import OrganizationClient
+from src.port_adapter.api.rest.grpc.v1.project.standard_equipment.StandardEquipmentClient import StandardEquipmentClient
+from src.port_adapter.api.rest.grpc.v1.project.standard_equipment.standard_category.StandardEquipmentCategoryClient import \
+    StandardEquipmentCategoryClient
+from src.port_adapter.api.rest.grpc.v1.project.standard_equipment.standard_category.standard_group.StandardEquipmentCategoryGroupClient import \
+    StandardEquipmentCategoryGroupClient
+from src.port_adapter.api.rest.grpc.v1.project.subcontractor.SubcontractorClient import SubcontractorClient
+from src.port_adapter.api.rest.grpc.v1.project.subcontractor.category.SubcontractorCategoryClient import \
+    SubcontractorCategoryClient
+from src.port_adapter.api.rest.grpc.v1.project.unit.UnitClient import UnitClient
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -51,11 +77,10 @@ async def createBulk(
     for dataItem in body["data"]:
         for command, commandData in dataItem.items():
             obj = extractData(command=command, commandData=commandData)
-            dataBody.append({"_index": index, "_request_data": {"command": command, "command_data": commandData["data"]},
+            dataBody.append({"_index": index, "_request_data": {"command": command, "command_data": obj.commandData},
                              "_inner_data": {"microservice_name": obj.microserviceName, "api_path": obj.apiPath}})
             index += 1
     messageRequestData = {"data": dataBody, "item_count": itemCount}
-    logger.debug(messageRequestData)
 
     producer = AppDi.instance.get(SimpleProducer)
     # producer.produce(
@@ -95,8 +120,11 @@ def extractData(command: str, commandData: dict):
 
             entityName = command.replace('create_', '')
             data = commandData["data"]
-            if 'create_' in command and entityName in grpcClientList:
-                data[f'{entityName}_id'] = grpcClientList[entityName].newId()
+            entityName = command[command.index('_') + 1:]
+            commandMethod = command[:command.index('_'):]
+            # If it is a create, then add the id and use newId()
+            if 'create_' in command and entityName in entityToGrpcClientList:
+                data[f'{entityName}_id'] = entityToGrpcClientList[entityName].newId()
             return ItemDetail(microserviceName=microserviceName, apiPath=route.path, commandData=data)
     return ItemDetail(microserviceName='unknown', apiPath='', commandData='')
 
@@ -109,7 +137,7 @@ class ItemDetail:
     def __repr__(self):
         return f'microserviceName: {self.microserviceName}, apiPath: {self.apiPath}, commandData: {self.commandData}'
 
-grpcClientList = {
+entityToGrpcClientList = {
     'ou': OuClient(),
     'realm': RealmClient(),
     'permission': PermissionClient(),
@@ -117,4 +145,22 @@ grpcClientList = {
     'project': ProjectClient(),
     'role': RoleClient(),
     'user_group': UserGroupClient(),
+    'user': UserClient(),
+    'organization': OrganizationClient(),
+    'unit': UnitClient(),
+    'subcontractor': SubcontractorClient(),
+    'subcontractor_category': SubcontractorCategoryClient(),
+    'equipment': EquipmentClient(),
+    'equipment_category': EquipmentCategoryClient(),
+    'equipment_category_group': EquipmentCategoryGroupClient(),
+    'equipment_input': EquipmentInputClient(),
+    'equipment_model': EquipmentModelClient(),
+    'equipment_project_category': EquipmentProjectCategoryClient(),
+    'daily_check_procedure': DailyCheckProcedureClient(),
+    'maintenance_procedure': MaintenanceProcedureClient(),
+    'standard_maintenance_procedure': StandardMaintenanceProcedureClient(),
+    'manufacturer': ManufacturerClient(),
+    'standard_equipment': StandardEquipmentClient(),
+    'standard_equipment_category': StandardEquipmentCategoryClient(),
+    'standard_equipment_category_group': StandardEquipmentCategoryGroupClient(),
 }
