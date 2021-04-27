@@ -51,6 +51,7 @@ from src.port_adapter.api.rest.model.response.v1.project.daily_check.procedure.o
     DailyCheckProcedureOperationParameters,
 )
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.api.rest.router.v1.project.daily_check.procedure.DailyCheckProcedureOperationType import (
     DailyCheckProcedureOperationType,
 )
@@ -75,6 +76,7 @@ async def getDailyCheckProcedures(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = DailyCheckProcedureClient()
@@ -113,6 +115,7 @@ async def getDailyCheckProceduresByEquipmentOrGroupId(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = DailyCheckProcedureClient()
@@ -154,6 +157,7 @@ async def getDailyCheckProcedureOperationParameterById(
         description="daily check procedure operation parameter id that is used to fetch daily check procedure operation parameter data",
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a daily check procedure operation parameter by id"""
     try:
@@ -184,6 +188,7 @@ async def getDailyCheckProcedureOperationParameterById(
 async def deleteDailyCheckProcedureOperationParameter(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     daily_check_procedure_operation_parameter_id: str = Path(
         ...,
         description="daily check procedure operation parameter id that is used in order to delete the daily check procedure operation parameter",
@@ -229,6 +234,7 @@ async def getDailyCheckProcedureOperationParametersByDailyCheckProcedureOperatio
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = DailyCheckProcedureOperationParameterClient()
@@ -263,6 +269,7 @@ async def getDailyCheckProcedureOperationParametersByDailyCheckProcedureOperatio
 async def createDailyCheckProcedureOperationParameter(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(
         ..., description="name of daily check procedure operation parameter", embed=True
     ),
@@ -336,6 +343,7 @@ async def createDailyCheckProcedureOperationParameter(
 async def updateDailyCheckProcedureOperationParameter(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     daily_check_procedure_operation_parameter_id: str = Path(
         ...,
         description="daily check procedure operation parameter id that is used in order to update the daily check procedure operation parameter",
@@ -395,6 +403,7 @@ async def updateDailyCheckProcedureOperationParameter(
 async def partialUpdateDailyCheckProcedureOperationParameter(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     daily_check_procedure_operation_id: str = Path(
         ...,
         description="daily check procedure operation id of daily check procedure operation id",
@@ -446,6 +455,7 @@ async def partialUpdateDailyCheckProcedureOperationParameter(
 async def deleteDailyCheckProcedureOperation(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     daily_check_procedure_operation_id: str = Path(
         ...,
         description="daily check procedure operation id that is used in order to delete the daily check procedure operation",
@@ -485,6 +495,7 @@ async def getDailyCheckProcedureOperationById(
         description="daily check procedure operation id that is used to fetch daily check procedure operation data",
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a daily check procedure operation by id"""
     try:
@@ -522,6 +533,7 @@ async def getDailyCheckProcedureById(
         description="daily check procedure id that is used to fetch daily check procedure data",
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a daily check procedure by id"""
     try:
@@ -546,6 +558,7 @@ async def getDailyCheckProcedureById(
 async def createDailyCheckProcedure(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(..., description="name of daily check procedure", embed=True),
     description: str = Body(
         ..., description="description of daily check procedure", embed=True
@@ -594,6 +607,7 @@ async def createDailyCheckProcedure(
 async def updateDailyCheckProcedure(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     daily_check_procedure_id: str = Path(
         ...,
         description="daily check procedure id that is used in order to update the daily check procedure",
@@ -643,6 +657,7 @@ async def updateDailyCheckProcedure(
 async def partialUpdateDailyCheckProcedure(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     daily_check_procedure_id: str = Path(
         ...,
         description="daily check procedure id that is used in order to update the daily check procedure",
@@ -692,6 +707,7 @@ async def partialUpdateDailyCheckProcedure(
 async def deleteDailyCheckProcedure(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     daily_check_procedure_id: str = Path(
         ...,
         description="daily check procedure id that is used in order to delete the daily check procedure",
@@ -733,6 +749,7 @@ async def getDailyCheckProcedureOperationsByDailyCheckProcedureId(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = DailyCheckProcedureOperationClient()
@@ -767,6 +784,7 @@ async def getDailyCheckProcedureOperationsByDailyCheckProcedureId(
 async def createDailyCheckProcedureOperation(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(
         ..., description="name of daily check procedure operation", embed=True
     ),
@@ -820,6 +838,7 @@ async def createDailyCheckProcedureOperation(
 async def updateDailyCheckProcedureOperation(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     daily_check_procedure_operation_id: str = Path(
         ...,
         description="daily check procedure operation id that is used in order to update the daily check procedure operation",
@@ -867,6 +886,7 @@ async def updateDailyCheckProcedureOperation(
 async def partialUpdateDailyCheckProcedureOperation(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     daily_check_procedure_id: str = Path(
         ..., description="daily check procedure id of daily check procedure id"
     ),

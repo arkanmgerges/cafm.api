@@ -43,6 +43,7 @@ from src.port_adapter.api.rest.model.response.v1.project.Project import (
 )
 from src.port_adapter.api.rest.model.response.v1.project.Projects import Projects
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -68,6 +69,7 @@ async def getProjects(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. name:asc,age:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = ProjectClient()
@@ -106,6 +108,7 @@ async def getProject(
         ..., description="Project id that is used to fetch project data"
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a Project by id"""
     try:
@@ -137,6 +140,7 @@ c4model:Rel(api__project_project_py__update, api__project_project_py__update__ap
 async def updateProject(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(
         ..., description="Project id that is used in order to update the project"
     ),
@@ -187,6 +191,7 @@ async def updateProject(
 async def partialUpdateProject(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(
         ..., description="Project id that is used in order to update the project"
     ),
@@ -289,6 +294,7 @@ async def getBuildings(
         "", description='values: "building_level", "building_level_room"'
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = ProjectClient()
@@ -335,6 +341,7 @@ async def getBuildingById(
         "", description='values: "building_level", "building_level_room"'
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = ProjectClient()
@@ -366,6 +373,7 @@ c4model:Rel(api__project_project_py__createBuilding, project__messaging_project_
 async def createBuilding(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(..., description="Project id"),
     name: str = Body(..., description="Building name", embed=True),
 ):
@@ -406,6 +414,7 @@ c4model:Rel(api__project_project_py__deleteBuilding, project__messaging_project_
 async def deleteBuilding(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(..., description="Project id"),
     building_id: str = Path(..., description="Building id"),
 ):
@@ -444,6 +453,7 @@ c4model:Rel(api__project_project_py__updateBuilding, project__messaging_project_
 async def updateBuilding(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(..., description="Project id"),
     building_id: str = Path(..., description="Building id"),
     name: str = Body(..., description="Building name", embed=True),
@@ -493,6 +503,7 @@ async def getBuildingLevels(
     order: str = Query("", description="e.g. id:asc,name:desc"),
     include: List[str] = Query("", description='values: "building_level_room"'),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = ProjectClient()
@@ -540,6 +551,7 @@ async def getBuildingLevelById(
     ),
     include: List[str] = Query("", description='values: "building_level_room"'),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = ProjectClient()
@@ -573,6 +585,7 @@ c4model:Rel(api__project_project_py__createBuildingLevel, project__messaging_pro
 async def createBuildingLevel(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(..., description="Project id"),
     building_id: str = Path(..., description="Building id"),
     name: str = Body(..., description="Building level name", embed=True),
@@ -618,6 +631,7 @@ c4model:Rel(api__project_project_py__deleteBuildingLevel, project__messaging_pro
 async def deleteBuildingLevel(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(..., description="Project id"),
     building_id: str = Path(..., description="Building id"),
     building_level_id: str = Path(..., description="Building level id"),
@@ -658,6 +672,7 @@ c4model:Rel(api__project_project_py__updateBuildingLevel, project__messaging_pro
 async def updateBuildingLevel(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(..., description="Project id"),
     building_id: str = Path(..., description="Building id"),
     building_level_id: str = Path(..., description="Building level id"),
@@ -703,6 +718,7 @@ c4model:Rel(api__project_project_py__linkBuildingLevelToBuilding, project__messa
 async def linkBuildingLevelToBuilding(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(..., description="Project id"),
     building_id: str = Path(..., description="Building id"),
     building_level_id: str = Path(..., description="Building level id"),
@@ -743,6 +759,7 @@ c4model:Rel(api__project_project_py__unlinkBuildingLevelFromBuilding, project__m
 async def unlinkBuildingLevelFromBuilding(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(..., description="Project id"),
     building_id: str = Path(..., description="Building id"),
     building_level_id: str = Path(..., description="Building level id"),
@@ -794,6 +811,7 @@ async def getBuildingLevelRooms(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,name:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = ProjectClient()
@@ -842,6 +860,7 @@ async def getBuildingLevelRoomById(
         ..., description="building level room id that is used to fetch data"
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = ProjectClient()
@@ -875,6 +894,7 @@ c4model:Rel(api__project_project_py__createBuildingLevelRoom, project__messaging
 async def createBuildingLevelRoom(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(..., description="Project id"),
     building_id: str = Path(..., description="Building id"),
     building_level_id: str = Path(..., description="Building level id"),
@@ -923,6 +943,7 @@ c4model:Rel(api__project_project_py__deleteBuildingLevelRoom, project__messaging
 async def deleteBuildingLevelRoom(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(..., description="Project id"),
     building_id: str = Path(..., description="Building id"),
     building_level_id: str = Path(..., description="Building level id"),
@@ -965,6 +986,7 @@ c4model:Rel(api__project_project_py__updateBuildingLevelRoom, project__messaging
 async def updateBuildingLevelRoom(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(..., description="Project id"),
     building_id: str = Path(..., description="Building id"),
     building_level_id: str = Path(..., description="Building level id"),
@@ -1002,6 +1024,7 @@ async def updateBuildingLevelRoom(
 #             summary='Update building level room', status_code=status.HTTP_200_OK)
 # @OpenTelemetry.fastApiTraceOTel
 # async def updateBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 #                                   project_id: str = Path(..., description='Project id'),
 #                                   building_id: str = Path(..., description='Building id'),
 #                                   building_level_id: str = Path(..., description='Building level id'),
@@ -1040,6 +1063,7 @@ c4model:Rel(api__project_project_py__updateBuildingLevelRoomIndex, project__mess
 async def updateBuildingLevelRoomIndex(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(..., description="Project id"),
     building_id: str = Path(..., description="Building id"),
     building_level_id: str = Path(..., description="Building level id"),
@@ -1087,6 +1111,7 @@ c4model:Rel(api__project_project_py__changeProjectState, project__messaging_proj
 async def changeProjectState(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(..., description="Project id"),
     state: str = Body(
         ..., description="The state can be active and archived", embed=True

@@ -51,6 +51,7 @@ from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.o
     MaintenanceProcedureOperationParameters,
 )
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.MaintenanceProcedureFrequency import (
     MaintenanceProcedureFrequency,
 )
@@ -85,6 +86,7 @@ async def getMaintenanceProcedures(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = MaintenanceProcedureClient()
@@ -122,6 +124,7 @@ async def getMaintenanceProceduresByEquipmentId(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = MaintenanceProcedureClient()
@@ -163,6 +166,7 @@ async def getMaintenanceProcedureOperationParameterById(
         description="maintenance procedure operation parameter id that is used to fetch maintenance procedure operation parameter data",
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a maintenance procedure operation parameter by id"""
     try:
@@ -193,6 +197,7 @@ async def getMaintenanceProcedureOperationParameterById(
 async def deleteMaintenanceProcedureOperationParameter(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     maintenance_procedure_operation_parameter_id: str = Path(
         ...,
         description="maintenance procedure operation parameter id that is used in order to delete the maintenance procedure operation parameter",
@@ -239,6 +244,7 @@ async def getMaintenanceProcedureOperationParametersByMaintenanceProcedureOperat
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = MaintenanceProcedureOperationParameterClient()
@@ -273,6 +279,7 @@ async def getMaintenanceProcedureOperationParametersByMaintenanceProcedureOperat
 async def createMaintenanceProcedureOperationParameter(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     maintenance_procedure_operation_id: str = Path(
         ..., description="maintenance procedure operation id as a parent id"
     ),
@@ -344,6 +351,7 @@ async def createMaintenanceProcedureOperationParameter(
 async def updateMaintenanceProcedureOperationParameter(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     maintenance_procedure_operation_id: str = Path(
         ..., description="maintenance procedure operation id as a parent id"
     ),
@@ -401,6 +409,7 @@ async def updateMaintenanceProcedureOperationParameter(
 async def partialUpdateMaintenanceProcedureOperationParameter(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     maintenance_procedure_operation_id: str = Path(
         None, description="maintenance procedure operation id as a parent id"
     ),
@@ -456,6 +465,7 @@ async def getMaintenanceProcedureOperationById(
         description="maintenance procedure operation id that is used to fetch maintenance procedure operation data",
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a maintenance procedure operation by id"""
     try:
@@ -486,6 +496,7 @@ async def getMaintenanceProcedureOperationById(
 async def deleteMaintenanceProcedureOperation(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     maintenance_procedure_operation_id: str = Path(
         ...,
         description="maintenance procedure operation id that is used in order to delete the maintenance procedure operation",
@@ -528,6 +539,7 @@ async def getMaintenanceProcedureById(
         description="maintenance procedure id that is used to fetch maintenance procedure data",
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a maintenance procedure by id"""
     try:
@@ -552,6 +564,7 @@ async def getMaintenanceProcedureById(
 async def createMaintenanceProcedure(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(None, description="name of maintenance procedure", embed=True),
     type: MaintenanceProcedureType = Body(..., description="hard or soft", embed=True),
     hard_sub_type: MaintenanceProcedureHardSubType = Body(
@@ -615,6 +628,7 @@ async def createMaintenanceProcedure(
 async def updateMaintenanceProcedure(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     maintenance_procedure_id: str = Path(
         ...,
         description="maintenance procedure id that is used in order to update the maintenance procedure",
@@ -680,6 +694,7 @@ async def updateMaintenanceProcedure(
 async def partialUpdateMaintenanceProcedure(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     maintenance_procedure_id: str = Path(
         None,
         description="maintenance procedure id that is used in order to update the maintenance procedure",
@@ -744,6 +759,7 @@ async def partialUpdateMaintenanceProcedure(
 async def deleteMaintenanceProcedure(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     maintenance_procedure_id: str = Path(
         ...,
         description="maintenance procedure id that is used in order to delete the maintenance procedure",
@@ -786,6 +802,7 @@ async def getMaintenanceProcedureOperationsByMaintenanceProcedureId(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = MaintenanceProcedureOperationClient()
@@ -823,6 +840,7 @@ async def createMaintenanceProcedureOperation(
         ..., description="maintenance procedure id as a parent id"
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(
         ..., description="name of maintenance procedure operation", embed=True
     ),
@@ -874,6 +892,7 @@ async def createMaintenanceProcedureOperation(
 async def updateMaintenanceProcedureOperation(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     maintenance_procedure_id: str = Path(
         ..., description="maintenance procedure id as a parent id"
     ),
@@ -921,6 +940,7 @@ async def updateMaintenanceProcedureOperation(
 async def partialUpdateMaintenanceProcedureOperation(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     maintenance_procedure_id: str = Path(
         None, description="maintenance procedure id as a parent id"
     ),

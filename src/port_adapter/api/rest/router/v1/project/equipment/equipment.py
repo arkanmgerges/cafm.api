@@ -32,6 +32,7 @@ from src.port_adapter.api.rest.model.response.v1.project.equipment.Equipment imp
     EquipmentDescriptor,
 )
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
@@ -48,6 +49,7 @@ async def getEquipments(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = EquipmentClient()
@@ -82,6 +84,7 @@ async def getEquipmentById(
         ..., description="equipment id that is used to fetch equipment data"
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a equipment by id"""
     try:
@@ -106,6 +109,7 @@ async def getEquipmentById(
 async def createEquipment(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(..., description="name of equipment", embed=True),
     project_id: str = Body(..., description="project id of equipment", embed=True),
     equipment_project_category_id: str = Body(
@@ -172,6 +176,7 @@ async def createEquipment(
 async def updateEquipment(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     equipment_id: str = Path(
         ..., description="equipment id that is used in order to update the equipment"
     ),
@@ -246,6 +251,7 @@ async def updateEquipment(
 async def partialUpdateEquipment(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     equipment_id: str = Path(
         ..., description="equipment id that is used in order to update the equipment"
     ),
@@ -318,6 +324,7 @@ async def partialUpdateEquipment(
 async def deleteEquipment(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     equipment_id: str = Path(
         ..., description="equipment id that is used in order to delete the equipment"
     ),

@@ -29,6 +29,7 @@ from src.port_adapter.api.rest.model.response.v1.identity.Permission import (
 )
 from src.port_adapter.api.rest.model.response.v1.identity.Permissions import Permissions
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -53,6 +54,7 @@ async def getPermissions(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. name:asc,age:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         # trace = openTelemetry.trace()
@@ -99,6 +101,7 @@ async def getPermission(
         ..., description="Permission id that is used to fetch permission data"
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a Permission by id"""
     try:
@@ -134,6 +137,7 @@ c4model:Rel(api__identity_permission_py__create, api__identity_permission_py__cr
 async def createPermission(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(..., description="Title of the permission", embed=True),
     allowed_actions: List[str] = Body(
         ..., description="The actions that are allowed by the permission", embed=True
@@ -180,6 +184,7 @@ c4model:Rel(api__identity_permission_py__delete, api__identity_permission_py__de
 async def deletePermission(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     permission_id: str = Path(
         ..., description="Permission id that is used in order to delete the permission"
     ),
@@ -212,6 +217,7 @@ c4model:Rel(api__identity_permission_py__update, api__identity_permission_py__up
 async def updatePermission(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     permission_id: str = Path(
         ..., description="Permission id that is used in order to update the permission"
     ),

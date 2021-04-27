@@ -31,6 +31,7 @@ from src.port_adapter.api.rest.model.response.v1.project.manufacturer.Manufactur
     Manufacturers,
 )
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
@@ -47,6 +48,7 @@ async def getManufacturers(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = ManufacturerClient()
@@ -81,6 +83,7 @@ async def getManufacturerById(
         ..., description="manufacturer id that is used to fetch manufacturer data"
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a manufacturer by id"""
     try:
@@ -105,6 +108,7 @@ async def getManufacturerById(
 async def createManufacturer(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(..., description="name of manufacturer", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
@@ -137,6 +141,7 @@ async def createManufacturer(
 async def updateManufacturer(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     manufacturer_id: str = Path(
         ...,
         description="manufacturer id that is used in order to update the manufacturer",
@@ -168,6 +173,7 @@ async def updateManufacturer(
 # @router.patch("/{manufacturer_id}", summary='Partial update manufacturer', status_code=status.HTTP_200_OK)
 # @OpenTelemetry.fastApiTraceOTel
 # async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+#    __=Depends(CustomAuthorization()),
 #                         manufacturer_id: str = Path(..., description='manufacturer id that is used in order to update the manufacturer'),
 #                         name: str = Body(..., description='name of name', embed=True),
 #                         ):
@@ -194,6 +200,7 @@ async def updateManufacturer(
 async def deleteManufacturer(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     manufacturer_id: str = Path(
         ...,
         description="manufacturer id that is used in order to delete the manufacturer",

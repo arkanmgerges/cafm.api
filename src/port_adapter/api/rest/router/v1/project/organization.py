@@ -29,6 +29,7 @@ from src.port_adapter.api.rest.model.response.v1.project.Organizations import (
     Organizations,
 )
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
@@ -45,6 +46,7 @@ async def getOrganizations(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
 ):
     try:
         client = OrganizationClient()

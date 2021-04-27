@@ -82,7 +82,8 @@ class RoleClient(Client):
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def rolesTrees(self) -> RoleAccessPermissionDatas:
+    def rolesTrees(self, token: str = None) -> RoleAccessPermissionDatas:
+        innerToken = self.token if None else token
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = RoleAppServiceStub(channel)
             try:
@@ -93,7 +94,7 @@ class RoleClient(Client):
                 response: RoleAppService_rolesTreesResponse = stub.rolesTrees.with_call(
                     request,
                     metadata=(
-                        ("token", self.token),
+                        ("token", innerToken),
                         (
                             "opentel",
                             AppDi.instance.get(OpenTelemetry).serializedContext(

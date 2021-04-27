@@ -31,6 +31,7 @@ from src.port_adapter.api.rest.model.response.v1.project.standard_equipment.Stan
     StandardEquipmentDescriptor,
 )
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
@@ -49,6 +50,7 @@ async def getStandardEquipments(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = StandardEquipmentClient()
@@ -84,6 +86,7 @@ async def getStandardEquipmentById(
         description="standard equipment id that is used to fetch standard equipment data",
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a standard equipment by id"""
     try:
@@ -108,6 +111,7 @@ async def getStandardEquipmentById(
 async def createStandardEquipment(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(..., description="name of standard equipment", embed=True),
     standard_equipment_category_id: str = Body(
         ...,
@@ -162,6 +166,7 @@ async def createStandardEquipment(
 async def updateStandardEquipment(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     standard_equipment_id: str = Path(
         ...,
         description="standard equipment id that is used in order to update the standard equipment",
@@ -219,6 +224,7 @@ async def updateStandardEquipment(
 async def partialUpdateStandardEquipment(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     standard_equipment_id: str = Path(
         ...,
         description="standard equipment id that is used in order to update the standard equipment",
@@ -276,6 +282,7 @@ async def partialUpdateStandardEquipment(
 async def deleteStandardEquipment(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     standard_equipment_id: str = Path(
         ...,
         description="standard equipment id that is used in order to delete the standard equipment",

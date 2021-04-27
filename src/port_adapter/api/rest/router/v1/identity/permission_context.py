@@ -29,6 +29,7 @@ from src.port_adapter.api.rest.model.response.v1.identity.PermissionContexts imp
     PermissionContexts,
 )
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -53,6 +54,7 @@ async def getPermissionContexts(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. name:asc,age:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = PermissionContextClient()
@@ -94,6 +96,7 @@ async def getPermissionContext(
         description="Resource type id that is used to fetch permission context data",
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = PermissionContextClient()
@@ -126,6 +129,7 @@ c4model:Rel(api__identity_permission_context_py__create, api__identity_permissio
 async def createPermissionContext(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     type: str = Body(..., description="Type of the permission context", embed=True),
     data: dict = Body(..., description="Data of the permission context", embed=True),
 ):
@@ -162,6 +166,7 @@ c4model:Rel(api__identity_permission_context_py__delete, api__identity_permissio
 async def deletePermissionContext(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     permission_context_id: str = Path(
         ...,
         description="PermissionContext id that is used in order to delete the permission context",
@@ -197,6 +202,7 @@ c4model:Rel(api__identity_permission_context_py__update, api__identity_permissio
 async def updatePermissionContext(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     permission_context_id: str = Path(
         ...,
         description="Resource type id that is used in order to update the permission context",

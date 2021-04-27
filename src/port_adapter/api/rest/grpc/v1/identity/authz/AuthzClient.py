@@ -7,6 +7,7 @@ import os
 import grpc
 
 import src.port_adapter.AppDi as AppDi
+from starlette.requests import Request
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.model.response.v1.identity.HashedKey import HashedKey
 from src.port_adapter.api.rest.model.response.v1.identity.HashedKeys import HashedKeys
@@ -21,7 +22,10 @@ from src.resource.proto._generated.identity.authz_app_service_pb2_grpc import (
     AuthzAppServiceStub,
 )
 from src.resource.proto._generated.identity.unhashed_key_pb2 import UnhashedKey
-
+from src.application.AuthorizationApplicationService import AuthorizationApplicationService
+from src.port_adapter.api.rest.model.response.v1.identity.RoleAccessPermissionDatas import (
+    RoleAccessPermissionDatas,
+)
 
 class AuthzClient(Client):
     def __init__(self):
@@ -64,3 +68,10 @@ class AuthzClient(Client):
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def isAuthorized(self, roleTrees: RoleAccessPermissionDatas, request: Request) -> bool:
+        authzService: AuthorizationApplicationService = AppDi.instance.get(
+            AuthorizationApplicationService
+        )
+        return authzService.isAuthorized(roleTrees=roleTrees, request=request)

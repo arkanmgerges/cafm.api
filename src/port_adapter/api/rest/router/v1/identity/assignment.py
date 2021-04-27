@@ -28,6 +28,7 @@ from src.port_adapter.api.rest.model.response.v1.identity.RoleAccessPermissionDa
     RoleAccessPermissionDatas,
 )
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -71,6 +72,7 @@ async def getRoleTree(
     *,
     role_id: str = Path(..., description="Role id that is used to fetch role data"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = RoleClient()
@@ -97,6 +99,7 @@ async def getRole(
     *,
     role_id: str = Path(..., description="Role id that is used to fetch role data"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = RoleClient()
@@ -122,6 +125,7 @@ async def getRole(
 async def AssignRoleToUser(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     role_id: str = Body(..., description="Role id to be assigned to user", embed=True),
     user_id: str = Body(..., description="User id to have the role", embed=True),
 ):
@@ -148,6 +152,7 @@ async def AssignRoleToUser(
 async def removeRoleToUserAssignment(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     role_id: str = Body(
         ..., description="Role id to be disconnected from the user", embed=True
     ),
@@ -178,6 +183,7 @@ async def removeRoleToUserAssignment(
 async def assignRoleToUserGroup(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     role_id: str = Body(
         ..., description="Role id to be assigned to user group", embed=True
     ),
@@ -208,6 +214,7 @@ async def assignRoleToUserGroup(
 async def removeRoleToUserGroupAssignment(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     role_id: str = Body(
         ..., description="Role id to be disconnected from the user group", embed=True
     ),
@@ -240,6 +247,7 @@ async def removeRoleToUserGroupAssignment(
 async def assignUserToUserGroup(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     user_id: str = Body(..., description="User id to have the user group", embed=True),
     user_group_id: str = Body(
         ..., description="User group id to be assigned to user", embed=True
@@ -268,6 +276,7 @@ async def assignUserToUserGroup(
 async def removeUserToUserGroupAssignment(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     user_id: str = Body(
         ...,
         description="User id that will be disconnected from the user group",
@@ -302,6 +311,7 @@ async def removeUserToUserGroupAssignment(
 async def assignRoleToPermission(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     role_id: str = Body(
         ..., description="Role id that will have a permission", embed=True
     ),
@@ -332,6 +342,7 @@ async def assignRoleToPermission(
 async def removeRoleToPermissionAssignment(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     role_id: str = Body(
         ...,
         description="Role id that will remove the assignment for a permission for resource type",
@@ -366,6 +377,7 @@ async def removeRoleToPermissionAssignment(
 async def assignPermissionToPermissionContext(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     permission_id: str = Body(
         ..., description="Permission id to be assigned to a resource type", embed=True
     ),
@@ -403,6 +415,7 @@ async def assignPermissionToPermissionContext(
 async def removePermissionToPermissionContextAssignment(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     permission_id: str = Body(
         ...,
         description="Permission id to be have assignment removed from the permission context",
@@ -442,6 +455,7 @@ async def removePermissionToPermissionContextAssignment(
 async def assignResourceToAnotherResource(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     src_resource_id: str = Body(..., description="Source resource id", embed=True),
     dst_resource_id: str = Body(..., description="Destination resource id", embed=True),
 ):
@@ -470,6 +484,7 @@ async def assignResourceToAnotherResource(
 async def removeResourceToAnotherResourceAssignment(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     src_resource_id: str = Body(
         ...,
         description="Source resource to unlink it from the destination resource",

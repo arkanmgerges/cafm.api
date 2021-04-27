@@ -26,6 +26,7 @@ from src.port_adapter.api.rest.model.response.v1.project.User import UserDescrip
 from src.port_adapter.api.rest.model.response.v1.project.UserLookups import UserLookups
 from src.port_adapter.api.rest.model.response.v1.project.Users import Users
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
@@ -42,6 +43,7 @@ async def getUsers(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = UserClient()
@@ -67,6 +69,7 @@ async def getUsers(
 async def updateUser(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     user_id: str = Path(
         ..., description="User id that is used in order to update the user"
     ),
@@ -123,6 +126,7 @@ async def updateUser(
 async def partialUpdateUser(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     user_id: str = Path(
         ..., description="User id that is used in order to update the user"
     ),
@@ -196,6 +200,7 @@ async def getUserById(
     *,
     user_id: str = Path(..., description="User id that is used to fetch user data"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a User by id"""
     try:

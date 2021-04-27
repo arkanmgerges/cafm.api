@@ -31,6 +31,7 @@ from src.port_adapter.api.rest.model.response.v1.project.standard_equipment.stan
     StandardEquipmentCategoryGroupDescriptor,
 )
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
@@ -51,6 +52,7 @@ async def getStandardEquipmentCategoryGroups(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = StandardEquipmentCategoryGroupClient()
@@ -86,6 +88,7 @@ async def getStandardEquipmentCategoryGroupById(
         description="standard equipment category group id that is used to fetch standard equipment category group data",
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a standard equipment category group by id"""
     try:
@@ -116,6 +119,7 @@ async def getStandardEquipmentCategoryGroupById(
 async def createStandardEquipmentCategoryGroup(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(
         ..., description="name of standard equipment category group", embed=True
     ),
@@ -158,6 +162,7 @@ async def createStandardEquipmentCategoryGroup(
 async def updateStandardEquipmentCategoryGroup(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     standard_equipment_category_group_id: str = Path(
         ...,
         description="standard equipment category group id that is used in order to update the standard equipment category group",
@@ -201,6 +206,7 @@ async def updateStandardEquipmentCategoryGroup(
 async def partialUpdateStandardEquipmentCategoryGroup(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     standard_equipment_category_group_id: str = Path(
         ...,
         description="standard equipment category group id that is used in order to update the standard equipment category group",
@@ -244,6 +250,7 @@ async def partialUpdateStandardEquipmentCategoryGroup(
 async def deleteStandardEquipmentCategoryGroup(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     standard_equipment_category_group_id: str = Path(
         ...,
         description="standard equipment category group id that is used in order to delete the standard equipment category group",

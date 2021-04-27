@@ -5,10 +5,14 @@ from injector import Module, Injector, singleton, provider
 from src.application.AuthenticationApplicationService import (
     AuthenticationApplicationService,
 )
+from src.application.AuthorizationApplicationService import (
+    AuthorizationApplicationService,
+)
 from src.domain_model.authentication.AuthenticationRepository import (
     AuthenticationRepository,
 )
 from src.domain_model.authentication.AuthenticationService import AuthenticationService
+from src.domain_model.authorization.AuthorizationService import AuthorizationService
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.cache.RedisCache import RedisCache
 from src.port_adapter.api.rest.grpc.v1.identity.auth.AuthClient import AuthClient
@@ -77,6 +81,15 @@ class AppDi(Module):
     ) -> AuthenticationApplicationService:
         return AuthenticationApplicationService(
             self.__injector__.get(AuthenticationService)
+        )
+
+    @singleton
+    @provider
+    def provideAuthorizationApplicationService(
+        self,
+    ) -> AuthorizationApplicationService:
+        return AuthorizationApplicationService(
+            self.__injector__.get(AuthorizationService)
         )
 
     # endregion
