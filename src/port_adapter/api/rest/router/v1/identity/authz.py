@@ -3,15 +3,12 @@ from fastapi import HTTPException
 from fastapi.security import HTTPBearer
 from starlette.requests import Request
 from starlette.status import (
-    HTTP_403_FORBIDDEN,
     HTTP_401_UNAUTHORIZED,
-    HTTP_500_INTERNAL_SERVER_ERROR,
 )
 
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.authz.AuthzClient import AuthzClient
 from src.port_adapter.api.rest.grpc.v1.identity.role.RoleClient import RoleClient
-from src.resource.logging.logger import logger
 
 router = APIRouter()
 
@@ -32,6 +29,6 @@ class CustomAuthorization(HTTPBearer):
 
         if ret is not None and not authzClient.isAuthorized(roleTrees=roleTrees, request=request):
             raise HTTPException(
-                status_code=HTTP_403_FORBIDDEN,
+                status_code=HTTP_401_UNAUTHORIZED,
                 detail="Invalid authorization",
             )
