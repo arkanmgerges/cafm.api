@@ -203,7 +203,11 @@ def _resultForBulk(items):
         exceptionItem = resultData["exceptions"] if "exceptions" in resultData else None
         if exceptionItem is not None:
             exceptionItems.append(exceptionItem)
-    return {'items': resultItems, 'item_count': itemCount, 'exceptions': exceptionItems}
+
+    resultItemsSorted = sorted(resultItems, key=lambda x: x["_index"])
+    resultItemsCurated = list(map(lambda x: x["_request_data"], resultItemsSorted))
+
+    return {'items': resultItemsCurated, 'item_count': itemCount, 'exceptions': exceptionItems}
 
 
 def _resultFromItems(items):

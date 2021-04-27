@@ -80,32 +80,43 @@ async def createBulk(
             dataBody.append({"_index": index, "_request_data": {"command": command, "command_data": obj.commandData},
                              "_inner_data": {"microservice_name": obj.microserviceName, "api_path": obj.apiPath}})
             index += 1
-    messageRequestData = {"data": dataBody, "item_count": itemCount}
-
+    batchedDataItems = _batchByMicroserviceName(dataBody)
     producer = AppDi.instance.get(SimpleProducer)
-    # producer.produce(
-    #     obj=IdentityCommand(
-    #         id=reqId,
-    #         name=CommandConstant.PROCESS_BULK.value,
-    #         metadata=json.dumps({"token": Client.token}),
-    #         data=json.dumps(messageRequestData),
-    #         external=[],
-    #     ),
-    #     schema=IdentityCommand.get_schema(),
-    # )
 
-    producer.produce(
-        obj=ProjectCommand(
-            id=reqId,
-            name=CommandConstant.PROCESS_BULK.value,
-            metadata=json.dumps({"token": Client.token}),
-            data=json.dumps(messageRequestData),
-            external=[],
-        ),
-        schema=ProjectCommand.get_schema(),
-    )
+    for microserviceName, dataBodyItems in batchedDataItems.items():
+        messageRequestData = {"data": dataBodyItems, "item_count": itemCount}
+        if microserviceName == "identity":
+            producer.produce(
+                obj=IdentityCommand(
+                    id=reqId,
+                    name=CommandConstant.PROCESS_BULK.value,
+                    metadata=json.dumps({"token": Client.token}),
+                    data=json.dumps(messageRequestData),
+                    external=[],
+                ),
+                schema=IdentityCommand.get_schema(),
+            )
+        elif microserviceName == "project":
+            producer.produce(
+                obj=ProjectCommand(
+                    id=reqId,
+                    name=CommandConstant.PROCESS_BULK.value,
+                    metadata=json.dumps({"token": Client.token}),
+                    data=json.dumps(messageRequestData),
+                    external=[],
+                ),
+                schema=ProjectCommand.get_schema(),
+            )
     return {"request_id": reqId}
 
+def _batchByMicroserviceName(data):
+    result = {}
+    for item in data:
+        microserviceName = item['_inner_data']['microservice_name']
+        if microserviceName not in result:
+            result[microserviceName] = []
+        result[microserviceName].append(item)
+    return result
 
 def extractData(command: str, commandData: dict):
     microserviceName = ''
@@ -117,15 +128,15 @@ def extractData(command: str, commandData: dict):
                 microserviceName = 'project'
             else:
                 microserviceName = 'unknown'
-
-            entityName = command.replace('create_', '')
-            data = commandData["data"]
-            entityName = command[command.index('_') + 1:]
-            commandMethod = command[:command.index('_'):]
-            # If it is a create, then add the id and use newId()
-            if 'create_' in command and entityName in entityToGrpcClientList:
-                data[f'{entityName}_id'] = entityToGrpcClientList[entityName].newId()
-            return ItemDetail(microserviceName=microserviceName, apiPath=route.path, commandData=data)
+            if microserviceName != 'unknown':
+                entityName = command.replace('create_', '')
+                data = commandData["data"]
+                entityName = command[command.index('_') + 1:]
+                commandMethod = command[:command.index('_'):]
+                # If it is a create, then add the id and use newId()
+                if 'create_' in command and entityName in entityToGrpcClientList:
+                    data[f'{entityName}_id'] = entityToGrpcClientList[entityName].newId()
+                return ItemDetail(microserviceName=microserviceName, apiPath=route.path, commandData=data)
     return ItemDetail(microserviceName='unknown', apiPath='', commandData='')
 
 class ItemDetail:
