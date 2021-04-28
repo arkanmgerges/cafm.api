@@ -1,4 +1,3 @@
-from fastapi import APIRouter
 from fastapi import HTTPException
 from fastapi.security import HTTPBearer
 from starlette.requests import Request
@@ -9,8 +8,6 @@ from starlette.status import (
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.identity.authz.AuthzClient import AuthzClient
 from src.port_adapter.api.rest.grpc.v1.identity.role.RoleClient import RoleClient
-
-router = APIRouter()
 
 
 class CustomAuthorization(HTTPBearer):
