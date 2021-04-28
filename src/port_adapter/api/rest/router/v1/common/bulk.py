@@ -4,6 +4,7 @@
 import json
 
 from fastapi import APIRouter, Body, Request
+from fastapi.params import Depends
 from starlette import status
 
 import src.port_adapter.api.rest.router.v1.util
@@ -20,6 +21,10 @@ from src.port_adapter.api.rest.grpc.v1.identity.user.UserClient import UserClien
 from src.port_adapter.api.rest.grpc.v1.identity.user_group.UserGroupClient import UserGroupClient
 from src.port_adapter.api.rest.grpc.v1.project.daily_check.procedure.DailyCheckProcedureClient import \
     DailyCheckProcedureClient
+from src.port_adapter.api.rest.grpc.v1.project.daily_check.procedure.operation.DailyCheckProcedureOperationClient import \
+    DailyCheckProcedureOperationClient
+from src.port_adapter.api.rest.grpc.v1.project.daily_check.procedure.operation.parameter.DailyCheckProcedureOperationParameterClient import \
+    DailyCheckProcedureOperationParameterClient
 from src.port_adapter.api.rest.grpc.v1.project.equipment.EquipmentClient import EquipmentClient
 from src.port_adapter.api.rest.grpc.v1.project.equipment.category.EquipmentCategoryClient import EquipmentCategoryClient
 from src.port_adapter.api.rest.grpc.v1.project.equipment.category.group.EquipmentCategoryGroupClient import \
@@ -30,6 +35,10 @@ from src.port_adapter.api.rest.grpc.v1.project.equipment.project_category.Equipm
     EquipmentProjectCategoryClient
 from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.MaintenanceProcedureClient import \
     MaintenanceProcedureClient
+from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.MaintenanceProcedureOperationClient import \
+    MaintenanceProcedureOperationClient
+from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameterClient import \
+    MaintenanceProcedureOperationParameterClient
 from src.port_adapter.api.rest.grpc.v1.project.maintenance.standard_procedure.StandardMaintenanceProcedureClient import \
     StandardMaintenanceProcedureClient
 from src.port_adapter.api.rest.grpc.v1.project.manufacturer.ManufacturerClient import ManufacturerClient
@@ -44,6 +53,7 @@ from src.port_adapter.api.rest.grpc.v1.project.subcontractor.category.Subcontrac
     SubcontractorCategoryClient
 from src.port_adapter.api.rest.grpc.v1.project.unit.UnitClient import UnitClient
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
+from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.port_adapter.messaging.common.model.IdentityCommand import IdentityCommand
@@ -61,13 +71,12 @@ appRoutes = []
 async def createBulk(
     *,
     request: Request,
-    # _=Depends(CustomHttpBearer()),
+    _=Depends(CustomHttpBearer()),
     body: dict = Body(..., description="Json data of the bulk", embed=True),
 ):
     from src.resource.logging.logger import logger
     global appRoutes
-    #todo remove me
-    Client.token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJkNDg2Y2Y4LWVmYTctNGQ4Zi1iYmUyLTE1NGI0YTk4NGEyNCIsInJvbGVzIjpbeyJpZCI6IjJiZDMxYThjLTgzOTYtNGU2Zi05YjU2LTlmNzViMjU5ZDQ0NSIsIm5hbWUiOiJzdXBlcl9hZG1pbiIsInRpdGxlIjpudWxsfV0sImVtYWlsIjoiYWRtaW5AbG9jYWwubWUiLCJfdG9rZW5fZ2VuX251bSI6ImZmZDY1YzhlLWE1YWItMTFlYi05MDk1LTAyNDJhYzEyMDAxMiJ9.LftHoRXX31sh59OPja-0wxb4Ya8A0727zx6Wtz1vyTQ"
+
     appRoutesResult = await src.port_adapter.api.rest.router.v1.util.appRoutes(request=request)
     appRoutes = appRoutesResult.routes
     reqId = RequestIdGenerator.generateBulkId()
@@ -135,7 +144,14 @@ def extractData(command: str, commandData: dict):
                 commandMethod = command[:command.index('_'):]
                 # If it is a create, then add the id and use newId()
                 if 'create_' in command and entityName in entityToGrpcClientList:
-                    data[f'{entityName}_id'] = entityToGrpcClientList[entityName].newId()
+                    if entityName == 'building':
+                        data[f'{entityName}_id'] = entityToGrpcClientList[entityName].newBuildingId()
+                    elif entityName == 'building_level':
+                        data[f'{entityName}_id'] = entityToGrpcClientList[entityName].newBuildingLevelId()
+                    elif entityName == 'building_level_room':
+                        data[f'{entityName}_id'] = entityToGrpcClientList[entityName].newBuildingLevelRoomId()
+                    else:
+                        data[f'{entityName}_id'] = entityToGrpcClientList[entityName].newId()
                 return ItemDetail(microserviceName=microserviceName, apiPath=route.path, commandData=data)
     return ItemDetail(microserviceName='unknown', apiPath='', commandData='')
 
@@ -149,16 +165,19 @@ class ItemDetail:
         return f'microserviceName: {self.microserviceName}, apiPath: {self.apiPath}, commandData: {self.commandData}'
 
 entityToGrpcClientList = {
+    # 'realm': RealmClient(),
+    # 'project': ProjectClient(),
+    # 'user': UserClient(),
+    # 'role': RoleClient(),
     'ou': OuClient(),
-    'realm': RealmClient(),
     'permission': PermissionClient(),
     'permission_context': PermissionContextClient(),
-    'project': ProjectClient(),
-    'role': RoleClient(),
     'user_group': UserGroupClient(),
-    'user': UserClient(),
     'organization': OrganizationClient(),
     'unit': UnitClient(),
+    'building': ProjectClient(),
+    'building_level': ProjectClient(),
+    'building_level_room': ProjectClient(),
     'subcontractor': SubcontractorClient(),
     'subcontractor_category': SubcontractorCategoryClient(),
     'equipment': EquipmentClient(),
@@ -168,7 +187,11 @@ entityToGrpcClientList = {
     'equipment_model': EquipmentModelClient(),
     'equipment_project_category': EquipmentProjectCategoryClient(),
     'daily_check_procedure': DailyCheckProcedureClient(),
+    'daily_check_procedure_operation': DailyCheckProcedureOperationClient(),
+    'daily_check_procedure_operation_parameter': DailyCheckProcedureOperationParameterClient(),
     'maintenance_procedure': MaintenanceProcedureClient(),
+    'maintenance_procedure_operation': MaintenanceProcedureOperationClient(),
+    'maintenance_procedure_operation_parameter': MaintenanceProcedureOperationParameterClient(),
     'standard_maintenance_procedure': StandardMaintenanceProcedureClient(),
     'manufacturer': ManufacturerClient(),
     'standard_equipment': StandardEquipmentClient(),
