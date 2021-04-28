@@ -8,7 +8,7 @@ class Util:
     pattern = re.compile(r"(?<!^)(?=[A-Z])")
 
     @staticmethod
-    def camelCaseToLoserSnakeCase(camelCaseString: str) -> str:
+    def camelCaseToLowerSnakeCase(camelCaseString: str) -> str:
         return Util.pattern.sub("_", camelCaseString).lower()
 
     @staticmethod

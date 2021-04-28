@@ -205,7 +205,7 @@ def _resultForBulk(items):
             exceptionItems.append(exceptionItem)
 
     resultItemsSorted = sorted(resultItems, key=lambda x: x["_index"])
-    resultItemsCurated = list(map(lambda x: x["_request_data"], resultItemsSorted))
+    resultItemsCurated = list(map(lambda x: {"index": x["_index"], "data": x["_request_data"]}, resultItemsSorted))
 
     return {'items': resultItemsCurated, 'item_count': itemCount, 'exceptions': exceptionItems}
 

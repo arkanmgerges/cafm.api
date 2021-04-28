@@ -22,7 +22,7 @@ async def appRoutes(request: Request):
     urlList = [
         {
             "path": route.path,
-            "name": Util.camelCaseToLoserSnakeCase(route.name),
+            "name": Util.camelCaseToLowerSnakeCase(route.name),
             "methods": list(map(lambda x: x.lower(), route.methods)),
         }
         for route in request.app.routes
