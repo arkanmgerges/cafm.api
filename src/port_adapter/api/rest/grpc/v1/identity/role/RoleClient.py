@@ -83,7 +83,7 @@ class RoleClient(Client):
 
     @OpenTelemetry.grpcTraceOTel
     def rolesTrees(self, token: str = None) -> RoleAccessPermissionDatas:
-        innerToken = self.token if None else token
+        innerToken = self.token if token is None else token
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = RoleAppServiceStub(channel)
             try:
