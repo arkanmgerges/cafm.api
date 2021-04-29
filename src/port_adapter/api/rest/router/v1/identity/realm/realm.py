@@ -23,6 +23,7 @@ from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerat
 from src.port_adapter.api.rest.model.response.v1.identity.Realm import RealmDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Realms import Realms
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.api.rest.router.v1.identity.realm.RealmType import RealmType
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
@@ -46,6 +47,7 @@ async def getRealms(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. name:asc,age:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = RealmClient()
@@ -80,6 +82,7 @@ async def getRealm(
     *,
     realm_id: str = Path(..., description="Realm id that is used to fetch realm data"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a Realm by id"""
     try:
@@ -111,6 +114,7 @@ c4model:Rel(api__identity_realm_py__create, api__identity_realm_py__create__api_
 async def createRealm(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(..., description="Title of the realm", embed=True),
     realm_type: str = Body(
         ...,
@@ -153,6 +157,7 @@ c4model:Rel(api__identity_realm_py__delete, api__identity_realm_py__delete__api_
 async def deleteRealm(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     realm_id: str = Path(
         ..., description="Realm id that is used in order to delete the realm"
     ),

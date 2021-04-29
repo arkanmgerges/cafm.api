@@ -32,6 +32,7 @@ from src.port_adapter.api.rest.model.response.v1.project.equipment.input.Equipme
     EquipmentInputDescriptor,
 )
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
@@ -50,6 +51,7 @@ async def getEquipmentInputs(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = EquipmentInputClient()
@@ -87,6 +89,7 @@ async def getEquipmentInputsByEquipmentId(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         logger.debug(equipment_id)
@@ -125,6 +128,7 @@ async def getEquipmentInputById(
         ..., description="equipment input id that is used to fetch equipment input data"
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a equipment input by id"""
     try:
@@ -149,6 +153,7 @@ async def getEquipmentInputById(
 async def createEquipmentInput(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(..., description="name of equipment input", embed=True),
     value: str = Body(..., description="value of equipment input", embed=True),
     unit_id: str = Body(..., description="unit id of equipment input", embed=True),
@@ -192,6 +197,7 @@ async def createEquipmentInput(
 async def updateEquipmentInput(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     equipment_input_id: str = Path(
         ...,
         description="equipment input id that is used in order to update the equipment input",
@@ -238,6 +244,7 @@ async def updateEquipmentInput(
 async def partialUpdateEquipmentInput(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     equipment_input_id: str = Path(
         ...,
         description="equipment input id that is used in order to update the equipment input",
@@ -284,6 +291,7 @@ async def partialUpdateEquipmentInput(
 async def deleteEquipmentInput(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     equipment_input_id: str = Path(
         ...,
         description="equipment input id that is used in order to delete the equipment input",

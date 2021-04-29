@@ -34,6 +34,7 @@ from src.port_adapter.api.rest.model.response.v1.project.equipment.category.grou
     EquipmentCategoryGroups,
 )
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
@@ -52,6 +53,7 @@ async def getEquipmentCategories(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = EquipmentCategoryClient()
@@ -87,6 +89,7 @@ async def getEquipmentCategoryById(
         description="equipment category id that is used to fetch equipment category data",
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a equipment category by id"""
     try:
@@ -111,6 +114,7 @@ async def getEquipmentCategoryById(
 async def createEquipmentCategory(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(..., description="name of equipment category", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
@@ -145,6 +149,7 @@ async def createEquipmentCategory(
 async def updateEquipmentCategory(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     equipment_category_id: str = Path(
         ...,
         description="equipment category id that is used in order to update the equipment category",
@@ -176,6 +181,7 @@ async def updateEquipmentCategory(
 # @router.patch("/{equipment_category_id}", summary='Partial update equipment category', status_code=status.HTTP_200_OK)
 # @OpenTelemetry.fastApiTraceOTel
 # async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+#    __=Depends(CustomAuthorization()),
 #                         equipment_category_id: str = Path(..., description='equipment category id that is used in order to update the equipment category'),
 #                         name: str = Body(..., description='name of name', embed=True),
 #                         ):
@@ -202,6 +208,7 @@ async def updateEquipmentCategory(
 async def deleteEquipmentCategory(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     equipment_category_id: str = Path(
         ...,
         description="equipment category id that is used in order to delete the equipment category",
@@ -240,6 +247,7 @@ async def getCategoryGroupsByCategoryId(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a equipment category groups by equipment category id"""
     try:

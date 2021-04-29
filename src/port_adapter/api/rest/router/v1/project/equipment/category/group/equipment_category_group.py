@@ -32,6 +32,7 @@ from src.port_adapter.api.rest.model.response.v1.project.equipment.category.grou
     EquipmentCategoryGroupDescriptor,
 )
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
@@ -52,6 +53,7 @@ async def getEquipmentCategoryGroups(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = EquipmentCategoryGroupClient()
@@ -87,6 +89,7 @@ async def getEquipmentCategoryGroupById(
         description="equipment category group id that is used to fetch equipment category group data",
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a equipment category group by id"""
     try:
@@ -113,6 +116,7 @@ async def getEquipmentCategoryGroupById(
 async def createEquipmentCategoryGroup(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(..., description="name of equipment category group", embed=True),
     equipment_category_id: str = Body(
         ..., description="equipment category id of equipment category group", embed=True
@@ -151,6 +155,7 @@ async def createEquipmentCategoryGroup(
 async def updateEquipmentCategoryGroup(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     equipment_category_group_id: str = Path(
         ...,
         description="equipment category group id that is used in order to update the equipment category group",
@@ -186,6 +191,7 @@ async def updateEquipmentCategoryGroup(
 # @router.patch("/{equipment_category_group_id}", summary='Partial update equipment category group', status_code=status.HTTP_200_OK)
 # @OpenTelemetry.fastApiTraceOTel
 # async def partialUpdate(*, _=Depends(CustomHttpBearer()),
+#    __=Depends(CustomAuthorization()),
 #                         equipment_category_group_id: str = Path(..., description='equipment category group id that is used in order to update the equipment category group'),
 #                         name: str = Body(..., description='name of name', embed=True),
 #                         equipment_category_id: str = Body(..., description='equipment category id of equipment category id', embed=True),
@@ -214,6 +220,7 @@ async def updateEquipmentCategoryGroup(
 async def deleteEquipmentCategoryGroup(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     equipment_category_group_id: str = Path(
         ...,
         description="equipment category group id that is used in order to delete the equipment category group",

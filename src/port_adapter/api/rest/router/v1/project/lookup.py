@@ -19,6 +19,7 @@ from src.port_adapter.api.rest.grpc.v1.project.lookup.user.UserLookupClient impo
 )
 from src.port_adapter.api.rest.model.response.v1.project.UserLookups import UserLookups
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -40,6 +41,7 @@ async def getUserLookups(
         description="e.g. user.id:asc,user.email:desc,role.name:asc,organization.name:desc",
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = UserLookupClient()

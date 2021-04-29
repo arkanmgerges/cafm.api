@@ -28,6 +28,7 @@ from src.port_adapter.api.rest.model.response.v1.identity.Project import (
 )
 from src.port_adapter.api.rest.model.response.v1.identity.Projects import Projects
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -50,6 +51,7 @@ async def getProjects(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. name:asc,age:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = ProjectClient()
@@ -88,6 +90,7 @@ async def getProject(
         ..., description="Project id that is used to fetch project data"
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a Project by id"""
     try:
@@ -119,6 +122,7 @@ c4model:Rel(api__identity_project_py__create, api__identity_project_py__create__
 async def createProject(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(..., description="Title of the project", embed=True),
 ):
     reqId = RequestIdGenerator.generateListId(2)
@@ -150,6 +154,7 @@ c4model:Rel(api__identity_project_py__delete, api__identity_project_py__delete__
 async def deleteProject(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     project_id: str = Path(
         ..., description="Project id that is used in order to delete the project"
     ),

@@ -31,6 +31,7 @@ from src.port_adapter.api.rest.model.response.v1.project.maintenance.standard_pr
     StandardMaintenanceProcedureDescriptor,
 )
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.common.DateTimeHelper import DateTimeHelper
@@ -52,6 +53,7 @@ async def getStandardMaintenanceProcedures(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = StandardMaintenanceProcedureClient()
@@ -87,6 +89,7 @@ async def getStandardMaintenanceProcedureById(
         description="standard maintenance procedure id that is used to fetch standard maintenance procedure data",
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a standard maintenance procedure by id"""
     try:
@@ -115,6 +118,7 @@ async def getStandardMaintenanceProcedureById(
 async def createStandardMaintenanceProcedure(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(
         ..., description="name of standard maintenance procedure", embed=True
     ),
@@ -183,6 +187,7 @@ async def createStandardMaintenanceProcedure(
 async def updateStandardMaintenanceProcedure(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     standard_maintenance_procedure_id: str = Path(
         ...,
         description="standard maintenance procedure id that is used in order to update the standard maintenance procedure",
@@ -244,6 +249,7 @@ async def updateStandardMaintenanceProcedure(
 async def partialUpdateStandardMaintenanceProcedure(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     standard_maintenance_procedure_id: str = Path(
         ...,
         description="standard maintenance procedure id that is used in order to update the standard maintenance procedure",
@@ -305,6 +311,7 @@ async def partialUpdateStandardMaintenanceProcedure(
 async def deleteStandardMaintenanceProcedure(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     standard_maintenance_procedure_id: str = Path(
         ...,
         description="standard maintenance procedure id that is used in order to delete the standard maintenance procedure",

@@ -27,6 +27,7 @@ from src.port_adapter.api.rest.helper.Validator import Validator
 from src.port_adapter.api.rest.model.response.v1.identity.User import UserDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Users import Users
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -49,6 +50,7 @@ async def getUsers(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = UserClient()
@@ -81,6 +83,7 @@ async def getUser(
     *,
     user_id: str = Path(..., description="User id that is used to fetch user data"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a User by id"""
     try:
@@ -116,6 +119,7 @@ c4model:Rel(api__identity_user_py__create, api__identity_user_py__create__api_co
 async def createUser(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     email: str = Body(..., description="User email", embed=True),
 ):
     reqId = RequestIdGenerator.generateListId(
@@ -153,6 +157,7 @@ c4model:Rel(api__identity_user_py__delete, api__identity_user_py__delete__api_co
 async def deleteUser(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     user_id: str = Path(
         ..., description="User id that is used in order to delete the user"
     ),
@@ -187,6 +192,7 @@ c4model:Rel(api__identity_user_py__setUserPassword, api__identity_user_py__setUs
 async def setUserPassword(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     user_id: str = Path(
         ..., description="User id that is used in order to set up the user password"
     ),
@@ -230,6 +236,7 @@ c4model:Rel(api__identity_user_py__resetUserPassword, api__identity_user_py__res
 async def resetUserPassword(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     user_id: str = Path(
         ..., description="User id that is used in order to reset the user password"
     ),

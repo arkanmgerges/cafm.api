@@ -10,6 +10,7 @@ import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -27,6 +28,7 @@ router = APIRouter()
 async def createRoleToResource(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     role_id: str = Body(
         ..., description="Role id to link access to a resource", embed=True
     ),
@@ -57,6 +59,7 @@ async def createRoleToResource(
 async def deleteRoleToResource(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     role_id: str = Body(
         ..., description="Role id to remove link access to a resource", embed=True
     ),

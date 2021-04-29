@@ -26,6 +26,7 @@ from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerat
 from src.port_adapter.api.rest.model.response.v1.project.unit.Units import Units
 from src.port_adapter.api.rest.model.response.v1.project.unit.Unit import UnitDescriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
@@ -42,6 +43,7 @@ async def getUnits(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = UnitClient()
@@ -68,6 +70,7 @@ async def getUnitById(
     *,
     unit_id: str = Path(..., description="unit id that is used to fetch unit data"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a unit by id"""
     try:
@@ -92,6 +95,7 @@ async def getUnitById(
 async def createUnit(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(..., description="name of unit", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
@@ -122,6 +126,7 @@ async def createUnit(
 async def updateUnit(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     unit_id: str = Path(
         ..., description="unit id that is used in order to update the unit"
     ),
@@ -156,6 +161,7 @@ async def updateUnit(
 async def partialUpdateUnit(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     unit_id: str = Path(
         ..., description="unit id that is used in order to update the unit"
     ),
@@ -188,6 +194,7 @@ async def partialUpdateUnit(
 async def deleteUnit(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     unit_id: str = Path(
         ..., description="unit id that is used in order to delete the unit"
     ),

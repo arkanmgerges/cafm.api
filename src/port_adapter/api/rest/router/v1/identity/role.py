@@ -24,6 +24,7 @@ from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerat
 from src.port_adapter.api.rest.model.response.v1.identity.Role import RoleDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Roles import Roles
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -46,6 +47,7 @@ async def getRoles(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. name:asc,age:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = RoleClient()
@@ -78,6 +80,7 @@ async def getRole(
     *,
     role_id: str = Path(..., description="Role id that is used to fetch role data"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = RoleClient()
@@ -108,6 +111,7 @@ c4model:Rel(api__identity_role_py__create, api__identity_role_py__create__api_co
 async def createRole(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(..., description="Title of the role", embed=True),
     title: str = Body(..., description="Display title of the role", embed=True),
 ):
@@ -140,6 +144,7 @@ c4model:Rel(api__identity_role_py__delete, api__identity_role_py__delete__api_co
 async def deleteRole(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     role_id: str = Path(
         ..., description="Role id that is used in order to delete the role"
     ),
@@ -170,6 +175,7 @@ c4model:Rel(api__identity_role_py__update, api__identity_role_py__update__api_co
 async def updateRole(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     role_id: str = Path(
         ..., description="Role id that is used in order to update the role"
     ),

@@ -27,6 +27,7 @@ from src.port_adapter.api.rest.model.response.v1.identity.UserGroup import (
 )
 from src.port_adapter.api.rest.model.response.v1.identity.UserGroups import UserGroups
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -49,6 +50,7 @@ async def getUserGroups(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. name:asc,age:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = UserGroupClient()
@@ -89,6 +91,7 @@ async def getUserGroup(
         ..., description="User group id that is used to fetch user group data"
     ),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a UserGroup by id"""
     try:
@@ -120,6 +123,7 @@ c4model:Rel(api__identity_user_group_py__create, api__identity_user_group_py__cr
 async def createUserGroup(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(..., description="Title of the user group", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
@@ -151,6 +155,7 @@ c4model:Rel(api__identity_user_group_py__delete, api__identity_user_group_py__de
 async def deleteUserGroup(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     user_group_id: str = Path(
         ..., description="User group id that is used in order to delete the user group"
     ),
@@ -183,6 +188,7 @@ c4model:Rel(api__identity_user_group_py__update, api__identity_user_group_py__up
 async def updateUserGroup(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     user_group_id: str = Path(
         ..., description="User group id that is used in order to update the user group"
     ),
@@ -216,6 +222,7 @@ c4model:Rel(api__identity_user_group_py__partial_update, api__identity_user_grou
 async def partialUpdateUserGroup(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     user_group_id: str = Path(
         ..., description="User group id that is used in order to update the user group"
     ),

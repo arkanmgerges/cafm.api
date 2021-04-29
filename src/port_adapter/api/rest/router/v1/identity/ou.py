@@ -24,6 +24,7 @@ from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerat
 from src.port_adapter.api.rest.model.response.v1.identity.Ou import OuDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Ous import Ous
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.ApiCommand import ApiCommand
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -47,6 +48,7 @@ async def getOus(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. name:asc,age:desc"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     try:
         client = OuClient()
@@ -79,6 +81,7 @@ async def getOu(
     *,
     ou_id: str = Path(..., description="Ou id that is used to fetch ou data"),
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
 ):
     """Get a Ou by id"""
     try:
@@ -110,6 +113,7 @@ c4model:Rel(api__identity_ou_py__create, api__identity_ou_py__create__api_comman
 async def createOu(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     name: str = Body(..., description="Title of the ou", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
@@ -140,6 +144,7 @@ c4model:Rel(api__identity_ou_py__delete, api__identity_ou_py__delete__api_comman
 async def deleteOu(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     ou_id: str = Path(..., description="Ou id that is used in order to delete the ou"),
 ):
     reqId = RequestIdGenerator.generateId()
@@ -168,6 +173,7 @@ c4model:Rel(api__identity_ou_py__update, api__identity_ou_py__update__api_comman
 async def updateOu(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     ou_id: str = Path(..., description="Ou id that is used in order to update the ou"),
     name: str = Body(..., description="Title of the ou", embed=True),
 ):
@@ -197,6 +203,7 @@ c4model:Rel(api__identity_ou_py__partial_update, api__identity_ou_py__update__ap
 async def partialUpdateOu(
     *,
     _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
     ou_id: str = Path(..., description="Ou id that is used in order to update the ou"),
     name: str = Body(None, description="Title of the ou", embed=True),
 ):
