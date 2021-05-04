@@ -117,7 +117,7 @@ async def getRequestIdResult(
 def _resultWhenBulk(cacheClient, cacheKey, requestId):
     items = cacheClient.lrange(cacheKey, 0, -1)
     resultItems = _resultForBulk(items)
-    if _hasAtLeastOneFailed(items) or (resultItems["item_count"] == len(resultItems["items"])):
+    if _hasAtLeastOneFailed(items) or (resultItems["total_item_count"] == len(resultItems["items"])):
         resultItems = _resultForBulk(items)
         return ResultRequestResponse(result=resultItems)
     raise InProgressException(
@@ -130,7 +130,7 @@ def _isSuccessfulWhenBulk(cacheClient, cacheKey, requestId):
         return BoolRequestResponse(success=False)
     else:
         resultItems = _resultForBulk(items)
-        if resultItems["item_count"] == len(resultItems["items"]):
+        if resultItems["total_item_count"] == len(resultItems["items"]):
             return BoolRequestResponse(success=True)
         else:
             raise InProgressException(
@@ -192,15 +192,15 @@ def _hasAtLeastOneFailed(items):
 
 def _resultForBulk(items):
     resultItems = []
-    itemCount = -1
+    totalItemCount = -1
     exceptionItems = []
     for item in items:
         resultDict = json.loads(item.decode("utf-8"))
         resultData = resultDict["data"]
         dataList = resultData["data"]
         for dataItem in dataList:
-            if itemCount == -1:
-                itemCount = resultData["item_count"]
+            if totalItemCount == -1:
+                totalItemCount = resultData["total_item_count"]
             resultItems.append(dataItem)
         exceptionItem = resultData["exceptions"] if "exceptions" in resultData else None
         if exceptionItem is not None:
@@ -209,11 +209,11 @@ def _resultForBulk(items):
     resultItemsSorted = sorted(resultItems, key=lambda x: x["_index"])
     resultItemsCurated = list(map(lambda x: {"index": x["_index"], "data": x["_request_data"]}, resultItemsSorted))
 
-    return {'items': resultItemsCurated, 'item_count': itemCount, 'exceptions': exceptionItems}
+    return {'items': resultItemsCurated, 'total_item_count': totalItemCount, 'exceptions': exceptionItems}
 
 
 def _resultFromItems(items, successRequired):
-    result = {"items": [], "item_count": 0}
+    result = {"items": [], "total_item_count": 0}
     for item in items:
         resultDict = json.loads(item.decode("utf-8"))
         result["items"].append(
@@ -222,5 +222,5 @@ def _resultFromItems(items, successRequired):
                 "creator_service_name": resultDict["creator_service_name"],
             }
         )
-    result["item_count"] = successRequired
+    result["total_item_count"] = successRequired
     return result

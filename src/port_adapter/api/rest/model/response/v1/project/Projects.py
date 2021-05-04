@@ -12,4 +12,4 @@ from src.port_adapter.api.rest.model.response.v1.project.Project import (
 
 class Projects(BaseModel):
     projects: List[ProjectDescriptor]
-    item_count: int
+    total_item_count: int

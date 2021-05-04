@@ -14,4 +14,4 @@ from src.port_adapter.api.rest.model.response.v1.project.manufacturer.Manufactur
 
 class Manufacturers(BaseModel):
     manufacturers: List[ManufacturerDescriptor]
-    item_count: int
+    total_item_count: int

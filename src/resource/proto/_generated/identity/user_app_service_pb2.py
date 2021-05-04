@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1fidentity/user_app_service.proto\x12\x12\x63\x61\x66m.identity.user\x1a\x13identity/user.proto\x1a\x0border.proto\"O\n,UserAppService_userByEmailAndPasswordRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"W\n-UserAppService_userByEmailAndPasswordResponse\x12&\n\x04user\x18\x01 \x01(\x0b\x32\x18.cafm.identity.user.User\",\n\x1eUserAppService_userByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\"I\n\x1fUserAppService_userByIdResponse\x12&\n\x04user\x18\x01 \x01(\x0b\x32\x18.cafm.identity.user.User\"n\n\x1bUserAppService_usersRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\"Z\n\x1cUserAppService_usersResponse\x12\'\n\x05users\x18\x01 \x03(\x0b\x32\x18.cafm.identity.user.User\x12\x11\n\titemCount\x18\x02 \x01(\x05\"\x1d\n\x1bUserAppService_newIdRequest\"*\n\x1cUserAppService_newIdResponse\x12\n\n\x02id\x18\x01 \x01(\t2\x85\x04\n\x0eUserAppService\x12\x9f\x01\n\x16userByEmailAndPassword\x12@.cafm.identity.user.UserAppService_userByEmailAndPasswordRequest\x1a\x41.cafm.identity.user.UserAppService_userByEmailAndPasswordResponse\"\x00\x12u\n\x08userById\x12\x32.cafm.identity.user.UserAppService_userByIdRequest\x1a\x33.cafm.identity.user.UserAppService_userByIdResponse\"\x00\x12l\n\x05users\x12/.cafm.identity.user.UserAppService_usersRequest\x1a\x30.cafm.identity.user.UserAppService_usersResponse\"\x00\x12l\n\x05newId\x12/.cafm.identity.user.UserAppService_newIdRequest\x1a\x30.cafm.identity.user.UserAppService_newIdResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x1fidentity/user_app_service.proto\x12\x12\x63\x61\x66m.identity.user\x1a\x13identity/user.proto\x1a\x0border.proto\"O\n,UserAppService_userByEmailAndPasswordRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x10\n\x08password\x18\x02 \x01(\t\"W\n-UserAppService_userByEmailAndPasswordResponse\x12&\n\x04user\x18\x01 \x01(\x0b\x32\x18.cafm.identity.user.User\",\n\x1eUserAppService_userByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\"I\n\x1fUserAppService_userByIdResponse\x12&\n\x04user\x18\x01 \x01(\x0b\x32\x18.cafm.identity.user.User\"n\n\x1bUserAppService_usersRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\"_\n\x1cUserAppService_usersResponse\x12\'\n\x05users\x18\x01 \x03(\x0b\x32\x18.cafm.identity.user.User\x12\x16\n\x0etotalItemCount\x18\x02 \x01(\x05\"\x1d\n\x1bUserAppService_newIdRequest\"*\n\x1cUserAppService_newIdResponse\x12\n\n\x02id\x18\x01 \x01(\t2\x85\x04\n\x0eUserAppService\x12\x9f\x01\n\x16userByEmailAndPassword\x12@.cafm.identity.user.UserAppService_userByEmailAndPasswordRequest\x1a\x41.cafm.identity.user.UserAppService_userByEmailAndPasswordResponse\"\x00\x12u\n\x08userById\x12\x32.cafm.identity.user.UserAppService_userByIdRequest\x1a\x33.cafm.identity.user.UserAppService_userByIdResponse\"\x00\x12l\n\x05users\x12/.cafm.identity.user.UserAppService_usersRequest\x1a\x30.cafm.identity.user.UserAppService_usersResponse\"\x00\x12l\n\x05newId\x12/.cafm.identity.user.UserAppService_newIdRequest\x1a\x30.cafm.identity.user.UserAppService_newIdResponse\"\x00\x62\x06proto3'
   ,
   dependencies=[identity_dot_user__pb2.DESCRIPTOR,order__pb2.DESCRIPTOR,])
 
@@ -225,7 +225,7 @@ _USERAPPSERVICE_USERSRESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='itemCount', full_name='cafm.identity.user.UserAppService_usersResponse.itemCount', index=1,
+      name='totalItemCount', full_name='cafm.identity.user.UserAppService_usersResponse.totalItemCount', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -244,7 +244,7 @@ _USERAPPSERVICE_USERSRESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=492,
-  serialized_end=582,
+  serialized_end=587,
 )
 
 
@@ -268,8 +268,8 @@ _USERAPPSERVICE_NEWIDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=584,
-  serialized_end=613,
+  serialized_start=589,
+  serialized_end=618,
 )
 
 
@@ -300,8 +300,8 @@ _USERAPPSERVICE_NEWIDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=615,
-  serialized_end=657,
+  serialized_start=620,
+  serialized_end=662,
 )
 
 _USERAPPSERVICE_USERBYEMAILANDPASSWORDRESPONSE.fields_by_name['user'].message_type = identity_dot_user__pb2._USER
@@ -383,8 +383,8 @@ _USERAPPSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=660,
-  serialized_end=1177,
+  serialized_start=665,
+  serialized_end=1182,
   methods=[
   _descriptor.MethodDescriptor(
     name='userByEmailAndPassword',

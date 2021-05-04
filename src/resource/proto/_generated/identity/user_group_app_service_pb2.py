@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n%identity/user_group_app_service.proto\x12\x18\x63\x61\x66m.identity.user_group\x1a\x19identity/user_group.proto\x1a\x0border.proto\":\n*UserGroupAppService_userGroupByNameRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"e\n+UserGroupAppService_userGroupByNameResponse\x12\x36\n\tuserGroup\x18\x01 \x01(\x0b\x32#.cafm.identity.user_group.UserGroup\"6\n(UserGroupAppService_userGroupByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\"c\n)UserGroupAppService_userGroupByIdResponse\x12\x36\n\tuserGroup\x18\x01 \x01(\x0b\x32#.cafm.identity.user_group.UserGroup\"x\n%UserGroupAppService_userGroupsRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\"t\n&UserGroupAppService_userGroupsResponse\x12\x37\n\nuserGroups\x18\x01 \x03(\x0b\x32#.cafm.identity.user_group.UserGroup\x12\x11\n\titemCount\x18\x02 \x01(\x05\"\"\n UserGroupAppService_newIdRequest\"/\n!UserGroupAppService_newIdResponse\x12\n\n\x02id\x18\x01 \x01(\t2\xee\x04\n\x13UserGroupAppService\x12\xa0\x01\n\x0fuserGroupByName\x12\x44.cafm.identity.user_group.UserGroupAppService_userGroupByNameRequest\x1a\x45.cafm.identity.user_group.UserGroupAppService_userGroupByNameResponse\"\x00\x12\x9a\x01\n\ruserGroupById\x12\x42.cafm.identity.user_group.UserGroupAppService_userGroupByIdRequest\x1a\x43.cafm.identity.user_group.UserGroupAppService_userGroupByIdResponse\"\x00\x12\x91\x01\n\nuserGroups\x12?.cafm.identity.user_group.UserGroupAppService_userGroupsRequest\x1a@.cafm.identity.user_group.UserGroupAppService_userGroupsResponse\"\x00\x12\x82\x01\n\x05newId\x12:.cafm.identity.user_group.UserGroupAppService_newIdRequest\x1a;.cafm.identity.user_group.UserGroupAppService_newIdResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n%identity/user_group_app_service.proto\x12\x18\x63\x61\x66m.identity.user_group\x1a\x19identity/user_group.proto\x1a\x0border.proto\":\n*UserGroupAppService_userGroupByNameRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"e\n+UserGroupAppService_userGroupByNameResponse\x12\x36\n\tuserGroup\x18\x01 \x01(\x0b\x32#.cafm.identity.user_group.UserGroup\"6\n(UserGroupAppService_userGroupByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\"c\n)UserGroupAppService_userGroupByIdResponse\x12\x36\n\tuserGroup\x18\x01 \x01(\x0b\x32#.cafm.identity.user_group.UserGroup\"x\n%UserGroupAppService_userGroupsRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\"y\n&UserGroupAppService_userGroupsResponse\x12\x37\n\nuserGroups\x18\x01 \x03(\x0b\x32#.cafm.identity.user_group.UserGroup\x12\x16\n\x0etotalItemCount\x18\x02 \x01(\x05\"\"\n UserGroupAppService_newIdRequest\"/\n!UserGroupAppService_newIdResponse\x12\n\n\x02id\x18\x01 \x01(\t2\xee\x04\n\x13UserGroupAppService\x12\xa0\x01\n\x0fuserGroupByName\x12\x44.cafm.identity.user_group.UserGroupAppService_userGroupByNameRequest\x1a\x45.cafm.identity.user_group.UserGroupAppService_userGroupByNameResponse\"\x00\x12\x9a\x01\n\ruserGroupById\x12\x42.cafm.identity.user_group.UserGroupAppService_userGroupByIdRequest\x1a\x43.cafm.identity.user_group.UserGroupAppService_userGroupByIdResponse\"\x00\x12\x91\x01\n\nuserGroups\x12?.cafm.identity.user_group.UserGroupAppService_userGroupsRequest\x1a@.cafm.identity.user_group.UserGroupAppService_userGroupsResponse\"\x00\x12\x82\x01\n\x05newId\x12:.cafm.identity.user_group.UserGroupAppService_newIdRequest\x1a;.cafm.identity.user_group.UserGroupAppService_newIdResponse\"\x00\x62\x06proto3'
   ,
   dependencies=[identity_dot_user__group__pb2.DESCRIPTOR,order__pb2.DESCRIPTOR,])
 
@@ -218,7 +218,7 @@ _USERGROUPAPPSERVICE_USERGROUPSRESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='itemCount', full_name='cafm.identity.user_group.UserGroupAppService_userGroupsResponse.itemCount', index=1,
+      name='totalItemCount', full_name='cafm.identity.user_group.UserGroupAppService_userGroupsResponse.totalItemCount', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -237,7 +237,7 @@ _USERGROUPAPPSERVICE_USERGROUPSRESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=549,
-  serialized_end=665,
+  serialized_end=670,
 )
 
 
@@ -261,8 +261,8 @@ _USERGROUPAPPSERVICE_NEWIDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=667,
-  serialized_end=701,
+  serialized_start=672,
+  serialized_end=706,
 )
 
 
@@ -293,8 +293,8 @@ _USERGROUPAPPSERVICE_NEWIDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=703,
-  serialized_end=750,
+  serialized_start=708,
+  serialized_end=755,
 )
 
 _USERGROUPAPPSERVICE_USERGROUPBYNAMERESPONSE.fields_by_name['userGroup'].message_type = identity_dot_user__group__pb2._USERGROUP
@@ -376,8 +376,8 @@ _USERGROUPAPPSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=753,
-  serialized_end=1375,
+  serialized_start=758,
+  serialized_end=1380,
   methods=[
   _descriptor.MethodDescriptor(
     name='userGroupByName',

@@ -104,7 +104,7 @@ class ManufacturerClient(Client):
                         self._descriptorByObject(obj=manufacturer)
                         for manufacturer in response[0].manufacturers
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

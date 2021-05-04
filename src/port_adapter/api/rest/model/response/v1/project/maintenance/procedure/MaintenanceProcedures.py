@@ -14,4 +14,4 @@ from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.M
 
 class MaintenanceProcedures(BaseModel):
     maintenance_procedures: List[MaintenanceProcedureDescriptor]
-    item_count: int
+    total_item_count: int

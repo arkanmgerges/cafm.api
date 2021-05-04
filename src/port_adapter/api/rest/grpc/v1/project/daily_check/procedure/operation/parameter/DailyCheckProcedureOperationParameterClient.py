@@ -112,7 +112,7 @@ class DailyCheckProcedureOperationParameterClient(Client):
                             0
                         ].dailyCheckProcedureOperationParameters
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -204,7 +204,7 @@ class DailyCheckProcedureOperationParameterClient(Client):
                             0
                         ].dailyCheckProcedureOperationParameters
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

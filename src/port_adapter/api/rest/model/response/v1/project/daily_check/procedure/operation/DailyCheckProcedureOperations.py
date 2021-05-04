@@ -14,4 +14,4 @@ from src.port_adapter.api.rest.model.response.v1.project.daily_check.procedure.o
 
 class DailyCheckProcedureOperations(BaseModel):
     daily_check_procedure_operations: List[DailyCheckProcedureOperationDescriptor]
-    item_count: int
+    total_item_count: int

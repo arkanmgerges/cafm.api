@@ -12,4 +12,4 @@ from src.port_adapter.api.rest.model.response.v1.project.UserLookup import (
 
 class UserLookups(BaseModel):
     user_lookups: List[UserLookupDescriptor]
-    item_count: int
+    total_item_count: int

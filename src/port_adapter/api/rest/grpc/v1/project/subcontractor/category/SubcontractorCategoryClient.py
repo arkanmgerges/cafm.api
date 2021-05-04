@@ -106,7 +106,7 @@ class SubcontractorCategoryClient(Client):
                         self._descriptorByObject(obj=subcontractorCategory)
                         for subcontractorCategory in response[0].subcontractorCategories
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

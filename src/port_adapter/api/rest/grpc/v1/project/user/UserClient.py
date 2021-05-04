@@ -94,7 +94,7 @@ class UserClient(Client):
                     users=[
                         self._descriptorByObject(obj=user) for user in response[0].users
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1fidentity/city_app_service.proto\x12\x15\x63\x61\x66m.identity.country\x1a\x13identity/city.proto\x1a\x0border.proto\",\n\x1e\x43ityAppService_cityByIdRequest\x12\n\n\x02id\x18\x01 \x01(\x05\"L\n\x1f\x43ityAppService_cityByIdResponse\x12)\n\x04\x63ity\x18\x01 \x01(\x0b\x32\x1b.cafm.identity.country.City\"o\n\x1c\x43ityAppService_citiesRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\"_\n\x1d\x43ityAppService_citiesResponse\x12+\n\x06\x63ities\x18\x01 \x03(\x0b\x32\x1b.cafm.identity.country.City\x12\x11\n\titemCount\x18\x02 \x01(\x05\"\x84\x01\n%CityAppService_citiesByStateIdRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\x12\n\n\x02id\x18\x04 \x01(\t\"h\n&CityAppService_citiesByStateIdResponse\x12+\n\x06\x63ities\x18\x01 \x03(\x0b\x32\x1b.cafm.identity.country.City\x12\x11\n\titemCount\x18\x02 \x01(\x05\x32\x97\x03\n\x0e\x43ityAppService\x12{\n\x08\x63ityById\x12\x35.cafm.identity.country.CityAppService_cityByIdRequest\x1a\x36.cafm.identity.country.CityAppService_cityByIdResponse\"\x00\x12u\n\x06\x63ities\x12\x33.cafm.identity.country.CityAppService_citiesRequest\x1a\x34.cafm.identity.country.CityAppService_citiesResponse\"\x00\x12\x90\x01\n\x0f\x63itiesByStateId\x12<.cafm.identity.country.CityAppService_citiesByStateIdRequest\x1a=.cafm.identity.country.CityAppService_citiesByStateIdResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n\x1fidentity/city_app_service.proto\x12\x15\x63\x61\x66m.identity.country\x1a\x13identity/city.proto\x1a\x0border.proto\",\n\x1e\x43ityAppService_cityByIdRequest\x12\n\n\x02id\x18\x01 \x01(\x05\"L\n\x1f\x43ityAppService_cityByIdResponse\x12)\n\x04\x63ity\x18\x01 \x01(\x0b\x32\x1b.cafm.identity.country.City\"o\n\x1c\x43ityAppService_citiesRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\"d\n\x1d\x43ityAppService_citiesResponse\x12+\n\x06\x63ities\x18\x01 \x03(\x0b\x32\x1b.cafm.identity.country.City\x12\x16\n\x0etotalItemCount\x18\x02 \x01(\x05\"\x84\x01\n%CityAppService_citiesByStateIdRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\x12\n\n\x02id\x18\x04 \x01(\t\"m\n&CityAppService_citiesByStateIdResponse\x12+\n\x06\x63ities\x18\x01 \x03(\x0b\x32\x1b.cafm.identity.country.City\x12\x16\n\x0etotalItemCount\x18\x02 \x01(\x05\x32\x97\x03\n\x0e\x43ityAppService\x12{\n\x08\x63ityById\x12\x35.cafm.identity.country.CityAppService_cityByIdRequest\x1a\x36.cafm.identity.country.CityAppService_cityByIdResponse\"\x00\x12u\n\x06\x63ities\x12\x33.cafm.identity.country.CityAppService_citiesRequest\x1a\x34.cafm.identity.country.CityAppService_citiesResponse\"\x00\x12\x90\x01\n\x0f\x63itiesByStateId\x12<.cafm.identity.country.CityAppService_citiesByStateIdRequest\x1a=.cafm.identity.country.CityAppService_citiesByStateIdResponse\"\x00\x62\x06proto3'
   ,
   dependencies=[identity_dot_city__pb2.DESCRIPTOR,order__pb2.DESCRIPTOR,])
 
@@ -154,7 +154,7 @@ _CITYAPPSERVICE_CITIESRESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='itemCount', full_name='cafm.identity.country.CityAppService_citiesResponse.itemCount', index=1,
+      name='totalItemCount', full_name='cafm.identity.country.CityAppService_citiesResponse.totalItemCount', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -173,7 +173,7 @@ _CITYAPPSERVICE_CITIESRESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=329,
-  serialized_end=424,
+  serialized_end=429,
 )
 
 
@@ -225,8 +225,8 @@ _CITYAPPSERVICE_CITIESBYSTATEIDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=427,
-  serialized_end=559,
+  serialized_start=432,
+  serialized_end=564,
 )
 
 
@@ -246,7 +246,7 @@ _CITYAPPSERVICE_CITIESBYSTATEIDRESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='itemCount', full_name='cafm.identity.country.CityAppService_citiesByStateIdResponse.itemCount', index=1,
+      name='totalItemCount', full_name='cafm.identity.country.CityAppService_citiesByStateIdResponse.totalItemCount', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -264,8 +264,8 @@ _CITYAPPSERVICE_CITIESBYSTATEIDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=561,
-  serialized_end=665,
+  serialized_start=566,
+  serialized_end=675,
 )
 
 _CITYAPPSERVICE_CITYBYIDRESPONSE.fields_by_name['city'].message_type = identity_dot_city__pb2._CITY
@@ -332,8 +332,8 @@ _CITYAPPSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=668,
-  serialized_end=1075,
+  serialized_start=678,
+  serialized_end=1085,
   methods=[
   _descriptor.MethodDescriptor(
     name='cityById',

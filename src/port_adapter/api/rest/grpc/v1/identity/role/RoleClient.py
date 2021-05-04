@@ -307,7 +307,7 @@ class RoleClient(Client):
                     roles=[
                         self._descriptorByObject(obj=role) for role in response[0].roles
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

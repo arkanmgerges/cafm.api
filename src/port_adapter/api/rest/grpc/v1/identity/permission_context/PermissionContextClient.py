@@ -105,7 +105,7 @@ class PermissionContextClient(Client):
                         self._descriptorByObject(obj=permissionContext)
                         for permissionContext in response[0].permissionContexts
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

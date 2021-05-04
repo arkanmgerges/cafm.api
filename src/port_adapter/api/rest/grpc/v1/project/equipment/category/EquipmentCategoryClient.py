@@ -112,7 +112,7 @@ class EquipmentCategoryClient(Client):
                         self._descriptorByObject(obj=equipmentCategory)
                         for equipmentCategory in response[0].equipmentCategories
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -194,7 +194,7 @@ class EquipmentCategoryClient(Client):
                         )
                         for group in response[0].equipmentCategoryGroups
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

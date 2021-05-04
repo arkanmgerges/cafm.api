@@ -16,4 +16,4 @@ class MaintenanceProcedureOperationParameters(BaseModel):
     maintenance_procedure_operation_parameters: List[
         MaintenanceProcedureOperationParameterDescriptor
     ]
-    item_count: int
+    total_item_count: int

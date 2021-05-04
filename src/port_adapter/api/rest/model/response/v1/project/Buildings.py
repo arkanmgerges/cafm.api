@@ -12,4 +12,4 @@ from src.port_adapter.api.rest.model.response.v1.project.Building import (
 
 class Buildings(BaseModel):
     buildings: List[BuildingDescriptor]
-    item_count: int
+    total_item_count: int

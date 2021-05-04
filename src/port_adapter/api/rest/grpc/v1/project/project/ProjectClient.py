@@ -135,7 +135,7 @@ class ProjectClient(Client):
                         self._descriptorByObject(project)
                         for project in response[0].projects
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -247,7 +247,7 @@ class ProjectClient(Client):
                         self._buildingDescriptor(obj=obj)
                         for obj in response[0].buildings
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -364,7 +364,7 @@ class ProjectClient(Client):
                         self._buildingLevelDescriptor(obj=obj)
                         for obj in response[0].buildingLevels
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -482,7 +482,7 @@ class ProjectClient(Client):
                         self._buildingLevelRoomDescriptor(obj=obj)
                         for obj in response[0].buildingLevelRooms
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

@@ -101,7 +101,7 @@ class OrganizationClient(Client):
                         self._descriptorByObject(obj=organization)
                         for organization in response[0].organizations
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

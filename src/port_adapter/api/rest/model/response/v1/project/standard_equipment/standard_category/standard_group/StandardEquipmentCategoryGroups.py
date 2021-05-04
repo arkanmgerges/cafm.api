@@ -14,4 +14,4 @@ from src.port_adapter.api.rest.model.response.v1.project.standard_equipment.stan
 
 class StandardEquipmentCategoryGroups(BaseModel):
     standard_equipment_category_groups: List[StandardEquipmentCategoryGroupDescriptor]
-    item_count: int
+    total_item_count: int

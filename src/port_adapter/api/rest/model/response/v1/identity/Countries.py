@@ -12,4 +12,4 @@ from src.port_adapter.api.rest.model.response.v1.identity.Country import (
 
 class Countries(BaseModel):
     countries: List[CountryDescriptor]
-    item_count: int
+    total_item_count: int

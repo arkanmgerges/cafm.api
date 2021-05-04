@@ -113,7 +113,7 @@ class EquipmentProjectCategoryClient(Client):
                             0
                         ].equipmentProjectCategories
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -202,7 +202,7 @@ class EquipmentProjectCategoryClient(Client):
                         )
                         for group in response[0].equipmentCategoryGroups
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

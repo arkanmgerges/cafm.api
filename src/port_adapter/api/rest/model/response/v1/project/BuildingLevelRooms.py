@@ -13,4 +13,4 @@ from src.port_adapter.api.rest.model.response.v1.project.BuildingLevelRoom impor
 
 class BuildingLevelRooms(BaseModel):
     building_level_rooms: List[BuildingLevelRoomDescriptor]
-    item_count: int
+    total_item_count: int

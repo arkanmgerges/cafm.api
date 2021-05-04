@@ -10,4 +10,4 @@ from src.port_adapter.api.rest.model.response.v1.identity.Role import RoleDescri
 
 class Roles(BaseModel):
     roles: List[RoleDescriptor]
-    item_count: int
+    total_item_count: int

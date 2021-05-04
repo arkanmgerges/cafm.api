@@ -16,4 +16,4 @@ class DailyCheckProcedureOperationParameters(BaseModel):
     daily_check_procedure_operation_parameters: List[
         DailyCheckProcedureOperationParameterDescriptor
     ]
-    item_count: int
+    total_item_count: int

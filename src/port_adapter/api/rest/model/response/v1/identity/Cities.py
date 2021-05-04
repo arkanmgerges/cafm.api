@@ -10,4 +10,4 @@ from src.port_adapter.api.rest.model.response.v1.identity.City import CityDescri
 
 class Cities(BaseModel):
     cities: List[CityDescriptor]
-    item_count: int
+    total_item_count: int

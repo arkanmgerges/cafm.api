@@ -14,4 +14,4 @@ from src.port_adapter.api.rest.model.response.v1.project.subcontractor.category.
 
 class SubcontractorCategories(BaseModel):
     subcontractor_categories: List[SubcontractorCategoryDescriptor]
-    item_count: int
+    total_item_count: int

@@ -74,7 +74,7 @@ class UserLookupClient(Client):
                         self._descriptorByObject(obj=userLookup)
                         for userLookup in response[0].userLookups
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

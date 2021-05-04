@@ -98,7 +98,7 @@ class RealmClient(Client):
                         self._descriptorByObject(obj=realm)
                         for realm in response[0].realms
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

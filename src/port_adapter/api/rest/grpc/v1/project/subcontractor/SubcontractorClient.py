@@ -105,7 +105,7 @@ class SubcontractorClient(Client):
                         self._descriptorByObject(obj=subcontractor)
                         for subcontractor in response[0].subcontractors
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -191,7 +191,7 @@ class SubcontractorClient(Client):
                         self._descriptorByObject(obj=subcontractor)
                         for subcontractor in response[0].subcontractors
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -246,7 +246,7 @@ class SubcontractorClient(Client):
                         self._descriptorByObject(obj=subcontractor)
                         for subcontractor in response[0].subcontractors
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

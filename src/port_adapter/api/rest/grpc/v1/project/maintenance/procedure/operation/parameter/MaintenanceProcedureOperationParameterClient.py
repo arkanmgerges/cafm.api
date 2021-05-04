@@ -114,7 +114,7 @@ class MaintenanceProcedureOperationParameterClient(Client):
                             0
                         ].maintenanceProcedureOperationParameters
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -206,7 +206,7 @@ class MaintenanceProcedureOperationParameterClient(Client):
                             0
                         ].maintenanceProcedureOperationParameters
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

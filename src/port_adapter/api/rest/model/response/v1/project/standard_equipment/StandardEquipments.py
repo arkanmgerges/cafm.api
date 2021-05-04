@@ -14,4 +14,4 @@ from src.port_adapter.api.rest.model.response.v1.project.standard_equipment.Stan
 
 class StandardEquipments(BaseModel):
     standard_equipments: List[StandardEquipmentDescriptor]
-    item_count: int
+    total_item_count: int

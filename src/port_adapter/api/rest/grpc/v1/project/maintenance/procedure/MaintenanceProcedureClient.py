@@ -109,7 +109,7 @@ class MaintenanceProcedureClient(Client):
                         self._descriptorByObject(obj=maintenanceProcedure)
                         for maintenanceProcedure in response[0].maintenanceProcedures
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -191,7 +191,7 @@ class MaintenanceProcedureClient(Client):
                         self._descriptorByObject(obj=maintenanceProcedure)
                         for maintenanceProcedure in response[0].maintenanceProcedures
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

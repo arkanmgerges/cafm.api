@@ -94,7 +94,7 @@ class OuClient(Client):
                 )
                 return Ous(
                     ous=[self._descriptorByObject(obj=ou) for ou in response[0].ous],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

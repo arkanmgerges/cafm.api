@@ -28,7 +28,7 @@ async def appRoutes(request: Request):
         for route in request.app.routes
         if any(match in route.path for match in matchers)
     ]
-    return Routes(routes=urlList, item_count=len(urlList))
+    return Routes(routes=urlList, total_item_count=len(urlList))
 
 
 @router.post(path="/hash_keys", summary="Hash keys", response_model=HashedKeys)

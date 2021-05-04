@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n-identity/permission_context_app_service.proto\x12\x18\x63\x61\x66m.identity.permission\x1a!identity/permission_context.proto\x1a\x0border.proto\"F\n8PermissionContextAppService_permissionContextByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x83\x01\n9PermissionContextAppService_permissionContextByIdResponse\x12\x46\n\x11permissionContext\x18\x01 \x01(\x0b\x32+.cafm.identity.permission.PermissionContext\"\x88\x01\n5PermissionContextAppService_permissionContextsRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\"\x94\x01\n6PermissionContextAppService_permissionContextsResponse\x12G\n\x12permissionContexts\x18\x01 \x03(\x0b\x32+.cafm.identity.permission.PermissionContext\x12\x11\n\titemCount\x18\x02 \x01(\x05\"*\n(PermissionContextAppService_newIdRequest\"7\n)PermissionContextAppService_newIdResponse\x12\n\n\x02id\x18\x01 \x01(\t2\xb3\x04\n\x1bPermissionContextAppService\x12\xc2\x01\n\x15permissionContextById\x12R.cafm.identity.permission.PermissionContextAppService_permissionContextByIdRequest\x1aS.cafm.identity.permission.PermissionContextAppService_permissionContextByIdResponse\"\x00\x12\xb9\x01\n\x12permissionContexts\x12O.cafm.identity.permission.PermissionContextAppService_permissionContextsRequest\x1aP.cafm.identity.permission.PermissionContextAppService_permissionContextsResponse\"\x00\x12\x92\x01\n\x05newId\x12\x42.cafm.identity.permission.PermissionContextAppService_newIdRequest\x1a\x43.cafm.identity.permission.PermissionContextAppService_newIdResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n-identity/permission_context_app_service.proto\x12\x18\x63\x61\x66m.identity.permission\x1a!identity/permission_context.proto\x1a\x0border.proto\"F\n8PermissionContextAppService_permissionContextByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\"\x83\x01\n9PermissionContextAppService_permissionContextByIdResponse\x12\x46\n\x11permissionContext\x18\x01 \x01(\x0b\x32+.cafm.identity.permission.PermissionContext\"\x88\x01\n5PermissionContextAppService_permissionContextsRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\"\x99\x01\n6PermissionContextAppService_permissionContextsResponse\x12G\n\x12permissionContexts\x18\x01 \x03(\x0b\x32+.cafm.identity.permission.PermissionContext\x12\x16\n\x0etotalItemCount\x18\x02 \x01(\x05\"*\n(PermissionContextAppService_newIdRequest\"7\n)PermissionContextAppService_newIdResponse\x12\n\n\x02id\x18\x01 \x01(\t2\xb3\x04\n\x1bPermissionContextAppService\x12\xc2\x01\n\x15permissionContextById\x12R.cafm.identity.permission.PermissionContextAppService_permissionContextByIdRequest\x1aS.cafm.identity.permission.PermissionContextAppService_permissionContextByIdResponse\"\x00\x12\xb9\x01\n\x12permissionContexts\x12O.cafm.identity.permission.PermissionContextAppService_permissionContextsRequest\x1aP.cafm.identity.permission.PermissionContextAppService_permissionContextsResponse\"\x00\x12\x92\x01\n\x05newId\x12\x42.cafm.identity.permission.PermissionContextAppService_newIdRequest\x1a\x43.cafm.identity.permission.PermissionContextAppService_newIdResponse\"\x00\x62\x06proto3'
   ,
   dependencies=[identity_dot_permission__context__pb2.DESCRIPTOR,order__pb2.DESCRIPTOR,])
 
@@ -154,7 +154,7 @@ _PERMISSIONCONTEXTAPPSERVICE_PERMISSIONCONTEXTSRESPONSE = _descriptor.Descriptor
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='itemCount', full_name='cafm.identity.permission.PermissionContextAppService_permissionContextsResponse.itemCount', index=1,
+      name='totalItemCount', full_name='cafm.identity.permission.PermissionContextAppService_permissionContextsResponse.totalItemCount', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -173,7 +173,7 @@ _PERMISSIONCONTEXTAPPSERVICE_PERMISSIONCONTEXTSRESPONSE = _descriptor.Descriptor
   oneofs=[
   ],
   serialized_start=469,
-  serialized_end=617,
+  serialized_end=622,
 )
 
 
@@ -197,8 +197,8 @@ _PERMISSIONCONTEXTAPPSERVICE_NEWIDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=619,
-  serialized_end=661,
+  serialized_start=624,
+  serialized_end=666,
 )
 
 
@@ -229,8 +229,8 @@ _PERMISSIONCONTEXTAPPSERVICE_NEWIDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=663,
-  serialized_end=718,
+  serialized_start=668,
+  serialized_end=723,
 )
 
 _PERMISSIONCONTEXTAPPSERVICE_PERMISSIONCONTEXTBYIDRESPONSE.fields_by_name['permissionContext'].message_type = identity_dot_permission__context__pb2._PERMISSIONCONTEXT
@@ -295,8 +295,8 @@ _PERMISSIONCONTEXTAPPSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=721,
-  serialized_end=1284,
+  serialized_start=726,
+  serialized_end=1289,
   methods=[
   _descriptor.MethodDescriptor(
     name='permissionContextById',

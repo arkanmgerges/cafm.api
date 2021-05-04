@@ -82,7 +82,7 @@ async def createBulk(
     reqId = RequestIdGenerator.generateBulkId()
     dataBody = []
     index = 0
-    itemCount = len(body["data"])
+    totalItemCount = len(body["data"])
     for dataItem in body["data"]:
         for command, commandData in dataItem.items():
             obj = extractData(command=command, commandData=commandData)
@@ -93,7 +93,7 @@ async def createBulk(
     producer = AppDi.instance.get(SimpleProducer)
 
     for microserviceName, dataBodyItems in batchedDataItems.items():
-        messageRequestData = {"data": dataBodyItems, "item_count": itemCount}
+        messageRequestData = {"data": dataBodyItems, "total_item_count": totalItemCount}
         if microserviceName == "identity":
             producer.produce(
                 obj=IdentityCommand(

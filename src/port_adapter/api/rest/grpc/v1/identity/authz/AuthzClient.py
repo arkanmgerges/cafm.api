@@ -63,7 +63,7 @@ class AuthzClient(Client):
                         HashedKey(key=x.key, hash_code=x.hashCode)
                         for x in response[0].hashedKeys
                     ],
-                    item_count=len(response[0].hashedKeys),
+                    total_item_count=len(response[0].hashedKeys),
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

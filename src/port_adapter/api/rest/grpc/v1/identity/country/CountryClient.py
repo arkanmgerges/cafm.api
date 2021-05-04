@@ -86,7 +86,7 @@ class CountryClient(Client):
                         )
                         for country in response[0].countries
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -181,7 +181,7 @@ class CountryClient(Client):
                         )
                         for city in response[0].cities
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -270,7 +270,7 @@ class CountryClient(Client):
                         State(id=state.id, name=state.name)
                         for state in response[0].states
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

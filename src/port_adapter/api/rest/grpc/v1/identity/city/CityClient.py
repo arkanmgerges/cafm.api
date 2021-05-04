@@ -78,7 +78,7 @@ class CityClient(Client):
                         )
                         for city in response[0].cities
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -174,7 +174,7 @@ class CityClient(Client):
                         )
                         for city in response[0].cities
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

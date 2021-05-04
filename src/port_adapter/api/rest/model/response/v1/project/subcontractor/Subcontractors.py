@@ -12,4 +12,4 @@ from src.port_adapter.api.rest.model.response.v1.project.subcontractor.Subcontra
 
 class Subcontractors(BaseModel):
     subcontractors: List[SubcontractorDescriptor]
-    item_count: int
+    total_item_count: int

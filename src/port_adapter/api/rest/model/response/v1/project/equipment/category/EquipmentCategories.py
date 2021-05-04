@@ -14,4 +14,4 @@ from src.port_adapter.api.rest.model.response.v1.project.equipment.category.Equi
 
 class EquipmentCategories(BaseModel):
     equipment_categories: List[EquipmentCategoryDescriptor]
-    item_count: int
+    total_item_count: int

@@ -100,7 +100,7 @@ class ProjectClient(Client):
                         self._descriptorByObject(obj=project)
                         for project in response[0].projects
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

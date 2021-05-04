@@ -101,7 +101,7 @@ class PermissionClient(Client):
                         self._descriptorByObject(obj=permission)
                         for permission in response[0].permissions
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

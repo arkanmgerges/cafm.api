@@ -103,7 +103,7 @@ class StandardEquipmentClient(Client):
                         self._descriptorByObject(obj=standardEquipment)
                         for standardEquipment in response[0].standardEquipments
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

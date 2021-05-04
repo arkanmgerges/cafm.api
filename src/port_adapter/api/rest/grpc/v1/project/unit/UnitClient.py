@@ -97,7 +97,7 @@ class UnitClient(Client):
                     units=[
                         self._descriptorByObject(obj=unit) for unit in response[0].units
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

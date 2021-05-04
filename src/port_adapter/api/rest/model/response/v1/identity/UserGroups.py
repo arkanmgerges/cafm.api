@@ -12,4 +12,4 @@ from src.port_adapter.api.rest.model.response.v1.identity.UserGroup import (
 
 class UserGroups(BaseModel):
     user_groups: List[UserGroupDescriptor]
-    item_count: int
+    total_item_count: int

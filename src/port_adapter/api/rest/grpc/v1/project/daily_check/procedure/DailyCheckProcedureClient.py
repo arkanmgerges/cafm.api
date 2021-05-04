@@ -106,7 +106,7 @@ class DailyCheckProcedureClient(Client):
                         self._descriptorByObject(obj=dailyCheckProcedure)
                         for dailyCheckProcedure in response[0].dailyCheckProcedures
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -186,7 +186,7 @@ class DailyCheckProcedureClient(Client):
                         self._descriptorByObject(obj=dailyCheckProcedure)
                         for dailyCheckProcedure in response[0].dailyCheckProcedures
                     ],
-                    item_count=response[0].itemCount,
+                    total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

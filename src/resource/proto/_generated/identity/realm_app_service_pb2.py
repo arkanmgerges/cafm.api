@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n identity/realm_app_service.proto\x12\x13\x63\x61\x66m.identity.realm\x1a\x14identity/realm.proto\x1a\x0border.proto\"2\n\"RealmAppService_realmByNameRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"P\n#RealmAppService_realmByNameResponse\x12)\n\x05realm\x18\x01 \x01(\x0b\x32\x1a.cafm.identity.realm.Realm\".\n RealmAppService_realmByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\"N\n!RealmAppService_realmByIdResponse\x12)\n\x05realm\x18\x01 \x01(\x0b\x32\x1a.cafm.identity.realm.Realm\"p\n\x1dRealmAppService_realmsRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\"_\n\x1eRealmAppService_realmsResponse\x12*\n\x06realms\x18\x01 \x03(\x0b\x32\x1a.cafm.identity.realm.Realm\x12\x11\n\titemCount\x18\x02 \x01(\x05\"\x1e\n\x1cRealmAppService_newIdRequest\"+\n\x1dRealmAppService_newIdResponse\x12\n\n\x02id\x18\x01 \x01(\t2\xfb\x03\n\x0fRealmAppService\x12\x82\x01\n\x0brealmByName\x12\x37.cafm.identity.realm.RealmAppService_realmByNameRequest\x1a\x38.cafm.identity.realm.RealmAppService_realmByNameResponse\"\x00\x12|\n\trealmById\x12\x35.cafm.identity.realm.RealmAppService_realmByIdRequest\x1a\x36.cafm.identity.realm.RealmAppService_realmByIdResponse\"\x00\x12s\n\x06realms\x12\x32.cafm.identity.realm.RealmAppService_realmsRequest\x1a\x33.cafm.identity.realm.RealmAppService_realmsResponse\"\x00\x12p\n\x05newId\x12\x31.cafm.identity.realm.RealmAppService_newIdRequest\x1a\x32.cafm.identity.realm.RealmAppService_newIdResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n identity/realm_app_service.proto\x12\x13\x63\x61\x66m.identity.realm\x1a\x14identity/realm.proto\x1a\x0border.proto\"2\n\"RealmAppService_realmByNameRequest\x12\x0c\n\x04name\x18\x01 \x01(\t\"P\n#RealmAppService_realmByNameResponse\x12)\n\x05realm\x18\x01 \x01(\x0b\x32\x1a.cafm.identity.realm.Realm\".\n RealmAppService_realmByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\"N\n!RealmAppService_realmByIdResponse\x12)\n\x05realm\x18\x01 \x01(\x0b\x32\x1a.cafm.identity.realm.Realm\"p\n\x1dRealmAppService_realmsRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\"d\n\x1eRealmAppService_realmsResponse\x12*\n\x06realms\x18\x01 \x03(\x0b\x32\x1a.cafm.identity.realm.Realm\x12\x16\n\x0etotalItemCount\x18\x02 \x01(\x05\"\x1e\n\x1cRealmAppService_newIdRequest\"+\n\x1dRealmAppService_newIdResponse\x12\n\n\x02id\x18\x01 \x01(\t2\xfb\x03\n\x0fRealmAppService\x12\x82\x01\n\x0brealmByName\x12\x37.cafm.identity.realm.RealmAppService_realmByNameRequest\x1a\x38.cafm.identity.realm.RealmAppService_realmByNameResponse\"\x00\x12|\n\trealmById\x12\x35.cafm.identity.realm.RealmAppService_realmByIdRequest\x1a\x36.cafm.identity.realm.RealmAppService_realmByIdResponse\"\x00\x12s\n\x06realms\x12\x32.cafm.identity.realm.RealmAppService_realmsRequest\x1a\x33.cafm.identity.realm.RealmAppService_realmsResponse\"\x00\x12p\n\x05newId\x12\x31.cafm.identity.realm.RealmAppService_newIdRequest\x1a\x32.cafm.identity.realm.RealmAppService_newIdResponse\"\x00\x62\x06proto3'
   ,
   dependencies=[identity_dot_realm__pb2.DESCRIPTOR,order__pb2.DESCRIPTOR,])
 
@@ -218,7 +218,7 @@ _REALMAPPSERVICE_REALMSRESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='itemCount', full_name='cafm.identity.realm.RealmAppService_realmsResponse.itemCount', index=1,
+      name='totalItemCount', full_name='cafm.identity.realm.RealmAppService_realmsResponse.totalItemCount', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -237,7 +237,7 @@ _REALMAPPSERVICE_REALMSRESPONSE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=468,
-  serialized_end=563,
+  serialized_end=568,
 )
 
 
@@ -261,8 +261,8 @@ _REALMAPPSERVICE_NEWIDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=565,
-  serialized_end=595,
+  serialized_start=570,
+  serialized_end=600,
 )
 
 
@@ -293,8 +293,8 @@ _REALMAPPSERVICE_NEWIDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=597,
-  serialized_end=640,
+  serialized_start=602,
+  serialized_end=645,
 )
 
 _REALMAPPSERVICE_REALMBYNAMERESPONSE.fields_by_name['realm'].message_type = identity_dot_realm__pb2._REALM
@@ -376,8 +376,8 @@ _REALMAPPSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=643,
-  serialized_end=1150,
+  serialized_start=648,
+  serialized_end=1155,
   methods=[
   _descriptor.MethodDescriptor(
     name='realmByName',

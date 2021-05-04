@@ -12,4 +12,4 @@ from src.port_adapter.api.rest.model.response.v1.identity.Permission import (
 
 class Permissions(BaseModel):
     permissions: List[PermissionDescriptor]
-    item_count: int
+    total_item_count: int

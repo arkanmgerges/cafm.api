@@ -49,7 +49,7 @@ from src.resource.proto._generated.{{model.microservice}}.{{model.name}}_app_ser
 
                 return {{ className | pluralize }}({{ model.name | pluralize }}=[self._descriptorByObject(obj={{ lowerCamelModelName }}) for {{ lowerCamelModelName }} in
                                                     response[0].{{ lowerCamelModelName | pluralize }}],
-                                     item_count=response[0].itemCount)
+                                     total_item_count=response[0].totalItemCount)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
