@@ -161,7 +161,9 @@ def _resultWhenListWithSuccessCount(cacheClient, cacheKey, split, requestId):
     if CacheType.valueToEnum(cacheType) == CacheType.LIST:
         items = cacheClient.lrange(cacheKey, 0, -1)
         if _hasAtLeastOneFailed(items):
-            return ResultRequestResponse(result=_resultFromItems(items))
+            _key = split[1]
+            successRequired = int(split[2])
+            return ResultRequestResponse(result=_resultFromItems(items, successRequired))
         else:
             _key = split[1]
             successRequired = int(split[2])
@@ -171,7 +173,7 @@ def _resultWhenListWithSuccessCount(cacheClient, cacheKey, split, requestId):
                     raise InProgressException(
                         f"Request id: {requestId} is still in progress"
                     )
-                return ResultRequestResponse(result=_resultFromItems(items))
+                return ResultRequestResponse(result=_resultFromItems(items, successRequired))
             else:
                 raise InProgressException(
                     f"Request id: {requestId} is still in progress"
@@ -210,7 +212,7 @@ def _resultForBulk(items):
     return {'items': resultItemsCurated, 'item_count': itemCount, 'exceptions': exceptionItems}
 
 
-def _resultFromItems(items):
+def _resultFromItems(items, successRequired):
     result = {"items": [], "item_count": 0}
     for item in items:
         resultDict = json.loads(item.decode("utf-8"))
@@ -220,5 +222,5 @@ def _resultFromItems(items):
                 "creator_service_name": resultDict["creator_service_name"],
             }
         )
-        result["item_count"] += 1
+    result["item_count"] = successRequired
     return result

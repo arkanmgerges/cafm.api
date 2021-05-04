@@ -192,7 +192,7 @@ c4model:Rel(api__identity_user_py__setUserPassword, api__identity_user_py__setUs
 async def setUserPassword(
     *,
     _=Depends(CustomHttpBearer()),
-    __=Depends(CustomAuthorization()),
+    # __=Depends(CustomAuthorization()),
     user_id: str = Path(
         ..., description="User id that is used in order to set up the user password"
     ),
@@ -236,7 +236,7 @@ c4model:Rel(api__identity_user_py__resetUserPassword, api__identity_user_py__res
 async def resetUserPassword(
     *,
     _=Depends(CustomHttpBearer()),
-    __=Depends(CustomAuthorization()),
+    # __=Depends(CustomAuthorization()),
     user_id: str = Path(
         ..., description="User id that is used in order to reset the user password"
     ),
