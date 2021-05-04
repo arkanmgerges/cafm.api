@@ -2,9 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from project import (
-    standard_maintenance_procedure_app_service_pb2 as project_dot_standard__maintenance__procedure__app__service__pb2,
-)
+from project import standard_maintenance_procedure_app_service_pb2 as project_dot_standard__maintenance__procedure__app__service__pb2
 
 
 class StandardMaintenanceProcedureAppServiceStub(object):
@@ -17,20 +15,20 @@ class StandardMaintenanceProcedureAppServiceStub(object):
             channel: A grpc.Channel.
         """
         self.standardMaintenanceProcedureById = channel.unary_unary(
-            "/cafm.project.standard_maintenance_procedure.StandardMaintenanceProcedureAppService/standardMaintenanceProcedureById",
-            request_serializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdRequest.SerializeToString,
-            response_deserializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdResponse.FromString,
-        )
+                '/cafm.project.standard_maintenance_procedure.StandardMaintenanceProcedureAppService/standardMaintenanceProcedureById',
+                request_serializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdRequest.SerializeToString,
+                response_deserializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdResponse.FromString,
+                )
         self.standardMaintenanceProcedures = channel.unary_unary(
-            "/cafm.project.standard_maintenance_procedure.StandardMaintenanceProcedureAppService/standardMaintenanceProcedures",
-            request_serializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProceduresRequest.SerializeToString,
-            response_deserializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProceduresResponse.FromString,
-        )
+                '/cafm.project.standard_maintenance_procedure.StandardMaintenanceProcedureAppService/standardMaintenanceProcedures',
+                request_serializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProceduresRequest.SerializeToString,
+                response_deserializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProceduresResponse.FromString,
+                )
         self.newId = channel.unary_unary(
-            "/cafm.project.standard_maintenance_procedure.StandardMaintenanceProcedureAppService/newId",
-            request_serializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_newIdRequest.SerializeToString,
-            response_deserializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_newIdResponse.FromString,
-        )
+                '/cafm.project.standard_maintenance_procedure.StandardMaintenanceProcedureAppService/newId',
+                request_serializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_newIdRequest.SerializeToString,
+                response_deserializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_newIdResponse.FromString,
+                )
 
 
 class StandardMaintenanceProcedureAppServiceServicer(object):
@@ -39,134 +37,96 @@ class StandardMaintenanceProcedureAppServiceServicer(object):
     def standardMaintenanceProcedureById(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details("Method not implemented!")
-        raise NotImplementedError("Method not implemented!")
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
     def standardMaintenanceProcedures(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details("Method not implemented!")
-        raise NotImplementedError("Method not implemented!")
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
     def newId(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
-        context.set_details("Method not implemented!")
-        raise NotImplementedError("Method not implemented!")
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
 
 
 def add_StandardMaintenanceProcedureAppServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-        "standardMaintenanceProcedureById": grpc.unary_unary_rpc_method_handler(
-            servicer.standardMaintenanceProcedureById,
-            request_deserializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdRequest.FromString,
-            response_serializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdResponse.SerializeToString,
-        ),
-        "standardMaintenanceProcedures": grpc.unary_unary_rpc_method_handler(
-            servicer.standardMaintenanceProcedures,
-            request_deserializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProceduresRequest.FromString,
-            response_serializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProceduresResponse.SerializeToString,
-        ),
-        "newId": grpc.unary_unary_rpc_method_handler(
-            servicer.newId,
-            request_deserializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_newIdRequest.FromString,
-            response_serializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_newIdResponse.SerializeToString,
-        ),
+            'standardMaintenanceProcedureById': grpc.unary_unary_rpc_method_handler(
+                    servicer.standardMaintenanceProcedureById,
+                    request_deserializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdRequest.FromString,
+                    response_serializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdResponse.SerializeToString,
+            ),
+            'standardMaintenanceProcedures': grpc.unary_unary_rpc_method_handler(
+                    servicer.standardMaintenanceProcedures,
+                    request_deserializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProceduresRequest.FromString,
+                    response_serializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProceduresResponse.SerializeToString,
+            ),
+            'newId': grpc.unary_unary_rpc_method_handler(
+                    servicer.newId,
+                    request_deserializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_newIdRequest.FromString,
+                    response_serializer=project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_newIdResponse.SerializeToString,
+            ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-        "cafm.project.standard_maintenance_procedure.StandardMaintenanceProcedureAppService",
-        rpc_method_handlers,
-    )
+            'cafm.project.standard_maintenance_procedure.StandardMaintenanceProcedureAppService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
 
 
-# This class is part of an EXPERIMENTAL API.
+ # This class is part of an EXPERIMENTAL API.
 class StandardMaintenanceProcedureAppService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def standardMaintenanceProcedureById(
-        request,
-        target,
-        options=(),
-        channel_credentials=None,
-        call_credentials=None,
-        insecure=False,
-        compression=None,
-        wait_for_ready=None,
-        timeout=None,
-        metadata=None,
-    ):
-        return grpc.experimental.unary_unary(
-            request,
+    def standardMaintenanceProcedureById(request,
             target,
-            "/cafm.project.standard_maintenance_procedure.StandardMaintenanceProcedureAppService/standardMaintenanceProcedureById",
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cafm.project.standard_maintenance_procedure.StandardMaintenanceProcedureAppService/standardMaintenanceProcedureById',
             project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdRequest.SerializeToString,
             project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-        )
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def standardMaintenanceProcedures(
-        request,
-        target,
-        options=(),
-        channel_credentials=None,
-        call_credentials=None,
-        insecure=False,
-        compression=None,
-        wait_for_ready=None,
-        timeout=None,
-        metadata=None,
-    ):
-        return grpc.experimental.unary_unary(
-            request,
+    def standardMaintenanceProcedures(request,
             target,
-            "/cafm.project.standard_maintenance_procedure.StandardMaintenanceProcedureAppService/standardMaintenanceProcedures",
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cafm.project.standard_maintenance_procedure.StandardMaintenanceProcedureAppService/standardMaintenanceProcedures',
             project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProceduresRequest.SerializeToString,
             project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_standardMaintenanceProceduresResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-        )
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def newId(
-        request,
-        target,
-        options=(),
-        channel_credentials=None,
-        call_credentials=None,
-        insecure=False,
-        compression=None,
-        wait_for_ready=None,
-        timeout=None,
-        metadata=None,
-    ):
-        return grpc.experimental.unary_unary(
-            request,
+    def newId(request,
             target,
-            "/cafm.project.standard_maintenance_procedure.StandardMaintenanceProcedureAppService/newId",
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cafm.project.standard_maintenance_procedure.StandardMaintenanceProcedureAppService/newId',
             project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_newIdRequest.SerializeToString,
             project_dot_standard__maintenance__procedure__app__service__pb2.StandardMaintenanceProcedureAppService_newIdResponse.FromString,
-            options,
-            channel_credentials,
-            insecure,
-            call_credentials,
-            compression,
-            wait_for_ready,
-            timeout,
-            metadata,
-        )
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
