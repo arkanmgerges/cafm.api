@@ -15,6 +15,7 @@ from starlette.status import (
 
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
+from src.port_adapter.api.rest.grpc.v1.identity.city.CityClient import CityClient
 from src.port_adapter.api.rest.grpc.v1.identity.country.CountryClient import (
     CountryClient,
 )
@@ -136,6 +137,49 @@ async def getCitiesByCountryId(
     except Exception as e:
         logger.info(e)
 
+@router.get(
+    path="/{country_id}/cities/by_state_id/{state_id}", summary="Get cities by state id", response_model=Cities
+)
+@OpenTelemetry.fastApiTraceOTel
+async def getCitiesByStateId(
+    *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    order: str = Query("", description="e.g. name:asc,age:desc"),
+    country_id: int = Path(
+        ..., description="Country id that is used to fetch state cities"
+    ),
+    state_id: str = Path(
+        ..., description="State id that is used to fetch state cities"
+    ),
+    _=Depends(CustomHttpBearer()),
+):
+    """
+    Get a list of cities by stateId
+    """
+    try:
+        client = CountryClient()
+        orderService = AppDi.instance.get(OrderService)
+        order = orderService.orderStringToListOfDict(order)
+        return client.citiesByCountryIdAndStateId(
+            countryId=country_id,
+            stateId=state_id,
+            resultFrom=result_from,
+            resultSize=result_size,
+            order=order,
+        )
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getCitiesByStateId.__module__}.{getCitiesByStateId.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
 
 @router.get(
     path="/{country_id}/cities/{city_id}",

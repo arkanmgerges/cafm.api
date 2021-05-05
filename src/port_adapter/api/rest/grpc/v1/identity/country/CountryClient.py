@@ -13,16 +13,15 @@ from src.port_adapter.api.rest.model.response.v1.identity.Cities import (
     CityDescriptor,
 )
 from src.port_adapter.api.rest.model.response.v1.identity.City import City
-from src.port_adapter.api.rest.model.response.v1.identity.States import States
-from src.port_adapter.api.rest.model.response.v1.identity.State import (
-    State,
-    StateDescriptor,
-)
 from src.port_adapter.api.rest.model.response.v1.identity.Countries import (
     Countries,
     CountryDescriptor,
 )
 from src.port_adapter.api.rest.model.response.v1.identity.Country import Country
+from src.port_adapter.api.rest.model.response.v1.identity.State import (
+    State,
+)
+from src.port_adapter.api.rest.model.response.v1.identity.States import States
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.identity.country_app_service_pb2 import (
@@ -35,7 +34,8 @@ from src.resource.proto._generated.identity.country_app_service_pb2 import (
     CountryAppService_cityByCountryIdResponse,
     CountryAppService_cityByCountryIdRequest,
     CountryAppService_statesByCountryIdRequest,
-    CountryAppService_statesByCountryIdResponse,
+    CountryAppService_statesByCountryIdResponse, CountryAppService_citiesByCountryIdAndStateIdRequest,
+    CountryAppService_citiesByCountryIdAndStateIdResponse,
 )
 from src.resource.proto._generated.identity.country_app_service_pb2_grpc import (
     CountryAppServiceStub,
@@ -269,6 +269,61 @@ class CountryClient(Client):
                     states=[
                         State(id=state.id, name=state.name)
                         for state in response[0].states
+                    ],
+                    total_item_count=response[0].totalItemCount,
+                )
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def citiesByCountryIdAndStateId(
+        self,
+        countryId: int = 0,
+        stateId: str = "",
+        resultFrom: int = 0,
+        resultSize: int = 10,
+        order: List[dict] = None,
+    ) -> Cities:
+        order = [] if order is None else order
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
+            stub = CountryAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f"[{CountryClient.citiesByCountryIdAndStateId.__qualname__}] - grpc call to retrieve citiesByStateId from server {self._server}:{self._port}"
+                )
+                request = CountryAppService_citiesByCountryIdAndStateIdRequest(
+                    countryId=countryId, stateId=stateId, resultFrom=resultFrom, resultSize=resultSize
+                )
+                [
+                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
+                    for o in order
+                ]
+                response: CountryAppService_citiesByCountryIdAndStateIdResponse = (
+                    stub.citiesByCountryIdAndStateId.with_call(
+                        request, metadata=(("token", self.token),)
+                    )
+                )
+                logger.debug(
+                    f"[{CountryClient.citiesByCountryIdAndStateId.__qualname__}] - grpc response: {response}"
+                )
+
+                return Cities(
+                    cities=[
+                        City(
+                            id=city.id,
+                            locale_code=city.localeCode,
+                            continent_code=city.continentCode,
+                            continent_name=city.continentName,
+                            country_iso_code=city.countryIsoCode,
+                            country_name=city.countryName,
+                            subdivision_1_iso_code=city.subdivisionOneIsoCode,
+                            subdivision_1_name=city.subdivisionOneIsoName,
+                            city_name=city.cityName,
+                            time_zone=city.timeZone,
+                            is_in_european_union=city.isInEuropeanUnion,
+                        )
+                        for city in response[0].cities
                     ],
                     total_item_count=response[0].totalItemCount,
                 )
