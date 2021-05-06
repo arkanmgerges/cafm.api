@@ -34,6 +34,7 @@ from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -130,7 +131,7 @@ async def createStandardEquipment(
         ..., description="equipment model id of standard equipment", embed=True
     ),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 
@@ -189,7 +190,7 @@ async def updateStandardEquipment(
         ..., description="equipment model id of equipment model id", embed=True
     ),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 
@@ -247,7 +248,7 @@ async def partialUpdateStandardEquipment(
         None, description="equipment model id of equipment model id", embed=True
     ),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 
@@ -288,7 +289,7 @@ async def deleteStandardEquipment(
         description="standard equipment id that is used in order to delete the standard equipment",
     ),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 

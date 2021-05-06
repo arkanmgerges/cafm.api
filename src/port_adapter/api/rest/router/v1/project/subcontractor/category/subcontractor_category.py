@@ -34,6 +34,7 @@ from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -116,7 +117,7 @@ async def createSubcontractorCategory(
     _=Depends(CustomHttpBearer()),
     name: str = Body(..., description="name of subcontractor category", embed=True),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 
@@ -154,7 +155,7 @@ async def updateSubcontractorCategory(
     ),
     name: str = Body(..., description="name of name", embed=True),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 
@@ -191,7 +192,7 @@ async def partialUpdateSubcontractorCategory(
     ),
     name: str = Body(None, description="name of name", embed=True),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 
@@ -227,7 +228,7 @@ async def deleteSubcontractorCategory(
         description="subcontractor category id that is used in order to delete the subcontractor category",
     ),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 
