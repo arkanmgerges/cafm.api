@@ -35,6 +35,7 @@ from src.port_adapter.api.rest.model.response.v1.{{ filePath }}.{{ className }} 
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -98,7 +99,7 @@ async def create{{ className }}(*, _=Depends(CustomHttpBearer()),
                  {{ field.name }}: {{ field.type }} = Body(..., description='{{ field.name | spacedWords }} of {{ model.name | spacedWords }}', embed=True),
                 {%- endfor %}
                 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.{{ model.message_command }} import {{ model.message_command }}
     client = {{ className }}Client()
@@ -124,7 +125,7 @@ async def update{{ className }}(*, _=Depends(CustomHttpBearer()),
                  {{ field.name }}: {{ field.type }} = Body(..., description='{{ field.name | spacedWords }} of {{ field.name | spacedWords }}', embed=True),
                 {%- endfor %}                 
                  ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.{{ model.message_command }} import {{ model.message_command }}
     producer.produce(obj={{ model.message_command }}(id=reqId, name=CommandConstant.UPDATE_{{ model.name | upper }}.value,
@@ -148,7 +149,7 @@ async def partialUpdate{{ className }}(*, _=Depends(CustomHttpBearer()),
                         {{ field.name }}: {{ field.type }} = Body(None, description='{{ field.name | spacedWords }} of {{ field.name | spacedWords }}', embed=True),
                         {%- endfor %}
                         ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.{{ model.message_command }} import {{ model.message_command }}
     producer.produce(obj={{ model.message_command }}(id=reqId, name=CommandConstant.UPDATE_{{ model.name | upper }}.value,
@@ -168,7 +169,7 @@ async def partialUpdate{{ className }}(*, _=Depends(CustomHttpBearer()),
 @OpenTelemetry.fastApiTraceOTel
 async def delete{{ className }}(*, _=Depends(CustomHttpBearer()),
                  {{ model.name }}_id: str = Path(..., description='{{ model.name | spacedWords }} id that is used in order to delete the {{ model.name | spacedWords }}'), ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.{{ model.message_command }} import {{ model.message_command }}
     producer.produce(obj={{ model.message_command }}(id=reqId, name=CommandConstant.DELETE_{{ model.name | upper }}.value,
