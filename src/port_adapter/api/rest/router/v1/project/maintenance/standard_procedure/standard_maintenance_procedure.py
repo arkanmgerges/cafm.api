@@ -34,6 +34,7 @@ from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.resource.common.DateTimeHelper import DateTimeHelper
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
@@ -143,7 +144,7 @@ async def createStandardMaintenanceProcedure(
         embed=True,
     ),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     start_date = (
         start_date
         if start_date is not None
@@ -206,7 +207,7 @@ async def updateStandardMaintenanceProcedure(
         embed=True,
     ),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     start_date = (
         start_date
         if start_date is not None
@@ -268,7 +269,7 @@ async def partialUpdateStandardMaintenanceProcedure(
         embed=True,
     ),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     start_date = (
         start_date
         if start_date is not None
@@ -317,7 +318,7 @@ async def deleteStandardMaintenanceProcedure(
         description="standard maintenance procedure id that is used in order to delete the standard maintenance procedure",
     ),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 

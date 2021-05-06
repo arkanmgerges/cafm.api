@@ -21,7 +21,6 @@ from starlette.status import (
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.grpc.v1.project.standard_equipment.standard_category.StandardEquipmentCategoryClient import (
     StandardEquipmentCategoryClient,
 )
@@ -35,6 +34,7 @@ from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
@@ -159,7 +159,7 @@ async def updateStandardEquipmentCategory(
     ),
     name: str = Body(..., description="name of name", embed=True),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(
         obj=ProjectCommand(
@@ -195,7 +195,7 @@ async def partialUpdateStandardEquipmentCategory(
     ),
     name: str = Body(None, description="name of name", embed=True),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(
         obj=ProjectCommand(
@@ -230,7 +230,7 @@ async def deleteStandardEquipmentCategory(
         description="standard equipment category id that is used in order to delete the standard equipment category",
     ),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     producer.produce(
         obj=ProjectCommand(

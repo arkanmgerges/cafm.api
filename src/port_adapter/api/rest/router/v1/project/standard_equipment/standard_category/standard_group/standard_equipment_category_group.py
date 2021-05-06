@@ -34,6 +34,7 @@ from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -129,7 +130,7 @@ async def createStandardEquipmentCategoryGroup(
         embed=True,
     ),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 
@@ -174,7 +175,7 @@ async def updateStandardEquipmentCategoryGroup(
         embed=True,
     ),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 
@@ -218,7 +219,7 @@ async def partialUpdateStandardEquipmentCategoryGroup(
         embed=True,
     ),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 
@@ -256,7 +257,7 @@ async def deleteStandardEquipmentCategoryGroup(
         description="standard equipment category group id that is used in order to delete the standard equipment category group",
     ),
 ):
-    reqId = str(uuid4())
+    reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 
