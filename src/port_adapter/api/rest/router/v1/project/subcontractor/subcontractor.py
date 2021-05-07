@@ -25,6 +25,7 @@ from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.subcontractor.SubcontractorClient import (
     SubcontractorClient,
 )
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.project.subcontractor.Subcontractors import (
     Subcontractors,
 )
@@ -33,7 +34,6 @@ from src.port_adapter.api.rest.model.response.v1.project.subcontractor.Subcontra
 )
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
-from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
@@ -163,9 +163,11 @@ async def getSubcontractorsBySubcontractorCategoryId(
 async def getSubcontractorById(
     *,
     subcontractor_id: str = Path(
-        ..., description="subcontractor id that is used to fetch subcontractor data"
+        ...,
+        description="subcontractor id that is used to fetch subcontractor data",
     ),
     _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
 ):
     """Get a subcontractor by id"""
     try:
@@ -190,6 +192,7 @@ async def getSubcontractorById(
 async def createSubcontractor(
     *,
     _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
     company_name: str = Body(
         ..., description="company name of subcontractor", embed=True
     ),
@@ -252,6 +255,7 @@ async def createSubcontractor(
 async def updateSubcontractor(
     *,
     _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
     subcontractor_id: str = Path(
         ...,
         description="subcontractor id that is used in order to update the subcontractor",
@@ -276,9 +280,7 @@ async def updateSubcontractor(
         ..., description="address two of subcontractor", embed=True
     ),
     subcontractor_category_id: str = Body(
-        ...,
-        description="subcontractor category id of subcontractor category id",
-        embed=True,
+        ..., description="subcontractor category id of subcontractor", embed=True
     ),
 ):
     reqId = RequestIdGenerator.generateId()
@@ -319,9 +321,10 @@ async def updateSubcontractor(
 async def partialUpdateSubcontractor(
     *,
     _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
     subcontractor_id: str = Path(
         ...,
-        description="subcontractor id that is used in order to update subcontractor",
+        description="subcontractor id that is used in order to update the subcontractor",
     ),
     company_name: str = Body(
         None, description="company name of subcontractor", embed=True
@@ -384,6 +387,7 @@ async def partialUpdateSubcontractor(
 async def deleteSubcontractor(
     *,
     _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
     subcontractor_id: str = Path(
         ...,
         description="subcontractor id that is used in order to delete the subcontractor",

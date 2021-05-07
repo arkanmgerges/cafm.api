@@ -19,9 +19,6 @@ from src.port_adapter.api.rest.model.response.v1.project.subcontractor.Subcontra
 )
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
-from src.resource.proto._generated.project.subcontractor_app_service_pb2_grpc import (
-    SubcontractorAppServiceStub,
-)
 from src.resource.proto._generated.project.subcontractor_app_service_pb2 import (
     SubcontractorAppService_subcontractorsBySubcontractorCategoryIdRequest,
     SubcontractorAppService_subcontractorsBySubcontractorCategoryIdResponse,
@@ -33,6 +30,9 @@ from src.resource.proto._generated.project.subcontractor_app_service_pb2 import 
     SubcontractorAppService_subcontractorByIdRequest,
     SubcontractorAppService_newIdResponse,
     SubcontractorAppService_newIdRequest,
+)
+from src.resource.proto._generated.project.subcontractor_app_service_pb2_grpc import (
+    SubcontractorAppServiceStub,
 )
 
 
