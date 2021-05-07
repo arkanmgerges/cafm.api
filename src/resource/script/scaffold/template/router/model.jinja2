@@ -24,18 +24,24 @@ from fastapi import Response
 from fastapi.params import Path
 from grpc.beta.interfaces import StatusCode
 from starlette import status
-from starlette.status import HTTP_404_NOT_FOUND, HTTP_500_INTERNAL_SERVER_ERROR, HTTP_403_FORBIDDEN
+from starlette.status import (
+    HTTP_404_NOT_FOUND,
+    HTTP_500_INTERNAL_SERVER_ERROR,
+    HTTP_403_FORBIDDEN,
+)
+
 
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.{{ filePath }}.{{ className }}Client import {{ className }}Client
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.{{ filePath }}.{{ className | pluralize }} import {{ className | pluralize }}
 from src.port_adapter.api.rest.model.response.v1.{{ filePath }}.{{ className }} import {{ className }}Descriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
+from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
-from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -44,11 +50,14 @@ router = APIRouter()
 
 @router.get(path="", summary='Get all {{ model.name | spacedWords }}(s)', response_model={{ className | pluralize }})
 @OpenTelemetry.fastApiTraceOTel
-async def get{{ className | pluralize }}(*,
-                            result_from: int = Query(0, description='Starting offset for fetching data'),
-                            result_size: int = Query(10, description='Item count to be fetched'),
-                            order: str = Query('', description='e.g. id:asc,email:desc'),
-                            _=Depends(CustomHttpBearer())):
+async def get{{ className | pluralize }}(
+    *,
+    result_from: int = Query(0, description='Starting offset for fetching data'),
+    result_size: int = Query(10, description='Item count to be fetched'),
+    order: str = Query('', description='e.g. id:asc,email:desc'),
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+):
     try:
         client = {{ className }}Client()
         orderService = AppDi.instance.get(OrderService)
@@ -71,9 +80,15 @@ async def get{{ className | pluralize }}(*,
 @router.get(path="/{{ '{' }}{{ model.name }}_id}", summary='Get {{ model.name | spacedWords }} by id',
             response_model={{ className }}Descriptor)
 @OpenTelemetry.fastApiTraceOTel
-async def get{{ className }}ById(*, {{ model.name }}_id: str = Path(...,
-                                                                description='{{ model.name | spacedWords }} id that is used to fetch {{ model.name | spacedWords }} data'),
-                               _=Depends(CustomHttpBearer())):
+async def get{{ className }}ById(
+    *,
+    {{ model.name }}_id: str = Path(
+        ...,
+        description='{{ model.name | spacedWords }} id that is used to fetch {{ model.name | spacedWords }} data',
+    ),
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+):
     """Get a {{ model.name | spacedWords }} by id
     """
     try:
@@ -94,11 +109,13 @@ async def get{{ className }}ById(*, {{ model.name }}_id: str = Path(...,
 
 @router.post("", summary='Create {{ model.name | spacedWords }}', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def create{{ className }}(*, _=Depends(CustomHttpBearer()),
-                {%- for field in model.field %}
-                 {{ field.name }}: {{ field.type }} = Body(..., description='{{ field.name | spacedWords }} of {{ model.name | spacedWords }}', embed=True),
-                {%- endfor %}
-                ):
+async def create{{ className }}(*,
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+    {%- for field in model.field %}
+        {{ field.name }}: {{ field.type }} = Body(..., description='{{ field.name | spacedWords }} of {{ model.name | spacedWords }}', embed=True),
+    {%- endfor %}
+):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.{{ model.message_command }} import {{ model.message_command }}
@@ -119,12 +136,14 @@ async def create{{ className }}(*, _=Depends(CustomHttpBearer()),
 
 @router.put("/{{ '{' }}{{ model.name }}_id}", summary='Update {{ model.name | spacedWords }}', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def update{{ className }}(*, _=Depends(CustomHttpBearer()),
-                 {{ model.name }}_id: str = Path(..., description='{{ model.name | spacedWords }} id that is used in order to update the {{ model.name | spacedWords }}'),
-                {%- for field in model.field %}
-                 {{ field.name }}: {{ field.type }} = Body(..., description='{{ field.name | spacedWords }} of {{ field.name | spacedWords }}', embed=True),
-                {%- endfor %}                 
-                 ):
+async def update{{ className }}(*,
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+    {{ model.name }}_id: str = Path(..., description='{{ model.name | spacedWords }} id that is used in order to update the {{ model.name | spacedWords }}'),
+    {%- for field in model.field %}
+        {{ field.name }}: {{ field.type }} = Body(..., description='{{ field.name | spacedWords }} of {{ model.name | spacedWords }}', embed=True),
+    {%- endfor %}                 
+):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.{{ model.message_command }} import {{ model.message_command }}
@@ -143,12 +162,14 @@ async def update{{ className }}(*, _=Depends(CustomHttpBearer()),
 
 @router.patch("/{{ '{' }}{{ model.name }}_id}", summary='Partial update {{ model.name | spacedWords }}', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def partialUpdate{{ className }}(*, _=Depends(CustomHttpBearer()),
-                        {{ model.name }}_id: str = Path(..., description='{{ model.name | spacedWords }} id that is used in order to update the {{ model.name | spacedWords }}'),
-                        {%- for field in model.field %}
-                        {{ field.name }}: {{ field.type }} = Body(None, description='{{ field.name | spacedWords }} of {{ field.name | spacedWords }}', embed=True),
-                        {%- endfor %}
-                        ):
+async def partialUpdate{{ className }}(*,
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+    {{ model.name }}_id: str = Path(..., description='{{ model.name | spacedWords }} id that is used in order to update the {{ model.name | spacedWords }}'),
+    {%- for field in model.field %}
+        {{ field.name }}: {{ field.type }} = Body(None, description='{{ field.name | spacedWords }} of {{ model.name | spacedWords }}', embed=True),
+    {%- endfor %}
+):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.{{ model.message_command }} import {{ model.message_command }}
@@ -167,8 +188,13 @@ async def partialUpdate{{ className }}(*, _=Depends(CustomHttpBearer()),
 
 @router.delete("/{{ '{' }}{{ model.name }}_id}", summary='Delete a {{ model.name | spacedWords | pluralize }}', status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
-async def delete{{ className }}(*, _=Depends(CustomHttpBearer()),
-                 {{ model.name }}_id: str = Path(..., description='{{ model.name | spacedWords }} id that is used in order to delete the {{ model.name | spacedWords }}'), ):
+async def delete{{ className }}(*,
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+    {{ model.name }}_id: str = Path(
+        ..., description='{{ model.name | spacedWords }} id that is used in order to delete the {{ model.name | spacedWords }}'
+    ),
+):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.{{ model.message_command }} import {{ model.message_command }}

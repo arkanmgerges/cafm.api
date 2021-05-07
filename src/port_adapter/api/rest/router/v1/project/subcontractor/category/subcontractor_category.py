@@ -18,12 +18,14 @@ from starlette.status import (
     HTTP_403_FORBIDDEN,
 )
 
+
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.subcontractor.category.SubcontractorCategoryClient import (
     SubcontractorCategoryClient,
 )
+from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.project.subcontractor.category.SubcontractorCategories import (
     SubcontractorCategories,
 )
@@ -34,7 +36,6 @@ from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
-from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -53,7 +54,7 @@ async def getSubcontractorCategories(
     result_size: int = Query(10, description="Item count to be fetched"),
     order: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
-    authz=Depends(CustomAuthorization()),
+    _1=Depends(CustomAuthorization()),
 ):
     try:
         client = SubcontractorCategoryClient()
@@ -89,6 +90,7 @@ async def getSubcontractorCategoryById(
         description="subcontractor category id that is used to fetch subcontractor category data",
     ),
     _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
 ):
     """Get a subcontractor category by id"""
     try:
@@ -115,6 +117,7 @@ async def getSubcontractorCategoryById(
 async def createSubcontractorCategory(
     *,
     _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
     name: str = Body(..., description="name of subcontractor category", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
@@ -149,11 +152,12 @@ async def createSubcontractorCategory(
 async def updateSubcontractorCategory(
     *,
     _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
     subcontractor_category_id: str = Path(
         ...,
         description="subcontractor category id that is used in order to update the subcontractor category",
     ),
-    name: str = Body(..., description="name of name", embed=True),
+    name: str = Body(..., description="name of subcontractor category", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -186,11 +190,12 @@ async def updateSubcontractorCategory(
 async def partialUpdateSubcontractorCategory(
     *,
     _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
     subcontractor_category_id: str = Path(
         ...,
         description="subcontractor category id that is used in order to update the subcontractor category",
     ),
-    name: str = Body(None, description="name of name", embed=True),
+    name: str = Body(None, description="name of subcontractor category", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -223,6 +228,7 @@ async def partialUpdateSubcontractorCategory(
 async def deleteSubcontractorCategory(
     *,
     _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
     subcontractor_category_id: str = Path(
         ...,
         description="subcontractor category id that is used in order to delete the subcontractor category",

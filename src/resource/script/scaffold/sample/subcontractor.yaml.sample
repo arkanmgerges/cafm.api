@@ -1,0 +1,132 @@
+---
+
+global:
+  setting:
+    tab_size: 4 # 4 spaces
+  path:
+    application: 'src/application'
+    domain_model: 'src/domain_model'
+    exception: 'src/domain_model/resource/exception'
+    port_adapter: 'src/port_adapter'
+    repository: 'src/port_adapter/repository'
+    db_model: 'src/port_adapter/repository/db_model'
+    messaging: 'src/port_adapter/messaging'
+    messaging_listener: 'src/port_adapter/messaging/listener'
+    grpc_api_client: 'src/port_adapter/api/rest/grpc/v1'
+    proto_buffer: 'src/resource/proto'
+    router: 'src/port_adapter/api/rest/router/v1'
+    router_model_response: 'src/port_adapter/api/rest/model/response/v1'
+    test: 'test'
+    app_di: 'src/port_adapter'
+
+
+domain_model:
+# subcontractor category
+  - model: &subcontractor_category_model
+#      skip: [ all, model, repository_impl, db_repository ]
+      file_overwrite: True
+      path: project/subcontractor/category
+      message_command: ProjectCommand
+      microservice: project
+      name: subcontractor_category
+      field:
+        - name: name
+          type: str
+          default: None
+          db:
+            type: 'String(40)'
+          proto:
+            type: string
+
+# subcontractor
+  - model: &subcontractor_model
+    #  skip: [ all, model, repository_impl, db_repository ]
+      file_overwrite: True
+      path: project/subcontractor
+      microservice: project
+      message_command: ProjectCommand
+      name: subcontractor
+      field:
+        - name: company_name
+          type: str
+          default: None
+          db:
+            type: 'String(50)'
+          proto:
+            type: string
+        - name: website_url
+          type: str
+          default: None
+          optional: True
+          db:
+            type: 'String(50)'
+          proto:
+            type: string
+        - name: contact_person    
+          type: str
+          default: None
+          optional: True
+          proto:
+            type: string
+        - name: email
+          type: str
+          default: None
+          optional: True
+          db:
+            type: 'String(50)'
+          proto:
+            type: string
+        - name: phone_number
+          type: str
+          default: None
+          optional: True
+          proto:
+            type: string
+        - name: address_one
+          type: str
+          default: None
+          optional: True
+          proto:
+            type: string
+        - name: address_two
+          type: str
+          default: None
+          optional: True
+          proto:
+            type: string
+        - name: subcontractor_category_id
+          type: str
+          foreign:
+            model: *subcontractor_category_model
+          default: None
+          optional: True
+          db:
+            type: 'String(40)'
+          proto:
+            type: string
+        # - name: description
+        #   type: str
+        #   default: None
+        #   optional: True
+        #   proto:
+        #     type: string
+        # - name: country_id
+        #   type: int
+        #   default: None
+        #   proto:
+        #     type: int32
+        # - name: city_id
+        #   type: int
+        #   default: None
+        #   proto:
+        #     type: int32
+        # - name: state_id
+        #   type: int
+        #   default: None
+        #   proto:
+        #     type: int32
+
+segment:
+  - name: subcontractor
+    foreign:
+      model: *subcontractor_category_model
