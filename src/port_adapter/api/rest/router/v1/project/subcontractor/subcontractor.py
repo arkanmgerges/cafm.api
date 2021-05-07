@@ -114,8 +114,8 @@ async def getSubcontractorsByOrganizationId(
 
 
 @router.get(
-    path="/by_subcontractor_category_id/{subcontractor_category_id}",
-    summary="Get all subcontractor by subcontractor category id",
+    path="/by_subcontractor_category/{subcontractor_category_id}",
+    summary="Get all subcontractors by subcontractor category id",
     response_model=Subcontractors,
 )
 @OpenTelemetry.fastApiTraceOTel
