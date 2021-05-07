@@ -141,7 +141,7 @@ async def update{{ className }}(*,
     _1=Depends(CustomAuthorization()),
     {{ model.name }}_id: str = Path(..., description='{{ model.name | spacedWords }} id that is used in order to update the {{ model.name | spacedWords }}'),
     {%- for field in model.field %}
-        {{ field.name }}: {{ field.type }} = Body(..., description='{{ field.name | spacedWords }} of {{ model.name | spacedWords }}', embed=True),
+        {{ field.name }}: {{ field.type }} = Body(None, description='{{ field.name | spacedWords }} of {{ model.name | spacedWords }}', embed=True),
     {%- endfor %}                 
 ):
     reqId = RequestIdGenerator.generateId()
