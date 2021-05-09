@@ -2,6 +2,7 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import json
+import re
 
 from fastapi import APIRouter, Body, Request
 from fastapi.params import Depends
@@ -63,7 +64,7 @@ from src.port_adapter.api.rest.grpc.v1.project.subcontractor.category.Subcontrac
 )
 from src.port_adapter.api.rest.grpc.v1.project.unit.UnitClient import UnitClient
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
-from src.port_adapter.api.rest.router.v1.common.BulkBodyData import BulkBodyData, BulkBodyDataItemValue
+from src.port_adapter.api.rest.router.v1.common.BulkBodyData import BulkBodyData
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -74,6 +75,7 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 router = APIRouter()
 
 appRoutes = []
+microserviceNamePatternCompiled = re.compile("/v[0-9]/([^/]+)?/")
 
 
 @router.post("/_bulk", summary="Create a bulk request", status_code=status.HTTP_201_CREATED)
@@ -145,16 +147,11 @@ def _batchByMicroserviceName(data):
 
 
 def extractData(command: str, commandData: dict):
-    microserviceName = ""
+    microserviceName = None
     for route in appRoutes:
         if route.name == command:
-            if "/v1/identity/" in route.path:
-                microserviceName = "identity"
-            elif "/v1/project/" in route.path:
-                microserviceName = "project"
-            else:
-                microserviceName = "unknown"
-            if microserviceName != "unknown":
+            microserviceName = _extractMicroserviceName(route.path)
+            if microserviceName is not None:
                 entityName = command.replace("create_", "")
                 data = commandData.data
                 entityName = command[command.index("_") + 1 :]
@@ -171,6 +168,14 @@ def extractData(command: str, commandData: dict):
                         data[f"{entityName}_id"] = entityToGrpcClientList[entityName].newId()
                 return ItemDetail(microserviceName=microserviceName, apiPath=route.path, commandData=data)
     return ItemDetail(microserviceName="unknown", apiPath="", commandData="")
+
+
+def _extractMicroserviceName(routePath):
+    m = microserviceNamePatternCompiled.search(routePath)
+    if m.group(1):
+        return m.group(1)
+    else:
+        return None
 
 
 class ItemDetail:
