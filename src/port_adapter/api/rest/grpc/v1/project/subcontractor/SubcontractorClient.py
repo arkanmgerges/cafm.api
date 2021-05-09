@@ -258,4 +258,9 @@ class SubcontractorClient(Client):
             address_one=obj.addressOne,
             address_two=obj.addressTwo,
             subcontractor_category_id=obj.subcontractorCategoryId,
+            description=obj.description,
+            country_id=obj.countryId,
+            city_id=obj.cityId,
+            state_id=obj.stateId,
+            postal_code=obj.postalCode,
         )

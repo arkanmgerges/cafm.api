@@ -17,4 +17,9 @@ message Subcontractor {
   string addressOne = 7;
   string addressTwo = 8;
   string subcontractorCategoryId = 9;
+  string description = 10;
+  int32 countryId = 11;
+  int32 cityId = 12;
+  int32 stateId = 13;
+  string postalCode = 14;
 }

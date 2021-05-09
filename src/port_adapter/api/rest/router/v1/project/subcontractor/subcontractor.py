@@ -215,6 +215,15 @@ async def createSubcontractor(
     subcontractor_category_id: str = Body(
         ..., description="subcontractor category id of subcontractor", embed=True
     ),
+    description: str = Body(
+        None, description="description of subcontractor", embed=True
+    ),
+    country_id: int = Body(None, description="country id of subcontractor", embed=True),
+    city_id: int = Body(None, description="city id of subcontractor", embed=True),
+    state_id: int = Body(None, description="state id of subcontractor", embed=True),
+    postal_code: str = Body(
+        None, description="postal code of subcontractor", embed=True
+    ),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -237,6 +246,11 @@ async def createSubcontractor(
                     "address_one": address_one,
                     "address_two": address_two,
                     "subcontractor_category_id": subcontractor_category_id,
+                    "description": description,
+                    "country_id": country_id,
+                    "city_id": city_id,
+                    "state_id": state_id,
+                    "postal_code": postal_code,
                 }
             ),
             external=[],
@@ -282,6 +296,15 @@ async def updateSubcontractor(
     subcontractor_category_id: str = Body(
         ..., description="subcontractor category id of subcontractor", embed=True
     ),
+    description: str = Body(
+        ..., description="description of subcontractor", embed=True
+    ),
+    country_id: int = Body(..., description="country id of subcontractor", embed=True),
+    city_id: int = Body(..., description="city id of subcontractor", embed=True),
+    state_id: int = Body(..., description="state id of subcontractor", embed=True),
+    postal_code: str = Body(
+        ..., description="postal code of subcontractor", embed=True
+    ),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -303,6 +326,11 @@ async def updateSubcontractor(
                     "address_one": address_one,
                     "address_two": address_two,
                     "subcontractor_category_id": subcontractor_category_id,
+                    "description": description,
+                    "country_id": country_id,
+                    "city_id": city_id,
+                    "state_id": state_id,
+                    "postal_code": postal_code,
                 }
             ),
             external=[],
@@ -348,6 +376,15 @@ async def partialUpdateSubcontractor(
     subcontractor_category_id: str = Body(
         None, description="subcontractor category id of subcontractor", embed=True
     ),
+    description: str = Body(
+        None, description="description of subcontractor", embed=True
+    ),
+    country_id: int = Body(None, description="country id of subcontractor", embed=True),
+    city_id: int = Body(None, description="city id of subcontractor", embed=True),
+    state_id: int = Body(None, description="state id of subcontractor", embed=True),
+    postal_code: str = Body(
+        None, description="postal code of subcontractor", embed=True
+    ),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -369,6 +406,11 @@ async def partialUpdateSubcontractor(
                     "address_one": address_one,
                     "address_two": address_two,
                     "subcontractor_category_id": subcontractor_category_id,
+                    "description": description,
+                    "country_id": country_id,
+                    "city_id": city_id,
+                    "state_id": state_id,
+                    "postal_code": postal_code,
                 }
             ),
             external=[],
