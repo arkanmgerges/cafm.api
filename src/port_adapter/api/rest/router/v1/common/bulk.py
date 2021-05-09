@@ -64,7 +64,7 @@ from src.port_adapter.api.rest.grpc.v1.project.subcontractor.category.Subcontrac
 )
 from src.port_adapter.api.rest.grpc.v1.project.unit.UnitClient import UnitClient
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
-from src.port_adapter.api.rest.router.v1.common.BulkBodyData import BulkBodyData
+from src.port_adapter.api.rest.router.v1.common.BulkBodyData import BulkBodyData, BulkBodyDataItemValue
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
@@ -146,16 +146,13 @@ def _batchByMicroserviceName(data):
     return result
 
 
-def extractData(command: str, commandData: dict):
-    microserviceName = None
+def extractData(command: str, commandData: BulkBodyDataItemValue):
     for route in appRoutes:
         if route.name == command:
             microserviceName = _extractMicroserviceName(route.path)
             if microserviceName is not None:
-                entityName = command.replace("create_", "")
                 data = commandData.data
                 entityName = command[command.index("_") + 1 :]
-                commandMethod = command[: command.index("_") :]
                 # If it is a create, then add the id and use newId()
                 if "create_" in command and entityName in entityToGrpcClientList:
                     if entityName == "building":
