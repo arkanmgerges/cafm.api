@@ -104,27 +104,36 @@ domain_model:
             type: 'String(40)'
           proto:
             type: string
-        # - name: description
-        #   type: str
-        #   default: None
-        #   optional: True
-        #   proto:
-        #     type: string
-        # - name: country_id
-        #   type: int
-        #   default: None
-        #   proto:
-        #     type: int32
-        # - name: city_id
-        #   type: int
-        #   default: None
-        #   proto:
-        #     type: int32
-        # - name: state_id
-        #   type: int
-        #   default: None
-        #   proto:
-        #     type: int32
+        - name: description
+          type: str
+          default: None
+          optional: True
+          proto:
+            type: string
+        - name: city_id
+          type: int
+          default: None
+          optional: True
+          proto:
+            type: int32
+        - name: country_id
+          type: int
+          default: None
+          optional: True
+          proto:
+            type: int32
+        - name: state_id
+          type: str
+          default: None
+          optional: True
+          proto:
+            type: string
+        - name: postal_code
+          type: str
+          default: None
+          optional: True
+          proto:
+            type: string
 
 segment:
   - name: subcontractor
