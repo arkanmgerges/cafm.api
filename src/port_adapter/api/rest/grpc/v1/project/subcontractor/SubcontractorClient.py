@@ -20,8 +20,6 @@ from src.port_adapter.api.rest.model.response.v1.project.subcontractor.Subcontra
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.subcontractor_app_service_pb2 import (
-    SubcontractorAppService_subcontractorsBySubcontractorCategoryIdRequest,
-    SubcontractorAppService_subcontractorsBySubcontractorCategoryIdResponse,
     SubcontractorAppService_subcontractorsByOrganizationIdResponse,
     SubcontractorAppService_subcontractorsByOrganizationIdRequest,
     SubcontractorAppService_subcontractorsResponse,
@@ -33,6 +31,12 @@ from src.resource.proto._generated.project.subcontractor_app_service_pb2 import 
 )
 from src.resource.proto._generated.project.subcontractor_app_service_pb2_grpc import (
     SubcontractorAppServiceStub,
+)
+from src.resource.proto._generated.project.subcontractor_app_service_pb2 import (
+    SubcontractorAppService_subcontractorsBySubcontractorCategoryIdRequest,
+)
+from src.resource.proto._generated.project.subcontractor_app_service_pb2 import (
+    SubcontractorAppService_subcontractorsBySubcontractorCategoryIdResponse,
 )
 
 
@@ -258,4 +262,9 @@ class SubcontractorClient(Client):
             address_one=obj.addressOne,
             address_two=obj.addressTwo,
             subcontractor_category_id=obj.subcontractorCategoryId,
+            description=obj.description,
+            country_id=obj.countryId,
+            city_id=obj.cityId,
+            state_id=obj.stateId,
+            postal_code=obj.postalCode,
         )

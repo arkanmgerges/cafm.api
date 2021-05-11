@@ -74,46 +74,6 @@ async def getSubcontractors(
 
 
 @router.get(
-    path="/by_organization/{organization_id}",
-    summary="Get all subcontractors",
-    response_model=Subcontractors,
-)
-@OpenTelemetry.fastApiTraceOTel
-async def getSubcontractorsByOrganizationId(
-    *,
-    organization_id: str = Path(
-        ..., description="organization id that is used to fetch organization data"
-    ),
-    result_from: int = Query(0, description="Starting offset for fetching data"),
-    result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,email:desc"),
-    _=Depends(CustomHttpBearer()),
-):
-    try:
-        client = SubcontractorClient()
-        orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
-        return client.subcontractorsByOrganizationId(
-            organizationId=organization_id,
-            resultFrom=result_from,
-            resultSize=result_size,
-            order=order,
-        )
-    except grpc.RpcError as e:
-        if e.code() == StatusCode.PERMISSION_DENIED:
-            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
-        if e.code() == StatusCode.NOT_FOUND:
-            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
-        else:
-            logger.error(
-                f"[{getSubcontractors.__module__}.{getSubcontractors.__qualname__}] - error response e: {e}"
-            )
-            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
-    except Exception as e:
-        logger.info(e)
-
-
-@router.get(
     path="/by_subcontractor_category/{subcontractor_category_id}",
     summary="Get all subcontractors by subcontractor category id",
     response_model=Subcontractors,
@@ -215,6 +175,15 @@ async def createSubcontractor(
     subcontractor_category_id: str = Body(
         ..., description="subcontractor category id of subcontractor", embed=True
     ),
+    description: str = Body(
+        ..., description="description of subcontractor", embed=True
+    ),
+    country_id: int = Body(..., description="country id of subcontractor", embed=True),
+    city_id: int = Body(..., description="city id of subcontractor", embed=True),
+    state_id: str = Body(..., description="state id of subcontractor", embed=True),
+    postal_code: str = Body(
+        ..., description="postal code of subcontractor", embed=True
+    ),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -237,6 +206,11 @@ async def createSubcontractor(
                     "address_one": address_one,
                     "address_two": address_two,
                     "subcontractor_category_id": subcontractor_category_id,
+                    "description": description,
+                    "country_id": country_id,
+                    "city_id": city_id,
+                    "state_id": state_id,
+                    "postal_code": postal_code,
                 }
             ),
             external=[],
@@ -282,6 +256,15 @@ async def updateSubcontractor(
     subcontractor_category_id: str = Body(
         ..., description="subcontractor category id of subcontractor", embed=True
     ),
+    description: str = Body(
+        ..., description="description of subcontractor", embed=True
+    ),
+    country_id: int = Body(..., description="country id of subcontractor", embed=True),
+    city_id: int = Body(..., description="city id of subcontractor", embed=True),
+    state_id: str = Body(..., description="state id of subcontractor", embed=True),
+    postal_code: str = Body(
+        ..., description="postal code of subcontractor", embed=True
+    ),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -303,6 +286,11 @@ async def updateSubcontractor(
                     "address_one": address_one,
                     "address_two": address_two,
                     "subcontractor_category_id": subcontractor_category_id,
+                    "description": description,
+                    "country_id": country_id,
+                    "city_id": city_id,
+                    "state_id": state_id,
+                    "postal_code": postal_code,
                 }
             ),
             external=[],
@@ -321,7 +309,6 @@ async def updateSubcontractor(
 async def partialUpdateSubcontractor(
     *,
     _=Depends(CustomHttpBearer()),
-    _1=Depends(CustomAuthorization()),
     subcontractor_id: str = Path(
         ...,
         description="subcontractor id that is used in order to update the subcontractor",
@@ -348,6 +335,15 @@ async def partialUpdateSubcontractor(
     subcontractor_category_id: str = Body(
         None, description="subcontractor category id of subcontractor", embed=True
     ),
+    description: str = Body(
+        None, description="description of subcontractor", embed=True
+    ),
+    country_id: int = Body(None, description="country id of subcontractor", embed=True),
+    city_id: int = Body(None, description="city id of subcontractor", embed=True),
+    state_id: str = Body(None, description="state id of subcontractor", embed=True),
+    postal_code: str = Body(
+        None, description="postal code of subcontractor", embed=True
+    ),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -369,6 +365,11 @@ async def partialUpdateSubcontractor(
                     "address_one": address_one,
                     "address_two": address_two,
                     "subcontractor_category_id": subcontractor_category_id,
+                    "description": description,
+                    "country_id": country_id,
+                    "city_id": city_id,
+                    "state_id": state_id,
+                    "postal_code": postal_code,
                 }
             ),
             external=[],
@@ -408,6 +409,47 @@ async def deleteSubcontractor(
         schema=ProjectCommand.get_schema(),
     )
     return {"request_id": reqId}
+
+
+@router.get(
+    path="/by_organization/{organization_id}",
+    summary="Get all subcontractors",
+    response_model=Subcontractors,
+)
+@OpenTelemetry.fastApiTraceOTel
+async def getSubcontractorsByOrganizationId(
+    *,
+    organization_id: str = Path(
+        ..., description="organization id that is used to fetch organization data"
+    ),
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    order: str = Query("", description="e.g. id:asc,email:desc"),
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+):
+    try:
+        client = SubcontractorClient()
+        orderService = AppDi.instance.get(OrderService)
+        order = orderService.orderStringToListOfDict(order)
+        return client.subcontractorsByOrganizationId(
+            organizationId=organization_id,
+            resultFrom=result_from,
+            resultSize=result_size,
+            order=order,
+        )
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getSubcontractors.__module__}.{getSubcontractors.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
 
 
 @router.post(
