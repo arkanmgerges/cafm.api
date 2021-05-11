@@ -156,7 +156,8 @@ async def updateProject(
     beneficiary_id: str = Body(
         ..., description="The id of the beneficiary", embed=True
     ),
-    state: str = Body(..., description="The state of the project", embed=True),
+    # state: str = Body(..., description="The state of the project", embed=True),
+    # Note: Change of the project's state is not allowed here; changeProjectState should be used instead
 ):
     reqId = RequestIdGenerator.generateListId(2)
     producer = AppDi.instance.get(SimpleProducer)
@@ -174,7 +175,7 @@ async def updateProject(
                     "address_line": address_line,
                     "address_line_two": address_line_two,
                     "beneficiary_id": beneficiary_id,
-                    "state": state,
+                    # "state": state,
                 }
             ),
             external=[],
@@ -210,7 +211,8 @@ async def partialUpdateProject(
     start_date: str = Body(
         None, description="The start date of the project", embed=True
     ),
-    state: str = Body(None, description="The state of the project", embed=True),
+    # state: str = Body(None, description="The state of the project", embed=True),
+    # Note: Change of the project's state is not allowed here; changeProjectState should be used instead
     developer_name: str = Body(None, description="Developer company name", embed=True),
     developer_city_id: int = Body(None, description="Developer city id", embed=True),
     developer_country_id: int = Body(
@@ -250,7 +252,7 @@ async def partialUpdateProject(
                     "address_line_two": address_line_two,
                     "beneficiary_id": beneficiary_id,
                     "start_date": start_date,
-                    "state": state,
+                    # "state": state,
                     "developer_name": developer_name,
                     "developer_city_id": developer_city_id,
                     "developer_country_id": developer_country_id,
@@ -1019,12 +1021,13 @@ async def updateBuildingLevelRoom(
     )
     return {"request_id": reqId}
 
+    # @router.patch("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms/{building_level_room_id}",
+    #             summary='Update building level room', status_code=status.HTTP_200_OK)
+    # @OpenTelemetry.fastApiTraceOTel
+    # async def updateBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
+    __ = (Depends(CustomAuthorization()),)
 
-# @router.patch("/{project_id}/buildings/{building_id}/building_levels/{building_level_id}/building_level_rooms/{building_level_room_id}",
-#             summary='Update building level room', status_code=status.HTTP_200_OK)
-# @OpenTelemetry.fastApiTraceOTel
-# async def updateBuildingLevelRoom(*, _=Depends(CustomHttpBearer()),
-    __=Depends(CustomAuthorization()),
+
 #                                   project_id: str = Path(..., description='Project id'),
 #                                   building_id: str = Path(..., description='Building id'),
 #                                   building_level_id: str = Path(..., description='Building level id'),
