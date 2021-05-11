@@ -1105,7 +1105,7 @@ c4model:Rel(api__project_project_py__changeProjectState, project__messaging_proj
 """
 
 
-@router.post(
+@router.put(
     "/{project_id}/change_state",
     summary="Change project state",
     status_code=status.HTTP_200_OK,
