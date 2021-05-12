@@ -177,7 +177,7 @@ async def deletePermissionContext(
     producer.produce(
         obj=ApiCommand(
             id=reqId,
-            name=CommandConstant.DELETE_RESOURCE_TYPE.value,
+            name=CommandConstant.DELETE_PERMISSION_CONTEXT.value,
             metadata=json.dumps({"token": Client.token}),
             data=json.dumps({"permission_context_id": permission_context_id}),
         ),
@@ -215,7 +215,7 @@ async def updatePermissionContext(
     producer.produce(
         obj=ApiCommand(
             id=reqId,
-            name=CommandConstant.UPDATE_RESOURCE_TYPE.value,
+            name=CommandConstant.UPDATE_PERMISSION_CONTEXT.value,
             metadata=json.dumps({"token": Client.token}),
             data=json.dumps(
                 {
