@@ -13,7 +13,7 @@ from src.port_adapter.api.rest.model.response.v1.project.BuildingLevelRoom impor
 class BuildingLevel(BaseModel):
     id: str
     name: str
-    is_sublevel: bool
+    is_subLevel: bool
     building_level_rooms: List[BuildingLevelRoomDescriptor]
     building_ids: List[str]
 

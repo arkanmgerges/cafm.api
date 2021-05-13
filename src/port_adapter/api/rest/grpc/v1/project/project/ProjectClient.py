@@ -566,7 +566,7 @@ class ProjectClient(Client):
         return BuildingLevelDescriptor(
             id=obj.id,
             name=obj.name,
-            is_sublevel=obj.isSubLevel,
+            is_subLevel=obj.isSubLevel,
             building_ids=[x for x in obj.buildingIds],
             building_level_rooms=[
                 self._buildingLevelRoomDescriptor(x) for x in obj.buildingLevelRooms
