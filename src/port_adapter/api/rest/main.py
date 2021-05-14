@@ -27,7 +27,10 @@ from src.port_adapter.api.rest.resource.exception.NotFoundException import (
 from src.port_adapter.api.rest.resource.exception.ValidationErrorException import (
     ValidationErrorException,
 )
-from src.port_adapter.api.rest.router.v1.common import request as common_request, bulk as common_bulk
+from src.port_adapter.api.rest.router.v1.common import (
+    request as common_request,
+    bulk as common_bulk,
+)
 from src.port_adapter.api.rest.router.v1.identity import (
     auth as id_auth,
     ou as id_ou,
@@ -96,6 +99,9 @@ from src.port_adapter.api.rest.router.v1.project.subcontractor import (
 )
 from src.port_adapter.api.rest.router.v1.project.subcontractor.category import (
     subcontractor_category as project_subcontractor_category,
+)
+from src.port_adapter.api.rest.router.v1.project.role import (
+    role as project_role,
 )
 from src.port_adapter.api.rest.router.v1.util import route as util_route
 
@@ -555,6 +561,17 @@ app.include_router(
     project_subcontractor_category.router,
     prefix="/v1/project/subcontractor_categories",
     tags=["Project/Subcontractor"],
+    responses={
+        400: {"model": Message},
+        404: {"model": Message},
+        500: {"model": Message},
+    },
+)
+
+app.include_router(
+    project_role.router,
+    prefix="/v1/project/roles",
+    tags=["Project/Role"],
     responses={
         400: {"model": Message},
         404: {"model": Message},
