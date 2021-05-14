@@ -9,13 +9,24 @@ services:
     ports:
       - "8080:80"
     environment:
-      - GUNICORN_CMD_ARGS="--reload"  # Don't include - doesn't work
+      - GUNICORN_CMD_ARGS="--reload" # Don't include - doesn't work
     # Use ONE of the two commands below to
     #   auto-reload when developing
     # will track everything in sys.path and can use a lot of CPU command: ["/start-reload.sh"]
     # will only track files in /app directory
     #  (can add additional paths with additional reload-dir options)
-    entrypoint: ["uvicorn", "src.port_adapter.api.rest.main:app", "--host", "0.0.0.0", "--debug", "--port", "80", "--reload-dir", "/app"]
+    entrypoint:
+      [
+        "uvicorn",
+        "src.port_adapter.api.rest.main:app",
+        "--host",
+        "0.0.0.0",
+        "--debug",
+        "--port",
+        "80",
+        "--reload-dir",
+        "/app",
+      ]
     working_dir: /app
     networks:
       - cafm-infra_default
@@ -26,7 +37,13 @@ services:
 
   cafm-api-rsp:
     image: cafm-api:local
-    entrypoint: ["hupper", "python", "-m", "src.port_adapter.messaging.listener.ApiResponseListener"]
+    entrypoint:
+      [
+        "hupper",
+        "python",
+        "-m",
+        "src.port_adapter.messaging.listener.ApiResponseListener",
+      ]
     working_dir: /app
     networks:
       - cafm-infra_default
