@@ -244,7 +244,7 @@ async def partialUpdateProject(
     beneficiary_id: str = Body(
         None, description="The id of the beneficiary", embed=True
     ),
-    start_date: str = Body(
+    start_date: int = Body(
         None, description="The start date of the project", embed=True
     ),
     # state: str = Body(None, description="The state of the project", embed=True),

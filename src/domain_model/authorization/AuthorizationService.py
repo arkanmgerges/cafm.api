@@ -29,7 +29,6 @@ class AuthorizationService:
         try:
             method = AuthorizationService.getMethod(request.method)
             path = request.url.path
-
             for tree in roleTrees.role_access_permissions:
                 if tree.role.name == 'super_admin':
                     return True
@@ -38,7 +37,8 @@ class AuthorizationService:
                     return False
 
                 for permissionObject in tree.permissions:
-                    if hasattr(permissionObject.permission, 'denied_actions') and permissionObject.permission.denied_actions == method:
+                    if hasattr(permissionObject.permission,
+                               'denied_actions') and permissionObject.permission.denied_actions == method:
                         return False
 
                     exist = next((x for x in permissionObject.permission.allowed_actions if x == method), [False])
@@ -47,9 +47,9 @@ class AuthorizationService:
                         for context in permissionObject.permission_contexts:
                             if context.data['path'] == path:
                                 return True
-
             return False
-        except:
+        except Exception as e:
+            logger.error({e})
             return False
 
     @staticmethod
