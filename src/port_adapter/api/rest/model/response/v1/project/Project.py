@@ -15,7 +15,7 @@ class Project(BaseModel):
     address_line_two: Optional[str]
     beneficiary_id: str
     state: str
-    start_date: Optional[str]
+    start_date: Optional[int]
     developer_name: Optional[str]
     developer_city_id: Optional[int]
     developer_country_id: Optional[int]

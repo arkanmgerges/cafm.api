@@ -145,8 +145,8 @@ async def updateProject(
         ..., description="Project id that is used in order to update the project"
     ),
     name: str = Body(..., description="Title of the project", embed=True),
-    city_id: str = Body(..., description="City id of this project", embed=True),
-    country_id: str = Body(..., description="Country id of this project", embed=True),
+    city_id: int = Body(..., description="City id of this project", embed=True),
+    country_id: int = Body(..., description="Country id of this project", embed=True),
     address_line: str = Body(
         ..., description="Address line of the project", embed=True
     ),
@@ -155,6 +155,33 @@ async def updateProject(
     ),
     beneficiary_id: str = Body(
         ..., description="The id of the beneficiary", embed=True
+    ),
+    developer_name: str = Body(
+        ..., description="The name of the developer", embed=True
+    ),
+    developer_city_id: int = Body(
+        ..., description="The city id of the developer", embed=True
+    ),
+    developer_country_id: int = Body(
+        ..., description="The country id of the developer", embed=True
+    ),
+    developer_address_line_one: str = Body(
+        ..., description="The address line one of the developer", embed=True
+    ),
+    developer_address_line_two: str = Body(
+        ..., description="The address line two of the developer", embed=True
+    ),
+    developer_contact: str = Body(
+        ..., description="The contact address of the developer", embed=True
+    ),
+    developer_email: str = Body(
+        ..., description="The email of the developer", embed=True
+    ),
+    developer_phone_number: str = Body(
+        ..., description="The phone number of the developer", embed=True
+    ),
+    developer_warranty: str = Body(
+        ..., description="The warranty of the developer", embed=True
     ),
     # state: str = Body(..., description="The state of the project", embed=True),
     # Note: Change of the project's state is not allowed here; changeProjectState should be used instead
@@ -175,6 +202,15 @@ async def updateProject(
                     "address_line": address_line,
                     "address_line_two": address_line_two,
                     "beneficiary_id": beneficiary_id,
+                    "developer_name": developer_name,
+                    "developer_city_id": developer_city_id,
+                    "developer_country_id": developer_country_id,
+                    "developer_address_line_one": developer_address_line_one,
+                    "developer_address_line_two": developer_address_line_two,
+                    "developer_contact": developer_contact,
+                    "developer_email": developer_email,
+                    "developer_phone_number": developer_phone_number,
+                    "developer_warranty": developer_warranty,
                     # "state": state,
                 }
             ),
