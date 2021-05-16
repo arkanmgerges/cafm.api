@@ -627,12 +627,12 @@ async def createBuildingLevel(
     project_id: str = Path(..., description="Project id"),
     building_id: str = Path(..., description="Building id"),
     name: str = Body(..., description="Building level name", embed=True),
-    is_subLevel: bool = Body(None, description="Is it a sub level", embed=True),
+    is_sub_level: bool = Body(None, description="Is it a sub level", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     client = ProjectClient()
-    is_subLevel = is_subLevel if is_subLevel is not None else False
+    is_sub_level = is_sub_level if is_sub_level is not None else False
     producer.produce(
         obj=ProjectCommand(
             id=reqId,
@@ -644,7 +644,7 @@ async def createBuildingLevel(
                     "project_id": project_id,
                     "building_id": building_id,
                     "name": name,
-                    "is_subLevel": is_subLevel,
+                    "is_sub_level": is_sub_level,
                 }
             ),
             external=[],
@@ -715,11 +715,11 @@ async def updateBuildingLevel(
     building_id: str = Path(..., description="Building id"),
     building_level_id: str = Path(..., description="Building level id"),
     name: str = Body(..., description="Building name", embed=True),
-    is_subLevel: bool = Body(None, description="Is it a sub level", embed=True),
+    is_sub_level: bool = Body(None, description="Is it a sub level", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
-    is_subLevel = is_subLevel if is_subLevel is not None else False
+    is_sub_level = is_sub_level if is_sub_level is not None else False
     producer.produce(
         obj=ProjectCommand(
             id=reqId,
@@ -730,7 +730,7 @@ async def updateBuildingLevel(
                     "project_id": project_id,
                     "building_id": building_id,
                     "building_level_id": building_level_id,
-                    "is_subLevel": is_subLevel,
+                    "is_sub_level": is_sub_level,
                     "name": name,
                 }
             ),
