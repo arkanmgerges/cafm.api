@@ -13,8 +13,8 @@ class MaintenanceProcedureOperationParameter(BaseModel):
     name: str
     unit_id: str
     maintenance_procedure_operation_id: str
-    min_value: str
-    max_value: str
+    min_value: float
+    max_value: float
 
 
 class MaintenanceProcedureOperationParameterDescriptor(
