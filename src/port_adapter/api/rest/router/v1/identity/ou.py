@@ -205,7 +205,7 @@ async def partialUpdateOu(
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
     ou_id: str = Path(..., description="Ou id that is used in order to update the ou"),
-    name: str = Body(None, description="Title of the ou", embed=True),
+    name: str = Body(..., description="Title of the ou", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)

@@ -15,16 +15,16 @@ class Project(BaseModel):
     address_line_two: Optional[str]
     beneficiary_id: str
     state: str
-    start_date: Optional[str]
-    developerName: Optional[str]
-    developerCityId: Optional[int]
-    developerCountryId: Optional[int]
-    developerAddressLineOne: Optional[str]
-    developerAddressLineTwo: Optional[str]
-    developerContact: Optional[str]
-    developerEmail: Optional[str]
-    developerPhoneNumber: Optional[str]
-    developerWarranty: Optional[str]
+    start_date: Optional[int]
+    developer_name: Optional[str]
+    developer_city_id: Optional[int]
+    developer_country_id: Optional[int]
+    developer_address_line_one: Optional[str]
+    developer_address_line_two: Optional[str]
+    developer_contact: Optional[str]
+    developer_email: Optional[str]
+    developer_phone_number: Optional[str]
+    developer_warranty: Optional[str]
 
 
 class ProjectDescriptor(Project):

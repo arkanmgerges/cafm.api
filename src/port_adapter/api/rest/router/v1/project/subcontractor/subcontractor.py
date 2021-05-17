@@ -453,8 +453,8 @@ async def getSubcontractorsByOrganizationId(
 
 
 @router.post(
-    "/{subcontractor_id}/assign_to_oraganization",
-    summary="Assign a subcontractor to a oraganization",
+    "/{subcontractor_id}/assign_to_organization",
+    summary="Assign a subcontractor to a organization",
     status_code=status.HTTP_200_OK,
 )
 @OpenTelemetry.fastApiTraceOTel
@@ -463,10 +463,10 @@ async def assignSubcontractorToOrganization(
     _=Depends(CustomHttpBearer()),
     subcontractor_id: str = Path(
         ...,
-        description="Subcontractor id that is used in order to assign a oraganization",
+        description="Subcontractor id that is used in order to assign a organization",
     ),
     organization_id: str = Body(
-        ..., description="Oraganization id that is need to be assigned", embed=True
+        ..., description="Organization id that is need to be assigned", embed=True
     ),
 ):
     reqId = RequestIdGenerator.generateId()
@@ -492,17 +492,17 @@ async def assignSubcontractorToOrganization(
 
 
 @router.delete(
-    "/{subcontractor_id}/assign_to_oraganization",
-    summary="Unassign a subcontractor to a oraganization",
+    "/{subcontractor_id}/assign_to_organization",
+    summary="Revoke subcontractor to a organization assignment",
     status_code=status.HTTP_200_OK,
 )
 @OpenTelemetry.fastApiTraceOTel
-async def revokeAssignmentSubcontractorToOrganization(
+async def revokeSubcontractorToOrganizationAssignment(
     *,
     _=Depends(CustomHttpBearer()),
     subcontractor_id: str = Path(
         ...,
-        description="Subcontractor id that is used in order to assign a oraganization",
+        description="Subcontractor id that is used in order to assign a organization",
     ),
     organization_id: str = Body(
         ..., description="Organization id that is need to be assigned", embed=True
