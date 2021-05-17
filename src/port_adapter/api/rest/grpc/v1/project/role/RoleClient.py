@@ -120,6 +120,9 @@ class RoleClient(Client):
                 logger.debug(
                     f"[{RoleClient.rolesByOrganizationType.__qualname__}] - grpc call to retrieve roles from server {self._server}:{self._port}"
                 )
+                logger.info(
+                    f"+++------------------------------- \n am intrat\n {organizationType}"
+                )
                 request = RoleAppService_rolesByOrganizationTypeRequest(
                     organizationType=organizationType,
                     resultFrom=resultFrom,
@@ -145,6 +148,9 @@ class RoleClient(Client):
                 )
                 logger.debug(
                     f"[{RoleClient.rolesByOrganizationType.__qualname__}] - grpc response: {response}"
+                )
+                logger.info(
+                    f"+++------------------------------- \n am iesit\n {response[0]}"
                 )
 
                 return Roles(

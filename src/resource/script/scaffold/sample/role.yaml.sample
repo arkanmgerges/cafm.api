@@ -1,0 +1,49 @@
+---
+
+global:
+  setting:
+    tab_size: 4 # 4 spaces
+  path:
+    application: 'src/application'
+    domain_model: 'src/domain_model'
+    exception: 'src/domain_model/resource/exception'
+    port_adapter: 'src/port_adapter'
+    repository: 'src/port_adapter/repository'
+    db_model: 'src/port_adapter/repository/db_model'
+    messaging: 'src/port_adapter/messaging'
+    messaging_listener: 'src/port_adapter/messaging/listener'
+    grpc_api_client: 'src/port_adapter/api/rest/grpc/v1'
+    proto_buffer: 'src/resource/proto'
+    router: 'src/port_adapter/api/rest/router/v1'
+    router_model_response: 'src/port_adapter/api/rest/model/response/v1'
+    test: 'test'
+    app_di: 'src/port_adapter'
+
+
+domain_model:
+  - model: &role_model
+#      skip: [ all, model, repository_impl, db_repository ]
+      file_overwrite: True
+      path: project/role
+      message_command: ProjectCommand
+      microservice: project
+      name: role
+      field:
+        - name: name
+          type: str
+          default: None
+          db:
+            type: 'String(50)'
+          proto:
+            type: string
+        - name: title
+          type: str
+          default: None
+          db:
+            type: 'String(255)'
+          proto:
+            type: string
+
+
+segment:
+  - name: role
