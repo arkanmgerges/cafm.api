@@ -567,7 +567,7 @@ async def createMaintenanceProcedure(
     __=Depends(CustomAuthorization()),
     name: str = Body(None, description="name of maintenance procedure", embed=True),
     type: MaintenanceProcedureType = Body(..., description="hard or soft", embed=True),
-    hard_sub_type: MaintenanceProcedureHardSubType = Body(
+    sub_type: MaintenanceProcedureHardSubType = Body(
         None, description="Sub type for when you select hard for type", embed=True
     ),
     frequency: MaintenanceProcedureFrequency = Body(
@@ -605,7 +605,7 @@ async def createMaintenanceProcedure(
                     "maintenance_procedure_id": client.newId(),
                     "name": name,
                     "type": type,
-                    "sub_type": hard_sub_type,
+                    "sub_type": sub_type,
                     "frequency": frequency,
                     "start_date": start_date,
                     "subcontractor_id": subcontractor_id,
@@ -635,7 +635,7 @@ async def updateMaintenanceProcedure(
     ),
     name: str = Body(..., description="name of name", embed=True),
     type: MaintenanceProcedureType = Body(..., description="hard or soft", embed=True),
-    hard_sub_type: MaintenanceProcedureHardSubType = Body(
+    sub_type: MaintenanceProcedureHardSubType = Body(
         None, description="Sub type for when you select hard for type", embed=True
     ),
     frequency: MaintenanceProcedureFrequency = Body(
@@ -671,7 +671,7 @@ async def updateMaintenanceProcedure(
                     "maintenance_procedure_id": maintenance_procedure_id,
                     "name": name,
                     "type": type,
-                    "sub_type": hard_sub_type,
+                    "sub_type": sub_type,
                     "frequency": frequency,
                     "start_date": start_date,
                     "equipment_id": equipment_id,
@@ -701,7 +701,7 @@ async def partialUpdateMaintenanceProcedure(
     ),
     name: str = Body(None, description="name of name", embed=True),
     type: MaintenanceProcedureType = Body(None, description="hard or soft", embed=True),
-    hard_sub_type: MaintenanceProcedureHardSubType = Body(
+    sub_type: MaintenanceProcedureHardSubType = Body(
         None, description="hard subtype", embed=True
     ),
     frequency: MaintenanceProcedureFrequency = Body(
@@ -736,7 +736,7 @@ async def partialUpdateMaintenanceProcedure(
                     "maintenance_procedure_id": maintenance_procedure_id,
                     "name": name,
                     "type": type,
-                    "sub_type": hard_sub_type,
+                    "sub_type": sub_type,
                     "frequency": frequency,
                     "start_date": start_date,
                     "subcontractor_id": subcontractor_id,

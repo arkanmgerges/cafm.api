@@ -202,7 +202,7 @@ class MaintenanceProcedureClient(Client):
             id=obj.id,
             name=obj.name,
             type=obj.type,
-            hard_sub_type=obj.subType,
+            sub_type=obj.subType,
             frequency=obj.frequency,
             start_date=obj.startDate,
             subcontractor_id=obj.subcontractorId,
