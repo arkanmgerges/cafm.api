@@ -118,10 +118,7 @@ class RoleClient(Client):
             stub = RoleAppServiceStub(channel)
             try:
                 logger.debug(
-                    f"[{RoleClient.rolesByOrganizationType.__qualname__}] - grpc call to retrieve roles from server {self._server}:{self._port}"
-                )
-                logger.info(
-                    f"+++------------------------------- \n am intrat\n {organizationType}"
+                    f"[{RoleClient.rolesByOrganizationType.__qualname__}] - grpc call to retrieve roles by organization type from server {self._server}:{self._port}"
                 )
                 request = RoleAppService_rolesByOrganizationTypeRequest(
                     organizationType=organizationType,
@@ -133,7 +130,7 @@ class RoleClient(Client):
                     for o in order
                 ]
                 response: RoleAppService_rolesByOrganizationTypeResponse = (
-                    stub.roles.with_call(
+                    stub.rolesByOrganizationType.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -148,9 +145,6 @@ class RoleClient(Client):
                 )
                 logger.debug(
                     f"[{RoleClient.rolesByOrganizationType.__qualname__}] - grpc response: {response}"
-                )
-                logger.info(
-                    f"+++------------------------------- \n am iesit\n {response[0]}"
                 )
 
                 return Roles(
