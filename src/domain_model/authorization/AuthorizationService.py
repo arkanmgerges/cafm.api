@@ -28,11 +28,11 @@ class AuthorizationService:
         """
         try:
             method = AuthorizationService.getMethod(request.method)
-            path = request.url.path
             for tree in roleTrees.role_access_permissions:
                 if tree.role.name == 'super_admin':
                     return True
 
+            for tree in roleTrees.role_access_permissions:
                 if len(tree.permissions) == 0:
                     return False
 
@@ -45,6 +45,7 @@ class AuthorizationService:
 
                     if exist is not False:
                         for context in permissionObject.permission_contexts:
+                            path = request.url.path
                             if context.data['path'] == path:
                                 return True
             return False
