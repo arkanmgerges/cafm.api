@@ -68,8 +68,8 @@ class SubcontractorLookupClient(Client):
                 )
                 logger.debug(f"[{SubcontractorLookupClient.lookup.__qualname__}] - grpc response: {response}")
 
-                return SubcontractorLookup(
-                    subcontractorLookups=[self._descriptorByObject(obj=obj) for obj in response[0].subcontractorLookups],
+                return SubcontractorLookups(
+                    subcontractor_lookups=[self._descriptorByObject(obj=obj) for obj in response[0].subcontractorLookups],
                     total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:
