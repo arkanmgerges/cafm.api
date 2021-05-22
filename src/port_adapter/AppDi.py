@@ -8,6 +8,7 @@ from src.application.AuthenticationApplicationService import (
 from src.application.AuthorizationApplicationService import (
     AuthorizationApplicationService,
 )
+from src.domain_model.FilterService import FilterService
 from src.domain_model.authentication.AuthenticationRepository import (
     AuthenticationRepository,
 )
@@ -104,6 +105,11 @@ class AppDi(Module):
     @provider
     def provideOrderService(self) -> OrderService:
         return OrderService()
+
+    @singleton
+    @provider
+    def provideFilterService(self) -> FilterService:
+        return FilterService()
 
     # endregion
 

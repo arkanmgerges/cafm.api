@@ -24,3 +24,4 @@ import "project/standard_equipment_category_app_service.proto";
 import "project/standard_equipment_category_group_app_service.proto";
 import "project/subcontractor_category_app_service.proto";
 import "project/organization_app_service.proto";
+import "project/subcontractor_lookup_app_service.proto";
