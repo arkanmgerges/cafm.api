@@ -173,7 +173,7 @@ async def createSubcontractor(
         None, description="address two of subcontractor", embed=True
     ),
     subcontractor_category_id: str = Body(
-        None, description="subcontractor category id of subcontractor", embed=True
+        ..., description="subcontractor category id of subcontractor", embed=True
     ),
     description: str = Body(
         None, description="description of subcontractor", embed=True
