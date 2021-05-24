@@ -170,19 +170,19 @@ async def createSubcontractor(
         ..., description="address one of subcontractor", embed=True
     ),
     address_two: str = Body(
-        ..., description="address two of subcontractor", embed=True
+        None, description="address two of subcontractor", embed=True
     ),
     subcontractor_category_id: str = Body(
-        ..., description="subcontractor category id of subcontractor", embed=True
+        None, description="subcontractor category id of subcontractor", embed=True
     ),
     description: str = Body(
-        ..., description="description of subcontractor", embed=True
+        None, description="description of subcontractor", embed=True
     ),
-    country_id: int = Body(..., description="country id of subcontractor", embed=True),
-    city_id: int = Body(..., description="city id of subcontractor", embed=True),
-    state_id: str = Body(..., description="state id of subcontractor", embed=True),
+    country_id: int = Body(None, description="country id of subcontractor", embed=True),
+    city_id: int = Body(None, description="city id of subcontractor", embed=True),
+    state_id: str = Body(None, description="state id of subcontractor", embed=True),
     postal_code: str = Body(
-        ..., description="postal code of subcontractor", embed=True
+        None, description="postal code of subcontractor", embed=True
     ),
 ):
     reqId = RequestIdGenerator.generateId()
