@@ -8,20 +8,25 @@ import grpc
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
+
+from src.port_adapter.api.rest.model.response.v1.identity.City import City
 from src.port_adapter.api.rest.model.response.v1.identity.Cities import (
     Cities,
     CityDescriptor,
 )
-from src.port_adapter.api.rest.model.response.v1.identity.City import City
+
+from src.port_adapter.api.rest.model.response.v1.identity.Country import Country
 from src.port_adapter.api.rest.model.response.v1.identity.Countries import (
     Countries,
     CountryDescriptor,
 )
-from src.port_adapter.api.rest.model.response.v1.identity.Country import Country
-from src.port_adapter.api.rest.model.response.v1.identity.State import (
-    State,
+
+from src.port_adapter.api.rest.model.response.v1.identity.State import State
+from src.port_adapter.api.rest.model.response.v1.identity.States import (
+    States,
+    StateDescriptor,
 )
-from src.port_adapter.api.rest.model.response.v1.identity.States import States
+
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.identity.country_app_service_pb2 import (
@@ -34,7 +39,10 @@ from src.resource.proto._generated.identity.country_app_service_pb2 import (
     CountryAppService_cityByCountryIdResponse,
     CountryAppService_cityByCountryIdRequest,
     CountryAppService_statesByCountryIdRequest,
-    CountryAppService_statesByCountryIdResponse, CountryAppService_citiesByCountryIdAndStateIdRequest,
+    CountryAppService_statesByCountryIdResponse,
+    CountryAppService_stateByCountryIdAndStateIdRequest,
+    CountryAppService_stateByCountryIdAndStateIdResponse,
+    CountryAppService_citiesByCountryIdAndStateIdRequest,
     CountryAppService_citiesByCountryIdAndStateIdResponse,
 )
 from src.resource.proto._generated.identity.country_app_service_pb2_grpc import (
@@ -234,6 +242,42 @@ class CountryClient(Client):
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
+    def stateByCountryIdAndStateId(self, countryId: int, stateId: str):
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
+            stub = CountryAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f"[{CountryClient.stateByCountryIdAndStateId.__qualname__}] - grpc call to retrieve city with countryId: {countryId} & stateId: {stateId} from server {self._server}:{self._port}"
+                )
+                response: CountryAppService_stateByCountryIdAndStateIdResponse = stub.stateByCountryIdAndStateId.with_call(
+                    CountryAppService_stateByCountryIdAndStateIdRequest(
+                        countryId=countryId,
+                        stateId=stateId,
+                    ),
+                    metadata=(
+                        ("token", self.token),
+                        (
+                            "opentel",
+                            AppDi.instance.get(OpenTelemetry).serializedContext(
+                                CountryClient.stateByCountryIdAndStateId.__qualname__
+                            ),
+                        ),
+                    ),
+                )
+                logger.debug(
+                    f"[{CountryClient.stateByCountryIdAndStateId.__qualname__}] - grpc response: {response}"
+                )
+
+                state = response[0].state
+                return StateDescriptor(
+                    id=state.id,
+                    name=state.name,
+                )
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
     def statesByCountryId(
         self,
         countryId: int,
@@ -293,7 +337,10 @@ class CountryClient(Client):
                     f"[{CountryClient.citiesByCountryIdAndStateId.__qualname__}] - grpc call to retrieve citiesByStateId from server {self._server}:{self._port}"
                 )
                 request = CountryAppService_citiesByCountryIdAndStateIdRequest(
-                    countryId=countryId, stateId=stateId, resultFrom=resultFrom, resultSize=resultSize
+                    countryId=countryId,
+                    stateId=stateId,
+                    resultFrom=resultFrom,
+                    resultSize=resultSize,
                 )
                 [
                     request.order.add(orderBy=o["orderBy"], direction=o["direction"])
