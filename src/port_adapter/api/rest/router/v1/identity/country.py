@@ -15,7 +15,6 @@ from starlette.status import (
 
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
-from src.port_adapter.api.rest.grpc.v1.identity.city.CityClient import CityClient
 from src.port_adapter.api.rest.grpc.v1.identity.country.CountryClient import (
     CountryClient,
 )
@@ -27,7 +26,10 @@ from src.port_adapter.api.rest.model.response.v1.identity.Countries import (
     Countries,
     CountryDescriptor,
 )
-from src.port_adapter.api.rest.model.response.v1.identity.States import States
+from src.port_adapter.api.rest.model.response.v1.identity.States import (
+    States,
+    StateDescriptor,
+)
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
@@ -137,8 +139,11 @@ async def getCitiesByCountryId(
     except Exception as e:
         logger.info(e)
 
+
 @router.get(
-    path="/{country_id}/cities/by_state_id/{state_id}", summary="Get cities by state id", response_model=Cities
+    path="/{country_id}/cities/by_state_id/{state_id}",
+    summary="Get cities by state id",
+    response_model=Cities,
 )
 @OpenTelemetry.fastApiTraceOTel
 async def getCitiesByStateId(
@@ -181,6 +186,7 @@ async def getCitiesByStateId(
     except Exception as e:
         logger.info(e)
 
+
 @router.get(
     path="/{country_id}/cities/{city_id}",
     summary="Get a country city",
@@ -209,6 +215,42 @@ async def getCityByCountryId(
         else:
             logger.error(
                 f"[{getCityByCountryId.__module__}.{getCityByCountryId.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
+
+
+@router.get(
+    path="/{country_id}/states/{state_id}",
+    summary="Get a country state",
+    response_model=StateDescriptor,
+)
+@OpenTelemetry.fastApiTraceOTel
+async def getStateByCountryIdAndStateId(
+    *,
+    country_id: int = Path(
+        ..., description="Country id that is used to fetch country state"
+    ),
+    state_id: str = Path(
+        ..., description="State id that is used to fetch country state"
+    ),
+    _=Depends(CustomHttpBearer()),
+):
+    """
+    Get a State of Country by Country id and State id
+    """
+    try:
+        client = CountryClient()
+        return client.stateByCountryIdAndStateId(countryId=country_id, stateId=state_id)
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getStateByCountryIdAndStateId.__module__}.{getStateByCountryIdAndStateId.__qualname__}] - error response e: {e}\n\n{e.code()}"
             )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
