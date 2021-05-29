@@ -16,7 +16,7 @@ message EquipmentAppService_equipmentByIdRequest {
 }
 
 message EquipmentAppService_equipmentByIdResponse {
-  Equipment equipment = 1;
+  cafm.project.equipment.Equipment equipment = 1;
 }
 
 message EquipmentAppService_equipmentsRequest {
@@ -26,7 +26,7 @@ message EquipmentAppService_equipmentsRequest {
 }
 
 message EquipmentAppService_equipmentsResponse {
-  repeated Equipment equipments = 1;
+  repeated cafm.project.equipment.Equipment equipments = 1;
   int32 totalItemCount = 2;
 }
 

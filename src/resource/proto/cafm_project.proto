@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "project/lookup/equipment/equipment_lookup_app_service.proto";
+import "project/equipment_app_service.proto";
 import "project/project_app_service.proto";
 import "project/user_app_service.proto";
 import "project/user_lookup_app_service.proto";
@@ -9,7 +11,6 @@ import "project/manufacturer_app_service.proto";
 import "project/equipment_project_category_app_service.proto";
 import "project/equipment_category_app_service.proto";
 import "project/equipment_category_group_app_service.proto";
-import "project/equipment_app_service.proto";
 import "project/unit_app_service.proto";
 import "project/equipment_input_app_service.proto";
 import "project/maintenance_procedure_app_service.proto";
