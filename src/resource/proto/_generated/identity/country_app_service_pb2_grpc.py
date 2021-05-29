@@ -34,6 +34,11 @@ class CountryAppServiceStub(object):
                 request_serializer=identity_dot_country__app__service__pb2.CountryAppService_cityByCountryIdRequest.SerializeToString,
                 response_deserializer=identity_dot_country__app__service__pb2.CountryAppService_cityByCountryIdResponse.FromString,
                 )
+        self.stateByCountryIdAndStateId = channel.unary_unary(
+                '/cafm.identity.country.CountryAppService/stateByCountryIdAndStateId',
+                request_serializer=identity_dot_country__app__service__pb2.CountryAppService_stateByCountryIdAndStateIdRequest.SerializeToString,
+                response_deserializer=identity_dot_country__app__service__pb2.CountryAppService_stateByCountryIdAndStateIdResponse.FromString,
+                )
         self.statesByCountryId = channel.unary_unary(
                 '/cafm.identity.country.CountryAppService/statesByCountryId',
                 request_serializer=identity_dot_country__app__service__pb2.CountryAppService_statesByCountryIdRequest.SerializeToString,
@@ -73,6 +78,12 @@ class CountryAppServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def stateByCountryIdAndStateId(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def statesByCountryId(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -107,6 +118,11 @@ def add_CountryAppServiceServicer_to_server(servicer, server):
                     servicer.cityByCountryId,
                     request_deserializer=identity_dot_country__app__service__pb2.CountryAppService_cityByCountryIdRequest.FromString,
                     response_serializer=identity_dot_country__app__service__pb2.CountryAppService_cityByCountryIdResponse.SerializeToString,
+            ),
+            'stateByCountryIdAndStateId': grpc.unary_unary_rpc_method_handler(
+                    servicer.stateByCountryIdAndStateId,
+                    request_deserializer=identity_dot_country__app__service__pb2.CountryAppService_stateByCountryIdAndStateIdRequest.FromString,
+                    response_serializer=identity_dot_country__app__service__pb2.CountryAppService_stateByCountryIdAndStateIdResponse.SerializeToString,
             ),
             'statesByCountryId': grpc.unary_unary_rpc_method_handler(
                     servicer.statesByCountryId,
@@ -193,6 +209,23 @@ class CountryAppService(object):
         return grpc.experimental.unary_unary(request, target, '/cafm.identity.country.CountryAppService/cityByCountryId',
             identity_dot_country__app__service__pb2.CountryAppService_cityByCountryIdRequest.SerializeToString,
             identity_dot_country__app__service__pb2.CountryAppService_cityByCountryIdResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def stateByCountryIdAndStateId(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cafm.identity.country.CountryAppService/stateByCountryIdAndStateId',
+            identity_dot_country__app__service__pb2.CountryAppService_stateByCountryIdAndStateIdRequest.SerializeToString,
+            identity_dot_country__app__service__pb2.CountryAppService_stateByCountryIdAndStateIdResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
