@@ -8,7 +8,6 @@ import grpc
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
-
 from src.port_adapter.api.rest.model.response.v1.project.lookup.CityLookup import CityLookupDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.lookup.CountryLookup import CountryLookupDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.lookup.StateLookup import StateLookupDescriptor
@@ -19,14 +18,13 @@ from src.port_adapter.api.rest.model.response.v1.project.lookup.SubcontractorLoo
 from src.port_adapter.api.rest.model.response.v1.project.lookup.SubcontractorLookups import SubcontractorLookups
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
-from src.resource.proto._generated.project.subcontractor_lookup_app_service_pb2 import (
+from src.resource.proto._generated.project.lookup.subcontractor.subcontractor_lookup_app_service_pb2 import (
     SubcontractorLookupAppService_lookupRequest,
     SubcontractorLookupAppService_lookupResponse,
 )
-from src.resource.proto._generated.project.subcontractor_lookup_app_service_pb2_grpc import (
+from src.resource.proto._generated.project.lookup.subcontractor.subcontractor_lookup_app_service_pb2_grpc import (
     SubcontractorLookupAppServiceStub,
 )
-from src.resource.proto._generated.project.subcontractor_lookup_pb2 import SubcontractorLookup
 
 
 class SubcontractorLookupClient(Client):
@@ -69,7 +67,9 @@ class SubcontractorLookupClient(Client):
                 logger.debug(f"[{SubcontractorLookupClient.lookup.__qualname__}] - grpc response: {response}")
 
                 return SubcontractorLookups(
-                    subcontractor_lookups=[self._descriptorByObject(obj=obj) for obj in response[0].subcontractorLookups],
+                    subcontractor_lookups=[
+                        self._descriptorByObject(obj=obj) for obj in response[0].subcontractorLookups
+                    ],
                     total_item_count=response[0].totalItemCount,
                 )
             except Exception as e:

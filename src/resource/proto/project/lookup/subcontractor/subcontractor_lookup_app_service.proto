@@ -4,9 +4,9 @@
 
 syntax = "proto3";
 
-package cafm.project.lookup;
+package cafm.project.lookup.subcontractor;
 
-import "project/subcontractor_lookup.proto";
+import "project/lookup/subcontractor/subcontractor.proto";
 import "order.proto";
 import "filter.proto";
 
@@ -18,7 +18,7 @@ message SubcontractorLookupAppService_lookupRequest {
 }
 
 message SubcontractorLookupAppService_lookupResponse {
-  repeated SubcontractorLookup subcontractorLookups = 1;
+  repeated Subcontractor subcontractorLookups = 1;
   int32 totalItemCount = 2;
 }
 
