@@ -22,7 +22,14 @@ from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Equipm
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentModel import EquipmentModelDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentProjectCategory import \
     EquipmentProjectCategoryDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.MaintenanceProcedure import \
+    MaintenanceProcedureDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.MaintenanceProcedureOperation import \
+    MaintenanceProcedureOperationDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.MaintenanceProcedureOperationParameter import \
+    MaintenanceProcedureOperationParameterDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Manufacturer import ManufacturerDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Unit import UnitDescriptor
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.lookup.equipment.equipment_lookup_app_service_pb2 import (
@@ -84,6 +91,46 @@ class EquipmentLookupClient(Client):
                 raise e
 
     def _descriptorByObject(self, obj: Any) -> EquipmentLookupDescriptor:
+        maintenances = []
+        for maintenance in obj.maintenanceProcedures:
+            operations = []
+            for operation in maintenance.maintenanceProcedureOperations:
+                params = []
+                for param in operation.maintenanceProcedureOperationParameters:
+                    params.append(
+                        MaintenanceProcedureOperationParameterDescriptor(
+                            id=param.id,
+                            name=param.name,
+                            min_value=param.minValue,
+                            max_value=param.maxValue,
+                            unit=UnitDescriptor(
+                                id=param.unit.id,
+                                name=param.unit.name,
+                            )
+                        )
+                    )
+                operations.append(
+                    MaintenanceProcedureOperationDescriptor(
+                        id=operation.id,
+                        name=operation.name,
+                        description=operation.description,
+                        type=operation.type,
+                        maintenance_procedure_operation_parameters=params,
+                    )
+                )
+
+            maintenances.append(
+                MaintenanceProcedureDescriptor(
+                    id=maintenance.id,
+                    name=maintenance.name,
+                    type=maintenance.type,
+                    sub_type=maintenance.subType,
+                    frequency=maintenance.frequency,
+                    start_date=maintenance.startDate,
+                    maintenance_procedure_operations=operations,
+                )
+            )
+
         return EquipmentLookupDescriptor(
             id=obj.id,
             name=obj.name,
@@ -120,5 +167,5 @@ class EquipmentLookupClient(Client):
                 id=obj.equipmentModel.id,
                 name=obj.equipmentModel.name,
             ),
-            maintenance_procedures=[],
+            maintenance_procedures=maintenances,
         )

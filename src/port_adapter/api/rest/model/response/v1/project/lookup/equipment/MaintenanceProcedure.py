@@ -18,8 +18,7 @@ class MaintenanceProcedure(BaseModel):
     sub_type: Optional[str]
     frequency: str
     start_date: int
-    equipment_id: str
-    maintenance_procedure_operations: List[MaintenanceProcedureOperation]
+    maintenance_procedure_operations: Optional[List[MaintenanceProcedureOperation]]
 
 
 class MaintenanceProcedureDescriptor(MaintenanceProcedure):
