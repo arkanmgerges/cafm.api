@@ -84,6 +84,9 @@ async def updateUser(
     country_id: int = Body(..., description="Country id", embed=True),
     city_id: int = Body(..., description="City id", embed=True),
     country_state_name: str = Body(..., description="State name", embed=True),
+    country_state_iso_code: str = Body(
+        ..., description="Country State Iso code", embed=True
+    ),
     start_date: float = Body(..., description="Start date of the user", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
@@ -109,6 +112,7 @@ async def updateUser(
                     "country_id": country_id,
                     "city_id": city_id,
                     "country_state_name": country_state_name,
+                    "country_state_iso_code": country_state_iso_code,
                     "start_date": start_date,
                 }
             ),
@@ -157,6 +161,9 @@ async def partialUpdateUser(
     country_state_name: Optional[str] = Body(
         None, description="State name", embed=True
     ),
+    country_state_iso_code: Optional[str] = Body(
+        None, description="Counntry State Iso code", embed=True
+    ),
     start_date: Optional[float] = Body(
         None, description="Start date of the user", embed=True
     ),
@@ -184,6 +191,7 @@ async def partialUpdateUser(
                     "country_id": country_id,
                     "city_id": city_id,
                     "country_state_name": country_state_name,
+                    "country_state_iso_code": country_state_iso_code,
                     "start_date": start_date,
                 }
             ),

@@ -96,7 +96,10 @@ async def updateOrganization(
     ),
     country_id: int = Body(..., description="Country id", embed=True),
     city_id: int = Body(..., description="City id", embed=True),
-    country_state_name: str = Body(..., description="State name", embed=True),
+    country_state_name: str = Body(..., description="Country State name", embed=True),
+    country_state_iso_code: str = Body(
+        ..., description="Country State Iso code", embed=True
+    ),
     manager_first_name: str = Body(
         ..., description="First name of the manager", embed=True
     ),
@@ -132,6 +135,7 @@ async def updateOrganization(
                     "country_id": country_id,
                     "city_id": city_id,
                     "country_state_name": country_state_name,
+                    "country_state_iso_code": country_state_iso_code,
                     "manager_first_name": manager_first_name,
                     "manager_last_name": manager_last_name,
                     "manager_email": manager_email,
@@ -175,7 +179,10 @@ async def partialUpdateOrganization(
     ),
     country_id: int = Body(None, description="Country id", embed=True),
     city_id: int = Body(None, description="City id", embed=True),
-    country_state_name: str = Body(None, description="State name", embed=True),
+    country_state_name: str = Body(None, description="Country State name", embed=True),
+    country_state_iso_code: str = Body(
+        None, description="Country State Iso code", embed=True
+    ),
     manager_first_name: str = Body(
         None, description="First name of the manager", embed=True
     ),
@@ -211,6 +218,7 @@ async def partialUpdateOrganization(
                     "country_id": country_id,
                     "city_id": city_id,
                     "country_state_name": country_state_name,
+                    "country_state_iso_code": country_state_iso_code,
                     "manager_first_name": manager_first_name,
                     "manager_last_name": manager_last_name,
                     "manager_email": manager_email,
