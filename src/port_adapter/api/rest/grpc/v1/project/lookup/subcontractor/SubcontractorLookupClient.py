@@ -8,14 +8,14 @@ import grpc
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.model.response.v1.project.lookup.CityLookup import CityLookupDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.CountryLookup import CountryLookupDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.StateLookup import StateLookupDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.SubcontractorCategoryLookup import (
-    SubcontractorCategoryLookupDescriptor,
+from src.port_adapter.api.rest.model.response.v1.project.lookup.subcontractor.City import CityDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.lookup.subcontractor.Country import CountryDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.lookup.subcontractor.State import StateDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.lookup.subcontractor.SubcontractorCategory import (
+    SubcontractorCategoryDescriptor,
 )
-from src.port_adapter.api.rest.model.response.v1.project.lookup.SubcontractorLookup import SubcontractorLookupDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.SubcontractorLookups import SubcontractorLookups
+from src.port_adapter.api.rest.model.response.v1.project.lookup.subcontractor.SubcontractorLookup import SubcontractorLookupDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.lookup.subcontractor.SubcontractorLookups import SubcontractorLookups
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.lookup.subcontractor.subcontractor_lookup_app_service_pb2 import (
@@ -88,10 +88,10 @@ class SubcontractorLookupClient(Client):
             address_two=obj.addressTwo,
             description=obj.description,
             postal_code=obj.postalCode,
-            subcontractor_category=SubcontractorCategoryLookupDescriptor(
+            subcontractor_category=SubcontractorCategoryDescriptor(
                 id=obj.subcontractorCategory.id, name=obj.subcontractorCategory.name
             ),
-            country=CountryLookupDescriptor(id=obj.country.id, name=obj.country.name),
-            state=StateLookupDescriptor(id=obj.state.id, name=obj.state.name),
-            city=CityLookupDescriptor(id=obj.city.id, name=obj.city.name),
+            country=CountryDescriptor(id=obj.country.id, name=obj.country.name),
+            state=StateDescriptor(id=obj.state.id, name=obj.state.name),
+            city=CityDescriptor(id=obj.city.id, name=obj.city.name),
         )

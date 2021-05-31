@@ -5,9 +5,9 @@
 from pydantic import BaseModel
 
 
-class CountryLookup(BaseModel):
+class City(BaseModel):
     id: int
     name: str
 
-class CountryLookupDescriptor(CountryLookup):
+class CityDescriptor(City):
     pass
