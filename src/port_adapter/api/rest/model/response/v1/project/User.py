@@ -19,6 +19,7 @@ class User(BaseModel):
     country_id: Optional[int]
     city_id: Optional[int]
     country_state_name: Optional[str]
+    country_state_iso_code: Optional[str]
     start_date: Optional[int]
 
 

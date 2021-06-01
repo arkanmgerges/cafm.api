@@ -143,5 +143,6 @@ class UserClient(Client):
             country_id=obj.countryId,
             city_id=obj.cityId,
             country_state_name=obj.countryStateName,
+            country_state_iso_code=obj.countryStateIsoCode,
             start_date=obj.startDate,
         )

@@ -150,6 +150,7 @@ class OrganizationClient(Client):
             country_id=obj.countryId,
             city_id=obj.cityId,
             country_state_name=obj.countryStateName,
+            country_state_iso_code=obj.countryStateIsoCode,
             manager_first_name=obj.managerFirstName,
             manager_last_name=obj.managerLastName,
             manager_email=obj.managerEmail,
