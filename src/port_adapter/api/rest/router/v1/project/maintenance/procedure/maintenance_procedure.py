@@ -312,6 +312,31 @@ async def createMaintenanceProcedureOperationParameter(
     if min_value > max_value:
         raise ValueError("Minimum value must be less or equal than maximum value")
 
+    try:
+        client = MaintenanceProcedureOperationClient()
+        maintenanceProcedureOperation = client.maintenanceProcedureOperationById(
+            id=maintenance_procedure_operation_id
+        )
+
+        if (
+            maintenanceProcedureOperation.type
+            == MaintenanceProcedureOperationType.VISUAL.value
+        ):
+            raise ValueError(
+                "Cannot create parameters for maintenance procedure operation of type 'visual'"
+            )
+
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getMaintenanceProcedureOperationById.__module__}.{getMaintenanceProcedureOperationById.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
