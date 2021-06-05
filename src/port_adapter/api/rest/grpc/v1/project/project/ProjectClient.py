@@ -181,6 +181,7 @@ class ProjectClient(Client):
             address_line=obj.addressLine,
             address_line_two=obj.addressLineTwo,
             beneficiary_id=obj.beneficiaryId,
+            postal_code=obj.postalCode,
             start_date=obj.startDate,
             state=obj.state,
             developer_name=obj.developerName,
