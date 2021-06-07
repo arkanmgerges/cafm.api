@@ -174,6 +174,9 @@ async def updateProject(
     developer_address_line_two: str = Body(
         ..., description="The address line two of the developer", embed=True
     ),
+    developer_postal_code: str = Body(
+        ..., description="The postal code of the developer", embed=True
+    ),
     developer_contact: str = Body(
         ..., description="The contact address of the developer", embed=True
     ),
@@ -211,6 +214,7 @@ async def updateProject(
                     "developer_country_id": developer_country_id,
                     "developer_address_line_one": developer_address_line_one,
                     "developer_address_line_two": developer_address_line_two,
+                    "developer_postal_code": developer_postal_code,
                     "developer_contact": developer_contact,
                     "developer_email": developer_email,
                     "developer_phone_number": developer_phone_number,
@@ -267,6 +271,9 @@ async def partialUpdateProject(
     developer_address_line_two: str = Body(
         None, description="Developer address line two", embed=True
     ),
+    developer_postal_code: str = Body(
+        None, description="Developer postal code", embed=True
+    ),
     developer_contact: str = Body(
         None, description="Developer representative", embed=True
     ),
@@ -302,6 +309,7 @@ async def partialUpdateProject(
                     "developer_country_id": developer_country_id,
                     "developer_address_line_one": developer_address_line_one,
                     "developer_address_line_two": developer_address_line_two,
+                    "developer_postal_code": developer_postal_code,
                     "developer_contact": developer_contact,
                     "developer_email": developer_email,
                     "developer_phone_number": developer_phone_number,

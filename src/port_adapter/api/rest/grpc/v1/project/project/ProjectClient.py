@@ -189,6 +189,7 @@ class ProjectClient(Client):
             developer_country_id=obj.developerCountryId,
             developer_address_line_one=obj.developerAddressLineOne,
             developer_address_line_two=obj.developerAddressLineTwo,
+            developer_postal_code=obj.developerPostalCode,
             developer_contact=obj.developerContact,
             developer_email=obj.developerEmail,
             developer_phone_number=obj.developerPhoneNumber,

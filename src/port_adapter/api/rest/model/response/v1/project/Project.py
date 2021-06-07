@@ -22,6 +22,7 @@ class Project(BaseModel):
     developer_country_id: Optional[int]
     developer_address_line_one: Optional[str]
     developer_address_line_two: Optional[str]
+    developer_postal_code: Optional[str]
     developer_contact: Optional[str]
     developer_email: Optional[str]
     developer_phone_number: Optional[str]
