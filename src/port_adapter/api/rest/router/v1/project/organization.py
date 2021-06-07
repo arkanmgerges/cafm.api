@@ -232,6 +232,39 @@ async def partialUpdateOrganization(
     )
     return {"request_id": reqId}
 
+@router.get(path="/by_type/{type}", summary="Get all organizations by type", response_model=Organizations)
+@OpenTelemetry.fastApiTraceOTel
+async def getOrganizations(
+    *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    order: str = Query("", description="e.g. id:asc,email:desc"),
+    type: str = Path(
+        ...,
+        description="Organization type to filter by",
+    ),
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+):
+    try:
+        client = OrganizationClient()
+        orderService = AppDi.instance.get(OrderService)
+        order = orderService.orderStringToListOfDict(order)
+        return client.organizationsByType(
+            type=type, resultFrom=result_from, resultSize=result_size, order=order
+        )
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getOrganizations.__module__}.{getOrganizations.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
 
 @router.get(
     path="/{organization_id}",
