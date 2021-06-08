@@ -16,7 +16,7 @@ from src.port_adapter.api.rest.grpc.v1.identity.permission.PermissionClient impo
 from src.port_adapter.api.rest.grpc.v1.identity.permission_context.PermissionContextClient import (
     PermissionContextClient,
 )
-from src.port_adapter.api.rest.grpc.v1.identity.project.ProjectClient import ProjectClient
+from src.port_adapter.api.rest.grpc.v1.project.project.ProjectClient import ProjectClient
 from src.port_adapter.api.rest.grpc.v1.identity.user_group.UserGroupClient import UserGroupClient
 from src.port_adapter.api.rest.grpc.v1.project.daily_check.procedure.DailyCheckProcedureClient import (
     DailyCheckProcedureClient,
