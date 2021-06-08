@@ -156,6 +156,9 @@ async def updateProject(
     beneficiary_id: str = Body(
         ..., description="The id of the beneficiary", embed=True
     ),
+    postal_code: str = Body(
+        ..., description="The postal code for the project address", embed=True
+    ),
     developer_name: str = Body(
         ..., description="The name of the developer", embed=True
     ),
@@ -170,6 +173,9 @@ async def updateProject(
     ),
     developer_address_line_two: str = Body(
         ..., description="The address line two of the developer", embed=True
+    ),
+    developer_postal_code: str = Body(
+        ..., description="The postal code of the developer", embed=True
     ),
     developer_contact: str = Body(
         ..., description="The contact address of the developer", embed=True
@@ -202,11 +208,13 @@ async def updateProject(
                     "address_line": address_line,
                     "address_line_two": address_line_two,
                     "beneficiary_id": beneficiary_id,
+                    "postal_code": postal_code,
                     "developer_name": developer_name,
                     "developer_city_id": developer_city_id,
                     "developer_country_id": developer_country_id,
                     "developer_address_line_one": developer_address_line_one,
                     "developer_address_line_two": developer_address_line_two,
+                    "developer_postal_code": developer_postal_code,
                     "developer_contact": developer_contact,
                     "developer_email": developer_email,
                     "developer_phone_number": developer_phone_number,
@@ -244,6 +252,9 @@ async def partialUpdateProject(
     beneficiary_id: str = Body(
         None, description="The id of the beneficiary", embed=True
     ),
+    postal_code: str = Body(
+        None, description="The postal code of the project address", embed=True
+    ),
     start_date: int = Body(
         None, description="The start date of the project", embed=True
     ),
@@ -259,6 +270,9 @@ async def partialUpdateProject(
     ),
     developer_address_line_two: str = Body(
         None, description="Developer address line two", embed=True
+    ),
+    developer_postal_code: str = Body(
+        None, description="Developer postal code", embed=True
     ),
     developer_contact: str = Body(
         None, description="Developer representative", embed=True
@@ -287,6 +301,7 @@ async def partialUpdateProject(
                     "address_line": address_line,
                     "address_line_two": address_line_two,
                     "beneficiary_id": beneficiary_id,
+                    "postal_code": postal_code,
                     "start_date": start_date,
                     # "state": state,
                     "developer_name": developer_name,
@@ -294,6 +309,7 @@ async def partialUpdateProject(
                     "developer_country_id": developer_country_id,
                     "developer_address_line_one": developer_address_line_one,
                     "developer_address_line_two": developer_address_line_two,
+                    "developer_postal_code": developer_postal_code,
                     "developer_contact": developer_contact,
                     "developer_email": developer_email,
                     "developer_phone_number": developer_phone_number,
@@ -437,7 +453,7 @@ async def createBuilding(
     return {"request_id": reqId}
 
 
-"""  
+"""
 c4model|cb|api:Component(api__project_project_py__deleteBuilding, "Delete Building", "http(s)", "")
 c4model:Rel(api__project_project_py__deleteBuilding, project__messaging_project_command_handler__DeleteBuildingHandler, "CommonCommandConstant.DELETE_BUILDING.value", "message")
 """
@@ -476,7 +492,7 @@ async def deleteBuilding(
     return {"request_id": reqId}
 
 
-"""  
+"""
 c4model|cb|api:Component(api__project_project_py__updateBuilding, "Update Building", "http(s)", "")
 c4model:Rel(api__project_project_py__updateBuilding, project__messaging_project_command_handler__UpdateBuildingHandler, "CommonCommandConstant.UPDATE_BUILDING.value", "message")
 """
@@ -654,7 +670,7 @@ async def createBuildingLevel(
     return {"request_id": reqId}
 
 
-"""  
+"""
 c4model|cb|api:Component(api__project_project_py__deleteBuildingLevel, "Delete Building Level", "http(s)", "")
 c4model:Rel(api__project_project_py__deleteBuildingLevel, project__messaging_project_command_handler__DeleteBuildingLevelHandler, "CommonCommandConstant.DELETE_BUILDING_LEVEL.value", "message")
 """
@@ -695,7 +711,7 @@ async def deleteBuildingLevel(
     return {"request_id": reqId}
 
 
-"""  
+"""
 c4model|cb|api:Component(api__project_project_py__updateBuildingLevel, "Update Building Level", "http(s)", "")
 c4model:Rel(api__project_project_py__updateBuildingLevel, project__messaging_project_command_handler__UpdateBuildingLevelHandler, "CommonCommandConstant.UPDATE_BUILDING_LEVEL.value", "message")
 """
@@ -741,7 +757,7 @@ async def updateBuildingLevel(
     return {"request_id": reqId}
 
 
-"""  
+"""
 c4model|cb|api:Component(api__project_project_py__linkBuildingLevelToBuilding, "Link Building Level to Building", "http(s)", "")
 c4model:Rel(api__project_project_py__linkBuildingLevelToBuilding, project__messaging_project_command_handler__LinkBuildingLevelToBuildingHandler, "CommonCommandConstant.LINK_BUILDING_LEVEL_TO_BUILDING.value", "message")
 """
@@ -782,7 +798,7 @@ async def linkBuildingLevelToBuilding(
     return {"request_id": reqId}
 
 
-"""  
+"""
 c4model|cb|api:Component(api__project_project_py__unlinkBuildingLevelFromBuilding, "Unlink Building Level from Building", "http(s)", "")
 c4model:Rel(api__project_project_py__unlinkBuildingLevelFromBuilding, project__messaging_project_command_handler__UnlinkBuildingLevelFromBuildingHandler, "CommonCommandConstant.UNLINK_BUILDING_LEVEL_FROM_BUILDING.value", "message")
 """
@@ -966,7 +982,7 @@ async def createBuildingLevelRoom(
     return {"request_id": reqId}
 
 
-"""  
+"""
 c4model|cb|api:Component(api__project_project_py__deleteBuildingLevelRoom, "Delete Building Level Room", "http(s)", "")
 c4model:Rel(api__project_project_py__deleteBuildingLevelRoom, project__messaging_project_command_handler__DeleteBuildingLevelRoomHandler, "CommonCommandConstant.DELETE_BUILDING_LEVEL_ROOM.value", "message")
 """
@@ -1009,7 +1025,7 @@ async def deleteBuildingLevelRoom(
     return {"request_id": reqId}
 
 
-"""  
+"""
 c4model|cb|api:Component(api__project_project_py__updateBuildingLevelRoom, "Update Building Level Room", "http(s)", "")
 c4model:Rel(api__project_project_py__updateBuildingLevelRoom, project__messaging_project_command_handler__UpdateBuildingLevelRoomHandler, "CommonCommandConstant.UPDATE_BUILDING_LEVEL_ROOM.value", "message")
 """
@@ -1087,7 +1103,7 @@ async def updateBuildingLevelRoom(
 #     return {"request_id": reqId}
 
 
-"""  
+"""
 c4model|cb|api:Component(api__project_project_py__updateBuildingLevelRoomIndex, "Update Building Level Room Index", "http(s)", "")
 c4model:Rel(api__project_project_py__updateBuildingLevelRoomIndex, project__messaging_project_command_handler__UpdateBuildingLevelRoomIndexHandler, "CommonCommandConstant.UPDATE_BUILDING_LEVEL_ROOM_INDEX.value", "message")
 """
@@ -1135,7 +1151,7 @@ async def updateBuildingLevelRoomIndex(
 # endregion
 
 
-"""  
+"""
 c4model|cb|api:Component(api__project_project_py__changeProjectState, "Change Project State", "http(s)", "")
 c4model:Rel(api__project_project_py__changeProjectState, project__messaging_project_command_handler__ChangeProjectStateHandler, "CommonCommandConstant.CHANGE_PROJECT_STATE.value", "message")
 """
