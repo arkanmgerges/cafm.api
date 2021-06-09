@@ -46,7 +46,7 @@ class DailyCheckProcedureClient(Client):
             try:
                 request = DailyCheckProcedureAppService_newIdRequest()
                 response: DailyCheckProcedureAppService_newIdResponse = (
-                    stub.newId.with_call(
+                    stub.new_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -85,7 +85,7 @@ class DailyCheckProcedureClient(Client):
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: DailyCheckProcedureAppService_dailyCheckProceduresResponse = stub.dailyCheckProcedures.with_call(
+                response: DailyCheckProcedureAppService_dailyCheckProceduresResponse = stub.daily_check_procedures.with_call(
                     request,
                     metadata=(
                         ("token", self.token),

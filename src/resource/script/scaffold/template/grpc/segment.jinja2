@@ -30,15 +30,15 @@ from src.resource.proto._generated.{{model.microservice}}.{{model.name}}_app_ser
 
     @OpenTelemetry.grpcTraceOTel
     def {{ lowerCamelModelName | pluralize }}By{{foreignModelName}}Id(self, {{lowerForeignModelName}}Id: str = None, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> {{ className | pluralize }}:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = {{ className }}AppServiceStub(channel)
             try:
                 logger.debug(
                     f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName | pluralize }}By{{foreignModelName}}Id.__qualname__}] - grpc call to retrieve {{ lowerCamelModelName | pluralize }} from server {self._server}:{self._port}')
                 request = {{ className }}AppService_{{ lowerCamelModelName | pluralize }}By{{foreignModelName}}IdRequest({{lowerForeignModelName}}Id={{lowerForeignModelName}}Id, resultFrom=resultFrom, resultSize=resultSize)
-                [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
-                response: {{ className }}AppService_{{ lowerCamelModelName | pluralize }}By{{foreignModelName}}IdResponse = stub.{{ lowerCamelModelName | pluralize }}By{{foreignModelName}}Id.with_call(
+                [request.orders.add(order_by=o["orderBy"], direction=o["direction"]) for o in orders]
+                response: {{ className }}AppService_{{ lowerCamelModelName | pluralize }}By{{foreignModelName}}IdResponse = stub.{{ model.name | pluralize }}_by_{{segmentItem.foreign.model.name}}_id.with_call(
                     request,
                     metadata=(('token', self.token), (
                         'opentel',
@@ -48,8 +48,8 @@ from src.resource.proto._generated.{{model.microservice}}.{{model.name}}_app_ser
                     f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName | pluralize }}By{{foreignModelName}}Id.__qualname__}] - grpc response: {response}')
 
                 return {{ className | pluralize }}({{ model.name | pluralize }}=[self._descriptorByObject(obj={{ lowerCamelModelName }}) for {{ lowerCamelModelName }} in
-                                                    response[0].{{ lowerCamelModelName | pluralize }}],
-                                     total_item_count=response[0].totalItemCount)
+                                                    response[0].{{ model.name | pluralize }}],
+                                     total_item_count=response[0].total_item_count)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e

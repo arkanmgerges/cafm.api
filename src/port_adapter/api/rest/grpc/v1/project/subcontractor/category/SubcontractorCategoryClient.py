@@ -44,7 +44,7 @@ class SubcontractorCategoryClient(Client):
             try:
                 request = SubcontractorCategoryAppService_newIdRequest()
                 response: SubcontractorCategoryAppService_newIdResponse = (
-                    stub.newId.with_call(
+                    stub.new_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -78,14 +78,14 @@ class SubcontractorCategoryClient(Client):
                 )
                 request = (
                     SubcontractorCategoryAppService_subcontractorCategoriesRequest(
-                        resultFrom=resultFrom, resultSize=resultSize
+                        result_from=resultFrom, result_size=resultSize
                     )
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: SubcontractorCategoryAppService_subcontractorCategoriesResponse = stub.subcontractorCategories.with_call(
+                response: SubcontractorCategoryAppService_subcontractorCategoriesResponse = stub.subcontractor_categories.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -104,9 +104,9 @@ class SubcontractorCategoryClient(Client):
                 return SubcontractorCategories(
                     subcontractor_categories=[
                         self._descriptorByObject(obj=subcontractorCategory)
-                        for subcontractorCategory in response[0].subcontractorCategories
+                        for subcontractorCategory in response[0].subcontractor_categories
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -120,7 +120,7 @@ class SubcontractorCategoryClient(Client):
                 logger.debug(
                     f"[{SubcontractorCategoryClient.subcontractorCategoryById.__qualname__}] - grpc call to retrieve subcontractorCategory with subcontractorCategoryId: {id} from server {self._server}:{self._port}"
                 )
-                response: SubcontractorCategoryAppService_subcontractorCategoryByIdResponse = stub.subcontractorCategoryById.with_call(
+                response: SubcontractorCategoryAppService_subcontractorCategoryByIdResponse = stub.subcontractor_category_by_id.with_call(
                     SubcontractorCategoryAppService_subcontractorCategoryByIdRequest(
                         id=id
                     ),
@@ -137,7 +137,7 @@ class SubcontractorCategoryClient(Client):
                 logger.debug(
                     f"[{SubcontractorCategoryClient.subcontractorCategoryById.__qualname__}] - grpc response: {response}"
                 )
-                subcontractorCategory = response[0].subcontractorCategory
+                subcontractorCategory = response[0].subcontractor_category
                 return self._descriptorByObject(obj=subcontractorCategory)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

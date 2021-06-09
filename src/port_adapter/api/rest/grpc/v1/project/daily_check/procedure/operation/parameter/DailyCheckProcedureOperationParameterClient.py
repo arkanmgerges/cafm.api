@@ -49,7 +49,7 @@ class DailyCheckProcedureOperationParameterClient(Client):
             stub = DailyCheckProcedureOperationParameterAppServiceStub(channel)
             try:
                 request = DailyCheckProcedureOperationParameterAppService_newIdRequest()
-                response: DailyCheckProcedureOperationParameterAppService_newIdResponse = stub.newId.with_call(
+                response: DailyCheckProcedureOperationParameterAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -81,13 +81,13 @@ class DailyCheckProcedureOperationParameterClient(Client):
                     f"[{DailyCheckProcedureOperationParameterClient.dailyCheckProcedureOperationParameters.__qualname__}] - grpc call to retrieve dailyCheckProcedureOperationParameters from server {self._server}:{self._port}"
                 )
                 request = DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParametersRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParametersResponse = stub.dailyCheckProcedureOperationParameters.with_call(
+                response: DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParametersResponse = stub.daily_check_procedure_operation_parameters.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -110,9 +110,9 @@ class DailyCheckProcedureOperationParameterClient(Client):
                         )
                         for dailyCheckProcedureOperationParameter in response[
                             0
-                        ].dailyCheckProcedureOperationParameters
+                        ].daily_check_procedure_operation_parameters
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -128,7 +128,7 @@ class DailyCheckProcedureOperationParameterClient(Client):
                 logger.debug(
                     f"[{DailyCheckProcedureOperationParameterClient.dailyCheckProcedureOperationParameterById.__qualname__}] - grpc call to retrieve dailyCheckProcedureOperationParameter with dailyCheckProcedureOperationParameterId: {id} from server {self._server}:{self._port}"
                 )
-                response: DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParameterByIdResponse = stub.dailyCheckProcedureOperationParameterById.with_call(
+                response: DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParameterByIdResponse = stub.daily_check_procedure_operation_parameter_by_id.with_call(
                     DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParameterByIdRequest(
                         id=id
                     ),
@@ -147,7 +147,7 @@ class DailyCheckProcedureOperationParameterClient(Client):
                 )
                 dailyCheckProcedureOperationParameter = response[
                     0
-                ].dailyCheckProcedureOperationParameter
+                ].daily_check_procedure_operation_parameter
                 return self._descriptorByObject(
                     obj=dailyCheckProcedureOperationParameter
                 )
@@ -171,15 +171,15 @@ class DailyCheckProcedureOperationParameterClient(Client):
                     f"[{DailyCheckProcedureOperationParameterClient.dailyCheckProcedureOperationParameters.__qualname__}] - grpc call to retrieve dailyCheckProcedureOperationParameters from server {self._server}:{self._port}"
                 )
                 request = DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParametersByDailyCheckProcedureOperationIdRequest(
-                    dailyCheckProcedureOperationId=dailyCheckProcedureOperationId,
-                    resultFrom=resultFrom,
-                    resultSize=resultSize,
+                    daily_check_procedure_operation_id=dailyCheckProcedureOperationId,
+                    result_from=resultFrom,
+                    result_size=resultSize,
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParametersByDailyCheckProcedureOperationIdResponse = stub.dailyCheckProcedureOperationParametersByDailyCheckProcedureOperationId.with_call(
+                response: DailyCheckProcedureOperationParameterAppService_dailyCheckProcedureOperationParametersByDailyCheckProcedureOperationIdResponse = stub.daily_check_procedure_operation_parameters_by_daily_check_procedure_operation_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -202,9 +202,9 @@ class DailyCheckProcedureOperationParameterClient(Client):
                         )
                         for dailyCheckProcedureOperationParameter in response[
                             0
-                        ].dailyCheckProcedureOperationParameters
+                        ].daily_check_procedure_operation_parameters
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -216,8 +216,8 @@ class DailyCheckProcedureOperationParameterClient(Client):
         return DailyCheckProcedureOperationParameterDescriptor(
             id=obj.id,
             name=obj.name,
-            unit_id=obj.unitId,
-            daily_check_procedure_operation_id=obj.dailyCheckProcedureOperationId,
-            min_value=float(obj.minValue),
-            max_value=float(obj.maxValue),
+            unit_id=obj.unit_id,
+            daily_check_procedure_operation_id=obj.daily_check_procedure_operation_id,
+            min_value=float(obj.min_value),
+            max_value=float(obj.max_value),
         )

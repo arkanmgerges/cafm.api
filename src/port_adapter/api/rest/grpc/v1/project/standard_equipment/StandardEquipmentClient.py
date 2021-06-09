@@ -43,7 +43,7 @@ class StandardEquipmentClient(Client):
             try:
                 request = StandardEquipmentAppService_newIdRequest()
                 response: StandardEquipmentAppService_newIdResponse = (
-                    stub.newId.with_call(
+                    stub.new_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -76,13 +76,13 @@ class StandardEquipmentClient(Client):
                     f"[{StandardEquipmentClient.standardEquipments.__qualname__}] - grpc call to retrieve standardEquipments from server {self._server}:{self._port}"
                 )
                 request = StandardEquipmentAppService_standardEquipmentsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: StandardEquipmentAppService_standardEquipmentsResponse = stub.standardEquipments.with_call(
+                response: StandardEquipmentAppService_standardEquipmentsResponse = stub.standard_equipments.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -101,9 +101,9 @@ class StandardEquipmentClient(Client):
                 return StandardEquipments(
                     standard_equipments=[
                         self._descriptorByObject(obj=standardEquipment)
-                        for standardEquipment in response[0].standardEquipments
+                        for standardEquipment in response[0].standard_equipments
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -117,7 +117,7 @@ class StandardEquipmentClient(Client):
                 logger.debug(
                     f"[{StandardEquipmentClient.standardEquipmentById.__qualname__}] - grpc call to retrieve standardEquipment with standardEquipmentId: {id} from server {self._server}:{self._port}"
                 )
-                response: StandardEquipmentAppService_standardEquipmentByIdResponse = stub.standardEquipmentById.with_call(
+                response: StandardEquipmentAppService_standardEquipmentByIdResponse = stub.standard_equipment_by_id.with_call(
                     StandardEquipmentAppService_standardEquipmentByIdRequest(id=id),
                     metadata=(
                         ("token", self.token),
@@ -132,7 +132,7 @@ class StandardEquipmentClient(Client):
                 logger.debug(
                     f"[{StandardEquipmentClient.standardEquipmentById.__qualname__}] - grpc response: {response}"
                 )
-                standardEquipment = response[0].standardEquipment
+                standardEquipment = response[0].standard_equipment
                 return self._descriptorByObject(obj=standardEquipment)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -142,8 +142,8 @@ class StandardEquipmentClient(Client):
         return StandardEquipmentDescriptor(
             id=obj.id,
             name=obj.name,
-            standard_equipment_category_id=obj.standardEquipmentCategoryId,
-            standard_equipment_category_group_id=obj.standardEquipmentCategoryGroupId,
-            manufacturer_id=obj.manufacturerId,
-            equipment_model_id=obj.equipmentModelId,
+            standard_equipment_category_id=obj.standard_equipment_category_id,
+            standard_equipment_category_group_id=obj.standard_equipment_category_group_id,
+            manufacturer_id=obj.manufacturer_id,
+            equipment_model_id=obj.equipment_model_id,
         )

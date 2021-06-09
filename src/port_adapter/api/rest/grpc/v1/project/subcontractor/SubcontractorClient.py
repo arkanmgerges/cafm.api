@@ -51,7 +51,7 @@ class SubcontractorClient(Client):
             stub = SubcontractorAppServiceStub(channel)
             try:
                 request = SubcontractorAppService_newIdRequest()
-                response: SubcontractorAppService_newIdResponse = stub.newId.with_call(
+                response: SubcontractorAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -83,7 +83,7 @@ class SubcontractorClient(Client):
                     f"[{SubcontractorClient.subcontractors.__qualname__}] - grpc call to retrieve subcontractors from server {self._server}:{self._port}"
                 )
                 request = SubcontractorAppService_subcontractorsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
@@ -112,7 +112,7 @@ class SubcontractorClient(Client):
                         self._descriptorByObject(obj=subcontractor)
                         for subcontractor in response[0].subcontractors
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -127,7 +127,7 @@ class SubcontractorClient(Client):
                     f"[{SubcontractorClient.subcontractorById.__qualname__}] - grpc call to retrieve subcontractor with subcontractorId: {id} from server {self._server}:{self._port}"
                 )
                 response: SubcontractorAppService_subcontractorByIdResponse = (
-                    stub.subcontractorById.with_call(
+                    stub.subcontractor_by_id.with_call(
                         SubcontractorAppService_subcontractorByIdRequest(id=id),
                         metadata=(
                             ("token", self.token),
@@ -165,15 +165,15 @@ class SubcontractorClient(Client):
                     f"[{SubcontractorClient.subcontractorsByOrganizationId.__qualname__}] - grpc call to retrieve subcontractors by organization id from server {self._server}:{self._port}"
                 )
                 request = SubcontractorAppService_subcontractorsByOrganizationIdRequest(
-                    organizationId=organizationId,
-                    resultFrom=resultFrom,
-                    resultSize=resultSize,
+                    organization_id=organizationId,
+                    result_from=resultFrom,
+                    result_size=resultSize,
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: SubcontractorAppService_subcontractorsByOrganizationIdResponse = stub.subcontractorsByOrganizationId.with_call(
+                response: SubcontractorAppService_subcontractorsByOrganizationIdResponse = stub.subcontractors_by_organization_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -194,7 +194,7 @@ class SubcontractorClient(Client):
                         self._descriptorByObject(obj=subcontractor)
                         for subcontractor in response[0].subcontractors
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -216,15 +216,15 @@ class SubcontractorClient(Client):
                     f"[{SubcontractorClient.subcontractorsBySubcontractorCategoryId.__qualname__}] - grpc call to retrieve subcontractors from server {self._server}:{self._port}"
                 )
                 request = SubcontractorAppService_subcontractorsBySubcontractorCategoryIdRequest(
-                    subcontractorCategoryId=subcontractorCategoryId,
-                    resultFrom=resultFrom,
-                    resultSize=resultSize,
+                    subcontractor_category_id=subcontractorCategoryId,
+                    result_from=resultFrom,
+                    result_size=resultSize,
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: SubcontractorAppService_subcontractorsBySubcontractorCategoryIdResponse = stub.subcontractorsBySubcontractorCategoryId.with_call(
+                response: SubcontractorAppService_subcontractorsBySubcontractorCategoryIdResponse = stub.subcontractors_by_subcontractor_category_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -245,7 +245,7 @@ class SubcontractorClient(Client):
                         self._descriptorByObject(obj=subcontractor)
                         for subcontractor in response[0].subcontractors
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -254,17 +254,17 @@ class SubcontractorClient(Client):
     def _descriptorByObject(self, obj: Any) -> SubcontractorDescriptor:
         return SubcontractorDescriptor(
             id=obj.id,
-            company_name=obj.companyName,
-            website_url=obj.websiteUrl,
-            contact_person=obj.contactPerson,
+            company_name=obj.company_name,
+            website_url=obj.website_url,
+            contact_person=obj.contact_person,
             email=obj.email,
-            phone_number=obj.phoneNumber,
-            address_one=obj.addressOne,
-            address_two=obj.addressTwo,
-            subcontractor_category_id=obj.subcontractorCategoryId,
+            phone_number=obj.phone_number,
+            address_one=obj.address_one,
+            address_two=obj.address_two,
+            subcontractor_category_id=obj.subcontractor_category_id,
             description=obj.description,
-            country_id=obj.countryId,
-            city_id=obj.cityId,
-            state_id=obj.stateId,
-            postal_code=obj.postalCode,
+            country_id=obj.country_id,
+            city_id=obj.city_id,
+            state_id=obj.state_id,
+            postal_code=obj.postal_code,
         )

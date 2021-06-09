@@ -49,7 +49,7 @@ class DailyCheckProcedureOperationClient(Client):
             stub = DailyCheckProcedureOperationAppServiceStub(channel)
             try:
                 request = DailyCheckProcedureOperationAppService_newIdRequest()
-                response: DailyCheckProcedureOperationAppService_newIdResponse = stub.newId.with_call(
+                response: DailyCheckProcedureOperationAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -81,13 +81,13 @@ class DailyCheckProcedureOperationClient(Client):
                     f"[{DailyCheckProcedureOperationClient.dailyCheckProcedureOperations.__qualname__}] - grpc call to retrieve dailyCheckProcedureOperations from server {self._server}:{self._port}"
                 )
                 request = DailyCheckProcedureOperationAppService_dailyCheckProcedureOperationsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: DailyCheckProcedureOperationAppService_dailyCheckProcedureOperationsResponse = stub.dailyCheckProcedureOperations.with_call(
+                response: DailyCheckProcedureOperationAppService_dailyCheckProcedureOperationsResponse = stub.daily_check_procedure_operations.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -108,9 +108,9 @@ class DailyCheckProcedureOperationClient(Client):
                         self._descriptorByObject(obj=dailyCheckProcedureOperation)
                         for dailyCheckProcedureOperation in response[
                             0
-                        ].dailyCheckProcedureOperations
+                        ].daily_check_procedure_operations
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -126,7 +126,7 @@ class DailyCheckProcedureOperationClient(Client):
                 logger.debug(
                     f"[{DailyCheckProcedureOperationClient.dailyCheckProcedureOperationById.__qualname__}] - grpc call to retrieve dailyCheckProcedureOperation with dailyCheckProcedureOperationId: {id} from server {self._server}:{self._port}"
                 )
-                response: DailyCheckProcedureOperationAppService_dailyCheckProcedureOperationByIdResponse = stub.dailyCheckProcedureOperationById.with_call(
+                response: DailyCheckProcedureOperationAppService_dailyCheckProcedureOperationByIdResponse = stub.daily_check_procedure_operation_by_id.with_call(
                     DailyCheckProcedureOperationAppService_dailyCheckProcedureOperationByIdRequest(
                         id=id
                     ),
@@ -165,15 +165,15 @@ class DailyCheckProcedureOperationClient(Client):
                     f"[{DailyCheckProcedureOperationClient.dailyCheckProcedureOperations.__qualname__}] - grpc call to retrieve dailyCheckProcedureOperations from server {self._server}:{self._port}"
                 )
                 request = DailyCheckProcedureOperationAppService_dailyCheckProcedureOperationsByDailyCheckProcedureIdRequest(
-                    dailyCheckProcedureId=dailyCheckProcedureId,
-                    resultFrom=resultFrom,
-                    resultSize=resultSize,
+                    daily_check_procedure_id=dailyCheckProcedureId,
+                    result_from=resultFrom,
+                    result_size=resultSize,
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: DailyCheckProcedureOperationAppService_dailyCheckProcedureOperationsByDailyCheckProcedureIdResponse = stub.dailyCheckProcedureOperationsByDailyCheckProcedureId.with_call(
+                response: DailyCheckProcedureOperationAppService_dailyCheckProcedureOperationsByDailyCheckProcedureIdResponse = stub.daily_check_procedure_operations_by_daily_check_procedure_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -194,9 +194,9 @@ class DailyCheckProcedureOperationClient(Client):
                         self._descriptorByObject(obj=dailyCheckProcedureOperation)
                         for dailyCheckProcedureOperation in response[
                             0
-                        ].dailyCheckProcedureOperations
+                        ].daily_check_procedure_operations
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -208,5 +208,5 @@ class DailyCheckProcedureOperationClient(Client):
             name=obj.name,
             description=obj.description,
             type=obj.type,
-            daily_check_procedure_id=obj.dailyCheckProcedureId,
+            daily_check_procedure_id=obj.daily_check_procedure_id,
         )

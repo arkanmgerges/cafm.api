@@ -44,7 +44,7 @@ class EquipmentCategoryGroupClient(Client):
             try:
                 request = EquipmentCategoryGroupAppService_newIdRequest()
                 response: EquipmentCategoryGroupAppService_newIdResponse = (
-                    stub.newId.with_call(
+                    stub.new_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -78,14 +78,14 @@ class EquipmentCategoryGroupClient(Client):
                 )
                 request = (
                     EquipmentCategoryGroupAppService_equipmentCategoryGroupsRequest(
-                        resultFrom=resultFrom, resultSize=resultSize
+                        result_from=resultFrom, result_size=resultSize
                     )
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: EquipmentCategoryGroupAppService_equipmentCategoryGroupsResponse = stub.equipmentCategoryGroups.with_call(
+                response: EquipmentCategoryGroupAppService_equipmentCategoryGroupsResponse = stub.equipment_category_groups.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -106,9 +106,9 @@ class EquipmentCategoryGroupClient(Client):
                         self._descriptorByObject(obj=equipmentCategoryGroup)
                         for equipmentCategoryGroup in response[
                             0
-                        ].equipmentCategoryGroups
+                        ].equipment_category_groups
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -122,7 +122,7 @@ class EquipmentCategoryGroupClient(Client):
                 logger.debug(
                     f"[{EquipmentCategoryGroupClient.equipmentCategoryGroupById.__qualname__}] - grpc call to retrieve equipmentCategoryGroup with equipmentCategoryGroupId: {id} from server {self._server}:{self._port}"
                 )
-                response: EquipmentCategoryGroupAppService_equipmentCategoryGroupByIdResponse = stub.equipmentCategoryGroupById.with_call(
+                response: EquipmentCategoryGroupAppService_equipmentCategoryGroupByIdResponse = stub.equipment_category_group_by_id.with_call(
                     EquipmentCategoryGroupAppService_equipmentCategoryGroupByIdRequest(
                         id=id
                     ),
@@ -139,7 +139,7 @@ class EquipmentCategoryGroupClient(Client):
                 logger.debug(
                     f"[{EquipmentCategoryGroupClient.equipmentCategoryGroupById.__qualname__}] - grpc response: {response}"
                 )
-                equipmentCategoryGroup = response[0].equipmentCategoryGroup
+                equipmentCategoryGroup = response[0].equipment_category_group
                 return self._descriptorByObject(obj=equipmentCategoryGroup)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -149,5 +149,5 @@ class EquipmentCategoryGroupClient(Client):
         return EquipmentCategoryGroupDescriptor(
             id=obj.id,
             name=obj.name,
-            equipment_category_id=obj.equipmentCategoryId,
+            equipment_category_id=obj.equipment_category_id,
         )

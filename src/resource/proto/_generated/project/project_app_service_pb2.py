@@ -24,7 +24,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n!project/project_app_service.proto\x12\x14\x63\x61\x66m.project.project\x1a\x15project/project.proto\x1a\x16project/building.proto\x1a\x1cproject/building_level.proto\x1a!project/building_level_room.proto\x1a\x0border.proto\"2\n$ProjectAppService_projectByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\"W\n%ProjectAppService_projectByIdResponse\x12.\n\x07project\x18\x01 \x01(\x0b\x32\x1d.cafm.project.project.Project\"t\n!ProjectAppService_projectsRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\"m\n\"ProjectAppService_projectsResponse\x12/\n\x08projects\x18\x01 \x03(\x0b\x32\x1d.cafm.project.project.Project\x12\x16\n\x0etotalItemCount\x18\x02 \x01(\x05\"\x99\x01\n\"ProjectAppService_buildingsRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\x12\x0f\n\x07include\x18\x04 \x03(\t\x12\x11\n\tprojectId\x18\x05 \x01(\t\"p\n#ProjectAppService_buildingsResponse\x12\x31\n\tbuildings\x18\x01 \x03(\x0b\x32\x1e.cafm.project.project.Building\x12\x16\n\x0etotalItemCount\x18\x02 \x01(\x05\"D\n%ProjectAppService_buildingByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07include\x18\x02 \x03(\t\"Z\n&ProjectAppService_buildingByIdResponse\x12\x30\n\x08\x62uilding\x18\x01 \x01(\x0b\x32\x1e.cafm.project.project.Building\"\x9f\x01\n\'ProjectAppService_buildingLevelsRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\x12\x0f\n\x07include\x18\x04 \x03(\t\x12\x12\n\nbuildingId\x18\x05 \x01(\t\"\x7f\n(ProjectAppService_buildingLevelsResponse\x12;\n\x0e\x62uildingLevels\x18\x01 \x03(\x0b\x32#.cafm.project.project.BuildingLevel\x12\x16\n\x0etotalItemCount\x18\x02 \x01(\x05\"I\n*ProjectAppService_buildingLevelByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07include\x18\x02 \x03(\t\"i\n+ProjectAppService_buildingLevelByIdResponse\x12:\n\rbuildingLevel\x18\x01 \x01(\x0b\x32#.cafm.project.project.BuildingLevel\"\x97\x01\n+ProjectAppService_buildingLevelRoomsRequest\x12\x12\n\nresultFrom\x18\x01 \x01(\x05\x12\x12\n\nresultSize\x18\x02 \x01(\x05\x12\'\n\x05order\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\x12\x17\n\x0f\x62uildingLevelId\x18\x04 \x01(\t\"\xa4\x01\n,ProjectAppService_buildingLevelRoomsResponse\x12\x43\n\x12\x62uildingLevelRooms\x18\x01 \x03(\x0b\x32\'.cafm.project.project.BuildingLevelRoom\x12\x16\n\x0etotalItemCount\x18\x02 \x01(\x05\x12\x17\n\x0f\x62uildingLevelId\x18\x03 \x01(\t\"<\n.ProjectAppService_buildingLevelRoomByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\"u\n/ProjectAppService_buildingLevelRoomByIdResponse\x12\x42\n\x11\x62uildingLevelRoom\x18\x01 \x01(\x0b\x32\'.cafm.project.project.BuildingLevelRoom\" \n\x1eProjectAppService_newIdRequest\"-\n\x1fProjectAppService_newIdResponse\x12\n\n\x02id\x18\x01 \x01(\t\"(\n&ProjectAppService_newBuildingIdRequest\"5\n\'ProjectAppService_newBuildingIdResponse\x12\n\n\x02id\x18\x01 \x01(\t\"-\n+ProjectAppService_newBuildingLevelIdRequest\":\n,ProjectAppService_newBuildingLevelIdResponse\x12\n\n\x02id\x18\x01 \x01(\t\"1\n/ProjectAppService_newBuildingLevelRoomIdRequest\">\n0ProjectAppService_newBuildingLevelRoomIdResponse\x12\n\n\x02id\x18\x01 \x01(\t2\x81\x0e\n\x11ProjectAppService\x12\x88\x01\n\x0bprojectById\x12:.cafm.project.project.ProjectAppService_projectByIdRequest\x1a;.cafm.project.project.ProjectAppService_projectByIdResponse\"\x00\x12\x7f\n\x08projects\x12\x37.cafm.project.project.ProjectAppService_projectsRequest\x1a\x38.cafm.project.project.ProjectAppService_projectsResponse\"\x00\x12\x82\x01\n\tbuildings\x12\x38.cafm.project.project.ProjectAppService_buildingsRequest\x1a\x39.cafm.project.project.ProjectAppService_buildingsResponse\"\x00\x12\x8b\x01\n\x0c\x62uildingById\x12;.cafm.project.project.ProjectAppService_buildingByIdRequest\x1a<.cafm.project.project.ProjectAppService_buildingByIdResponse\"\x00\x12\x91\x01\n\x0e\x62uildingLevels\x12=.cafm.project.project.ProjectAppService_buildingLevelsRequest\x1a>.cafm.project.project.ProjectAppService_buildingLevelsResponse\"\x00\x12\x9a\x01\n\x11\x62uildingLevelById\x12@.cafm.project.project.ProjectAppService_buildingLevelByIdRequest\x1a\x41.cafm.project.project.ProjectAppService_buildingLevelByIdResponse\"\x00\x12\x9d\x01\n\x12\x62uildingLevelRooms\x12\x41.cafm.project.project.ProjectAppService_buildingLevelRoomsRequest\x1a\x42.cafm.project.project.ProjectAppService_buildingLevelRoomsResponse\"\x00\x12\xa6\x01\n\x15\x62uildingLevelRoomById\x12\x44.cafm.project.project.ProjectAppService_buildingLevelRoomByIdRequest\x1a\x45.cafm.project.project.ProjectAppService_buildingLevelRoomByIdResponse\"\x00\x12v\n\x05newId\x12\x34.cafm.project.project.ProjectAppService_newIdRequest\x1a\x35.cafm.project.project.ProjectAppService_newIdResponse\"\x00\x12\x8e\x01\n\rnewBuildingId\x12<.cafm.project.project.ProjectAppService_newBuildingIdRequest\x1a=.cafm.project.project.ProjectAppService_newBuildingIdResponse\"\x00\x12\x9d\x01\n\x12newBuildingLevelId\x12\x41.cafm.project.project.ProjectAppService_newBuildingLevelIdRequest\x1a\x42.cafm.project.project.ProjectAppService_newBuildingLevelIdResponse\"\x00\x12\xa9\x01\n\x16newBuildingLevelRoomId\x12\x45.cafm.project.project.ProjectAppService_newBuildingLevelRoomIdRequest\x1a\x46.cafm.project.project.ProjectAppService_newBuildingLevelRoomIdResponse\"\x00\x62\x06proto3'
+  serialized_pb=b'\n!project/project_app_service.proto\x12\x14\x63\x61\x66m.project.project\x1a\x15project/project.proto\x1a\x16project/building.proto\x1a\x1cproject/building_level.proto\x1a!project/building_level_room.proto\x1a\x0border.proto\"2\n$ProjectAppService_projectByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\"W\n%ProjectAppService_projectByIdResponse\x12.\n\x07project\x18\x01 \x01(\x0b\x32\x1d.cafm.project.project.Project\"w\n!ProjectAppService_projectsRequest\x12\x13\n\x0bresult_from\x18\x01 \x01(\x05\x12\x13\n\x0bresult_size\x18\x02 \x01(\x05\x12(\n\x06orders\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\"o\n\"ProjectAppService_projectsResponse\x12/\n\x08projects\x18\x01 \x03(\x0b\x32\x1d.cafm.project.project.Project\x12\x18\n\x10total_item_count\x18\x02 \x01(\x05\"\x9f\x01\n1ProjectAppService_projectsByOrganizationIdRequest\x12\x17\n\x0forganization_id\x18\x01 \x01(\t\x12\x13\n\x0bresult_from\x18\x02 \x01(\x05\x12\x13\n\x0bresult_size\x18\x03 \x01(\x05\x12\'\n\x05order\x18\x04 \x03(\x0b\x32\x18.cafm.common.order.Order\"\x7f\n2ProjectAppService_projectsByOrganizationIdResponse\x12/\n\x08projects\x18\x01 \x03(\x0b\x32\x1d.cafm.project.project.Project\x12\x18\n\x10total_item_count\x18\x02 \x01(\x05\" \n\x1eProjectAppService_newIdRequest\"-\n\x1fProjectAppService_newIdResponse\x12\n\n\x02id\x18\x01 \x01(\t\"(\n&ProjectAppService_newBuildingIdRequest\"5\n\'ProjectAppService_newBuildingIdResponse\x12\n\n\x02id\x18\x01 \x01(\t\"-\n+ProjectAppService_newBuildingLevelIdRequest\":\n,ProjectAppService_newBuildingLevelIdResponse\x12\n\n\x02id\x18\x01 \x01(\t\"1\n/ProjectAppService_newBuildingLevelRoomIdRequest\">\n0ProjectAppService_newBuildingLevelRoomIdResponse\x12\n\n\x02id\x18\x01 \x01(\t\"\x9d\x01\n\"ProjectAppService_buildingsRequest\x12\x13\n\x0bresult_from\x18\x01 \x01(\x05\x12\x13\n\x0bresult_size\x18\x02 \x01(\x05\x12(\n\x06orders\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\x12\x0f\n\x07include\x18\x04 \x03(\t\x12\x12\n\nproject_id\x18\x05 \x01(\t\"r\n#ProjectAppService_buildingsResponse\x12\x31\n\tbuildings\x18\x01 \x03(\x0b\x32\x1e.cafm.project.project.Building\x12\x18\n\x10total_item_count\x18\x02 \x01(\x05\"D\n%ProjectAppService_buildingByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07include\x18\x02 \x03(\t\"Z\n&ProjectAppService_buildingByIdResponse\x12\x30\n\x08\x62uilding\x18\x01 \x01(\x0b\x32\x1e.cafm.project.project.Building\"\xa3\x01\n\'ProjectAppService_buildingLevelsRequest\x12\x13\n\x0bresult_from\x18\x01 \x01(\x05\x12\x13\n\x0bresult_size\x18\x02 \x01(\x05\x12(\n\x06orders\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\x12\x0f\n\x07include\x18\x04 \x03(\t\x12\x13\n\x0b\x62uilding_id\x18\x05 \x01(\t\"\x82\x01\n(ProjectAppService_buildingLevelsResponse\x12<\n\x0f\x62uilding_levels\x18\x01 \x03(\x0b\x32#.cafm.project.project.BuildingLevel\x12\x18\n\x10total_item_count\x18\x02 \x01(\x05\"I\n*ProjectAppService_buildingLevelByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0f\n\x07include\x18\x02 \x03(\t\"j\n+ProjectAppService_buildingLevelByIdResponse\x12;\n\x0e\x62uilding_level\x18\x01 \x01(\x0b\x32#.cafm.project.project.BuildingLevel\"\x9c\x01\n+ProjectAppService_buildingLevelRoomsRequest\x12\x13\n\x0bresult_from\x18\x01 \x01(\x05\x12\x13\n\x0bresult_size\x18\x02 \x01(\x05\x12(\n\x06orders\x18\x03 \x03(\x0b\x32\x18.cafm.common.order.Order\x12\x19\n\x11\x62uilding_level_id\x18\x04 \x01(\t\"\xaa\x01\n,ProjectAppService_buildingLevelRoomsResponse\x12\x45\n\x14\x62uilding_level_rooms\x18\x01 \x03(\x0b\x32\'.cafm.project.project.BuildingLevelRoom\x12\x18\n\x10total_item_count\x18\x02 \x01(\x05\x12\x19\n\x11\x62uilding_level_id\x18\x03 \x01(\t\"<\n.ProjectAppService_buildingLevelRoomByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\"w\n/ProjectAppService_buildingLevelRoomByIdResponse\x12\x44\n\x13\x62uilding_level_room\x18\x01 \x01(\x0b\x32\'.cafm.project.project.BuildingLevelRoom2\xce\x0f\n\x11ProjectAppService\x12\xb2\x01\n\x1bprojects_by_organization_id\x12G.cafm.project.project.ProjectAppService_projectsByOrganizationIdRequest\x1aH.cafm.project.project.ProjectAppService_projectsByOrganizationIdResponse\"\x00\x12\x82\x01\n\tbuildings\x12\x38.cafm.project.project.ProjectAppService_buildingsRequest\x1a\x39.cafm.project.project.ProjectAppService_buildingsResponse\"\x00\x12\x8d\x01\n\x0e\x62uilding_by_id\x12;.cafm.project.project.ProjectAppService_buildingByIdRequest\x1a<.cafm.project.project.ProjectAppService_buildingByIdResponse\"\x00\x12\x92\x01\n\x0f\x62uilding_levels\x12=.cafm.project.project.ProjectAppService_buildingLevelsRequest\x1a>.cafm.project.project.ProjectAppService_buildingLevelsResponse\"\x00\x12\x9d\x01\n\x14\x62uilding_level_by_id\x12@.cafm.project.project.ProjectAppService_buildingLevelByIdRequest\x1a\x41.cafm.project.project.ProjectAppService_buildingLevelByIdResponse\"\x00\x12\x9f\x01\n\x14\x62uilding_level_rooms\x12\x41.cafm.project.project.ProjectAppService_buildingLevelRoomsRequest\x1a\x42.cafm.project.project.ProjectAppService_buildingLevelRoomsResponse\"\x00\x12\xaa\x01\n\x19\x62uilding_level_room_by_id\x12\x44.cafm.project.project.ProjectAppService_buildingLevelRoomByIdRequest\x1a\x45.cafm.project.project.ProjectAppService_buildingLevelRoomByIdResponse\"\x00\x12\x90\x01\n\x0fnew_building_id\x12<.cafm.project.project.ProjectAppService_newBuildingIdRequest\x1a=.cafm.project.project.ProjectAppService_newBuildingIdResponse\"\x00\x12\xa0\x01\n\x15new_building_level_id\x12\x41.cafm.project.project.ProjectAppService_newBuildingLevelIdRequest\x1a\x42.cafm.project.project.ProjectAppService_newBuildingLevelIdResponse\"\x00\x12\xad\x01\n\x1anew_building_level_room_id\x12\x45.cafm.project.project.ProjectAppService_newBuildingLevelRoomIdRequest\x1a\x46.cafm.project.project.ProjectAppService_newBuildingLevelRoomIdResponse\"\x00\x12\x8a\x01\n\rproject_by_id\x12:.cafm.project.project.ProjectAppService_projectByIdRequest\x1a;.cafm.project.project.ProjectAppService_projectByIdResponse\"\x00\x12\x7f\n\x08projects\x12\x37.cafm.project.project.ProjectAppService_projectsRequest\x1a\x38.cafm.project.project.ProjectAppService_projectsResponse\"\x00\x12w\n\x06new_id\x12\x34.cafm.project.project.ProjectAppService_newIdRequest\x1a\x35.cafm.project.project.ProjectAppService_newIdResponse\"\x00\x62\x06proto3'
   ,
   dependencies=[project_dot_project__pb2.DESCRIPTOR,project_dot_building__pb2.DESCRIPTOR,project_dot_building__level__pb2.DESCRIPTOR,project_dot_building__level__room__pb2.DESCRIPTOR,order__pb2.DESCRIPTOR,])
 
@@ -104,21 +104,21 @@ _PROJECTAPPSERVICE_PROJECTSREQUEST = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='resultFrom', full_name='cafm.project.project.ProjectAppService_projectsRequest.resultFrom', index=0,
+      name='result_from', full_name='cafm.project.project.ProjectAppService_projectsRequest.result_from', index=0,
       number=1, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='resultSize', full_name='cafm.project.project.ProjectAppService_projectsRequest.resultSize', index=1,
+      name='result_size', full_name='cafm.project.project.ProjectAppService_projectsRequest.result_size', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='order', full_name='cafm.project.project.ProjectAppService_projectsRequest.order', index=2,
+      name='orders', full_name='cafm.project.project.ProjectAppService_projectsRequest.orders', index=2,
       number=3, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -137,7 +137,7 @@ _PROJECTAPPSERVICE_PROJECTSREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=325,
-  serialized_end=441,
+  serialized_end=444,
 )
 
 
@@ -157,7 +157,7 @@ _PROJECTAPPSERVICE_PROJECTSRESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='totalItemCount', full_name='cafm.project.project.ProjectAppService_projectsResponse.totalItemCount', index=1,
+      name='total_item_count', full_name='cafm.project.project.ProjectAppService_projectsResponse.total_item_count', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -175,8 +175,328 @@ _PROJECTAPPSERVICE_PROJECTSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=443,
-  serialized_end=552,
+  serialized_start=446,
+  serialized_end=557,
+)
+
+
+_PROJECTAPPSERVICE_PROJECTSBYORGANIZATIONIDREQUEST = _descriptor.Descriptor(
+  name='ProjectAppService_projectsByOrganizationIdRequest',
+  full_name='cafm.project.project.ProjectAppService_projectsByOrganizationIdRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='organization_id', full_name='cafm.project.project.ProjectAppService_projectsByOrganizationIdRequest.organization_id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='result_from', full_name='cafm.project.project.ProjectAppService_projectsByOrganizationIdRequest.result_from', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='result_size', full_name='cafm.project.project.ProjectAppService_projectsByOrganizationIdRequest.result_size', index=2,
+      number=3, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='order', full_name='cafm.project.project.ProjectAppService_projectsByOrganizationIdRequest.order', index=3,
+      number=4, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=560,
+  serialized_end=719,
+)
+
+
+_PROJECTAPPSERVICE_PROJECTSBYORGANIZATIONIDRESPONSE = _descriptor.Descriptor(
+  name='ProjectAppService_projectsByOrganizationIdResponse',
+  full_name='cafm.project.project.ProjectAppService_projectsByOrganizationIdResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='projects', full_name='cafm.project.project.ProjectAppService_projectsByOrganizationIdResponse.projects', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='total_item_count', full_name='cafm.project.project.ProjectAppService_projectsByOrganizationIdResponse.total_item_count', index=1,
+      number=2, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=721,
+  serialized_end=848,
+)
+
+
+_PROJECTAPPSERVICE_NEWIDREQUEST = _descriptor.Descriptor(
+  name='ProjectAppService_newIdRequest',
+  full_name='cafm.project.project.ProjectAppService_newIdRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=850,
+  serialized_end=882,
+)
+
+
+_PROJECTAPPSERVICE_NEWIDRESPONSE = _descriptor.Descriptor(
+  name='ProjectAppService_newIdResponse',
+  full_name='cafm.project.project.ProjectAppService_newIdResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='cafm.project.project.ProjectAppService_newIdResponse.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=884,
+  serialized_end=929,
+)
+
+
+_PROJECTAPPSERVICE_NEWBUILDINGIDREQUEST = _descriptor.Descriptor(
+  name='ProjectAppService_newBuildingIdRequest',
+  full_name='cafm.project.project.ProjectAppService_newBuildingIdRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=931,
+  serialized_end=971,
+)
+
+
+_PROJECTAPPSERVICE_NEWBUILDINGIDRESPONSE = _descriptor.Descriptor(
+  name='ProjectAppService_newBuildingIdResponse',
+  full_name='cafm.project.project.ProjectAppService_newBuildingIdResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='cafm.project.project.ProjectAppService_newBuildingIdResponse.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=973,
+  serialized_end=1026,
+)
+
+
+_PROJECTAPPSERVICE_NEWBUILDINGLEVELIDREQUEST = _descriptor.Descriptor(
+  name='ProjectAppService_newBuildingLevelIdRequest',
+  full_name='cafm.project.project.ProjectAppService_newBuildingLevelIdRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1028,
+  serialized_end=1073,
+)
+
+
+_PROJECTAPPSERVICE_NEWBUILDINGLEVELIDRESPONSE = _descriptor.Descriptor(
+  name='ProjectAppService_newBuildingLevelIdResponse',
+  full_name='cafm.project.project.ProjectAppService_newBuildingLevelIdResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='cafm.project.project.ProjectAppService_newBuildingLevelIdResponse.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1075,
+  serialized_end=1133,
+)
+
+
+_PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDREQUEST = _descriptor.Descriptor(
+  name='ProjectAppService_newBuildingLevelRoomIdRequest',
+  full_name='cafm.project.project.ProjectAppService_newBuildingLevelRoomIdRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1135,
+  serialized_end=1184,
+)
+
+
+_PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDRESPONSE = _descriptor.Descriptor(
+  name='ProjectAppService_newBuildingLevelRoomIdResponse',
+  full_name='cafm.project.project.ProjectAppService_newBuildingLevelRoomIdResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='cafm.project.project.ProjectAppService_newBuildingLevelRoomIdResponse.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1186,
+  serialized_end=1248,
 )
 
 
@@ -189,21 +509,21 @@ _PROJECTAPPSERVICE_BUILDINGSREQUEST = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='resultFrom', full_name='cafm.project.project.ProjectAppService_buildingsRequest.resultFrom', index=0,
+      name='result_from', full_name='cafm.project.project.ProjectAppService_buildingsRequest.result_from', index=0,
       number=1, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='resultSize', full_name='cafm.project.project.ProjectAppService_buildingsRequest.resultSize', index=1,
+      name='result_size', full_name='cafm.project.project.ProjectAppService_buildingsRequest.result_size', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='order', full_name='cafm.project.project.ProjectAppService_buildingsRequest.order', index=2,
+      name='orders', full_name='cafm.project.project.ProjectAppService_buildingsRequest.orders', index=2,
       number=3, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -217,7 +537,7 @@ _PROJECTAPPSERVICE_BUILDINGSREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='projectId', full_name='cafm.project.project.ProjectAppService_buildingsRequest.projectId', index=4,
+      name='project_id', full_name='cafm.project.project.ProjectAppService_buildingsRequest.project_id', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -235,8 +555,8 @@ _PROJECTAPPSERVICE_BUILDINGSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=555,
-  serialized_end=708,
+  serialized_start=1251,
+  serialized_end=1408,
 )
 
 
@@ -256,7 +576,7 @@ _PROJECTAPPSERVICE_BUILDINGSRESPONSE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='totalItemCount', full_name='cafm.project.project.ProjectAppService_buildingsResponse.totalItemCount', index=1,
+      name='total_item_count', full_name='cafm.project.project.ProjectAppService_buildingsResponse.total_item_count', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -274,8 +594,8 @@ _PROJECTAPPSERVICE_BUILDINGSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=710,
-  serialized_end=822,
+  serialized_start=1410,
+  serialized_end=1524,
 )
 
 
@@ -313,8 +633,8 @@ _PROJECTAPPSERVICE_BUILDINGBYIDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=824,
-  serialized_end=892,
+  serialized_start=1526,
+  serialized_end=1594,
 )
 
 
@@ -345,8 +665,8 @@ _PROJECTAPPSERVICE_BUILDINGBYIDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=894,
-  serialized_end=984,
+  serialized_start=1596,
+  serialized_end=1686,
 )
 
 
@@ -359,21 +679,21 @@ _PROJECTAPPSERVICE_BUILDINGLEVELSREQUEST = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='resultFrom', full_name='cafm.project.project.ProjectAppService_buildingLevelsRequest.resultFrom', index=0,
+      name='result_from', full_name='cafm.project.project.ProjectAppService_buildingLevelsRequest.result_from', index=0,
       number=1, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='resultSize', full_name='cafm.project.project.ProjectAppService_buildingLevelsRequest.resultSize', index=1,
+      name='result_size', full_name='cafm.project.project.ProjectAppService_buildingLevelsRequest.result_size', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='order', full_name='cafm.project.project.ProjectAppService_buildingLevelsRequest.order', index=2,
+      name='orders', full_name='cafm.project.project.ProjectAppService_buildingLevelsRequest.orders', index=2,
       number=3, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -387,7 +707,7 @@ _PROJECTAPPSERVICE_BUILDINGLEVELSREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='buildingId', full_name='cafm.project.project.ProjectAppService_buildingLevelsRequest.buildingId', index=4,
+      name='building_id', full_name='cafm.project.project.ProjectAppService_buildingLevelsRequest.building_id', index=4,
       number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -405,8 +725,8 @@ _PROJECTAPPSERVICE_BUILDINGLEVELSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=987,
-  serialized_end=1146,
+  serialized_start=1689,
+  serialized_end=1852,
 )
 
 
@@ -419,14 +739,14 @@ _PROJECTAPPSERVICE_BUILDINGLEVELSRESPONSE = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='buildingLevels', full_name='cafm.project.project.ProjectAppService_buildingLevelsResponse.buildingLevels', index=0,
+      name='building_levels', full_name='cafm.project.project.ProjectAppService_buildingLevelsResponse.building_levels', index=0,
       number=1, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='totalItemCount', full_name='cafm.project.project.ProjectAppService_buildingLevelsResponse.totalItemCount', index=1,
+      name='total_item_count', full_name='cafm.project.project.ProjectAppService_buildingLevelsResponse.total_item_count', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -444,8 +764,8 @@ _PROJECTAPPSERVICE_BUILDINGLEVELSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1148,
-  serialized_end=1275,
+  serialized_start=1855,
+  serialized_end=1985,
 )
 
 
@@ -483,8 +803,8 @@ _PROJECTAPPSERVICE_BUILDINGLEVELBYIDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1277,
-  serialized_end=1350,
+  serialized_start=1987,
+  serialized_end=2060,
 )
 
 
@@ -497,7 +817,7 @@ _PROJECTAPPSERVICE_BUILDINGLEVELBYIDRESPONSE = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='buildingLevel', full_name='cafm.project.project.ProjectAppService_buildingLevelByIdResponse.buildingLevel', index=0,
+      name='building_level', full_name='cafm.project.project.ProjectAppService_buildingLevelByIdResponse.building_level', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -515,8 +835,8 @@ _PROJECTAPPSERVICE_BUILDINGLEVELBYIDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1352,
-  serialized_end=1457,
+  serialized_start=2062,
+  serialized_end=2168,
 )
 
 
@@ -529,28 +849,28 @@ _PROJECTAPPSERVICE_BUILDINGLEVELROOMSREQUEST = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='resultFrom', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomsRequest.resultFrom', index=0,
+      name='result_from', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomsRequest.result_from', index=0,
       number=1, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='resultSize', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomsRequest.resultSize', index=1,
+      name='result_size', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomsRequest.result_size', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='order', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomsRequest.order', index=2,
+      name='orders', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomsRequest.orders', index=2,
       number=3, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='buildingLevelId', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomsRequest.buildingLevelId', index=3,
+      name='building_level_id', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomsRequest.building_level_id', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -568,8 +888,8 @@ _PROJECTAPPSERVICE_BUILDINGLEVELROOMSREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1460,
-  serialized_end=1611,
+  serialized_start=2171,
+  serialized_end=2327,
 )
 
 
@@ -582,21 +902,21 @@ _PROJECTAPPSERVICE_BUILDINGLEVELROOMSRESPONSE = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='buildingLevelRooms', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomsResponse.buildingLevelRooms', index=0,
+      name='building_level_rooms', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomsResponse.building_level_rooms', index=0,
       number=1, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='totalItemCount', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomsResponse.totalItemCount', index=1,
+      name='total_item_count', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomsResponse.total_item_count', index=1,
       number=2, type=5, cpp_type=1, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='buildingLevelId', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomsResponse.buildingLevelId', index=2,
+      name='building_level_id', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomsResponse.building_level_id', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -614,8 +934,8 @@ _PROJECTAPPSERVICE_BUILDINGLEVELROOMSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1614,
-  serialized_end=1778,
+  serialized_start=2330,
+  serialized_end=2500,
 )
 
 
@@ -646,8 +966,8 @@ _PROJECTAPPSERVICE_BUILDINGLEVELROOMBYIDREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1780,
-  serialized_end=1840,
+  serialized_start=2502,
+  serialized_end=2562,
 )
 
 
@@ -660,7 +980,7 @@ _PROJECTAPPSERVICE_BUILDINGLEVELROOMBYIDRESPONSE = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='buildingLevelRoom', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomByIdResponse.buildingLevelRoom', index=0,
+      name='building_level_room', full_name='cafm.project.project.ProjectAppService_buildingLevelRoomByIdResponse.building_level_room', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -678,254 +998,38 @@ _PROJECTAPPSERVICE_BUILDINGLEVELROOMBYIDRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1842,
-  serialized_end=1959,
-)
-
-
-_PROJECTAPPSERVICE_NEWIDREQUEST = _descriptor.Descriptor(
-  name='ProjectAppService_newIdRequest',
-  full_name='cafm.project.project.ProjectAppService_newIdRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1961,
-  serialized_end=1993,
-)
-
-
-_PROJECTAPPSERVICE_NEWIDRESPONSE = _descriptor.Descriptor(
-  name='ProjectAppService_newIdResponse',
-  full_name='cafm.project.project.ProjectAppService_newIdResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='id', full_name='cafm.project.project.ProjectAppService_newIdResponse.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=1995,
-  serialized_end=2040,
-)
-
-
-_PROJECTAPPSERVICE_NEWBUILDINGIDREQUEST = _descriptor.Descriptor(
-  name='ProjectAppService_newBuildingIdRequest',
-  full_name='cafm.project.project.ProjectAppService_newBuildingIdRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2042,
-  serialized_end=2082,
-)
-
-
-_PROJECTAPPSERVICE_NEWBUILDINGIDRESPONSE = _descriptor.Descriptor(
-  name='ProjectAppService_newBuildingIdResponse',
-  full_name='cafm.project.project.ProjectAppService_newBuildingIdResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='id', full_name='cafm.project.project.ProjectAppService_newBuildingIdResponse.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2084,
-  serialized_end=2137,
-)
-
-
-_PROJECTAPPSERVICE_NEWBUILDINGLEVELIDREQUEST = _descriptor.Descriptor(
-  name='ProjectAppService_newBuildingLevelIdRequest',
-  full_name='cafm.project.project.ProjectAppService_newBuildingLevelIdRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2139,
-  serialized_end=2184,
-)
-
-
-_PROJECTAPPSERVICE_NEWBUILDINGLEVELIDRESPONSE = _descriptor.Descriptor(
-  name='ProjectAppService_newBuildingLevelIdResponse',
-  full_name='cafm.project.project.ProjectAppService_newBuildingLevelIdResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='id', full_name='cafm.project.project.ProjectAppService_newBuildingLevelIdResponse.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2186,
-  serialized_end=2244,
-)
-
-
-_PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDREQUEST = _descriptor.Descriptor(
-  name='ProjectAppService_newBuildingLevelRoomIdRequest',
-  full_name='cafm.project.project.ProjectAppService_newBuildingLevelRoomIdRequest',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2246,
-  serialized_end=2295,
-)
-
-
-_PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDRESPONSE = _descriptor.Descriptor(
-  name='ProjectAppService_newBuildingLevelRoomIdResponse',
-  full_name='cafm.project.project.ProjectAppService_newBuildingLevelRoomIdResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='id', full_name='cafm.project.project.ProjectAppService_newBuildingLevelRoomIdResponse.id', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=2297,
-  serialized_end=2359,
+  serialized_start=2564,
+  serialized_end=2683,
 )
 
 _PROJECTAPPSERVICE_PROJECTBYIDRESPONSE.fields_by_name['project'].message_type = project_dot_project__pb2._PROJECT
-_PROJECTAPPSERVICE_PROJECTSREQUEST.fields_by_name['order'].message_type = order__pb2._ORDER
+_PROJECTAPPSERVICE_PROJECTSREQUEST.fields_by_name['orders'].message_type = order__pb2._ORDER
 _PROJECTAPPSERVICE_PROJECTSRESPONSE.fields_by_name['projects'].message_type = project_dot_project__pb2._PROJECT
-_PROJECTAPPSERVICE_BUILDINGSREQUEST.fields_by_name['order'].message_type = order__pb2._ORDER
+_PROJECTAPPSERVICE_PROJECTSBYORGANIZATIONIDREQUEST.fields_by_name['order'].message_type = order__pb2._ORDER
+_PROJECTAPPSERVICE_PROJECTSBYORGANIZATIONIDRESPONSE.fields_by_name['projects'].message_type = project_dot_project__pb2._PROJECT
+_PROJECTAPPSERVICE_BUILDINGSREQUEST.fields_by_name['orders'].message_type = order__pb2._ORDER
 _PROJECTAPPSERVICE_BUILDINGSRESPONSE.fields_by_name['buildings'].message_type = project_dot_building__pb2._BUILDING
 _PROJECTAPPSERVICE_BUILDINGBYIDRESPONSE.fields_by_name['building'].message_type = project_dot_building__pb2._BUILDING
-_PROJECTAPPSERVICE_BUILDINGLEVELSREQUEST.fields_by_name['order'].message_type = order__pb2._ORDER
-_PROJECTAPPSERVICE_BUILDINGLEVELSRESPONSE.fields_by_name['buildingLevels'].message_type = project_dot_building__level__pb2._BUILDINGLEVEL
-_PROJECTAPPSERVICE_BUILDINGLEVELBYIDRESPONSE.fields_by_name['buildingLevel'].message_type = project_dot_building__level__pb2._BUILDINGLEVEL
-_PROJECTAPPSERVICE_BUILDINGLEVELROOMSREQUEST.fields_by_name['order'].message_type = order__pb2._ORDER
-_PROJECTAPPSERVICE_BUILDINGLEVELROOMSRESPONSE.fields_by_name['buildingLevelRooms'].message_type = project_dot_building__level__room__pb2._BUILDINGLEVELROOM
-_PROJECTAPPSERVICE_BUILDINGLEVELROOMBYIDRESPONSE.fields_by_name['buildingLevelRoom'].message_type = project_dot_building__level__room__pb2._BUILDINGLEVELROOM
+_PROJECTAPPSERVICE_BUILDINGLEVELSREQUEST.fields_by_name['orders'].message_type = order__pb2._ORDER
+_PROJECTAPPSERVICE_BUILDINGLEVELSRESPONSE.fields_by_name['building_levels'].message_type = project_dot_building__level__pb2._BUILDINGLEVEL
+_PROJECTAPPSERVICE_BUILDINGLEVELBYIDRESPONSE.fields_by_name['building_level'].message_type = project_dot_building__level__pb2._BUILDINGLEVEL
+_PROJECTAPPSERVICE_BUILDINGLEVELROOMSREQUEST.fields_by_name['orders'].message_type = order__pb2._ORDER
+_PROJECTAPPSERVICE_BUILDINGLEVELROOMSRESPONSE.fields_by_name['building_level_rooms'].message_type = project_dot_building__level__room__pb2._BUILDINGLEVELROOM
+_PROJECTAPPSERVICE_BUILDINGLEVELROOMBYIDRESPONSE.fields_by_name['building_level_room'].message_type = project_dot_building__level__room__pb2._BUILDINGLEVELROOM
 DESCRIPTOR.message_types_by_name['ProjectAppService_projectByIdRequest'] = _PROJECTAPPSERVICE_PROJECTBYIDREQUEST
 DESCRIPTOR.message_types_by_name['ProjectAppService_projectByIdResponse'] = _PROJECTAPPSERVICE_PROJECTBYIDRESPONSE
 DESCRIPTOR.message_types_by_name['ProjectAppService_projectsRequest'] = _PROJECTAPPSERVICE_PROJECTSREQUEST
 DESCRIPTOR.message_types_by_name['ProjectAppService_projectsResponse'] = _PROJECTAPPSERVICE_PROJECTSRESPONSE
+DESCRIPTOR.message_types_by_name['ProjectAppService_projectsByOrganizationIdRequest'] = _PROJECTAPPSERVICE_PROJECTSBYORGANIZATIONIDREQUEST
+DESCRIPTOR.message_types_by_name['ProjectAppService_projectsByOrganizationIdResponse'] = _PROJECTAPPSERVICE_PROJECTSBYORGANIZATIONIDRESPONSE
+DESCRIPTOR.message_types_by_name['ProjectAppService_newIdRequest'] = _PROJECTAPPSERVICE_NEWIDREQUEST
+DESCRIPTOR.message_types_by_name['ProjectAppService_newIdResponse'] = _PROJECTAPPSERVICE_NEWIDRESPONSE
+DESCRIPTOR.message_types_by_name['ProjectAppService_newBuildingIdRequest'] = _PROJECTAPPSERVICE_NEWBUILDINGIDREQUEST
+DESCRIPTOR.message_types_by_name['ProjectAppService_newBuildingIdResponse'] = _PROJECTAPPSERVICE_NEWBUILDINGIDRESPONSE
+DESCRIPTOR.message_types_by_name['ProjectAppService_newBuildingLevelIdRequest'] = _PROJECTAPPSERVICE_NEWBUILDINGLEVELIDREQUEST
+DESCRIPTOR.message_types_by_name['ProjectAppService_newBuildingLevelIdResponse'] = _PROJECTAPPSERVICE_NEWBUILDINGLEVELIDRESPONSE
+DESCRIPTOR.message_types_by_name['ProjectAppService_newBuildingLevelRoomIdRequest'] = _PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDREQUEST
+DESCRIPTOR.message_types_by_name['ProjectAppService_newBuildingLevelRoomIdResponse'] = _PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDRESPONSE
 DESCRIPTOR.message_types_by_name['ProjectAppService_buildingsRequest'] = _PROJECTAPPSERVICE_BUILDINGSREQUEST
 DESCRIPTOR.message_types_by_name['ProjectAppService_buildingsResponse'] = _PROJECTAPPSERVICE_BUILDINGSRESPONSE
 DESCRIPTOR.message_types_by_name['ProjectAppService_buildingByIdRequest'] = _PROJECTAPPSERVICE_BUILDINGBYIDREQUEST
@@ -938,14 +1042,6 @@ DESCRIPTOR.message_types_by_name['ProjectAppService_buildingLevelRoomsRequest'] 
 DESCRIPTOR.message_types_by_name['ProjectAppService_buildingLevelRoomsResponse'] = _PROJECTAPPSERVICE_BUILDINGLEVELROOMSRESPONSE
 DESCRIPTOR.message_types_by_name['ProjectAppService_buildingLevelRoomByIdRequest'] = _PROJECTAPPSERVICE_BUILDINGLEVELROOMBYIDREQUEST
 DESCRIPTOR.message_types_by_name['ProjectAppService_buildingLevelRoomByIdResponse'] = _PROJECTAPPSERVICE_BUILDINGLEVELROOMBYIDRESPONSE
-DESCRIPTOR.message_types_by_name['ProjectAppService_newIdRequest'] = _PROJECTAPPSERVICE_NEWIDREQUEST
-DESCRIPTOR.message_types_by_name['ProjectAppService_newIdResponse'] = _PROJECTAPPSERVICE_NEWIDRESPONSE
-DESCRIPTOR.message_types_by_name['ProjectAppService_newBuildingIdRequest'] = _PROJECTAPPSERVICE_NEWBUILDINGIDREQUEST
-DESCRIPTOR.message_types_by_name['ProjectAppService_newBuildingIdResponse'] = _PROJECTAPPSERVICE_NEWBUILDINGIDRESPONSE
-DESCRIPTOR.message_types_by_name['ProjectAppService_newBuildingLevelIdRequest'] = _PROJECTAPPSERVICE_NEWBUILDINGLEVELIDREQUEST
-DESCRIPTOR.message_types_by_name['ProjectAppService_newBuildingLevelIdResponse'] = _PROJECTAPPSERVICE_NEWBUILDINGLEVELIDRESPONSE
-DESCRIPTOR.message_types_by_name['ProjectAppService_newBuildingLevelRoomIdRequest'] = _PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDREQUEST
-DESCRIPTOR.message_types_by_name['ProjectAppService_newBuildingLevelRoomIdResponse'] = _PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 ProjectAppService_projectByIdRequest = _reflection.GeneratedProtocolMessageType('ProjectAppService_projectByIdRequest', (_message.Message,), {
@@ -975,6 +1071,76 @@ ProjectAppService_projectsResponse = _reflection.GeneratedProtocolMessageType('P
   # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_projectsResponse)
   })
 _sym_db.RegisterMessage(ProjectAppService_projectsResponse)
+
+ProjectAppService_projectsByOrganizationIdRequest = _reflection.GeneratedProtocolMessageType('ProjectAppService_projectsByOrganizationIdRequest', (_message.Message,), {
+  'DESCRIPTOR' : _PROJECTAPPSERVICE_PROJECTSBYORGANIZATIONIDREQUEST,
+  '__module__' : 'project.project_app_service_pb2'
+  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_projectsByOrganizationIdRequest)
+  })
+_sym_db.RegisterMessage(ProjectAppService_projectsByOrganizationIdRequest)
+
+ProjectAppService_projectsByOrganizationIdResponse = _reflection.GeneratedProtocolMessageType('ProjectAppService_projectsByOrganizationIdResponse', (_message.Message,), {
+  'DESCRIPTOR' : _PROJECTAPPSERVICE_PROJECTSBYORGANIZATIONIDRESPONSE,
+  '__module__' : 'project.project_app_service_pb2'
+  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_projectsByOrganizationIdResponse)
+  })
+_sym_db.RegisterMessage(ProjectAppService_projectsByOrganizationIdResponse)
+
+ProjectAppService_newIdRequest = _reflection.GeneratedProtocolMessageType('ProjectAppService_newIdRequest', (_message.Message,), {
+  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWIDREQUEST,
+  '__module__' : 'project.project_app_service_pb2'
+  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newIdRequest)
+  })
+_sym_db.RegisterMessage(ProjectAppService_newIdRequest)
+
+ProjectAppService_newIdResponse = _reflection.GeneratedProtocolMessageType('ProjectAppService_newIdResponse', (_message.Message,), {
+  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWIDRESPONSE,
+  '__module__' : 'project.project_app_service_pb2'
+  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newIdResponse)
+  })
+_sym_db.RegisterMessage(ProjectAppService_newIdResponse)
+
+ProjectAppService_newBuildingIdRequest = _reflection.GeneratedProtocolMessageType('ProjectAppService_newBuildingIdRequest', (_message.Message,), {
+  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWBUILDINGIDREQUEST,
+  '__module__' : 'project.project_app_service_pb2'
+  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newBuildingIdRequest)
+  })
+_sym_db.RegisterMessage(ProjectAppService_newBuildingIdRequest)
+
+ProjectAppService_newBuildingIdResponse = _reflection.GeneratedProtocolMessageType('ProjectAppService_newBuildingIdResponse', (_message.Message,), {
+  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWBUILDINGIDRESPONSE,
+  '__module__' : 'project.project_app_service_pb2'
+  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newBuildingIdResponse)
+  })
+_sym_db.RegisterMessage(ProjectAppService_newBuildingIdResponse)
+
+ProjectAppService_newBuildingLevelIdRequest = _reflection.GeneratedProtocolMessageType('ProjectAppService_newBuildingLevelIdRequest', (_message.Message,), {
+  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWBUILDINGLEVELIDREQUEST,
+  '__module__' : 'project.project_app_service_pb2'
+  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newBuildingLevelIdRequest)
+  })
+_sym_db.RegisterMessage(ProjectAppService_newBuildingLevelIdRequest)
+
+ProjectAppService_newBuildingLevelIdResponse = _reflection.GeneratedProtocolMessageType('ProjectAppService_newBuildingLevelIdResponse', (_message.Message,), {
+  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWBUILDINGLEVELIDRESPONSE,
+  '__module__' : 'project.project_app_service_pb2'
+  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newBuildingLevelIdResponse)
+  })
+_sym_db.RegisterMessage(ProjectAppService_newBuildingLevelIdResponse)
+
+ProjectAppService_newBuildingLevelRoomIdRequest = _reflection.GeneratedProtocolMessageType('ProjectAppService_newBuildingLevelRoomIdRequest', (_message.Message,), {
+  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDREQUEST,
+  '__module__' : 'project.project_app_service_pb2'
+  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newBuildingLevelRoomIdRequest)
+  })
+_sym_db.RegisterMessage(ProjectAppService_newBuildingLevelRoomIdRequest)
+
+ProjectAppService_newBuildingLevelRoomIdResponse = _reflection.GeneratedProtocolMessageType('ProjectAppService_newBuildingLevelRoomIdResponse', (_message.Message,), {
+  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDRESPONSE,
+  '__module__' : 'project.project_app_service_pb2'
+  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newBuildingLevelRoomIdResponse)
+  })
+_sym_db.RegisterMessage(ProjectAppService_newBuildingLevelRoomIdResponse)
 
 ProjectAppService_buildingsRequest = _reflection.GeneratedProtocolMessageType('ProjectAppService_buildingsRequest', (_message.Message,), {
   'DESCRIPTOR' : _PROJECTAPPSERVICE_BUILDINGSREQUEST,
@@ -1060,62 +1226,6 @@ ProjectAppService_buildingLevelRoomByIdResponse = _reflection.GeneratedProtocolM
   })
 _sym_db.RegisterMessage(ProjectAppService_buildingLevelRoomByIdResponse)
 
-ProjectAppService_newIdRequest = _reflection.GeneratedProtocolMessageType('ProjectAppService_newIdRequest', (_message.Message,), {
-  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWIDREQUEST,
-  '__module__' : 'project.project_app_service_pb2'
-  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newIdRequest)
-  })
-_sym_db.RegisterMessage(ProjectAppService_newIdRequest)
-
-ProjectAppService_newIdResponse = _reflection.GeneratedProtocolMessageType('ProjectAppService_newIdResponse', (_message.Message,), {
-  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWIDRESPONSE,
-  '__module__' : 'project.project_app_service_pb2'
-  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newIdResponse)
-  })
-_sym_db.RegisterMessage(ProjectAppService_newIdResponse)
-
-ProjectAppService_newBuildingIdRequest = _reflection.GeneratedProtocolMessageType('ProjectAppService_newBuildingIdRequest', (_message.Message,), {
-  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWBUILDINGIDREQUEST,
-  '__module__' : 'project.project_app_service_pb2'
-  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newBuildingIdRequest)
-  })
-_sym_db.RegisterMessage(ProjectAppService_newBuildingIdRequest)
-
-ProjectAppService_newBuildingIdResponse = _reflection.GeneratedProtocolMessageType('ProjectAppService_newBuildingIdResponse', (_message.Message,), {
-  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWBUILDINGIDRESPONSE,
-  '__module__' : 'project.project_app_service_pb2'
-  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newBuildingIdResponse)
-  })
-_sym_db.RegisterMessage(ProjectAppService_newBuildingIdResponse)
-
-ProjectAppService_newBuildingLevelIdRequest = _reflection.GeneratedProtocolMessageType('ProjectAppService_newBuildingLevelIdRequest', (_message.Message,), {
-  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWBUILDINGLEVELIDREQUEST,
-  '__module__' : 'project.project_app_service_pb2'
-  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newBuildingLevelIdRequest)
-  })
-_sym_db.RegisterMessage(ProjectAppService_newBuildingLevelIdRequest)
-
-ProjectAppService_newBuildingLevelIdResponse = _reflection.GeneratedProtocolMessageType('ProjectAppService_newBuildingLevelIdResponse', (_message.Message,), {
-  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWBUILDINGLEVELIDRESPONSE,
-  '__module__' : 'project.project_app_service_pb2'
-  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newBuildingLevelIdResponse)
-  })
-_sym_db.RegisterMessage(ProjectAppService_newBuildingLevelIdResponse)
-
-ProjectAppService_newBuildingLevelRoomIdRequest = _reflection.GeneratedProtocolMessageType('ProjectAppService_newBuildingLevelRoomIdRequest', (_message.Message,), {
-  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDREQUEST,
-  '__module__' : 'project.project_app_service_pb2'
-  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newBuildingLevelRoomIdRequest)
-  })
-_sym_db.RegisterMessage(ProjectAppService_newBuildingLevelRoomIdRequest)
-
-ProjectAppService_newBuildingLevelRoomIdResponse = _reflection.GeneratedProtocolMessageType('ProjectAppService_newBuildingLevelRoomIdResponse', (_message.Message,), {
-  'DESCRIPTOR' : _PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDRESPONSE,
-  '__module__' : 'project.project_app_service_pb2'
-  # @@protoc_insertion_point(class_scope:cafm.project.project.ProjectAppService_newBuildingLevelRoomIdResponse)
-  })
-_sym_db.RegisterMessage(ProjectAppService_newBuildingLevelRoomIdResponse)
-
 
 
 _PROJECTAPPSERVICE = _descriptor.ServiceDescriptor(
@@ -1125,13 +1235,113 @@ _PROJECTAPPSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=2362,
-  serialized_end=4155,
+  serialized_start=2686,
+  serialized_end=4684,
   methods=[
   _descriptor.MethodDescriptor(
-    name='projectById',
-    full_name='cafm.project.project.ProjectAppService.projectById',
+    name='projects_by_organization_id',
+    full_name='cafm.project.project.ProjectAppService.projects_by_organization_id',
     index=0,
+    containing_service=None,
+    input_type=_PROJECTAPPSERVICE_PROJECTSBYORGANIZATIONIDREQUEST,
+    output_type=_PROJECTAPPSERVICE_PROJECTSBYORGANIZATIONIDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='buildings',
+    full_name='cafm.project.project.ProjectAppService.buildings',
+    index=1,
+    containing_service=None,
+    input_type=_PROJECTAPPSERVICE_BUILDINGSREQUEST,
+    output_type=_PROJECTAPPSERVICE_BUILDINGSRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='building_by_id',
+    full_name='cafm.project.project.ProjectAppService.building_by_id',
+    index=2,
+    containing_service=None,
+    input_type=_PROJECTAPPSERVICE_BUILDINGBYIDREQUEST,
+    output_type=_PROJECTAPPSERVICE_BUILDINGBYIDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='building_levels',
+    full_name='cafm.project.project.ProjectAppService.building_levels',
+    index=3,
+    containing_service=None,
+    input_type=_PROJECTAPPSERVICE_BUILDINGLEVELSREQUEST,
+    output_type=_PROJECTAPPSERVICE_BUILDINGLEVELSRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='building_level_by_id',
+    full_name='cafm.project.project.ProjectAppService.building_level_by_id',
+    index=4,
+    containing_service=None,
+    input_type=_PROJECTAPPSERVICE_BUILDINGLEVELBYIDREQUEST,
+    output_type=_PROJECTAPPSERVICE_BUILDINGLEVELBYIDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='building_level_rooms',
+    full_name='cafm.project.project.ProjectAppService.building_level_rooms',
+    index=5,
+    containing_service=None,
+    input_type=_PROJECTAPPSERVICE_BUILDINGLEVELROOMSREQUEST,
+    output_type=_PROJECTAPPSERVICE_BUILDINGLEVELROOMSRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='building_level_room_by_id',
+    full_name='cafm.project.project.ProjectAppService.building_level_room_by_id',
+    index=6,
+    containing_service=None,
+    input_type=_PROJECTAPPSERVICE_BUILDINGLEVELROOMBYIDREQUEST,
+    output_type=_PROJECTAPPSERVICE_BUILDINGLEVELROOMBYIDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='new_building_id',
+    full_name='cafm.project.project.ProjectAppService.new_building_id',
+    index=7,
+    containing_service=None,
+    input_type=_PROJECTAPPSERVICE_NEWBUILDINGIDREQUEST,
+    output_type=_PROJECTAPPSERVICE_NEWBUILDINGIDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='new_building_level_id',
+    full_name='cafm.project.project.ProjectAppService.new_building_level_id',
+    index=8,
+    containing_service=None,
+    input_type=_PROJECTAPPSERVICE_NEWBUILDINGLEVELIDREQUEST,
+    output_type=_PROJECTAPPSERVICE_NEWBUILDINGLEVELIDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='new_building_level_room_id',
+    full_name='cafm.project.project.ProjectAppService.new_building_level_room_id',
+    index=9,
+    containing_service=None,
+    input_type=_PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDREQUEST,
+    output_type=_PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='project_by_id',
+    full_name='cafm.project.project.ProjectAppService.project_by_id',
+    index=10,
     containing_service=None,
     input_type=_PROJECTAPPSERVICE_PROJECTBYIDREQUEST,
     output_type=_PROJECTAPPSERVICE_PROJECTBYIDRESPONSE,
@@ -1141,7 +1351,7 @@ _PROJECTAPPSERVICE = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='projects',
     full_name='cafm.project.project.ProjectAppService.projects',
-    index=1,
+    index=11,
     containing_service=None,
     input_type=_PROJECTAPPSERVICE_PROJECTSREQUEST,
     output_type=_PROJECTAPPSERVICE_PROJECTSRESPONSE,
@@ -1149,102 +1359,12 @@ _PROJECTAPPSERVICE = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
-    name='buildings',
-    full_name='cafm.project.project.ProjectAppService.buildings',
-    index=2,
-    containing_service=None,
-    input_type=_PROJECTAPPSERVICE_BUILDINGSREQUEST,
-    output_type=_PROJECTAPPSERVICE_BUILDINGSRESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='buildingById',
-    full_name='cafm.project.project.ProjectAppService.buildingById',
-    index=3,
-    containing_service=None,
-    input_type=_PROJECTAPPSERVICE_BUILDINGBYIDREQUEST,
-    output_type=_PROJECTAPPSERVICE_BUILDINGBYIDRESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='buildingLevels',
-    full_name='cafm.project.project.ProjectAppService.buildingLevels',
-    index=4,
-    containing_service=None,
-    input_type=_PROJECTAPPSERVICE_BUILDINGLEVELSREQUEST,
-    output_type=_PROJECTAPPSERVICE_BUILDINGLEVELSRESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='buildingLevelById',
-    full_name='cafm.project.project.ProjectAppService.buildingLevelById',
-    index=5,
-    containing_service=None,
-    input_type=_PROJECTAPPSERVICE_BUILDINGLEVELBYIDREQUEST,
-    output_type=_PROJECTAPPSERVICE_BUILDINGLEVELBYIDRESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='buildingLevelRooms',
-    full_name='cafm.project.project.ProjectAppService.buildingLevelRooms',
-    index=6,
-    containing_service=None,
-    input_type=_PROJECTAPPSERVICE_BUILDINGLEVELROOMSREQUEST,
-    output_type=_PROJECTAPPSERVICE_BUILDINGLEVELROOMSRESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='buildingLevelRoomById',
-    full_name='cafm.project.project.ProjectAppService.buildingLevelRoomById',
-    index=7,
-    containing_service=None,
-    input_type=_PROJECTAPPSERVICE_BUILDINGLEVELROOMBYIDREQUEST,
-    output_type=_PROJECTAPPSERVICE_BUILDINGLEVELROOMBYIDRESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='newId',
-    full_name='cafm.project.project.ProjectAppService.newId',
-    index=8,
+    name='new_id',
+    full_name='cafm.project.project.ProjectAppService.new_id',
+    index=12,
     containing_service=None,
     input_type=_PROJECTAPPSERVICE_NEWIDREQUEST,
     output_type=_PROJECTAPPSERVICE_NEWIDRESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='newBuildingId',
-    full_name='cafm.project.project.ProjectAppService.newBuildingId',
-    index=9,
-    containing_service=None,
-    input_type=_PROJECTAPPSERVICE_NEWBUILDINGIDREQUEST,
-    output_type=_PROJECTAPPSERVICE_NEWBUILDINGIDRESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='newBuildingLevelId',
-    full_name='cafm.project.project.ProjectAppService.newBuildingLevelId',
-    index=10,
-    containing_service=None,
-    input_type=_PROJECTAPPSERVICE_NEWBUILDINGLEVELIDREQUEST,
-    output_type=_PROJECTAPPSERVICE_NEWBUILDINGLEVELIDRESPONSE,
-    serialized_options=None,
-    create_key=_descriptor._internal_create_key,
-  ),
-  _descriptor.MethodDescriptor(
-    name='newBuildingLevelRoomId',
-    full_name='cafm.project.project.ProjectAppService.newBuildingLevelRoomId',
-    index=11,
-    containing_service=None,
-    input_type=_PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDREQUEST,
-    output_type=_PROJECTAPPSERVICE_NEWBUILDINGLEVELROOMIDRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

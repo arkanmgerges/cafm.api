@@ -126,7 +126,7 @@ async def createStandardMaintenanceProcedure(
     type: str = Body(
         ..., description="type of standard maintenance procedure", embed=True
     ),
-    subtype: str = Body(
+    sub_type: str = Body(
         ..., description="subtype of standard maintenance procedure", embed=True
     ),
     frequency: str = Body(
@@ -165,7 +165,7 @@ async def createStandardMaintenanceProcedure(
                     "standard_maintenance_procedure_id": client.newId(),
                     "name": name,
                     "type": type,
-                    "subtype": subtype,
+                    "sub_type": sub_type,
                     "frequency": frequency,
                     "start_date": start_date,
                     "organization_id": organization_id,
@@ -195,7 +195,7 @@ async def updateStandardMaintenanceProcedure(
     ),
     name: str = Body(..., description="name of name", embed=True),
     type: str = Body(..., description="type of type", embed=True),
-    subtype: str = Body(..., description="subtype of subtype", embed=True),
+    sub_type: str = Body(..., description="subtype of subtype", embed=True),
     frequency: str = Body(..., description="frequency of frequency", embed=True),
     start_date: int = Body(..., description="start date of start date", embed=True),
     organization_id: str = Body(
@@ -227,7 +227,7 @@ async def updateStandardMaintenanceProcedure(
                     "standard_maintenance_procedure_id": standard_maintenance_procedure_id,
                     "name": name,
                     "type": type,
-                    "subtype": subtype,
+                    "sub_type": sub_type,
                     "frequency": frequency,
                     "start_date": start_date,
                     "organization_id": organization_id,
@@ -257,7 +257,7 @@ async def partialUpdateStandardMaintenanceProcedure(
     ),
     name: str = Body(None, description="name of name", embed=True),
     type: str = Body(None, description="type of type", embed=True),
-    subtype: str = Body(None, description="subtype of subtype", embed=True),
+    sub_type: str = Body(None, description="subtype of subtype", embed=True),
     frequency: str = Body(None, description="frequency of frequency", embed=True),
     start_date: int = Body(None, description="start date of start date", embed=True),
     organization_id: str = Body(
@@ -289,7 +289,7 @@ async def partialUpdateStandardMaintenanceProcedure(
                     "standard_maintenance_procedure_id": standard_maintenance_procedure_id,
                     "name": name,
                     "type": type,
-                    "subtype": subtype,
+                    "sub_type": sub_type,
                     "frequency": frequency,
                     "start_date": start_date,
                     "organization_id": organization_id,

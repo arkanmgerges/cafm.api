@@ -32,8 +32,8 @@ from src.resource.proto._generated.project.equipment_category_app_service_pb2 im
     EquipmentCategoryAppService_equipmentCategoryByIdResponse,
     EquipmentCategoryAppService_newIdRequest,
     EquipmentCategoryAppService_newIdResponse,
-    EquipmentCategoryAppService_equipmentCategoryGroupsByCategoryIdRequest,
-    EquipmentCategoryAppService_equipmentCategoryGroupsByCategoryIdResponse,
+    EquipmentCategoryAppService_equipmentCategoryGroupsByEquipmentCategoryIdResponse,
+    EquipmentCategoryAppService_equipmentCategoryGroupsByEquipmentCategoryIdRequest,
 )
 from src.resource.proto._generated.project.equipment_category_app_service_pb2_grpc import (
     EquipmentCategoryAppServiceStub,
@@ -52,7 +52,7 @@ class EquipmentCategoryClient(Client):
             try:
                 request = EquipmentCategoryAppService_newIdRequest()
                 response: EquipmentCategoryAppService_newIdResponse = (
-                    stub.newId.with_call(
+                    stub.new_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -85,13 +85,13 @@ class EquipmentCategoryClient(Client):
                     f"[{EquipmentCategoryClient.equipmentCategories.__qualname__}] - grpc call to retrieve equipmentCategories from server {self._server}:{self._port}"
                 )
                 request = EquipmentCategoryAppService_equipmentCategoriesRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: EquipmentCategoryAppService_equipmentCategoriesResponse = stub.equipmentCategories.with_call(
+                response: EquipmentCategoryAppService_equipmentCategoriesResponse = stub.equipment_categories.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -110,9 +110,9 @@ class EquipmentCategoryClient(Client):
                 return EquipmentCategories(
                     equipment_categories=[
                         self._descriptorByObject(obj=equipmentCategory)
-                        for equipmentCategory in response[0].equipmentCategories
+                        for equipmentCategory in response[0].equipment_categories
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -126,7 +126,7 @@ class EquipmentCategoryClient(Client):
                 logger.debug(
                     f"[{EquipmentCategoryClient.equipmentCategoryById.__qualname__}] - grpc call to retrieve equipmentCategory with equipmentCategoryId: {id} from server {self._server}:{self._port}"
                 )
-                response: EquipmentCategoryAppService_equipmentCategoryByIdResponse = stub.equipmentCategoryById.with_call(
+                response: EquipmentCategoryAppService_equipmentCategoryByIdResponse = stub.equipment_category_by_id.with_call(
                     EquipmentCategoryAppService_equipmentCategoryByIdRequest(id=id),
                     metadata=(
                         ("token", self.token),
@@ -141,7 +141,7 @@ class EquipmentCategoryClient(Client):
                 logger.debug(
                     f"[{EquipmentCategoryClient.equipmentCategoryById.__qualname__}] - grpc response: {response}"
                 )
-                equipmentCategory = response[0].equipmentCategory
+                equipmentCategory = response[0].equipment_category
                 return self._descriptorByObject(obj=equipmentCategory)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -162,14 +162,14 @@ class EquipmentCategoryClient(Client):
                 logger.debug(
                     f"[{EquipmentCategoryClient.categoryGroupsByCategoryId.__qualname__}] - grpc call to retrieve equipmentCategoryGroups by category Id  from server {self._server}:{self._port}"
                 )
-                request = EquipmentCategoryAppService_equipmentCategoryGroupsByCategoryIdRequest(
-                    id=id, resultFrom=resultFrom, resultSize=resultSize
+                request = EquipmentCategoryAppService_equipmentCategoryGroupsByEquipmentCategoryIdRequest(
+                    id=id, result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: EquipmentCategoryAppService_equipmentCategoryGroupsByCategoryIdResponse = stub.equipmentCategoryGroupsByCategoryId.with_call(
+                response: EquipmentCategoryAppService_equipmentCategoryGroupsByEquipmentCategoryIdResponse = stub.equipment_category_groups_by_equipment_category_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -190,11 +190,11 @@ class EquipmentCategoryClient(Client):
                         EquipmentCategoryGroupDescriptor(
                             id=group.id,
                             name=group.name,
-                            equipment_category_id=group.equipmentCategoryId,
+                            equipment_category_id=group.equipment_category_id,
                         )
-                        for group in response[0].equipmentCategoryGroups
+                        for group in response[0].equipment_category_groups
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

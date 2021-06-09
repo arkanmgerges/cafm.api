@@ -39,7 +39,7 @@ class UnitClient(Client):
             stub = UnitAppServiceStub(channel)
             try:
                 request = UnitAppService_newIdRequest()
-                response: UnitAppService_newIdResponse = stub.newId.with_call(
+                response: UnitAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -71,7 +71,7 @@ class UnitClient(Client):
                     f"[{UnitClient.units.__qualname__}] - grpc call to retrieve units from server {self._server}:{self._port}"
                 )
                 request = UnitAppService_unitsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
@@ -97,7 +97,7 @@ class UnitClient(Client):
                     units=[
                         self._descriptorByObject(obj=unit) for unit in response[0].units
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -111,7 +111,7 @@ class UnitClient(Client):
                 logger.debug(
                     f"[{UnitClient.unitById.__qualname__}] - grpc call to retrieve unit with unitId: {id} from server {self._server}:{self._port}"
                 )
-                response: UnitAppService_unitByIdResponse = stub.unitById.with_call(
+                response: UnitAppService_unitByIdResponse = stub.unit_by_id.with_call(
                     UnitAppService_unitByIdRequest(id=id),
                     metadata=(
                         ("token", self.token),

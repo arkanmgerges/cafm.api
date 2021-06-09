@@ -43,7 +43,7 @@ class EquipmentModelClient(Client):
             stub = EquipmentModelAppServiceStub(channel)
             try:
                 request = EquipmentModelAppService_newIdRequest()
-                response: EquipmentModelAppService_newIdResponse = stub.newId.with_call(
+                response: EquipmentModelAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -75,14 +75,14 @@ class EquipmentModelClient(Client):
                     f"[{EquipmentModelClient.equipmentModels.__qualname__}] - grpc call to retrieve equipmentModels from server {self._server}:{self._port}"
                 )
                 request = EquipmentModelAppService_equipmentModelsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
                 response: EquipmentModelAppService_equipmentModelsResponse = (
-                    stub.equipmentModels.with_call(
+                    stub.equipment_models.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -102,9 +102,9 @@ class EquipmentModelClient(Client):
                 return EquipmentModels(
                     equipment_models=[
                         self._descriptorByObject(obj=equipmentModel)
-                        for equipmentModel in response[0].equipmentModels
+                        for equipmentModel in response[0].equipment_models
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -119,7 +119,7 @@ class EquipmentModelClient(Client):
                     f"[{EquipmentModelClient.equipmentModelById.__qualname__}] - grpc call to retrieve equipmentModel with equipmentModelId: {id} from server {self._server}:{self._port}"
                 )
                 response: EquipmentModelAppService_equipmentModelByIdResponse = (
-                    stub.equipmentModelById.with_call(
+                    stub.equipment_model_by_id.with_call(
                         EquipmentModelAppService_equipmentModelByIdRequest(id=id),
                         metadata=(
                             ("token", self.token),
@@ -135,7 +135,7 @@ class EquipmentModelClient(Client):
                 logger.debug(
                     f"[{EquipmentModelClient.equipmentModelById.__qualname__}] - grpc response: {response}"
                 )
-                equipmentModel = response[0].equipmentModel
+                equipmentModel = response[0].equipment_model
                 return self._descriptorByObject(obj=equipmentModel)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

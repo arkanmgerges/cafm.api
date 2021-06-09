@@ -10,7 +10,7 @@ syntax = "proto3";
 
 package cafm.project.role;
 
-import "role.proto";
+import "project/role.proto";
 import "order.proto";
 
 message RoleAppService_rolesByOrganizationTypeRequest {

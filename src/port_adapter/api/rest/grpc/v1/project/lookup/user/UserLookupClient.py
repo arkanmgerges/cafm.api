@@ -45,14 +45,14 @@ class UserLookupClient(Client):
                     f"[{UserLookupClient.userLookups.__qualname__}] - grpc call to retrieve user lookups from server {self._server}:{self._port}"
                 )
                 request = UserLookupAppService_userLookupsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
                 response: UserLookupAppService_userLookupsResponse = (
-                    stub.userLookups.with_call(
+                    stub.user_lookups.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -72,9 +72,9 @@ class UserLookupClient(Client):
                 return UserLookups(
                     user_lookups=[
                         self._descriptorByObject(obj=userLookup)
-                        for userLookup in response[0].userLookups
+                        for userLookup in response[0].user_lookups
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -85,38 +85,38 @@ class UserLookupClient(Client):
             user=User(
                 id=obj.user.id,
                 email=obj.user.email,
-                first_name=obj.user.firstName,
-                last_name=obj.user.lastName,
-                address_one=obj.user.addressOne,
-                address_two=obj.user.addressTwo,
-                postal_code=obj.user.postalCode,
-                phone_number=obj.user.phoneNumber,
-                avatar_image=obj.user.avatarImage,
-                country_id=obj.user.countryId,
-                city_id=obj.user.cityId,
-                country_state_name=obj.user.countryStateName,
-                country_state_iso_code=obj.user.countryStateIsoCode,
-                start_date=obj.user.startDate,
+                first_name=obj.user.first_name,
+                last_name=obj.user.last_name,
+                address_one=obj.user.address_one,
+                address_two=obj.user.address_two,
+                postal_code=obj.user.postal_code,
+                phone_number=obj.user.phone_number,
+                avatar_image=obj.user.avatar_image,
+                country_id=obj.user.country_id,
+                city_id=obj.user.city_id,
+                country_state_name=obj.user.country_state_name,
+                country_state_iso_code=obj.user.country_state_iso_code,
+                start_date=obj.user.start_date,
             ),
-            roles=[Role(id=x.id, name=x.name) for x in obj.roles],
+            roles=[Role(id=x.id, name=x.name, title=x.title) for x in obj.roles],
             organizations=[
                 Organization(
                     id=x.id,
                     name=x.name,
-                    website_url=x.websiteUrl,
-                    organization_type=x.organizationType,
-                    address_one=x.addressOne,
-                    address_two=x.addressTwo,
-                    postal_code=x.postalCode,
-                    country_id=x.countryId,
-                    city_id=x.cityId,
-                    country_state_name=x.countryStateName,
-                    country_state_iso_code=x.countryStateIsoCode,
-                    manager_first_name=x.managerFirstName,
-                    manager_last_name=x.managerLastName,
-                    manager_email=x.managerEmail,
-                    manager_phone_number=x.managerPhoneNumber,
-                    manager_avatar=x.managerAvatar,
+                    website_url=x.website_url,
+                    organization_type=x.organization_type,
+                    address_one=x.address_one,
+                    address_two=x.address_two,
+                    postal_code=x.postal_code,
+                    country_id=x.country_id,
+                    city_id=x.city_id,
+                    country_state_name=x.country_state_name,
+                    country_state_iso_code=x.country_state_iso_code,
+                    manager_first_name=x.manager_first_name,
+                    manager_last_name=x.manager_last_name,
+                    manager_email=x.manager_email,
+                    manager_phone_number=x.manager_phone_number,
+                    manager_avatar=x.manager_avatar,
                 )
                 for x in obj.organizations
             ],

@@ -43,7 +43,7 @@ class ManufacturerClient(Client):
             stub = ManufacturerAppServiceStub(channel)
             try:
                 request = ManufacturerAppService_newIdRequest()
-                response: ManufacturerAppService_newIdResponse = stub.newId.with_call(
+                response: ManufacturerAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -75,7 +75,7 @@ class ManufacturerClient(Client):
                     f"[{ManufacturerClient.manufacturers.__qualname__}] - grpc call to retrieve manufacturers from server {self._server}:{self._port}"
                 )
                 request = ManufacturerAppService_manufacturersRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
@@ -104,7 +104,7 @@ class ManufacturerClient(Client):
                         self._descriptorByObject(obj=manufacturer)
                         for manufacturer in response[0].manufacturers
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -119,7 +119,7 @@ class ManufacturerClient(Client):
                     f"[{ManufacturerClient.manufacturerById.__qualname__}] - grpc call to retrieve manufacturer with manufacturerId: {id} from server {self._server}:{self._port}"
                 )
                 response: ManufacturerAppService_manufacturerByIdResponse = (
-                    stub.manufacturerById.with_call(
+                    stub.manufacturer_by_id.with_call(
                         ManufacturerAppService_manufacturerByIdRequest(id=id),
                         metadata=(
                             ("token", self.token),

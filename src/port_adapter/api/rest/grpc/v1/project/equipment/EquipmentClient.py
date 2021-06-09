@@ -43,7 +43,7 @@ class EquipmentClient(Client):
             stub = EquipmentAppServiceStub(channel)
             try:
                 request = EquipmentAppService_newIdRequest()
-                response: EquipmentAppService_newIdResponse = stub.newId.with_call(
+                response: EquipmentAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -75,7 +75,7 @@ class EquipmentClient(Client):
                     f"[{EquipmentClient.equipments.__qualname__}] - grpc call to retrieve equipments from server {self._server}:{self._port}"
                 )
                 request = EquipmentAppService_equipmentsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
@@ -104,7 +104,7 @@ class EquipmentClient(Client):
                         self._descriptorByObject(obj=equipment)
                         for equipment in response[0].equipments
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -119,7 +119,7 @@ class EquipmentClient(Client):
                     f"[{EquipmentClient.equipmentById.__qualname__}] - grpc call to retrieve equipment with equipmentId: {id} from server {self._server}:{self._port}"
                 )
                 response: EquipmentAppService_equipmentByIdResponse = (
-                    stub.equipmentById.with_call(
+                    stub.equipment_by_id.with_call(
                         EquipmentAppService_equipmentByIdRequest(id=id),
                         metadata=(
                             ("token", self.token),
@@ -145,14 +145,14 @@ class EquipmentClient(Client):
         return EquipmentDescriptor(
             id=obj.id,
             name=obj.name,
-            project_id=obj.projectId,
-            equipment_project_category_id=obj.equipmentProjectCategoryId,
-            equipment_category_id=obj.equipmentCategoryId,
-            equipment_category_group_id=obj.equipmentCategoryGroupId,
-            building_id=obj.buildingId,
-            building_level_id=obj.buildingLevelId,
-            building_level_room_id=obj.buildingLevelRoomId,
-            manufacturer_id=obj.manufacturerId,
-            equipment_model_id=obj.equipmentModelId,
+            project_id=obj.project_id,
+            equipment_project_category_id=obj.equipment_project_category_id,
+            equipment_category_id=obj.equipment_category_id,
+            equipment_category_group_id=obj.equipment_category_group_id,
+            building_id=obj.building_id,
+            building_level_id=obj.building_level_id,
+            building_level_room_id=obj.building_level_room_id,
+            manufacturer_id=obj.manufacturer_id,
+            equipment_model_id=obj.equipment_model_id,
             quantity=obj.quantity,
         )

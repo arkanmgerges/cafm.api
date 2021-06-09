@@ -17,8 +17,6 @@ from src.port_adapter.api.rest.model.response.v1.project.Organizations import (
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.organization_app_service_pb2 import (
-    OrganizationAppService_organizationsByTypeRequest,
-    OrganizationAppService_organizationsByTypeResponse,
     OrganizationAppService_organizationsResponse,
     OrganizationAppService_organizationsRequest,
     OrganizationAppService_organizationByIdRequest,
@@ -42,7 +40,7 @@ class OrganizationClient(Client):
             stub = OrganizationAppServiceStub(channel)
             try:
                 request = OrganizationAppService_newIdRequest()
-                response: OrganizationAppService_newIdResponse = stub.newId.with_call(
+                response: OrganizationAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -74,7 +72,7 @@ class OrganizationClient(Client):
                     f"[{OrganizationClient.organizations.__qualname__}] - grpc call to retrieve organizations from server {self._server}:{self._port}"
                 )
                 request = OrganizationAppService_organizationsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(
@@ -104,54 +102,7 @@ class OrganizationClient(Client):
                         self._descriptorByObject(obj=organization)
                         for organization in response[0].organizations
                     ],
-                    total_item_count=response[0].totalItemCount,
-                )
-            except Exception as e:
-                channel.unsubscribe(lambda ch: ch.close())
-                raise e
-
-    @OpenTelemetry.grpcTraceOTel
-    def organizationsByType(
-        self, type: str = None, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None
-    ) -> Organizations:
-        orders = [] if orders is None else orders
-        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
-            stub = OrganizationAppServiceStub(channel)
-            try:
-                logger.debug(
-                    f"[{OrganizationClient.organizationsByType.__qualname__}] - grpc call to retrieve organizations from server {self._server}:{self._port}"
-                )
-                request = OrganizationAppService_organizationsByTypeRequest(
-                    type=type, resultFrom=resultFrom, resultSize=resultSize
-                )
-                [
-                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
-                    for o in orders
-                ]
-                response: OrganizationAppService_organizationsByTypeResponse = (
-                    stub.organizationsByType.with_call(
-                        request,
-                        metadata=(
-                            ("token", self.token),
-                            (
-                                "opentel",
-                                AppDi.instance.get(OpenTelemetry).serializedContext(
-                                    OrganizationClient.organizationsByType.__qualname__
-                                ),
-                            ),
-                        ),
-                    )
-                )
-                logger.debug(
-                    f"[{OrganizationClient.organizationsByType.__qualname__}] - grpc response: {response}"
-                )
-
-                return Organizations(
-                    organizations=[
-                        self._descriptorByObject(obj=organization)
-                        for organization in response[0].organizations
-                    ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -166,7 +117,7 @@ class OrganizationClient(Client):
                     f"[{OrganizationClient.organizationById.__qualname__}] - grpc call to retrieve organization with organizationId: {id} from server {self._server}:{self._port}"
                 )
                 response: OrganizationAppService_organizationByIdResponse = (
-                    stub.organizationById.with_call(
+                    stub.organization_by_id.with_call(
                         OrganizationAppService_organizationByIdRequest(id=id),
                         metadata=(
                             ("token", self.token),
@@ -192,18 +143,18 @@ class OrganizationClient(Client):
         return OrganizationDescriptor(
             id=obj.id,
             name=obj.name,
-            website_url=obj.websiteUrl,
-            organization_type=obj.organizationType,
-            address_one=obj.addressOne,
-            address_two=obj.addressTwo,
-            postal_code=obj.postalCode,
-            country_id=obj.countryId,
-            city_id=obj.cityId,
-            country_state_name=obj.countryStateName,
-            country_state_iso_code=obj.countryStateIsoCode,
-            manager_first_name=obj.managerFirstName,
-            manager_last_name=obj.managerLastName,
-            manager_email=obj.managerEmail,
-            manager_phone_number=obj.managerPhoneNumber,
-            manager_avatar=obj.managerAvatar,
+            website_url=obj.website_url,
+            organization_type=obj.organization_type,
+            address_one=obj.address_one,
+            address_two=obj.address_two,
+            postal_code=obj.postal_code,
+            country_id=obj.country_id,
+            city_id=obj.city_id,
+            country_state_name=obj.country_state_name,
+            country_state_iso_code=obj.country_state_iso_code,
+            manager_first_name=obj.manager_first_name,
+            manager_last_name=obj.manager_last_name,
+            manager_email=obj.manager_email,
+            manager_phone_number=obj.manager_phone_number,
+            manager_avatar=obj.manager_avatar,
         )

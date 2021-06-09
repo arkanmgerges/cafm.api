@@ -49,7 +49,7 @@ class SubcontractorLookupClient(Client):
                     f"[{SubcontractorLookupClient.lookup.__qualname__}] - grpc call to retrieve lookups from server {self._server}:{self._port}"
                 )
                 request = SubcontractorLookupAppService_lookupRequest(
-                    resultFrom=resultFrom, resultSize=resultSize, orders=orders, filters=filters
+                    result_from=resultFrom, result_size=resultSize, orders=orders, filters=filters
                 )
                 [request.orders.add(orderBy=o["orderBy"], direction=o["direction"]) for o in orders]
                 response: SubcontractorLookupAppService_lookupResponse = stub.lookup.with_call(
@@ -68,9 +68,9 @@ class SubcontractorLookupClient(Client):
 
                 return SubcontractorLookups(
                     subcontractor_lookups=[
-                        self._descriptorByObject(obj=obj) for obj in response[0].subcontractorLookups
+                        self._descriptorByObject(obj=obj) for obj in response[0].subcontractors
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -79,17 +79,17 @@ class SubcontractorLookupClient(Client):
     def _descriptorByObject(self, obj: Any) -> SubcontractorLookupDescriptor:
         return SubcontractorLookupDescriptor(
             id=obj.id,
-            company_name=obj.companyName,
-            website_url=obj.websiteUrl,
-            contact_person=obj.contactPerson,
+            company_name=obj.company_name,
+            website_url=obj.website_url,
+            contact_person=obj.contact_person,
             email=obj.email,
-            phone_number=obj.phoneNumber,
-            address_one=obj.addressOne,
-            address_two=obj.addressTwo,
+            phone_number=obj.phone_number,
+            address_one=obj.address_one,
+            address_two=obj.address_two,
             description=obj.description,
-            postal_code=obj.postalCode,
+            postal_code=obj.postal_code,
             subcontractor_category=SubcontractorCategoryDescriptor(
-                id=obj.subcontractorCategory.id, name=obj.subcontractorCategory.name
+                id=obj.subcontractor_category.id, name=obj.subcontractor_category.name
             ),
             country=CountryDescriptor(id=obj.country.id, name=obj.country.name),
             state=StateDescriptor(id=obj.state.id, name=obj.state.name),

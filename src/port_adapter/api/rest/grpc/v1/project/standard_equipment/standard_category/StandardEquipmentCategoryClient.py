@@ -43,7 +43,7 @@ class StandardEquipmentCategoryClient(Client):
             try:
                 request = StandardEquipmentCategoryAppService_newIdRequest()
                 response: StandardEquipmentCategoryAppService_newIdResponse = (
-                    stub.newId.with_call(
+                    stub.new_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -76,13 +76,13 @@ class StandardEquipmentCategoryClient(Client):
                     f"[{StandardEquipmentCategoryClient.standardEquipmentCategories.__qualname__}] - grpc call to retrieve standardEquipmentCategories from server {self._server}:{self._port}"
                 )
                 request = StandardEquipmentCategoryAppService_standardEquipmentCategoriesRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: StandardEquipmentCategoryAppService_standardEquipmentCategoriesResponse = stub.standardEquipmentCategories.with_call(
+                response: StandardEquipmentCategoryAppService_standardEquipmentCategoriesResponse = stub.standard_equipment_categories.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -103,9 +103,9 @@ class StandardEquipmentCategoryClient(Client):
                         self._descriptorByObject(obj=standardEquipmentCategory)
                         for standardEquipmentCategory in response[
                             0
-                        ].standardEquipmentCategories
+                        ].standard_equipment_categories
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -119,7 +119,7 @@ class StandardEquipmentCategoryClient(Client):
                 logger.debug(
                     f"[{StandardEquipmentCategoryClient.standardEquipmentCategoryById.__qualname__}] - grpc call to retrieve standardEquipmentCategory with standardEquipmentCategoryId: {id} from server {self._server}:{self._port}"
                 )
-                response: StandardEquipmentCategoryAppService_standardEquipmentCategoryByIdResponse = stub.standardEquipmentCategoryById.with_call(
+                response: StandardEquipmentCategoryAppService_standardEquipmentCategoryByIdResponse = stub.standard_equipment_category_by_id.with_call(
                     StandardEquipmentCategoryAppService_standardEquipmentCategoryByIdRequest(
                         id=id
                     ),
@@ -136,7 +136,7 @@ class StandardEquipmentCategoryClient(Client):
                 logger.debug(
                     f"[{StandardEquipmentCategoryClient.standardEquipmentCategoryById.__qualname__}] - grpc response: {response}"
                 )
-                standardEquipmentCategory = response[0].standardEquipmentCategory
+                standardEquipmentCategory = response[0].standard_equipment_category
                 return self._descriptorByObject(obj=standardEquipmentCategory)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

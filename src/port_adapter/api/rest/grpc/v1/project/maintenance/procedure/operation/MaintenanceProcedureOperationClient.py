@@ -49,7 +49,7 @@ class MaintenanceProcedureOperationClient(Client):
             stub = MaintenanceProcedureOperationAppServiceStub(channel)
             try:
                 request = MaintenanceProcedureOperationAppService_newIdRequest()
-                response: MaintenanceProcedureOperationAppService_newIdResponse = stub.newId.with_call(
+                response: MaintenanceProcedureOperationAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -81,13 +81,13 @@ class MaintenanceProcedureOperationClient(Client):
                     f"[{MaintenanceProcedureOperationClient.maintenanceProcedureOperations.__qualname__}] - grpc call to retrieve maintenanceProcedureOperations from server {self._server}:{self._port}"
                 )
                 request = MaintenanceProcedureOperationAppService_maintenanceProcedureOperationsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: MaintenanceProcedureOperationAppService_maintenanceProcedureOperationsResponse = stub.maintenanceProcedureOperations.with_call(
+                response: MaintenanceProcedureOperationAppService_maintenanceProcedureOperationsResponse = stub.maintenance_procedure_operations.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -108,9 +108,9 @@ class MaintenanceProcedureOperationClient(Client):
                         self._descriptorByObject(obj=maintenanceProcedureOperation)
                         for maintenanceProcedureOperation in response[
                             0
-                        ].maintenanceProcedureOperations
+                        ].maintenance_procedure_operations
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -126,7 +126,7 @@ class MaintenanceProcedureOperationClient(Client):
                 logger.debug(
                     f"[{MaintenanceProcedureOperationClient.maintenanceProcedureOperationById.__qualname__}] - grpc call to retrieve maintenanceProcedureOperation with maintenanceProcedureOperationId: {id} from server {self._server}:{self._port}"
                 )
-                response: MaintenanceProcedureOperationAppService_maintenanceProcedureOperationByIdResponse = stub.maintenanceProcedureOperationById.with_call(
+                response: MaintenanceProcedureOperationAppService_maintenanceProcedureOperationByIdResponse = stub.maintenance_procedure_operation_by_id.with_call(
                     MaintenanceProcedureOperationAppService_maintenanceProcedureOperationByIdRequest(
                         id=id
                     ),
@@ -145,7 +145,7 @@ class MaintenanceProcedureOperationClient(Client):
                 )
                 maintenanceProcedureOperation = response[
                     0
-                ].maintenanceProcedureOperation
+                ].maintenance_procedure_operation
                 return self._descriptorByObject(obj=maintenanceProcedureOperation)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -167,15 +167,15 @@ class MaintenanceProcedureOperationClient(Client):
                     f"[{MaintenanceProcedureOperationClient.maintenanceProcedureOperations.__qualname__}] - grpc call to retrieve maintenanceProcedureOperations from server {self._server}:{self._port}"
                 )
                 request = MaintenanceProcedureOperationAppService_maintenanceProcedureOperationsByMaintenanceProcedureIdRequest(
-                    maintenanceProcedureId=maintenanceProcedureId,
-                    resultFrom=resultFrom,
-                    resultSize=resultSize,
+                    maintenance_procedure_id=maintenanceProcedureId,
+                    result_from=resultFrom,
+                    result_size=resultSize,
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: MaintenanceProcedureOperationAppService_maintenanceProcedureOperationsByMaintenanceProcedureIdResponse = stub.maintenanceProcedureOperationsByMaintenanceProcedureId.with_call(
+                response: MaintenanceProcedureOperationAppService_maintenanceProcedureOperationsByMaintenanceProcedureIdResponse = stub.maintenance_procedure_operations_by_maintenance_procedure_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -196,9 +196,9 @@ class MaintenanceProcedureOperationClient(Client):
                         self._descriptorByObject(obj=maintenanceProcedureOperation)
                         for maintenanceProcedureOperation in response[
                             0
-                        ].maintenanceProcedureOperations
+                        ].maintenance_procedure_operations
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -210,5 +210,5 @@ class MaintenanceProcedureOperationClient(Client):
             name=obj.name,
             description=obj.description,
             type=obj.type,
-            maintenance_procedure_id=obj.maintenanceProcedureId,
+            maintenance_procedure_id=obj.maintenance_procedure_id,
         )

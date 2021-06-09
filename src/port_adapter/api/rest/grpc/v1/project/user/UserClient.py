@@ -36,7 +36,7 @@ class UserClient(Client):
             stub = UserAppServiceStub(channel)
             try:
                 request = UserAppService_newIdRequest()
-                response: UserAppService_newIdResponse = stub.newId.with_call(
+                response: UserAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -68,7 +68,7 @@ class UserClient(Client):
                     f"[{UserClient.users.__qualname__}] - grpc call to retrieve users from server {self._server}:{self._port}"
                 )
                 request = UserAppService_usersRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
@@ -94,7 +94,7 @@ class UserClient(Client):
                     users=[
                         self._descriptorByObject(obj=user) for user in response[0].users
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -108,7 +108,7 @@ class UserClient(Client):
                 logger.debug(
                     f"[{UserClient.userById.__qualname__}] - grpc call to retrieve user with userId: {id} from server {self._server}:{self._port}"
                 )
-                response: UserAppService_userByIdResponse = stub.userById.with_call(
+                response: UserAppService_userByIdResponse = stub.user_by_id.with_call(
                     UserAppService_userByIdRequest(id=id),
                     metadata=(
                         ("token", self.token),
@@ -133,16 +133,16 @@ class UserClient(Client):
         return UserDescriptor(
             id=obj.id,
             email=obj.email,
-            first_name=obj.firstName,
-            last_name=obj.lastName,
-            address_one=obj.addressOne,
-            address_two=obj.addressTwo,
-            postal_code=obj.postalCode,
-            phone_number=obj.phoneNumber,
-            avatar_image=obj.avatarImage,
-            country_id=obj.countryId,
-            city_id=obj.cityId,
-            country_state_name=obj.countryStateName,
-            country_state_iso_code=obj.countryStateIsoCode,
-            start_date=obj.startDate,
+            first_name=obj.first_name,
+            last_name=obj.last_name,
+            address_one=obj.address_one,
+            address_two=obj.address_two,
+            postal_code=obj.postal_code,
+            phone_number=obj.phone_number,
+            avatar_image=obj.avatar_image,
+            country_id=obj.country_id,
+            city_id=obj.city_id,
+            country_state_name=obj.country_state_name,
+            country_state_iso_code=obj.country_state_iso_code,
+            start_date=obj.start_date,
         )

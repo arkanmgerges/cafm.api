@@ -51,7 +51,7 @@ class MaintenanceProcedureOperationParameterClient(Client):
                 request = (
                     MaintenanceProcedureOperationParameterAppService_newIdRequest()
                 )
-                response: MaintenanceProcedureOperationParameterAppService_newIdResponse = stub.newId.with_call(
+                response: MaintenanceProcedureOperationParameterAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -83,13 +83,13 @@ class MaintenanceProcedureOperationParameterClient(Client):
                     f"[{MaintenanceProcedureOperationParameterClient.maintenanceProcedureOperationParameters.__qualname__}] - grpc call to retrieve maintenanceProcedureOperationParameters from server {self._server}:{self._port}"
                 )
                 request = MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParametersRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParametersResponse = stub.maintenanceProcedureOperationParameters.with_call(
+                response: MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParametersResponse = stub.maintenance_procedure_operation_parameters.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -112,9 +112,9 @@ class MaintenanceProcedureOperationParameterClient(Client):
                         )
                         for maintenanceProcedureOperationParameter in response[
                             0
-                        ].maintenanceProcedureOperationParameters
+                        ].maintenance_procedure_operation_parameters
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -130,7 +130,7 @@ class MaintenanceProcedureOperationParameterClient(Client):
                 logger.debug(
                     f"[{MaintenanceProcedureOperationParameterClient.maintenanceProcedureOperationParameterById.__qualname__}] - grpc call to retrieve maintenanceProcedureOperationParameter with maintenanceProcedureOperationParameterId: {id} from server {self._server}:{self._port}"
                 )
-                response: MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParameterByIdResponse = stub.maintenanceProcedureOperationParameterById.with_call(
+                response: MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParameterByIdResponse = stub.maintenance_procedure_operation_parameter_by_id.with_call(
                     MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParameterByIdRequest(
                         id=id
                     ),
@@ -149,7 +149,7 @@ class MaintenanceProcedureOperationParameterClient(Client):
                 )
                 maintenanceProcedureOperationParameter = response[
                     0
-                ].maintenanceProcedureOperationParameter
+                ].maintenance_procedure_operation_parameter
                 return self._descriptorByObject(
                     obj=maintenanceProcedureOperationParameter
                 )
@@ -173,15 +173,15 @@ class MaintenanceProcedureOperationParameterClient(Client):
                     f"[{MaintenanceProcedureOperationParameterClient.maintenanceProcedureOperationParameters.__qualname__}] - grpc call to retrieve maintenanceProcedureOperationParameters from server {self._server}:{self._port}"
                 )
                 request = MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParametersByMaintenanceProcedureOperationIdRequest(
-                    maintenanceProcedureOperationId=maintenanceProcedureOperationId,
-                    resultFrom=resultFrom,
-                    resultSize=resultSize,
+                    maintenance_procedure_operation_id=maintenanceProcedureOperationId,
+                    result_from=resultFrom,
+                    result_size=resultSize,
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParametersByMaintenanceProcedureOperationIdResponse = stub.maintenanceProcedureOperationParametersByMaintenanceProcedureOperationId.with_call(
+                response: MaintenanceProcedureOperationParameterAppService_maintenanceProcedureOperationParametersByMaintenanceProcedureOperationIdResponse = stub.maintenance_procedure_operation_parameters_by_maintenance_procedure_operation_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -204,9 +204,9 @@ class MaintenanceProcedureOperationParameterClient(Client):
                         )
                         for maintenanceProcedureOperationParameter in response[
                             0
-                        ].maintenanceProcedureOperationParameters
+                        ].maintenance_procedure_operation_parameters
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -218,8 +218,8 @@ class MaintenanceProcedureOperationParameterClient(Client):
         return MaintenanceProcedureOperationParameterDescriptor(
             id=obj.id,
             name=obj.name,
-            unit_id=obj.unitId,
-            maintenance_procedure_operation_id=obj.maintenanceProcedureOperationId,
-            min_value=float(obj.minValue),
-            max_value=float(obj.maxValue),
+            unit_id=obj.unit_id,
+            maintenance_procedure_operation_id=obj.maintenance_procedure_operation_id,
+            min_value=float(obj.min_value),
+            max_value=float(obj.max_value),
         )

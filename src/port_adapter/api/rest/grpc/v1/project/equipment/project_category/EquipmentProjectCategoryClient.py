@@ -29,10 +29,10 @@ from src.resource.proto._generated.project.equipment_project_category_app_servic
     EquipmentProjectCategoryAppService_equipmentProjectCategoriesRequest,
     EquipmentProjectCategoryAppService_equipmentProjectCategoryByIdRequest,
     EquipmentProjectCategoryAppService_equipmentProjectCategoryByIdResponse,
-    EquipmentProjectCategoryAppService_equipmentCategoryGroupsByProjectCategoryIdRequest,
-    EquipmentProjectCategoryAppService_equipmentCategoryGroupsByProjectCategoryIdResponse,
     EquipmentProjectCategoryAppService_newIdRequest,
     EquipmentProjectCategoryAppService_newIdResponse,
+    EquipmentProjectCategoryAppService_equipmentCategoryGroupsByEquipmentProjectCategoryIdRequest,
+    EquipmentProjectCategoryAppService_equipmentCategoryGroupsByEquipmentProjectCategoryIdResponse,
 )
 from src.resource.proto._generated.project.equipment_project_category_app_service_pb2_grpc import (
     EquipmentProjectCategoryAppServiceStub,
@@ -51,7 +51,7 @@ class EquipmentProjectCategoryClient(Client):
             try:
                 request = EquipmentProjectCategoryAppService_newIdRequest()
                 response: EquipmentProjectCategoryAppService_newIdResponse = (
-                    stub.newId.with_call(
+                    stub.new_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -84,13 +84,13 @@ class EquipmentProjectCategoryClient(Client):
                     f"[{EquipmentProjectCategoryClient.equipmentProjectCategories.__qualname__}] - grpc call to retrieve equipment project categories from server {self._server}:{self._port}"
                 )
                 request = EquipmentProjectCategoryAppService_equipmentProjectCategoriesRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: EquipmentProjectCategoryAppService_equipmentProjectCategoriesResponse = stub.equipmentProjectCategories.with_call(
+                response: EquipmentProjectCategoryAppService_equipmentProjectCategoriesResponse = stub.equipment_project_categories.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -111,9 +111,9 @@ class EquipmentProjectCategoryClient(Client):
                         self._descriptorByObject(obj=equipmentProjectCategory)
                         for equipmentProjectCategory in response[
                             0
-                        ].equipmentProjectCategories
+                        ].equipment_project_categories
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -127,7 +127,7 @@ class EquipmentProjectCategoryClient(Client):
                 logger.debug(
                     f"[{EquipmentProjectCategoryClient.equipmentProjectCategoryById.__qualname__}] - grpc call to retrieve equipmentProjectCategory with equipmentProjectCategoryId: {id} from server {self._server}:{self._port}"
                 )
-                response: EquipmentProjectCategoryAppService_equipmentProjectCategoryByIdResponse = stub.equipmentProjectCategoryById.with_call(
+                response: EquipmentProjectCategoryAppService_equipmentProjectCategoryByIdResponse = stub.equipment_project_category_by_id.with_call(
                     EquipmentProjectCategoryAppService_equipmentProjectCategoryByIdRequest(
                         id=id
                     ),
@@ -144,7 +144,7 @@ class EquipmentProjectCategoryClient(Client):
                 logger.debug(
                     f"[{EquipmentProjectCategoryClient.equipmentProjectCategoryById.__qualname__}] - grpc response: {response}"
                 )
-                equipmentProjectCategory = response[0].equipmentProjectCategory
+                equipmentProjectCategory = response[0].equipment_project_category
                 return self._descriptorByObject(obj=equipmentProjectCategory)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -170,14 +170,14 @@ class EquipmentProjectCategoryClient(Client):
                 logger.debug(
                     f"[{EquipmentProjectCategoryClient.categoryGroupsByProjectCategoryId.__qualname__}] - grpc call to retrieve equipmentProjectCategories from server {self._server}:{self._port}"
                 )
-                request = EquipmentProjectCategoryAppService_equipmentCategoryGroupsByProjectCategoryIdRequest(
-                    id=id, resultFrom=resultFrom, resultSize=resultSize
+                request = EquipmentProjectCategoryAppService_equipmentCategoryGroupsByEquipmentProjectCategoryIdRequest(
+                    id=id, result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: EquipmentProjectCategoryAppService_equipmentCategoryGroupsByProjectCategoryIdResponse = stub.equipmentCategoryGroupsByProjectCategoryId.with_call(
+                response: EquipmentProjectCategoryAppService_equipmentCategoryGroupsByEquipmentProjectCategoryIdResponse = stub.equipment_category_groups_by_equipment_project_category_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -198,11 +198,11 @@ class EquipmentProjectCategoryClient(Client):
                         EquipmentCategoryGroupDescriptor(
                             id=group.id,
                             name=group.name,
-                            equipment_category_id=group.equipmentCategoryId,
+                            equipment_category_id=group.equipment_category_id,
                         )
-                        for group in response[0].equipmentCategoryGroups
+                        for group in response[0].equipment_category_groups
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

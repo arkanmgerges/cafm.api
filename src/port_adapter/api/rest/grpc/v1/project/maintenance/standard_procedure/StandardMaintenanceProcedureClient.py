@@ -43,7 +43,7 @@ class StandardMaintenanceProcedureClient(Client):
             stub = StandardMaintenanceProcedureAppServiceStub(channel)
             try:
                 request = StandardMaintenanceProcedureAppService_newIdRequest()
-                response: StandardMaintenanceProcedureAppService_newIdResponse = stub.newId.with_call(
+                response: StandardMaintenanceProcedureAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -75,13 +75,13 @@ class StandardMaintenanceProcedureClient(Client):
                     f"[{StandardMaintenanceProcedureClient.standardMaintenanceProcedures.__qualname__}] - grpc call to retrieve standardMaintenanceProcedures from server {self._server}:{self._port}"
                 )
                 request = StandardMaintenanceProcedureAppService_standardMaintenanceProceduresRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: StandardMaintenanceProcedureAppService_standardMaintenanceProceduresResponse = stub.standardMaintenanceProcedures.with_call(
+                response: StandardMaintenanceProcedureAppService_standardMaintenanceProceduresResponse = stub.standard_maintenance_procedures.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -102,9 +102,9 @@ class StandardMaintenanceProcedureClient(Client):
                         self._descriptorByObject(obj=standardMaintenanceProcedure)
                         for standardMaintenanceProcedure in response[
                             0
-                        ].standardMaintenanceProcedures
+                        ].standard_maintenance_procedures
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -120,7 +120,7 @@ class StandardMaintenanceProcedureClient(Client):
                 logger.debug(
                     f"[{StandardMaintenanceProcedureClient.standardMaintenanceProcedureById.__qualname__}] - grpc call to retrieve standardMaintenanceProcedure with standardMaintenanceProcedureId: {id} from server {self._server}:{self._port}"
                 )
-                response: StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdResponse = stub.standardMaintenanceProcedureById.with_call(
+                response: StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdResponse = stub.standard_maintenance_procedure_by_id.with_call(
                     StandardMaintenanceProcedureAppService_standardMaintenanceProcedureByIdRequest(
                         id=id
                     ),
@@ -137,7 +137,7 @@ class StandardMaintenanceProcedureClient(Client):
                 logger.debug(
                     f"[{StandardMaintenanceProcedureClient.standardMaintenanceProcedureById.__qualname__}] - grpc response: {response}"
                 )
-                standardMaintenanceProcedure = response[0].standardMaintenanceProcedure
+                standardMaintenanceProcedure = response[0].standard_maintenance_procedure
                 return self._descriptorByObject(obj=standardMaintenanceProcedure)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -148,9 +148,9 @@ class StandardMaintenanceProcedureClient(Client):
             id=obj.id,
             name=obj.name,
             type=obj.type,
-            subtype=obj.subtype,
+            sub_type=obj.sub_type,
             frequency=obj.frequency,
-            start_date=obj.startDate,
-            organization_id=obj.organizationId,
-            standard_equipment_category_group_id=obj.standardEquipmentCategoryGroupId,
+            start_date=obj.start_date,
+            organization_id=obj.organization_id,
+            standard_equipment_category_group_id=obj.standard_equipment_category_group_id,
         )

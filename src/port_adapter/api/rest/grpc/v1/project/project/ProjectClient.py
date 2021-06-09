@@ -36,6 +36,8 @@ from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.project_app_service_pb2 import (
     ProjectAppService_projectsResponse,
     ProjectAppService_projectsRequest,
+    ProjectAppService_projectsByOrganizationIdResponse,
+    ProjectAppService_projectsByOrganizationIdRequest,
     ProjectAppService_projectByIdRequest,
     ProjectAppService_projectByIdResponse,
     ProjectAppService_buildingsRequest,
@@ -75,7 +77,7 @@ class ProjectClient(Client):
             stub = ProjectAppServiceStub(channel)
             try:
                 request = ProjectAppService_newIdRequest()
-                response: ProjectAppService_newIdResponse = stub.newId.with_call(
+                response: ProjectAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -108,7 +110,7 @@ class ProjectClient(Client):
                     f"[{ProjectClient.projects.__qualname__}] - grpc call to retrieve projects from server {self._server}:{self._port}"
                 )
                 request = ProjectAppService_projectsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
@@ -135,7 +137,61 @@ class ProjectClient(Client):
                         self._descriptorByObject(project)
                         for project in response[0].projects
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
+                )
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    # region Project
+    @OpenTelemetry.grpcTraceOTel
+    def projectsByOrganizationId(
+        self,
+        organizationId,
+        resultFrom: int = 0,
+        resultSize: int = 10,
+        orders: List[dict] = None,
+    ) -> Projects:
+        orders = [] if orders is None else orders
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
+            stub = ProjectAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f"[{ProjectClient.projectsByOrganizationId.__qualname__}] - grpc call to retrieve projects from server {self._server}:{self._port}"
+                )
+                request = ProjectAppService_projectsByOrganizationIdRequest(
+                    organization_id=organizationId,
+                    result_from=resultFrom,
+                    result_size=resultSize,
+                )
+                [
+                    request.orders.add(orderBy=o["orderBy"], direction=o["direction"])
+                    for o in orders
+                ]
+                response: ProjectAppService_projectsByOrganizationIdResponse = (
+                    stub.projects_by_organization_id.with_call(
+                        request,
+                        metadata=(
+                            ("token", self.token),
+                            (
+                                "opentel",
+                                AppDi.instance.get(OpenTelemetry).serializedContext(
+                                    ProjectClient.projectsByOrganizationId.__qualname__
+                                ),
+                            ),
+                        ),
+                    )
+                )
+                logger.debug(
+                    f"[{ProjectClient.projectsByOrganizationId.__qualname__}] - grpc response: {response}"
+                )
+
+                return Projects(
+                    projects=[
+                        self._descriptorByObject(project)
+                        for project in response[0].projects
+                    ],
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -150,7 +206,7 @@ class ProjectClient(Client):
                     f"[{ProjectClient.projectById.__qualname__}] - grpc call to retrieve project with projectId: {projectId} from server {self._server}:{self._port}"
                 )
                 response: ProjectAppService_projectByIdResponse = (
-                    stub.projectById.with_call(
+                    stub.project_by_id.with_call(
                         ProjectAppService_projectByIdRequest(id=projectId),
                         metadata=(
                             ("token", self.token),
@@ -173,28 +229,8 @@ class ProjectClient(Client):
                 raise e
 
     def _descriptorByObject(self, obj: Any) -> ProjectDescriptor:
-        return ProjectDescriptor(
-            id=obj.id,
-            name=obj.name,
-            city_id=obj.cityId,
-            country_id=obj.countryId,
-            address_line=obj.addressLine,
-            address_line_two=obj.addressLineTwo,
-            beneficiary_id=obj.beneficiaryId,
-            postal_code=obj.postalCode,
-            start_date=obj.startDate,
-            state=obj.state,
-            developer_name=obj.developerName,
-            developer_city_id=obj.developerCityId,
-            developer_country_id=obj.developerCountryId,
-            developer_address_line_one=obj.developerAddressLineOne,
-            developer_address_line_two=obj.developerAddressLineTwo,
-            developer_postal_code=obj.developerPostalCode,
-            developer_contact=obj.developerContact,
-            developer_email=obj.developerEmail,
-            developer_phone_number=obj.developerPhoneNumber,
-            developer_warranty=obj.developerWarranty,
-        )
+        kwargs = {k: getattr(obj, k, None) for k in ProjectDescriptor.__fields__.keys()}
+        return ProjectDescriptor(**kwargs)
 
     # endregion
 
@@ -217,10 +253,10 @@ class ProjectClient(Client):
                     f"[{ProjectClient.buildings.__qualname__}] - grpc call to retrieve data from server {self._server}:{self._port}"
                 )
                 request = ProjectAppService_buildingsRequest(
-                    resultFrom=resultFrom,
-                    resultSize=resultSize,
+                    result_from=resultFrom,
+                    result_size=resultSize,
                     include=include,
-                    projectId=projectId,
+                    project_id=projectId,
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
@@ -249,7 +285,7 @@ class ProjectClient(Client):
                         self._buildingDescriptor(obj=obj)
                         for obj in response[0].buildings
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -262,7 +298,7 @@ class ProjectClient(Client):
             try:
                 request = ProjectAppService_newBuildingIdRequest()
                 response: ProjectAppService_newBuildingIdResponse = (
-                    stub.newBuildingId.with_call(
+                    stub.new_building_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -294,7 +330,7 @@ class ProjectClient(Client):
                 )
                 request = ProjectAppService_buildingByIdRequest(id=id, include=include)
                 response: ProjectAppService_buildingByIdResponse = (
-                    stub.buildingById.with_call(
+                    stub.building_by_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -334,17 +370,17 @@ class ProjectClient(Client):
                     f"[{ProjectClient.buildingLevels.__qualname__}] - grpc call to retrieve data from server {self._server}:{self._port}"
                 )
                 request = ProjectAppService_buildingLevelsRequest(
-                    resultFrom=resultFrom,
-                    resultSize=resultSize,
+                    result_from=resultFrom,
+                    result_size=resultSize,
                     include=include,
-                    buildingId=buildingId,
+                    building_id=buildingId,
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
                 response: ProjectAppService_buildingLevelsResponse = (
-                    stub.buildingLevels.with_call(
+                    stub.building_levels.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -364,9 +400,9 @@ class ProjectClient(Client):
                 return BuildingLevels(
                     building_levels=[
                         self._buildingLevelDescriptor(obj=obj)
-                        for obj in response[0].buildingLevels
+                        for obj in response[0].building_levels
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -379,7 +415,7 @@ class ProjectClient(Client):
             try:
                 request = ProjectAppService_newBuildingLevelIdRequest()
                 response: ProjectAppService_newBuildingLevelIdResponse = (
-                    stub.newBuildingLevelId.with_call(
+                    stub.new_building_level_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -415,7 +451,7 @@ class ProjectClient(Client):
                     id=id, include=include
                 )
                 response: ProjectAppService_buildingLevelByIdResponse = (
-                    stub.buildingLevelById.with_call(
+                    stub.building_level_by_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -432,7 +468,7 @@ class ProjectClient(Client):
                     f"[{ProjectClient.buildingLevelById.__qualname__}] - grpc response: {response}"
                 )
 
-                return self._buildingLevelDescriptor(obj=response[0].buildingLevel)
+                return self._buildingLevelDescriptor(obj=response[0].building_level)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
@@ -453,16 +489,16 @@ class ProjectClient(Client):
                     f"[{ProjectClient.buildingLevelRooms.__qualname__}] - grpc call to retrieve data from server {self._server}:{self._port}"
                 )
                 request = ProjectAppService_buildingLevelRoomsRequest(
-                    resultFrom=resultFrom,
-                    resultSize=resultSize,
-                    buildingLevelId=buildingLevelId,
+                    result_from=resultFrom,
+                    result_size=resultSize,
+                    building_level_id=buildingLevelId,
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
                 response: ProjectAppService_buildingLevelRoomsResponse = (
-                    stub.buildingLevelRooms.with_call(
+                    stub.building_level_rooms.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -482,9 +518,9 @@ class ProjectClient(Client):
                 return BuildingLevelRooms(
                     building_level_rooms=[
                         self._buildingLevelRoomDescriptor(obj=obj)
-                        for obj in response[0].buildingLevelRooms
+                        for obj in response[0].building_level_rooms
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -497,7 +533,7 @@ class ProjectClient(Client):
             try:
                 request = ProjectAppService_newBuildingLevelRoomIdRequest()
                 response: ProjectAppService_newBuildingLevelRoomIdResponse = (
-                    stub.newBuildingLevelRoomId.with_call(
+                    stub.new_building_level_room_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -528,7 +564,7 @@ class ProjectClient(Client):
                 )
                 request = ProjectAppService_buildingLevelRoomByIdRequest(id=id)
                 response: ProjectAppService_buildingLevelRoomByIdResponse = (
-                    stub.buildingLevelRoomById.with_call(
+                    stub.building_level_room_by_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -546,7 +582,7 @@ class ProjectClient(Client):
                 )
 
                 return self._buildingLevelRoomDescriptor(
-                    obj=response[0].buildingLevelRoom
+                    obj=response[0].building_level_room
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -557,9 +593,9 @@ class ProjectClient(Client):
         return BuildingDescriptor(
             id=obj.id,
             name=obj.name,
-            project_id=obj.projectId,
+            project_id=obj.project_id,
             building_levels=[
-                self._buildingLevelDescriptor(x) for x in obj.buildingLevels
+                self._buildingLevelDescriptor(x) for x in obj.building_levels
             ],
         )
 
@@ -568,10 +604,10 @@ class ProjectClient(Client):
         return BuildingLevelDescriptor(
             id=obj.id,
             name=obj.name,
-            is_sub_level=obj.isSubLevel,
-            building_ids=[x for x in obj.buildingIds],
+            is_sub_level=obj.is_sub_level,
+            building_ids=[x for x in obj.building_ids],
             building_level_rooms=[
-                self._buildingLevelRoomDescriptor(x) for x in obj.buildingLevelRooms
+                self._buildingLevelRoomDescriptor(x) for x in obj.building_level_rooms
             ],
         )
 
@@ -582,7 +618,7 @@ class ProjectClient(Client):
             name=obj.name,
             description=obj.description,
             index=obj.index,
-            building_level_id=obj.buildingLevelId,
+            building_level_id=obj.building_level_id,
         )
 
     # endregion

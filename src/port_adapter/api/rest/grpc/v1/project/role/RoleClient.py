@@ -41,7 +41,7 @@ class RoleClient(Client):
             stub = RoleAppServiceStub(channel)
             try:
                 request = RoleAppService_newIdRequest()
-                response: RoleAppService_newIdResponse = stub.newId.with_call(
+                response: RoleAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -73,7 +73,7 @@ class RoleClient(Client):
                     f"[{RoleClient.roles.__qualname__}] - grpc call to retrieve roles from server {self._server}:{self._port}"
                 )
                 request = RoleAppService_rolesRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
@@ -99,7 +99,7 @@ class RoleClient(Client):
                     roles=[
                         self._descriptorByObject(obj=role) for role in response[0].roles
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -121,16 +121,16 @@ class RoleClient(Client):
                     f"[{RoleClient.rolesByOrganizationType.__qualname__}] - grpc call to retrieve roles by organization type from server {self._server}:{self._port}"
                 )
                 request = RoleAppService_rolesByOrganizationTypeRequest(
-                    organizationType=organizationType,
-                    resultFrom=resultFrom,
-                    resultSize=resultSize,
+                    organization_type=organizationType,
+                    result_from=resultFrom,
+                    result_size=resultSize,
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
                 response: RoleAppService_rolesByOrganizationTypeResponse = (
-                    stub.rolesByOrganizationType.with_call(
+                    stub.roles_by_organization_type.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -151,7 +151,7 @@ class RoleClient(Client):
                     roles=[
                         self._descriptorByObject(obj=role) for role in response[0].roles
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -165,7 +165,7 @@ class RoleClient(Client):
                 logger.debug(
                     f"[{RoleClient.roleById.__qualname__}] - grpc call to retrieve role with roleId: {id} from server {self._server}:{self._port}"
                 )
-                response: RoleAppService_roleByIdResponse = stub.roleById.with_call(
+                response: RoleAppService_roleByIdResponse = stub.role_by_id.with_call(
                     RoleAppService_roleByIdRequest(id=id),
                     metadata=(
                         ("token", self.token),

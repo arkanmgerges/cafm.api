@@ -12,7 +12,7 @@ class StandardMaintenanceProcedure(BaseModel):
     id: str
     name: str
     type: str
-    subtype: str
+    sub_type: str
     frequency: str
     start_date: int
     organization_id: str

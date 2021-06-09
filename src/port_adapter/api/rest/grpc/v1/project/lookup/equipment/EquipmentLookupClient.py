@@ -63,7 +63,7 @@ class EquipmentLookupClient(Client):
                     f"[{EquipmentLookupClient.lookup.__qualname__}] - grpc call to retrieve lookups from server {self._server}:{self._port}"
                 )
                 request = EquipmentLookupAppService_lookupRequest(
-                    resultFrom=resultFrom, resultSize=resultSize, orders=orders, filters=filters
+                    result_from=resultFrom, result_size=resultSize, orders=orders, filters=filters
                 )
                 [request.orders.add(orderBy=o["orderBy"], direction=o["direction"]) for o in orders]
                 response: EquipmentLookupAppService_lookupResponse = stub.lookup.with_call(
@@ -84,7 +84,7 @@ class EquipmentLookupClient(Client):
                     equipment_lookups=[
                         self._descriptorByObject(obj=obj) for obj in response[0].equipments
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -92,17 +92,17 @@ class EquipmentLookupClient(Client):
 
     def _descriptorByObject(self, obj: Any) -> EquipmentLookupDescriptor:
         maintenances = []
-        for maintenance in obj.maintenanceProcedures:
+        for maintenance in obj.maintenance_procedures:
             operations = []
-            for operation in maintenance.maintenanceProcedureOperations:
+            for operation in maintenance.maintenance_procedure_operations:
                 params = []
-                for param in operation.maintenanceProcedureOperationParameters:
+                for param in operation.maintenance_procedure_operation_parameters:
                     params.append(
                         MaintenanceProcedureOperationParameterDescriptor(
                             id=param.id,
                             name=param.name,
-                            min_value=param.minValue,
-                            max_value=param.maxValue,
+                            min_value=param.min_value,
+                            max_value=param.max_value,
                             unit=UnitDescriptor(
                                 id=param.unit.id,
                                 name=param.unit.name,
@@ -124,9 +124,9 @@ class EquipmentLookupClient(Client):
                     id=maintenance.id,
                     name=maintenance.name,
                     type=maintenance.type,
-                    sub_type=maintenance.subType,
+                    sub_type=maintenance.sub_type,
                     frequency=maintenance.frequency,
-                    start_date=maintenance.startDate,
+                    start_date=maintenance.start_date,
                     maintenance_procedure_operations=operations,
                 )
             )
@@ -135,37 +135,37 @@ class EquipmentLookupClient(Client):
             id=obj.id,
             name=obj.name,
             quantity=obj.quantity,
-            project_id=obj.projectId,
+            project_id=obj.project_id,
             equipment_project_category=EquipmentProjectCategoryDescriptor(
-                id=obj.equipmentProjectCategory.id,
-                name=obj.equipmentProjectCategory.name,
+                id=obj.equipment_project_category.id,
+                name=obj.equipment_project_category.name,
             ),
             equipment_category=EquipmentCategoryDescriptor(
-                id=obj.equipmentCategory.id, name=obj.equipmentCategory.name
+                id=obj.equipment_category.id, name=obj.equipment_category.name
             ),
             equipment_category_group=EquipmentCategoryGroupDescriptor(
-                id=obj.equipmentCategoryGroup.id, name=obj.equipmentCategoryGroup.name
+                id=obj.equipment_category_group.id, name=obj.equipment_category_group.name
             ),
             building=BuildingDescriptor(
                 id=obj.building.id, name=obj.building.name
             ),
             building_level=BuildingLevelDescriptor(
-                id=obj.buildingLevel.id,
-                name=obj.buildingLevel.name,
-                is_sub_level=obj.buildingLevel.isSubLevel,
+                id=obj.building_level.id,
+                name=obj.building_level.name,
+                is_sub_level=obj.building_level.is_sub_level,
             ),
             building_level_room=BuildingLevelRoomDescriptor(
-                id=obj.buildingLevelRoom.id,
-                name=obj.buildingLevelRoom.name,
-                description=obj.buildingLevelRoom.description,
+                id=obj.building_level_room.id,
+                name=obj.building_level_room.name,
+                description=obj.building_level_room.description,
             ),
             manufacturer=ManufacturerDescriptor(
                 id=obj.manufacturer.id,
                 name=obj.manufacturer.name,
             ),
             equipment_model=EquipmentModelDescriptor(
-                id=obj.equipmentModel.id,
-                name=obj.equipmentModel.name,
+                id=obj.equipment_model.id,
+                name=obj.equipment_model.name,
             ),
             maintenance_procedures=maintenances,
         )

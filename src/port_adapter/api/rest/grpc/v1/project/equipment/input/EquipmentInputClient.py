@@ -45,7 +45,7 @@ class EquipmentInputClient(Client):
             stub = EquipmentInputAppServiceStub(channel)
             try:
                 request = EquipmentInputAppService_newIdRequest()
-                response: EquipmentInputAppService_newIdResponse = stub.newId.with_call(
+                response: EquipmentInputAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -77,14 +77,14 @@ class EquipmentInputClient(Client):
                     f"[{EquipmentInputClient.equipmentInputs.__qualname__}] - grpc call to retrieve equipmentInputs from server {self._server}:{self._port}"
                 )
                 request = EquipmentInputAppService_equipmentInputsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
                 response: EquipmentInputAppService_equipmentInputsResponse = (
-                    stub.equipmentInputs.with_call(
+                    stub.equipment_inputs.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -104,9 +104,9 @@ class EquipmentInputClient(Client):
                 return EquipmentInputs(
                     equipment_inputs=[
                         self._descriptorByObject(obj=equipmentInput)
-                        for equipmentInput in response[0].equipmentInputs
+                        for equipmentInput in response[0].equipment_inputs
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -128,15 +128,15 @@ class EquipmentInputClient(Client):
                     f"[{EquipmentInputClient.equipmentInputsByEquipmentId.__qualname__}] - grpc call to retrieve equipmentInputs by equipmentId from server {self._server}:{self._port}"
                 )
                 request = EquipmentInputAppService_equipmentInputsByEquipmentIdRequest(
-                    equipmentId=equipmentId,
-                    resultFrom=resultFrom,
-                    resultSize=resultSize,
+                    equipment_id=equipmentId,
+                    result_from=resultFrom,
+                    result_size=resultSize,
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: EquipmentInputAppService_equipmentInputsByEquipmentIdResponse = stub.equipmentInputsByEquipmentId.with_call(
+                response: EquipmentInputAppService_equipmentInputsByEquipmentIdResponse = stub.equipment_inputs_by_equipment_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -155,9 +155,9 @@ class EquipmentInputClient(Client):
                 return EquipmentInputs(
                     equipment_inputs=[
                         self._descriptorByObject(obj=equipmentInput)
-                        for equipmentInput in response[0].equipmentInputs
+                        for equipmentInput in response[0].equipment_inputs
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -172,7 +172,7 @@ class EquipmentInputClient(Client):
                     f"[{EquipmentInputClient.equipmentInputById.__qualname__}] - grpc call to retrieve equipmentInput with equipmentInputId: {id} from server {self._server}:{self._port}"
                 )
                 response: EquipmentInputAppService_equipmentInputByIdResponse = (
-                    stub.equipmentInputById.with_call(
+                    stub.equipment_input_by_id.with_call(
                         EquipmentInputAppService_equipmentInputByIdRequest(id=id),
                         metadata=(
                             ("token", self.token),
@@ -188,7 +188,7 @@ class EquipmentInputClient(Client):
                 logger.debug(
                     f"[{EquipmentInputClient.equipmentInputById.__qualname__}] - grpc response: {response}"
                 )
-                equipmentInput = response[0].equipmentInput
+                equipmentInput = response[0].equipment_input
                 return self._descriptorByObject(obj=equipmentInput)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -199,6 +199,6 @@ class EquipmentInputClient(Client):
             id=obj.id,
             name=obj.name,
             value=obj.value,
-            unit_id=obj.unitId,
-            equipment_id=obj.equipmentId,
+            unit_id=obj.unit_id,
+            equipment_id=obj.equipment_id,
         )

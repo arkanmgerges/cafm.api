@@ -42,7 +42,7 @@ class StandardEquipmentCategoryGroupClient(Client):
             stub = StandardEquipmentCategoryGroupAppServiceStub(channel)
             try:
                 request = StandardEquipmentCategoryGroupAppService_newIdRequest()
-                response: StandardEquipmentCategoryGroupAppService_newIdResponse = stub.newId.with_call(
+                response: StandardEquipmentCategoryGroupAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -74,13 +74,13 @@ class StandardEquipmentCategoryGroupClient(Client):
                     f"[{StandardEquipmentCategoryGroupClient.standardEquipmentCategoryGroups.__qualname__}] - grpc call to retrieve standardEquipmentCategoryGroups from server {self._server}:{self._port}"
                 )
                 request = StandardEquipmentCategoryGroupAppService_standardEquipmentCategoryGroupsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: StandardEquipmentCategoryGroupAppService_standardEquipmentCategoryGroupsResponse = stub.standardEquipmentCategoryGroups.with_call(
+                response: StandardEquipmentCategoryGroupAppService_standardEquipmentCategoryGroupsResponse = stub.standard_equipment_category_groups.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -101,9 +101,9 @@ class StandardEquipmentCategoryGroupClient(Client):
                         self._descriptorByObject(obj=standardEquipmentCategoryGroup)
                         for standardEquipmentCategoryGroup in response[
                             0
-                        ].standardEquipmentCategoryGroups
+                        ].standard_equipment_category_groups
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -119,7 +119,7 @@ class StandardEquipmentCategoryGroupClient(Client):
                 logger.debug(
                     f"[{StandardEquipmentCategoryGroupClient.standardEquipmentCategoryGroupById.__qualname__}] - grpc call to retrieve standardEquipmentCategoryGroup with standardEquipmentCategoryGroupId: {id} from server {self._server}:{self._port}"
                 )
-                response: StandardEquipmentCategoryGroupAppService_standardEquipmentCategoryGroupByIdResponse = stub.standardEquipmentCategoryGroupById.with_call(
+                response: StandardEquipmentCategoryGroupAppService_standardEquipmentCategoryGroupByIdResponse = stub.standard_equipment_category_group_by_id.with_call(
                     StandardEquipmentCategoryGroupAppService_standardEquipmentCategoryGroupByIdRequest(
                         id=id
                     ),
@@ -138,7 +138,7 @@ class StandardEquipmentCategoryGroupClient(Client):
                 )
                 standardEquipmentCategoryGroup = response[
                     0
-                ].standardEquipmentCategoryGroup
+                ].standard_equipment_category_group
                 return self._descriptorByObject(obj=standardEquipmentCategoryGroup)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -148,5 +148,5 @@ class StandardEquipmentCategoryGroupClient(Client):
         return StandardEquipmentCategoryGroupDescriptor(
             id=obj.id,
             name=obj.name,
-            standard_equipment_category_id=obj.standardEquipmentCategoryId,
+            standard_equipment_category_id=obj.standard_equipment_category_id,
         )

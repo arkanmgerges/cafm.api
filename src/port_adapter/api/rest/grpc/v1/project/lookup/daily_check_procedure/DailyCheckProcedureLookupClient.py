@@ -49,7 +49,7 @@ class DailyCheckProcedureLookupClient(Client):
                     f"[{DailyCheckProcedureLookupClient.lookup.__qualname__}] - grpc call to retrieve lookups from server {self._server}:{self._port}"
                 )
                 request = DailyCheckProcedureLookupAppService_lookupRequest(
-                    resultFrom=resultFrom, resultSize=resultSize, orders=orders, filters=filters
+                    result_from=resultFrom, result_size=resultSize, orders=orders, filters=filters
                 )
                 [request.orders.add(orderBy=o["orderBy"], direction=o["direction"]) for o in orders]
                 response: DailyCheckProcedureLookupAppService_lookupResponse = stub.lookup.with_call(
@@ -67,10 +67,10 @@ class DailyCheckProcedureLookupClient(Client):
                 logger.debug(f"[{DailyCheckProcedureLookupClient.lookup.__qualname__}] - grpc response: {response}")
 
                 return DailyCheckProcedureLookups(
-                    equipment_lookups=[
-                        self._descriptorByObject(obj=obj) for obj in response[0].equipments
+                    daily_check_procedure_lookups=[
+                        self._descriptorByObject(obj=obj) for obj in response[0].daily_check_procedures
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -78,15 +78,15 @@ class DailyCheckProcedureLookupClient(Client):
 
     def _descriptorByObject(self, obj: Any) -> DailyCheckProcedureLookupDescriptor:
         operations = []
-        for operation in obj.dailyCheckProcedureOperations:
+        for operation in obj.daily_check_procedure_operations:
                 params = []
-                for param in operation.dailyCheckProcedureOperationParameters:
+                for param in operation.daily_check_procedure_operation_parameters:
                     params.append(
                         DailyCheckProcedureOperationParameterDescriptor(
                             id=param.id,
                             name=param.name,
-                            min_value=param.minValue,
-                            max_value=param.maxValue,
+                            min_value=param.min_value,
+                            max_value=param.max_value,
                             unit=UnitDescriptor(
                                 id=param.unit.id,
                                 name=param.unit.name,
@@ -110,8 +110,8 @@ class DailyCheckProcedureLookupClient(Client):
             description=obj.description,
             equipment_id=obj.equipment_id,
             equipment_category_group=EquipmentCategoryGroupDescriptor(
-                id=obj.equipmentCategoryGroup.id,
-                name=obj.equipmentCategoryGroup.name,
+                id=obj.equipment_category_group.id,
+                name=obj.equipment_category_group.name,
             ),
             daily_check_procedure_operations=operations
         )
