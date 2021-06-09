@@ -133,7 +133,7 @@ async def getProjectsByOrganizationId(
         logger.info(e)
 
 
-@router.get(path="/byState/{state}", summary="Get all projects filtered by state", response_model=Projects)
+@router.get(path="/by_state/{state}", summary="Get all projects filtered by state", response_model=Projects)
 @OpenTelemetry.fastApiTraceOTel
 async def getProjects(
     *,
