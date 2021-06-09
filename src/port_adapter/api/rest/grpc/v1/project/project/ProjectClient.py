@@ -34,6 +34,8 @@ from src.port_adapter.api.rest.model.response.v1.project.Projects import Project
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.project_app_service_pb2 import (
+    ProjectAppService_projectsByStateRequest,
+    ProjectAppService_projectsByStateResponse,
     ProjectAppService_projectsResponse,
     ProjectAppService_projectsRequest,
     ProjectAppService_projectsByOrganizationIdResponse,
@@ -184,6 +186,51 @@ class ProjectClient(Client):
                 )
                 logger.debug(
                     f"[{ProjectClient.projectsByOrganizationId.__qualname__}] - grpc response: {response}"
+                )
+
+                return Projects(
+                    projects=[
+                        self._descriptorByObject(project)
+                        for project in response[0].projects
+                    ],
+                    total_item_count=response[0].totalItemCount,
+                )
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def projectsByState(
+        self, state: str = None, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None
+    ) -> Projects:
+        order = [] if order is None else order
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
+            stub = ProjectAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f"[{ProjectClient.projectsByState.__qualname__}] - grpc call to retrieve projects from server {self._server}:{self._port}"
+                )
+                request = ProjectAppService_projectsByStateRequest(
+                    state=state, resultFrom=resultFrom, resultSize=resultSize
+                )
+                [
+                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
+                    for o in order
+                ]
+                response: ProjectAppService_projectsByStateResponse = stub.projectsByState.with_call(
+                    request,
+                    metadata=(
+                        ("token", self.token),
+                        (
+                            "opentel",
+                            AppDi.instance.get(OpenTelemetry).serializedContext(
+                                ProjectClient.projectsByState.__qualname__
+                            ),
+                        ),
+                    ),
+                )
+                logger.debug(
+                    f"[{ProjectClient.projectsByState.__qualname__}] - grpc response: {response}"
                 )
 
                 return Projects(

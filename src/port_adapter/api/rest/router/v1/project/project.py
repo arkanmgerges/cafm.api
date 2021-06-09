@@ -133,6 +133,39 @@ async def getProjectsByOrganizationId(
         logger.info(e)
 
 
+@router.get(path="/byState/{state}", summary="Get all projects filtered by state", response_model=Projects)
+@OpenTelemetry.fastApiTraceOTel
+async def getProjects(
+    *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    order: str = Query("", description="e.g. name:asc,age:desc"),
+    _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
+    state: str = Path(
+        ..., description="Project state to filter by"
+    ),
+):
+    try:
+        client = ProjectClient()
+        orderService = AppDi.instance.get(OrderService)
+        order = orderService.orderStringToListOfDict(order)
+        return client.projectsByState(
+            state=state, resultFrom=result_from, resultSize=result_size, order=order
+        )
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getProjects.__module__}.{getProjects.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
+
 """
 c4model|cb|api:Component(api__project_project_py__getProject, "Get a Project", "http(s)", "Get all projects")
 c4model:Rel(api__project_project_py__getProject, project__grpc__ProjectAppServiceListener__projectById, "Get a project", "grpc")
