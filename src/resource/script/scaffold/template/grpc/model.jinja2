@@ -47,7 +47,7 @@ class {{ className }}Client(Client):
             stub = {{ className }}AppServiceStub(channel)
             try:
                 request = {{ className }}AppService_newIdRequest()
-                response: {{ className }}AppService_newIdResponse = stub.newId.with_call(
+                response: {{ className }}AppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(('token', self.token), (
                         'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
@@ -60,16 +60,16 @@ class {{ className }}Client(Client):
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def {{ lowerCamelModelName | pluralize }}(self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> {{ className | pluralize }}:
-        order = [] if order is None else order
+    def {{ lowerCamelModelName | pluralize }}(self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None) -> {{ className | pluralize }}:
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = {{ className }}AppServiceStub(channel)
             try:
                 logger.debug(
                     f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName | pluralize }}.__qualname__}] - grpc call to retrieve {{ lowerCamelModelName | pluralize }} from server {self._server}:{self._port}')
-                request = {{ className }}AppService_{{ lowerCamelModelName | pluralize }}Request(resultFrom=resultFrom, resultSize=resultSize)
-                [request.order.add(orderBy=o["orderBy"], direction=o["direction"]) for o in order]
-                response: {{ className }}AppService_{{ lowerCamelModelName | pluralize }}Response = stub.{{ lowerCamelModelName | pluralize }}.with_call(
+                request = {{ className }}AppService_{{ lowerCamelModelName | pluralize }}Request(result_from=resultFrom, result_size=resultSize)
+                [request.orders.add(order_by=o["orderBy"], direction=o["direction"]) for o in orders]
+                response: {{ className }}AppService_{{ lowerCamelModelName | pluralize }}Response = stub.{{ model.name | pluralize }}.with_call(
                     request,
                     metadata=(('token', self.token), (
                         'opentel',
@@ -79,8 +79,8 @@ class {{ className }}Client(Client):
                     f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName | pluralize }}.__qualname__}] - grpc response: {response}')
 
                 return {{ className | pluralize }}({{ model.name | pluralize }}=[self._descriptorByObject(obj={{ lowerCamelModelName }}) for {{ lowerCamelModelName }} in
-                                                    response[0].{{ lowerCamelModelName | pluralize }}],
-                                     total_item_count=response[0].totalItemCount)
+                                                    response[0].{{ model.name | pluralize }}],
+                                     total_item_count=response[0].total_item_count)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
@@ -92,14 +92,14 @@ class {{ className }}Client(Client):
             try:
                 logger.debug(
                     f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName }}ById.__qualname__}] - grpc call to retrieve {{ lowerCamelModelName }} with {{ lowerCamelModelName }}Id: {id} from server {self._server}:{self._port}')
-                response: {{ className }}AppService_{{ lowerCamelModelName }}ByIdResponse = stub.{{ lowerCamelModelName }}ById.with_call(
+                response: {{ className }}AppService_{{ lowerCamelModelName }}ByIdResponse = stub.{{ model.name }}_by_id.with_call(
                     {{ className }}AppService_{{ lowerCamelModelName }}ByIdRequest(id=id),
                     metadata=(('token', self.token), (
                         'opentel', AppDi.instance.get(OpenTelemetry).serializedContext(
                             {{ className }}Client.{{ lowerCamelModelName }}ById.__qualname__))))
                 logger.debug(
                     f'[{{ '{' }}{{ className }}Client.{{ lowerCamelModelName }}ById.__qualname__}] - grpc response: {response}')
-                {{ lowerCamelModelName }} = response[0].{{ lowerCamelModelName }}
+                {{ lowerCamelModelName }} = response[0].{{ model.name }}
                 return self._descriptorByObject(obj={{ lowerCamelModelName }})
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -110,6 +110,6 @@ class {{ className }}Client(Client):
     def _descriptorByObject(self, obj: Any) -> {{ className }}Descriptor:
         return {{ className }}Descriptor(id=obj.id,
                                       {%- for field in model.field %}
-                                      {{ field.name }}=obj.{{ field.name | lowerCamelCase }},
+                                      {{ field.name }}=obj.{{ field.name }},
                                       {%- endfor %}
                                       )

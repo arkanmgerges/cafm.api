@@ -42,7 +42,7 @@ async def getCountries(
     *,
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. name:asc,age:desc"),
+    orders: str = Query("", description="e.g. name:asc,age:desc"),
     _=Depends(CustomHttpBearer()),
 ):
     """
@@ -51,9 +51,9 @@ async def getCountries(
     try:
         client = CountryClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.countries(
-            resultFrom=result_from, resultSize=result_size, order=order
+            resultFrom=result_from, resultSize=result_size, orders=orders
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
@@ -107,7 +107,7 @@ async def getCitiesByCountryId(
     *,
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. name:asc,age:desc"),
+    orders: str = Query("", description="e.g. name:asc,age:desc"),
     country_id: int = Path(
         ..., description="Country id that is used to fetch country cities"
     ),
@@ -119,12 +119,12 @@ async def getCitiesByCountryId(
     try:
         client = CountryClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.citiesByCountryId(
             countryId=country_id,
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
@@ -150,7 +150,7 @@ async def getCitiesByStateId(
     *,
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. name:asc,age:desc"),
+    orders: str = Query("", description="e.g. name:asc,age:desc"),
     country_id: int = Path(
         ..., description="Country id that is used to fetch state cities"
     ),
@@ -165,13 +165,13 @@ async def getCitiesByStateId(
     try:
         client = CountryClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.citiesByCountryIdAndStateId(
             countryId=country_id,
             stateId=state_id,
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
@@ -265,7 +265,7 @@ async def getStatesByCountryId(
     *,
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. name:asc,age:desc"),
+    orders: str = Query("", description="e.g. name:asc,age:desc"),
     country_id: int = Path(
         ..., description="Country id that is used to fetch country states"
     ),
@@ -277,12 +277,12 @@ async def getStatesByCountryId(
     try:
         client = CountryClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.statesByCountryId(
             countryId=country_id,
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:

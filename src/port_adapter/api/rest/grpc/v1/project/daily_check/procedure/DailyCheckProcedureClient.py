@@ -69,9 +69,9 @@ class DailyCheckProcedureClient(Client):
 
     @OpenTelemetry.grpcTraceOTel
     def dailyCheckProcedures(
-        self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None
+        self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None
     ) -> DailyCheckProcedures:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = DailyCheckProcedureAppServiceStub(channel)
             try:
@@ -79,11 +79,11 @@ class DailyCheckProcedureClient(Client):
                     f"[{DailyCheckProcedureClient.dailyCheckProcedures.__qualname__}] - grpc call to retrieve dailyCheckProcedures from server {self._server}:{self._port}"
                 )
                 request = DailyCheckProcedureAppService_dailyCheckProceduresRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: DailyCheckProcedureAppService_dailyCheckProceduresResponse = stub.dailyCheckProcedures.with_call(
                     request,
@@ -104,9 +104,9 @@ class DailyCheckProcedureClient(Client):
                 return DailyCheckProcedures(
                     daily_check_procedures=[
                         self._descriptorByObject(obj=dailyCheckProcedure)
-                        for dailyCheckProcedure in response[0].dailyCheckProcedures
+                        for dailyCheckProcedure in response[0].daily_check_procedures
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -120,7 +120,7 @@ class DailyCheckProcedureClient(Client):
                 logger.debug(
                     f"[{DailyCheckProcedureClient.dailyCheckProcedureById.__qualname__}] - grpc call to retrieve dailyCheckProcedure with dailyCheckProcedureId: {id} from server {self._server}:{self._port}"
                 )
-                response: DailyCheckProcedureAppService_dailyCheckProcedureByIdResponse = stub.dailyCheckProcedureById.with_call(
+                response: DailyCheckProcedureAppService_dailyCheckProcedureByIdResponse = stub.daily_check_procedure_by_id.with_call(
                     DailyCheckProcedureAppService_dailyCheckProcedureByIdRequest(id=id),
                     metadata=(
                         ("token", self.token),
@@ -135,7 +135,7 @@ class DailyCheckProcedureClient(Client):
                 logger.debug(
                     f"[{DailyCheckProcedureClient.dailyCheckProcedureById.__qualname__}] - grpc response: {response}"
                 )
-                dailyCheckProcedure = response[0].dailyCheckProcedure
+                dailyCheckProcedure = response[0].daily_check_procedure
                 return self._descriptorByObject(obj=dailyCheckProcedure)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -147,9 +147,9 @@ class DailyCheckProcedureClient(Client):
         equipmentOrGroupId: str = None,
         resultFrom: int = 0,
         resultSize: int = 10,
-        order: List[dict] = None,
+        orders: List[dict] = None,
     ) -> DailyCheckProcedures:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = DailyCheckProcedureAppServiceStub(channel)
             try:
@@ -157,15 +157,15 @@ class DailyCheckProcedureClient(Client):
                     f"[{DailyCheckProcedureClient.dailyCheckProceduresByEquipmentOrGroupId.__qualname__}] - grpc call to retrieve dailyCheckProcedures from server {self._server}:{self._port}"
                 )
                 request = DailyCheckProcedureAppService_dailyCheckProceduresByEquipmentOrGroupIdRequest(
-                    equipmentOrGroupId=equipmentOrGroupId,
-                    resultFrom=resultFrom,
-                    resultSize=resultSize,
+                    equipment_or_group_id=equipmentOrGroupId,
+                    result_from=resultFrom,
+                    result_size=resultSize,
                 )
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
-                response: DailyCheckProcedureAppService_dailyCheckProceduresByEquipmentOrGroupIdResponse = stub.dailyCheckProceduresByEquipmentOrGroupId.with_call(
+                response: DailyCheckProcedureAppService_dailyCheckProceduresByEquipmentOrGroupIdResponse = stub.daily_check_procedures_by_equipment_or_group_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -184,9 +184,9 @@ class DailyCheckProcedureClient(Client):
                 return DailyCheckProcedures(
                     daily_check_procedures=[
                         self._descriptorByObject(obj=dailyCheckProcedure)
-                        for dailyCheckProcedure in response[0].dailyCheckProcedures
+                        for dailyCheckProcedure in response[0].daily_check_procedures
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -197,6 +197,6 @@ class DailyCheckProcedureClient(Client):
             id=obj.id,
             name=obj.name,
             description=obj.description,
-            equipment_id=obj.equipmentId,
-            equipment_category_group_id=obj.equipmentCategoryGroupId,
+            equipment_id=obj.equipment_id,
+            equipment_category_group_id=obj.equipment_category_group_id,
         )

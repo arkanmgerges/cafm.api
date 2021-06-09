@@ -98,9 +98,9 @@ class ProjectClient(Client):
     # region Project
     @OpenTelemetry.grpcTraceOTel
     def projects(
-        self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None
+        self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None
     ) -> Projects:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = ProjectAppServiceStub(channel)
             try:
@@ -111,8 +111,8 @@ class ProjectClient(Client):
                     resultFrom=resultFrom, resultSize=resultSize
                 )
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: ProjectAppService_projectsResponse = stub.projects.with_call(
                     request,
@@ -204,11 +204,11 @@ class ProjectClient(Client):
         self,
         resultFrom: int = 0,
         resultSize: int = 10,
-        order: List[dict] = None,
+        orders: List[dict] = None,
         include: List[str] = None,
         projectId: str = None,
     ) -> Buildings:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         include = [] if include is None else include
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = ProjectAppServiceStub(channel)
@@ -223,8 +223,8 @@ class ProjectClient(Client):
                     projectId=projectId,
                 )
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: ProjectAppService_buildingsResponse = (
                     stub.buildings.with_call(
@@ -321,11 +321,11 @@ class ProjectClient(Client):
         self,
         resultFrom: int = 0,
         resultSize: int = 10,
-        order: List[dict] = None,
+        orders: List[dict] = None,
         include: List[str] = None,
         buildingId: str = None,
     ) -> BuildingLevels:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         include = [] if include is None else include
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = ProjectAppServiceStub(channel)
@@ -340,8 +340,8 @@ class ProjectClient(Client):
                     buildingId=buildingId,
                 )
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: ProjectAppService_buildingLevelsResponse = (
                     stub.buildingLevels.with_call(
@@ -442,10 +442,10 @@ class ProjectClient(Client):
         self,
         resultFrom: int = 0,
         resultSize: int = 10,
-        order: List[dict] = None,
+        orders: List[dict] = None,
         buildingLevelId: str = None,
     ) -> BuildingLevelRooms:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = ProjectAppServiceStub(channel)
             try:
@@ -458,8 +458,8 @@ class ProjectClient(Client):
                     buildingLevelId=buildingLevelId,
                 )
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: ProjectAppService_buildingLevelRoomsResponse = (
                     stub.buildingLevelRooms.with_call(

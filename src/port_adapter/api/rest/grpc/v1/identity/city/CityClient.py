@@ -33,9 +33,9 @@ class CityClient(Client):
 
     @OpenTelemetry.grpcTraceOTel
     def cities(
-        self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None
+        self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None
     ) -> Cities:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = CityAppServiceStub(channel)
             try:
@@ -49,8 +49,8 @@ class CityClient(Client):
                 #     OpenTelemetry).serializedContext(
                 #     CityClient.cities.__qualname__))))
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: CityAppService_citiesResponse = stub.cities.with_call(
                     request, metadata=(("token", self.token),)

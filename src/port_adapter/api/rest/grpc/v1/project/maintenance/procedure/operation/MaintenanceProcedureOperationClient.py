@@ -71,9 +71,9 @@ class MaintenanceProcedureOperationClient(Client):
 
     @OpenTelemetry.grpcTraceOTel
     def maintenanceProcedureOperations(
-        self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None
+        self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None
     ) -> MaintenanceProcedureOperations:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = MaintenanceProcedureOperationAppServiceStub(channel)
             try:
@@ -84,8 +84,8 @@ class MaintenanceProcedureOperationClient(Client):
                     resultFrom=resultFrom, resultSize=resultSize
                 )
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: MaintenanceProcedureOperationAppService_maintenanceProcedureOperationsResponse = stub.maintenanceProcedureOperations.with_call(
                     request,
@@ -157,9 +157,9 @@ class MaintenanceProcedureOperationClient(Client):
         maintenanceProcedureId: str = None,
         resultFrom: int = 0,
         resultSize: int = 10,
-        order: List[dict] = None,
+        orders: List[dict] = None,
     ) -> MaintenanceProcedureOperations:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = MaintenanceProcedureOperationAppServiceStub(channel)
             try:
@@ -172,8 +172,8 @@ class MaintenanceProcedureOperationClient(Client):
                     resultSize=resultSize,
                 )
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: MaintenanceProcedureOperationAppService_maintenanceProcedureOperationsByMaintenanceProcedureIdResponse = stub.maintenanceProcedureOperationsByMaintenanceProcedureId.with_call(
                     request,

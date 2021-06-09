@@ -74,16 +74,16 @@ async def getDailyCheckProcedures(
     *,
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,email:desc"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
 ):
     try:
         client = DailyCheckProcedureClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.dailyCheckProcedures(
-            resultFrom=result_from, resultSize=result_size, order=order
+            resultFrom=result_from, resultSize=result_size, orders=orders
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
@@ -113,19 +113,19 @@ async def getDailyCheckProceduresByEquipmentOrGroupId(
     ),
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,email:desc"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
 ):
     try:
         client = DailyCheckProcedureClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.dailyCheckProceduresByEquipmentOrGroupId(
             equipmentOrGroupId=equipment_or_group_id,
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
@@ -232,19 +232,19 @@ async def getDailyCheckProcedureOperationParametersByDailyCheckProcedureOperatio
     ),
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,email:desc"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
 ):
     try:
         client = DailyCheckProcedureOperationParameterClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.dailyCheckProcedureOperationParametersByDailyCheckProcedureOperationId(
             dailyCheckProcedureOperationId=daily_check_procedure_operation_id,
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
@@ -772,19 +772,19 @@ async def getDailyCheckProcedureOperationsByDailyCheckProcedureId(
     ),
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,email:desc"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
 ):
     try:
         client = DailyCheckProcedureOperationClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.dailyCheckProcedureOperationsByDailyCheckProcedureId(
             dailyCheckProcedureId=daily_check_procedure_id,
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:

@@ -49,19 +49,19 @@ async def getRolesByOrganizationType(
     ),
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,email:desc"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
     #    _1=Depends(CustomAuthorization()),
 ):
     try:
         client = RoleClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.rolesByOrganizationType(
             organizationType=organization_type,
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
@@ -83,15 +83,15 @@ async def getRoles(
     *,
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,email:desc"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
     #    _1=Depends(CustomAuthorization()),
 ):
     try:
         client = RoleClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
-        return client.roles(resultFrom=result_from, resultSize=result_size, order=order)
+        orders = orderService.orderStringToListOfDict(orders)
+        return client.roles(resultFrom=result_from, resultSize=result_size, orders=orders)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)

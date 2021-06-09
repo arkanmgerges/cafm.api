@@ -52,16 +52,16 @@ async def getStandardEquipmentCategories(
     *,
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,email:desc"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
 ):
     try:
         client = StandardEquipmentCategoryClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.standardEquipmentCategories(
-            resultFrom=result_from, resultSize=result_size, order=order
+            resultFrom=result_from, resultSize=result_size, orders=orders
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:

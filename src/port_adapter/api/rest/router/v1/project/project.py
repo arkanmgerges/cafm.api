@@ -67,16 +67,16 @@ async def getProjects(
     *,
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. name:asc,age:desc"),
+    orders: str = Query("", description="e.g. name:asc,age:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
 ):
     try:
         client = ProjectClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.projects(
-            resultFrom=result_from, resultSize=result_size, order=order
+            resultFrom=result_from, resultSize=result_size, orders=orders
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
@@ -343,7 +343,7 @@ async def getBuildings(
     project_id: str = Path(..., description="Project id that is used to fetch data"),
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,name:desc"),
+    orders: str = Query("", description="e.g. id:asc,name:desc"),
     include: List[str] = Query(
         "", description='values: "building_level", "building_level_room"'
     ),
@@ -353,11 +353,11 @@ async def getBuildings(
     try:
         client = ProjectClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.buildings(
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
             include=include,
             projectId=project_id,
         )
@@ -554,7 +554,7 @@ async def getBuildingLevels(
     building_id: str = Path(..., description="Building id that is used to fetch data"),
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,name:desc"),
+    orders: str = Query("", description="e.g. id:asc,name:desc"),
     include: List[str] = Query("", description='values: "building_level_room"'),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
@@ -562,11 +562,11 @@ async def getBuildingLevels(
     try:
         client = ProjectClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.buildingLevels(
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
             include=include,
             buildingId=building_id,
         )
@@ -863,18 +863,18 @@ async def getBuildingLevelRooms(
     ),
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,name:desc"),
+    orders: str = Query("", description="e.g. id:asc,name:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
 ):
     try:
         client = ProjectClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.buildingLevelRooms(
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
             buildingLevelId=building_level_id,
         )
     except grpc.RpcError as e:

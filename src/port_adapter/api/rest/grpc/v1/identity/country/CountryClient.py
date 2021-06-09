@@ -57,9 +57,9 @@ class CountryClient(Client):
 
     @OpenTelemetry.grpcTraceOTel
     def countries(
-        self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None
+        self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None
     ) -> Countries:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = CountryAppServiceStub(channel)
             try:
@@ -71,8 +71,8 @@ class CountryClient(Client):
                 )
                 CountryAppService_countriesRequest()
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: CountryAppService_countriesResponse = (
                     stub.countries.with_call(request, metadata=(("token", self.token),))
@@ -146,9 +146,9 @@ class CountryClient(Client):
         countryId: int,
         resultFrom: int = 0,
         resultSize: int = 10,
-        order: List[dict] = None,
+        orders: List[dict] = None,
     ) -> Cities:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = CountryAppServiceStub(channel)
             try:
@@ -159,8 +159,8 @@ class CountryClient(Client):
                     id=countryId, resultFrom=resultFrom, resultSize=resultSize
                 )
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: CountryAppService_citiesByCountryIdResponse = (
                     stub.citiesByCountryId.with_call(
@@ -283,9 +283,9 @@ class CountryClient(Client):
         countryId: int,
         resultFrom: int = 0,
         resultSize: int = 10,
-        order: List[dict] = None,
+        orders: List[dict] = None,
     ) -> States:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = CountryAppServiceStub(channel)
             try:
@@ -296,8 +296,8 @@ class CountryClient(Client):
                     id=countryId, resultFrom=resultFrom, resultSize=resultSize
                 )
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: CountryAppService_statesByCountryIdResponse = (
                     stub.statesByCountryId.with_call(
@@ -327,9 +327,9 @@ class CountryClient(Client):
         stateId: str = "",
         resultFrom: int = 0,
         resultSize: int = 10,
-        order: List[dict] = None,
+        orders: List[dict] = None,
     ) -> Cities:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = CountryAppServiceStub(channel)
             try:
@@ -343,8 +343,8 @@ class CountryClient(Client):
                     resultSize=resultSize,
                 )
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: CountryAppService_citiesByCountryIdAndStateIdResponse = (
                     stub.citiesByCountryIdAndStateId.with_call(

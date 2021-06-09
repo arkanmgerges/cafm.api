@@ -63,9 +63,9 @@ class PermissionClient(Client):
 
     @OpenTelemetry.grpcTraceOTel
     def permissions(
-        self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None
+        self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None
     ) -> Permissions:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = PermissionAppServiceStub(channel)
             try:
@@ -76,8 +76,8 @@ class PermissionClient(Client):
                     resultFrom=resultFrom, resultSize=resultSize
                 )
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: PermissionAppService_permissionsResponse = (
                     stub.permissions.with_call(

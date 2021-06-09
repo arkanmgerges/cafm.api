@@ -84,16 +84,16 @@ async def getMaintenanceProcedures(
     *,
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,email:desc"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
 ):
     try:
         client = MaintenanceProcedureClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.maintenanceProcedures(
-            resultFrom=result_from, resultSize=result_size, order=order
+            resultFrom=result_from, resultSize=result_size, orders=orders
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
@@ -122,19 +122,19 @@ async def getMaintenanceProceduresByEquipmentId(
     ),
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,email:desc"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
 ):
     try:
         client = MaintenanceProcedureClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.maintenanceProceduresByEquipmentId(
             equipmentId=equipment_id,
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
@@ -242,19 +242,19 @@ async def getMaintenanceProcedureOperationParametersByMaintenanceProcedureOperat
     ),
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,email:desc"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
 ):
     try:
         client = MaintenanceProcedureOperationParameterClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.maintenanceProcedureOperationParametersByMaintenanceProcedureOperationId(
             maintenanceProcedureOperationId=maintenance_procedure_operation_id,
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
@@ -825,19 +825,19 @@ async def getMaintenanceProcedureOperationsByMaintenanceProcedureId(
     ),
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,email:desc"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
 ):
     try:
         client = MaintenanceProcedureOperationClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.maintenanceProcedureOperationsByMaintenanceProcedureId(
             maintenanceProcedureId=maintenance_procedure_id,
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:

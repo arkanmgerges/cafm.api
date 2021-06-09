@@ -71,9 +71,9 @@ class DailyCheckProcedureOperationClient(Client):
 
     @OpenTelemetry.grpcTraceOTel
     def dailyCheckProcedureOperations(
-        self, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None
+        self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None
     ) -> DailyCheckProcedureOperations:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = DailyCheckProcedureOperationAppServiceStub(channel)
             try:
@@ -84,8 +84,8 @@ class DailyCheckProcedureOperationClient(Client):
                     resultFrom=resultFrom, resultSize=resultSize
                 )
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: DailyCheckProcedureOperationAppService_dailyCheckProcedureOperationsResponse = stub.dailyCheckProcedureOperations.with_call(
                     request,
@@ -155,9 +155,9 @@ class DailyCheckProcedureOperationClient(Client):
         dailyCheckProcedureId: str = None,
         resultFrom: int = 0,
         resultSize: int = 10,
-        order: List[dict] = None,
+        orders: List[dict] = None,
     ) -> DailyCheckProcedureOperations:
-        order = [] if order is None else order
+        orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = DailyCheckProcedureOperationAppServiceStub(channel)
             try:
@@ -170,8 +170,8 @@ class DailyCheckProcedureOperationClient(Client):
                     resultSize=resultSize,
                 )
                 [
-                    request.order.add(orderBy=o["orderBy"], direction=o["direction"])
-                    for o in order
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
                 ]
                 response: DailyCheckProcedureOperationAppService_dailyCheckProcedureOperationsByDailyCheckProcedureIdResponse = stub.dailyCheckProcedureOperationsByDailyCheckProcedureId.with_call(
                     request,
