@@ -64,7 +64,7 @@ async def getUsers(
         logger.info(e)
 
 
-@router.get(path="/byOrganization/{organization_id}", summary="Get all users by organization", response_model=Users)
+@router.get(path="/byOrganizationId/{organization_id}", summary="Get all users by organization", response_model=Users)
 @OpenTelemetry.fastApiTraceOTel
 async def getUsersByOrganizationId(
     *,
