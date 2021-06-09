@@ -13,8 +13,8 @@ from src.port_adapter.api.rest.model.response.v1.project.Users import Users
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.user_app_service_pb2 import (
-    UserAppService_usersByOrganizationRequest,
-    UserAppService_usersByOrganizationResponse,
+    UserAppService_usersByOrganizationIdRequest,
+    UserAppService_usersByOrganizationIdResponse,
     UserAppService_usersResponse,
     UserAppService_usersRequest,
     UserAppService_userByIdRequest,
@@ -104,7 +104,7 @@ class UserClient(Client):
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def usersByOrganization(
+    def usersByOrganizationId(
         self, organizationId: str = None, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None
     ) -> Users:
         order = [] if order is None else order
@@ -112,29 +112,29 @@ class UserClient(Client):
             stub = UserAppServiceStub(channel)
             try:
                 logger.debug(
-                    f"[{UserClient.usersByOrganization.__qualname__}] - grpc call to retrieve users from server {self._server}:{self._port}"
+                    f"[{UserClient.usersByOrganizationId.__qualname__}] - grpc call to retrieve users from server {self._server}:{self._port}"
                 )
-                request = UserAppService_usersByOrganizationRequest(
+                request = UserAppService_usersByOrganizationIdRequest(
                     organizationId=organizationId, resultFrom=resultFrom, resultSize=resultSize
                 )
                 [
                     request.order.add(orderBy=o["orderBy"], direction=o["direction"])
                     for o in order
                 ]
-                response: UserAppService_usersByOrganizationResponse = stub.usersByOrganization.with_call(
+                response: UserAppService_usersByOrganizationIdResponse = stub.usersByOrganizationId.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
                         (
                             "opentel",
                             AppDi.instance.get(OpenTelemetry).serializedContext(
-                                UserClient.usersByOrganization.__qualname__
+                                UserClient.usersByOrganizationId.__qualname__
                             ),
                         ),
                     ),
                 )
                 logger.debug(
-                    f"[{UserClient.usersByOrganization.__qualname__}] - grpc response: {response}"
+                    f"[{UserClient.usersByOrganizationId.__qualname__}] - grpc response: {response}"
                 )
 
                 return Users(

@@ -29,10 +29,10 @@ class UserAppServiceStub(object):
                 request_serializer=project_dot_user__app__service__pb2.UserAppService_usersRequest.SerializeToString,
                 response_deserializer=project_dot_user__app__service__pb2.UserAppService_usersResponse.FromString,
                 )
-        self.usersByOrganization = channel.unary_unary(
-                '/cafm.project.user.UserAppService/usersByOrganization',
-                request_serializer=project_dot_user__app__service__pb2.UserAppService_usersByOrganizationRequest.SerializeToString,
-                response_deserializer=project_dot_user__app__service__pb2.UserAppService_usersByOrganizationResponse.FromString,
+        self.usersByOrganizationId = channel.unary_unary(
+                '/cafm.project.user.UserAppService/usersByOrganizationId',
+                request_serializer=project_dot_user__app__service__pb2.UserAppService_usersByOrganizationIdRequest.SerializeToString,
+                response_deserializer=project_dot_user__app__service__pb2.UserAppService_usersByOrganizationIdResponse.FromString,
                 )
         self.newId = channel.unary_unary(
                 '/cafm.project.user.UserAppService/newId',
@@ -62,7 +62,7 @@ class UserAppServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def usersByOrganization(self, request, context):
+    def usersByOrganizationId(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -92,10 +92,10 @@ def add_UserAppServiceServicer_to_server(servicer, server):
                     request_deserializer=project_dot_user__app__service__pb2.UserAppService_usersRequest.FromString,
                     response_serializer=project_dot_user__app__service__pb2.UserAppService_usersResponse.SerializeToString,
             ),
-            'usersByOrganization': grpc.unary_unary_rpc_method_handler(
-                    servicer.usersByOrganization,
-                    request_deserializer=project_dot_user__app__service__pb2.UserAppService_usersByOrganizationRequest.FromString,
-                    response_serializer=project_dot_user__app__service__pb2.UserAppService_usersByOrganizationResponse.SerializeToString,
+            'usersByOrganizationId': grpc.unary_unary_rpc_method_handler(
+                    servicer.usersByOrganizationId,
+                    request_deserializer=project_dot_user__app__service__pb2.UserAppService_usersByOrganizationIdRequest.FromString,
+                    response_serializer=project_dot_user__app__service__pb2.UserAppService_usersByOrganizationIdResponse.SerializeToString,
             ),
             'newId': grpc.unary_unary_rpc_method_handler(
                     servicer.newId,
@@ -164,7 +164,7 @@ class UserAppService(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def usersByOrganization(request,
+    def usersByOrganizationId(request,
             target,
             options=(),
             channel_credentials=None,
@@ -174,9 +174,9 @@ class UserAppService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.project.user.UserAppService/usersByOrganization',
-            project_dot_user__app__service__pb2.UserAppService_usersByOrganizationRequest.SerializeToString,
-            project_dot_user__app__service__pb2.UserAppService_usersByOrganizationResponse.FromString,
+        return grpc.experimental.unary_unary(request, target, '/cafm.project.user.UserAppService/usersByOrganizationId',
+            project_dot_user__app__service__pb2.UserAppService_usersByOrganizationIdRequest.SerializeToString,
+            project_dot_user__app__service__pb2.UserAppService_usersByOrganizationIdResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
