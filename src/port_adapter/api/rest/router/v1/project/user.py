@@ -64,13 +64,13 @@ async def getUsers(
         logger.info(e)
 
 
-@router.get(path="/byOrganizationId/{organization_id}", summary="Get all users by organization", response_model=Users)
+@router.get(path="/by_organization_id/{organization_id}", summary="Get all users by organization", response_model=Users)
 @OpenTelemetry.fastApiTraceOTel
 async def getUsersByOrganizationId(
     *,
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,email:desc"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
     organization_id: str = Path(
@@ -80,8 +80,8 @@ async def getUsersByOrganizationId(
     try:
         client = UserClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
-        return client.usersByOrganizationId(organizationId=organization_id, resultFrom=result_from, resultSize=result_size, orders=order)
+        orders = orderService.orderStringToListOfDict(orders)
+        return client.usersByOrganizationId(organizationId=organization_id, resultFrom=result_from, resultSize=result_size, orders=orders)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)

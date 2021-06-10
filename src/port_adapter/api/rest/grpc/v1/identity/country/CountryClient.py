@@ -67,7 +67,7 @@ class CountryClient(Client):
                     f"[{CountryClient.countries.__qualname__}] - grpc call to retrieve countries from server {self._server}:{self._port}"
                 )
                 request = CountryAppService_countriesRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 CountryAppService_countriesRequest()
                 [
@@ -85,16 +85,16 @@ class CountryClient(Client):
                     countries=[
                         Country(
                             id=country.id,
-                            locale_code=country.localeCode,
-                            continent_code=country.continentCode,
-                            continent_name=country.continentName,
-                            country_iso_code=country.countryIsoCode,
-                            country_name=country.countryName,
-                            is_in_european_union=country.isInEuropeanUnion,
+                            locale_code=country.locale_code,
+                            continent_code=country.continent_code,
+                            continent_name=country.continent_name,
+                            country_iso_code=country.country_iso_code,
+                            country_name=country.country_name,
+                            is_in_european_union=country.is_in_european_union,
                         )
                         for country in response[0].countries
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -110,7 +110,7 @@ class CountryClient(Client):
                     f"[{CountryClient.countryById.__qualname__}] - grpc call to retrieve country with countryId: {countryId} from server {self._server}:{self._port}"
                 )
                 response: CountryAppService_countryByIdResponse = (
-                    stub.countryById.with_call(
+                    stub.country_by_id.with_call(
                         CountryAppService_countryByIdRequest(id=countryId),
                         metadata=(
                             ("token", self.token),
@@ -129,12 +129,12 @@ class CountryClient(Client):
 
                 return CountryDescriptor(
                     id=response[0].country.id,
-                    locale_code=response[0].country.localeCode,
-                    continent_code=response[0].country.continentCode,
-                    continent_name=response[0].country.continentName,
-                    country_iso_code=response[0].country.countryIsoCode,
-                    country_name=response[0].country.countryName,
-                    is_in_european_union=response[0].country.isInEuropeanUnion,
+                    locale_code=response[0].country.locale_code,
+                    continent_code=response[0].country.continent_code,
+                    continent_name=response[0].country.continent_name,
+                    country_iso_code=response[0].country.country_iso_code,
+                    country_name=response[0].country.country_name,
+                    is_in_european_union=response[0].country.is_in_european_union,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -156,14 +156,14 @@ class CountryClient(Client):
                     f"[{CountryClient.citiesByCountryId.__qualname__}] - grpc call to retrieve a country cities: {countryId} from server {self._server}:{self._port}"
                 )
                 request = CountryAppService_citiesByCountryIdRequest(
-                    id=countryId, resultFrom=resultFrom, resultSize=resultSize
+                    id=countryId, result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
                 response: CountryAppService_citiesByCountryIdResponse = (
-                    stub.citiesByCountryId.with_call(
+                    stub.cities_by_country_id.with_call(
                         request, metadata=(("token", self.token),)
                     )
                 )
@@ -176,20 +176,20 @@ class CountryClient(Client):
                     cities=[
                         City(
                             id=city.id,
-                            locale_code=city.localeCode,
-                            continent_code=city.continentCode,
-                            continent_name=city.continentName,
-                            country_iso_code=city.countryIsoCode,
-                            country_name=city.countryName,
-                            subdivision_1_iso_code=city.subdivisionOneIsoCode,
-                            subdivision_1_name=city.subdivisionOneIsoName,
-                            city_name=city.cityName,
-                            time_zone=city.timeZone,
-                            is_in_european_union=city.isInEuropeanUnion,
+                            locale_code=city.locale_code,
+                            continent_code=city.continent_code,
+                            continent_name=city.continent_name,
+                            country_iso_code=city.country_iso_code,
+                            country_name=city.country_name,
+                            subdivision_1_iso_code=city.subdivision_one_iso_code,
+                            subdivision_1_name=city.subdivision_one_iso_name,
+                            city_name=city.city_name,
+                            time_zone=city.time_zone,
+                            is_in_european_union=city.is_in_european_union,
                         )
                         for city in response[0].cities
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -204,9 +204,9 @@ class CountryClient(Client):
                     f"[{CountryClient.cityByCountryId.__qualname__}] - grpc call to retrieve city with countryId: {countryId} & cityId: {cityId} from server {self._server}:{self._port}"
                 )
                 response: CountryAppService_cityByCountryIdResponse = (
-                    stub.cityByCountryId.with_call(
+                    stub.city_by_country_id.with_call(
                         CountryAppService_cityByCountryIdRequest(
-                            countryId=countryId, cityId=cityId
+                            country_id=countryId, city_id=cityId
                         ),
                         metadata=(
                             ("token", self.token),
@@ -226,16 +226,16 @@ class CountryClient(Client):
                 city = response[0].city
                 return CityDescriptor(
                     id=city.id,
-                    locale_code=city.localeCode,
-                    continent_code=city.continentCode,
-                    continent_name=city.continentName,
-                    country_iso_code=city.countryIsoCode,
-                    country_name=city.countryName,
-                    subdivision_1_iso_code=city.subdivisionOneIsoCode,
-                    subdivision_1_name=city.subdivisionOneIsoName,
-                    city_name=city.cityName,
-                    time_zone=city.timeZone,
-                    is_in_european_union=city.isInEuropeanUnion,
+                    locale_code=city.locale_code,
+                    continent_code=city.continent_code,
+                    continent_name=city.continent_name,
+                    country_iso_code=city.country_iso_code,
+                    country_name=city.country_name,
+                    subdivision_1_iso_code=city.subdivision_one_iso_code,
+                    subdivision_1_name=city.subdivision_one_iso_name,
+                    city_name=city.city_name,
+                    time_zone=city.time_zone,
+                    is_in_european_union=city.is_in_european_union,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -249,10 +249,10 @@ class CountryClient(Client):
                 logger.debug(
                     f"[{CountryClient.stateByCountryIdAndStateId.__qualname__}] - grpc call to retrieve city with countryId: {countryId} & stateId: {stateId} from server {self._server}:{self._port}"
                 )
-                response: CountryAppService_stateByCountryIdAndStateIdResponse = stub.stateByCountryIdAndStateId.with_call(
+                response: CountryAppService_stateByCountryIdAndStateIdResponse = stub.state_by_country_id_and_state_id.with_call(
                     CountryAppService_stateByCountryIdAndStateIdRequest(
-                        countryId=countryId,
-                        stateId=stateId,
+                        country_id=countryId,
+                        state_id=stateId,
                     ),
                     metadata=(
                         ("token", self.token),
@@ -293,14 +293,14 @@ class CountryClient(Client):
                     f"[{CountryClient.statesByCountryId.__qualname__}] - grpc call to retrieve a country states: {countryId} from server {self._server}:{self._port}"
                 )
                 request = CountryAppService_statesByCountryIdRequest(
-                    id=countryId, resultFrom=resultFrom, resultSize=resultSize
+                    id=countryId, result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
                 response: CountryAppService_statesByCountryIdResponse = (
-                    stub.statesByCountryId.with_call(
+                    stub.states_by_country_id.with_call(
                         request, metadata=(("token", self.token),)
                     )
                 )
@@ -314,7 +314,7 @@ class CountryClient(Client):
                         State(id=state.id, name=state.name)
                         for state in response[0].states
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -337,17 +337,17 @@ class CountryClient(Client):
                     f"[{CountryClient.citiesByCountryIdAndStateId.__qualname__}] - grpc call to retrieve citiesByStateId from server {self._server}:{self._port}"
                 )
                 request = CountryAppService_citiesByCountryIdAndStateIdRequest(
-                    countryId=countryId,
-                    stateId=stateId,
-                    resultFrom=resultFrom,
-                    resultSize=resultSize,
+                    country_id=countryId,
+                    state_id=stateId,
+                    result_from=resultFrom,
+                    result_size=resultSize,
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
                 response: CountryAppService_citiesByCountryIdAndStateIdResponse = (
-                    stub.citiesByCountryIdAndStateId.with_call(
+                    stub.cities_by_country_id_and_state_id.with_call(
                         request, metadata=(("token", self.token),)
                     )
                 )
@@ -359,20 +359,20 @@ class CountryClient(Client):
                     cities=[
                         City(
                             id=city.id,
-                            locale_code=city.localeCode,
-                            continent_code=city.continentCode,
-                            continent_name=city.continentName,
-                            country_iso_code=city.countryIsoCode,
-                            country_name=city.countryName,
-                            subdivision_1_iso_code=city.subdivisionOneIsoCode,
-                            subdivision_1_name=city.subdivisionOneIsoName,
-                            city_name=city.cityName,
-                            time_zone=city.timeZone,
-                            is_in_european_union=city.isInEuropeanUnion,
+                            locale_code=city.locale_code,
+                            continent_code=city.continent_code,
+                            continent_name=city.continent_name,
+                            country_iso_code=city.country_iso_code,
+                            country_name=city.country_name,
+                            subdivision_1_iso_code=city.subdivision_one_iso_code,
+                            subdivision_1_name=city.subdivision_one_iso_name,
+                            city_name=city.city_name,
+                            time_zone=city.time_zone,
+                            is_in_european_union=city.is_in_european_union,
                         )
                         for city in response[0].cities
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

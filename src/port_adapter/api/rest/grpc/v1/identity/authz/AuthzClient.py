@@ -40,7 +40,7 @@ class AuthzClient(Client):
                 logger.debug(
                     f"[{AuthzClient.hashKeys.__qualname__}] - grpc call to hash keys"
                 )
-                response: AuthzAppService_hashKeysResponse = stub.hashKeys.with_call(
+                response: AuthzAppService_hashKeysResponse = stub.hash_keys.with_call(
                     AuthzAppService_hashKeysRequest(
                         keys=[UnhashedKey(key=x.key) for x in unhashedKeys.keys]
                     ),
@@ -61,9 +61,9 @@ class AuthzClient(Client):
                 return HashedKeys(
                     hashed_keys=[
                         HashedKey(key=x.key, hash_code=x.hashCode)
-                        for x in response[0].hashedKeys
+                        for x in response[0].hashed_keys
                     ],
-                    total_item_count=len(response[0].hashedKeys),
+                    total_item_count=len(response[0].hashed_keys),
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())

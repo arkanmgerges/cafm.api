@@ -61,7 +61,7 @@ class RoleClient(Client):
                     f"[{RoleClient.newId.__qualname__}] - grpc call to retrieve roles from server {self._server}:{self._port}"
                 )
                 request = RoleAppService_newIdRequest()
-                response: RoleAppService_newIdResponse = stub.newId.with_call(
+                response: RoleAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -91,7 +91,7 @@ class RoleClient(Client):
                     f"[{RoleClient.rolesTrees.__qualname__}] - grpc call to retrieve roles from server {self._server}:{self._port}"
                 )
                 request = RoleAppService_rolesTreesRequest()
-                response: RoleAppService_rolesTreesResponse = stub.rolesTrees.with_call(
+                response: RoleAppService_rolesTreesResponse = stub.roles_trees.with_call(
                     request,
                     metadata=(
                         ("token", innerToken),
@@ -109,7 +109,7 @@ class RoleClient(Client):
 
                 result = []
 
-                roleAccessPermissionsResponse = response[0].roleAccessPermission
+                roleAccessPermissionsResponse = response[0].role_access_permission
 
                 for roleAccessPermissionResponse in roleAccessPermissionsResponse:
                     role = self._descriptorByObject(
@@ -117,22 +117,22 @@ class RoleClient(Client):
                     )
                     # owned by
                     ownedBy = self._resourceFromProtoBuff(
-                        roleAccessPermissionResponse.ownedBy
+                        roleAccessPermissionResponse.owned_by
                     )
                     # owner of
                     ownerOfList = []
-                    for ownerOfItem in roleAccessPermissionResponse.ownerOf:
+                    for ownerOfItem in roleAccessPermissionResponse.owner_of:
                         ownerOfList.append(self._resourceFromProtoBuff(ownerOfItem))
 
                     # permissions with permission contexts
                     tmp = []
                     for (
                         permissionWithContext
-                    ) in roleAccessPermissionResponse.permissionWithPermissionContexts:
+                    ) in roleAccessPermissionResponse.permission_with_permission_contexts:
                         pcs = []
                         for (
                             permissionContext
-                        ) in permissionWithContext.permissionContexts:
+                        ) in permissionWithContext.permission_contexts:
                             pcs.append(
                                 self._permissionContextFromProtoBuff(permissionContext)
                             )
@@ -154,7 +154,7 @@ class RoleClient(Client):
                             owner_of=ownerOfList,
                             permissions=tmp,
                             access_tree=self._accessNodeFromProtoBuff(
-                                roleAccessPermissionResponse.accessTree
+                                roleAccessPermissionResponse.access_tree
                             ),
                         )
                     )
@@ -171,8 +171,8 @@ class RoleClient(Client):
                 logger.debug(
                     f"[{RoleClient.roleTree.__qualname__}] - grpc call to retrieve roles from server {self._server}:{self._port}"
                 )
-                request = RoleAppService_roleTreeRequest(roleId=roleId)
-                response: RoleAppService_rolesTreesResponse = stub.roleTree.with_call(
+                request = RoleAppService_roleTreeRequest(role_id=roleId)
+                response: RoleAppService_rolesTreesResponse = stub.role_tree.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -188,24 +188,24 @@ class RoleClient(Client):
                     f"[{RoleClient.roleTree.__qualname__}] - grpc response: {response}"
                 )
 
-                roleAccessPermissionResponse = response[0].roleAccessPermission
+                roleAccessPermissionResponse = response[0].role_access_permission
                 role = self._descriptorByObject(obj=roleAccessPermissionResponse.role)
                 # owned by
                 ownedBy = self._resourceFromProtoBuff(
-                    roleAccessPermissionResponse.ownedBy
+                    roleAccessPermissionResponse.owned_by
                 )
                 # owner of
                 ownerOfList = []
-                for ownerOfItem in roleAccessPermissionResponse.ownerOf:
+                for ownerOfItem in roleAccessPermissionResponse.owner_of:
                     ownerOfList.append(self._resourceFromProtoBuff(ownerOfItem))
 
                 # permissions with permission contexts
                 tmp = []
                 for (
                     permissionWithContext
-                ) in roleAccessPermissionResponse.permissionWithPermissionContexts:
+                ) in roleAccessPermissionResponse.permission_with_permission_contexts:
                     pcs = []
-                    for permissionContext in permissionWithContext.permissionContexts:
+                    for permissionContext in permissionWithContext.permission_contexts:
                         pcs.append(
                             self._permissionContextFromProtoBuff(permissionContext)
                         )
@@ -221,13 +221,13 @@ class RoleClient(Client):
 
                 # role access tree
 
-                return RoleAccessPermissionDataDescriptor(
+                return RoleAccessPermissionDatas(
                     role=role,
                     owned_by=ownedBy,
                     owner_of=ownerOfList,
                     permissions=tmp,
                     access_tree=self._accessNodeFromProtoBuff(
-                        roleAccessPermissionResponse.accessTree
+                        roleAccessPermissionResponse.access_tree
                     ),
                 )
             except Exception as e:
@@ -251,7 +251,7 @@ class RoleClient(Client):
                 AccessNode(
                     data=AccessNodeData(
                         content=json.loads(node.data.content),
-                        content_type=node.data.contentType,
+                        content_type=node.data.content_type,
                         context=json.loads(node.data.context),
                     ),
                     children=children,
@@ -260,8 +260,8 @@ class RoleClient(Client):
         return result
 
     def _permissionFromProtoBuff(self, protoBuf):
-        allowedActions = [x for x in protoBuf.allowedActions]
-        deniedActions = [x for x in protoBuf.deniedActions]
+        allowedActions = [x for x in protoBuf.allowed_actions]
+        deniedActions = [x for x in protoBuf.denied_actions]
         return Permission(
             id=protoBuf.id,
             name=protoBuf.name,
@@ -281,7 +281,7 @@ class RoleClient(Client):
                     f"[{RoleClient.roles.__qualname__}] - grpc call to retrieve roles from server {self._server}:{self._port}"
                 )
                 request = RoleAppService_rolesRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
@@ -307,7 +307,7 @@ class RoleClient(Client):
                     roles=[
                         self._descriptorByObject(obj=role) for role in response[0].roles
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -321,7 +321,7 @@ class RoleClient(Client):
                 logger.debug(
                     f"[{RoleClient.roleById.__qualname__}] - grpc call to retrieve role with roleId: {roleId} from server {self._server}:{self._port}"
                 )
-                response: RoleAppService_roleByIdResponse = stub.roleById.with_call(
+                response: RoleAppService_roleByIdResponse = stub.role_by_id.with_call(
                     RoleAppService_roleByIdRequest(id=roleId),
                     metadata=(
                         ("token", self.token),

@@ -14,8 +14,8 @@ class CountryAppServiceStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.countryById = channel.unary_unary(
-                '/cafm.identity.country.CountryAppService/countryById',
+        self.country_by_id = channel.unary_unary(
+                '/cafm.identity.country.CountryAppService/country_by_id',
                 request_serializer=identity_dot_country__app__service__pb2.CountryAppService_countryByIdRequest.SerializeToString,
                 response_deserializer=identity_dot_country__app__service__pb2.CountryAppService_countryByIdResponse.FromString,
                 )
@@ -24,28 +24,28 @@ class CountryAppServiceStub(object):
                 request_serializer=identity_dot_country__app__service__pb2.CountryAppService_countriesRequest.SerializeToString,
                 response_deserializer=identity_dot_country__app__service__pb2.CountryAppService_countriesResponse.FromString,
                 )
-        self.citiesByCountryId = channel.unary_unary(
-                '/cafm.identity.country.CountryAppService/citiesByCountryId',
+        self.cities_by_country_id = channel.unary_unary(
+                '/cafm.identity.country.CountryAppService/cities_by_country_id',
                 request_serializer=identity_dot_country__app__service__pb2.CountryAppService_citiesByCountryIdRequest.SerializeToString,
                 response_deserializer=identity_dot_country__app__service__pb2.CountryAppService_citiesByCountryIdResponse.FromString,
                 )
-        self.cityByCountryId = channel.unary_unary(
-                '/cafm.identity.country.CountryAppService/cityByCountryId',
+        self.city_by_country_id = channel.unary_unary(
+                '/cafm.identity.country.CountryAppService/city_by_country_id',
                 request_serializer=identity_dot_country__app__service__pb2.CountryAppService_cityByCountryIdRequest.SerializeToString,
                 response_deserializer=identity_dot_country__app__service__pb2.CountryAppService_cityByCountryIdResponse.FromString,
                 )
-        self.stateByCountryIdAndStateId = channel.unary_unary(
-                '/cafm.identity.country.CountryAppService/stateByCountryIdAndStateId',
+        self.state_by_country_id_and_state_id = channel.unary_unary(
+                '/cafm.identity.country.CountryAppService/state_by_country_id_and_state_id',
                 request_serializer=identity_dot_country__app__service__pb2.CountryAppService_stateByCountryIdAndStateIdRequest.SerializeToString,
                 response_deserializer=identity_dot_country__app__service__pb2.CountryAppService_stateByCountryIdAndStateIdResponse.FromString,
                 )
-        self.statesByCountryId = channel.unary_unary(
-                '/cafm.identity.country.CountryAppService/statesByCountryId',
+        self.states_by_country_id = channel.unary_unary(
+                '/cafm.identity.country.CountryAppService/states_by_country_id',
                 request_serializer=identity_dot_country__app__service__pb2.CountryAppService_statesByCountryIdRequest.SerializeToString,
                 response_deserializer=identity_dot_country__app__service__pb2.CountryAppService_statesByCountryIdResponse.FromString,
                 )
-        self.citiesByCountryIdAndStateId = channel.unary_unary(
-                '/cafm.identity.country.CountryAppService/citiesByCountryIdAndStateId',
+        self.cities_by_country_id_and_state_id = channel.unary_unary(
+                '/cafm.identity.country.CountryAppService/cities_by_country_id_and_state_id',
                 request_serializer=identity_dot_country__app__service__pb2.CountryAppService_citiesByCountryIdAndStateIdRequest.SerializeToString,
                 response_deserializer=identity_dot_country__app__service__pb2.CountryAppService_citiesByCountryIdAndStateIdResponse.FromString,
                 )
@@ -54,7 +54,7 @@ class CountryAppServiceStub(object):
 class CountryAppServiceServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def countryById(self, request, context):
+    def country_by_id(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -66,31 +66,31 @@ class CountryAppServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def citiesByCountryId(self, request, context):
+    def cities_by_country_id(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def cityByCountryId(self, request, context):
+    def city_by_country_id(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def stateByCountryIdAndStateId(self, request, context):
+    def state_by_country_id_and_state_id(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def statesByCountryId(self, request, context):
+    def states_by_country_id(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def citiesByCountryIdAndStateId(self, request, context):
+    def cities_by_country_id_and_state_id(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -99,8 +99,8 @@ class CountryAppServiceServicer(object):
 
 def add_CountryAppServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'countryById': grpc.unary_unary_rpc_method_handler(
-                    servicer.countryById,
+            'country_by_id': grpc.unary_unary_rpc_method_handler(
+                    servicer.country_by_id,
                     request_deserializer=identity_dot_country__app__service__pb2.CountryAppService_countryByIdRequest.FromString,
                     response_serializer=identity_dot_country__app__service__pb2.CountryAppService_countryByIdResponse.SerializeToString,
             ),
@@ -109,28 +109,28 @@ def add_CountryAppServiceServicer_to_server(servicer, server):
                     request_deserializer=identity_dot_country__app__service__pb2.CountryAppService_countriesRequest.FromString,
                     response_serializer=identity_dot_country__app__service__pb2.CountryAppService_countriesResponse.SerializeToString,
             ),
-            'citiesByCountryId': grpc.unary_unary_rpc_method_handler(
-                    servicer.citiesByCountryId,
+            'cities_by_country_id': grpc.unary_unary_rpc_method_handler(
+                    servicer.cities_by_country_id,
                     request_deserializer=identity_dot_country__app__service__pb2.CountryAppService_citiesByCountryIdRequest.FromString,
                     response_serializer=identity_dot_country__app__service__pb2.CountryAppService_citiesByCountryIdResponse.SerializeToString,
             ),
-            'cityByCountryId': grpc.unary_unary_rpc_method_handler(
-                    servicer.cityByCountryId,
+            'city_by_country_id': grpc.unary_unary_rpc_method_handler(
+                    servicer.city_by_country_id,
                     request_deserializer=identity_dot_country__app__service__pb2.CountryAppService_cityByCountryIdRequest.FromString,
                     response_serializer=identity_dot_country__app__service__pb2.CountryAppService_cityByCountryIdResponse.SerializeToString,
             ),
-            'stateByCountryIdAndStateId': grpc.unary_unary_rpc_method_handler(
-                    servicer.stateByCountryIdAndStateId,
+            'state_by_country_id_and_state_id': grpc.unary_unary_rpc_method_handler(
+                    servicer.state_by_country_id_and_state_id,
                     request_deserializer=identity_dot_country__app__service__pb2.CountryAppService_stateByCountryIdAndStateIdRequest.FromString,
                     response_serializer=identity_dot_country__app__service__pb2.CountryAppService_stateByCountryIdAndStateIdResponse.SerializeToString,
             ),
-            'statesByCountryId': grpc.unary_unary_rpc_method_handler(
-                    servicer.statesByCountryId,
+            'states_by_country_id': grpc.unary_unary_rpc_method_handler(
+                    servicer.states_by_country_id,
                     request_deserializer=identity_dot_country__app__service__pb2.CountryAppService_statesByCountryIdRequest.FromString,
                     response_serializer=identity_dot_country__app__service__pb2.CountryAppService_statesByCountryIdResponse.SerializeToString,
             ),
-            'citiesByCountryIdAndStateId': grpc.unary_unary_rpc_method_handler(
-                    servicer.citiesByCountryIdAndStateId,
+            'cities_by_country_id_and_state_id': grpc.unary_unary_rpc_method_handler(
+                    servicer.cities_by_country_id_and_state_id,
                     request_deserializer=identity_dot_country__app__service__pb2.CountryAppService_citiesByCountryIdAndStateIdRequest.FromString,
                     response_serializer=identity_dot_country__app__service__pb2.CountryAppService_citiesByCountryIdAndStateIdResponse.SerializeToString,
             ),
@@ -145,7 +145,7 @@ class CountryAppService(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def countryById(request,
+    def country_by_id(request,
             target,
             options=(),
             channel_credentials=None,
@@ -155,7 +155,7 @@ class CountryAppService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.identity.country.CountryAppService/countryById',
+        return grpc.experimental.unary_unary(request, target, '/cafm.identity.country.CountryAppService/country_by_id',
             identity_dot_country__app__service__pb2.CountryAppService_countryByIdRequest.SerializeToString,
             identity_dot_country__app__service__pb2.CountryAppService_countryByIdResponse.FromString,
             options, channel_credentials,
@@ -179,7 +179,7 @@ class CountryAppService(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def citiesByCountryId(request,
+    def cities_by_country_id(request,
             target,
             options=(),
             channel_credentials=None,
@@ -189,14 +189,14 @@ class CountryAppService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.identity.country.CountryAppService/citiesByCountryId',
+        return grpc.experimental.unary_unary(request, target, '/cafm.identity.country.CountryAppService/cities_by_country_id',
             identity_dot_country__app__service__pb2.CountryAppService_citiesByCountryIdRequest.SerializeToString,
             identity_dot_country__app__service__pb2.CountryAppService_citiesByCountryIdResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def cityByCountryId(request,
+    def city_by_country_id(request,
             target,
             options=(),
             channel_credentials=None,
@@ -206,14 +206,14 @@ class CountryAppService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.identity.country.CountryAppService/cityByCountryId',
+        return grpc.experimental.unary_unary(request, target, '/cafm.identity.country.CountryAppService/city_by_country_id',
             identity_dot_country__app__service__pb2.CountryAppService_cityByCountryIdRequest.SerializeToString,
             identity_dot_country__app__service__pb2.CountryAppService_cityByCountryIdResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def stateByCountryIdAndStateId(request,
+    def state_by_country_id_and_state_id(request,
             target,
             options=(),
             channel_credentials=None,
@@ -223,14 +223,14 @@ class CountryAppService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.identity.country.CountryAppService/stateByCountryIdAndStateId',
+        return grpc.experimental.unary_unary(request, target, '/cafm.identity.country.CountryAppService/state_by_country_id_and_state_id',
             identity_dot_country__app__service__pb2.CountryAppService_stateByCountryIdAndStateIdRequest.SerializeToString,
             identity_dot_country__app__service__pb2.CountryAppService_stateByCountryIdAndStateIdResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def statesByCountryId(request,
+    def states_by_country_id(request,
             target,
             options=(),
             channel_credentials=None,
@@ -240,14 +240,14 @@ class CountryAppService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.identity.country.CountryAppService/statesByCountryId',
+        return grpc.experimental.unary_unary(request, target, '/cafm.identity.country.CountryAppService/states_by_country_id',
             identity_dot_country__app__service__pb2.CountryAppService_statesByCountryIdRequest.SerializeToString,
             identity_dot_country__app__service__pb2.CountryAppService_statesByCountryIdResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def citiesByCountryIdAndStateId(request,
+    def cities_by_country_id_and_state_id(request,
             target,
             options=(),
             channel_credentials=None,
@@ -257,7 +257,7 @@ class CountryAppService(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.identity.country.CountryAppService/citiesByCountryIdAndStateId',
+        return grpc.experimental.unary_unary(request, target, '/cafm.identity.country.CountryAppService/cities_by_country_id_and_state_id',
             identity_dot_country__app__service__pb2.CountryAppService_citiesByCountryIdAndStateIdRequest.SerializeToString,
             identity_dot_country__app__service__pb2.CountryAppService_citiesByCountryIdAndStateIdResponse.FromString,
             options, channel_credentials,

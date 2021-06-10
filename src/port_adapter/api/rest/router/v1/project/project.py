@@ -105,19 +105,19 @@ async def getProjectsByOrganizationId(
     ),
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. name:asc,age:desc"),
+    orders: str = Query("", description="e.g. name:asc,age:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
 ):
     try:
         client = ProjectClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.projectsByOrganizationId(
             organizationId=organization_id,
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
@@ -139,7 +139,7 @@ async def getProjects(
     *,
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. name:asc,age:desc"),
+    orders: str = Query("", description="e.g. name:asc,age:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
     state: str = Path(
@@ -149,9 +149,9 @@ async def getProjects(
     try:
         client = ProjectClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.projectsByState(
-            state=state, resultFrom=result_from, resultSize=result_size, orders=order
+            state=state, resultFrom=result_from, resultSize=result_size, orders=orders
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:

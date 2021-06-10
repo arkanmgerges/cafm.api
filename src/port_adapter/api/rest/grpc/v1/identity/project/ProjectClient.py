@@ -41,7 +41,7 @@ class ProjectClient(Client):
                     f"[{ProjectClient.newId.__qualname__}] - grpc call to retrieve projects from server {self._server}:{self._port}"
                 )
                 request = ProjectAppService_newIdRequest()
-                response: ProjectAppService_newIdResponse = stub.newId.with_call(
+                response: ProjectAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -73,7 +73,7 @@ class ProjectClient(Client):
                     f"[{ProjectClient.projects.__qualname__}] - grpc call to retrieve projects from server {self._server}:{self._port}"
                 )
                 request = ProjectAppService_projectsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
@@ -100,7 +100,7 @@ class ProjectClient(Client):
                         self._descriptorByObject(obj=project)
                         for project in response[0].projects
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -115,7 +115,7 @@ class ProjectClient(Client):
                     f"[{ProjectClient.projectById.__qualname__}] - grpc call to retrieve project with projectId: {projectId} from server {self._server}:{self._port}"
                 )
                 response: ProjectAppService_projectByIdResponse = (
-                    stub.projectById.with_call(
+                    stub.project_by_id.with_call(
                         ProjectAppService_projectByIdRequest(id=projectId),
                         metadata=(
                             ("token", self.token),

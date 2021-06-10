@@ -40,12 +40,12 @@ class AuthClient(Client):
                 authService: AuthenticationApplicationService = AppDi.instance.get(
                     AuthenticationApplicationService
                 )
-                response: AuthAppService_authenticateUserByEmailAndPasswordResponse = stub.authenticateUserByEmailAndPassword.with_call(
+                response: AuthAppService_authenticateUserByEmailAndPasswordResponse = stub.authenticate_user_by_email_and_password.with_call(
                     AuthAppService_authenticateUserByEmailAndPasswordRequest(
                         email=email, password=authService.hashPassword(password)
                     ),
                     metadata=(
-                        ("auth_token", "res-token-yumyum"),
+                        ("auth_token", "res-token-xyz"),
                         (
                             "opentel",
                             AppDi.instance.get(OpenTelemetry).serializedContext(

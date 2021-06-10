@@ -41,7 +41,7 @@ class PermissionClient(Client):
                     f"[{PermissionClient.newId.__qualname__}] - grpc call to retrieve permissions from server {self._server}:{self._port}"
                 )
                 request = PermissionAppService_newIdRequest()
-                response: PermissionAppService_newIdResponse = stub.newId.with_call(
+                response: PermissionAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -73,7 +73,7 @@ class PermissionClient(Client):
                     f"[{PermissionClient.permissions.__qualname__}] - grpc call to retrieve permissions from server {self._server}:{self._port}"
                 )
                 request = PermissionAppService_permissionsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
@@ -101,7 +101,7 @@ class PermissionClient(Client):
                         self._descriptorByObject(obj=permission)
                         for permission in response[0].permissions
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -116,7 +116,7 @@ class PermissionClient(Client):
                     f"[{PermissionClient.permissionById.__qualname__}] - grpc call to retrieve permission with permissionId: {permissionId} from server {self._server}:{self._port}"
                 )
                 response: PermissionAppService_permissionByIdResponse = (
-                    stub.permissionById.with_call(
+                    stub.permission_by_id.with_call(
                         PermissionAppService_permissionByIdRequest(id=permissionId),
                         metadata=(
                             ("token", self.token),
@@ -142,6 +142,6 @@ class PermissionClient(Client):
         return PermissionDescriptor(
             id=obj.id,
             name=obj.name,
-            allowed_actions=[x for x in obj.allowedActions],
-            denied_actions=[x for x in obj.deniedActions],
+            allowed_actions=[x for x in obj.allowed_actions],
+            denied_actions=[x for x in obj.denied_actions],
         )

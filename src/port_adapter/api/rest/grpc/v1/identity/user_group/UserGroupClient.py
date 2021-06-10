@@ -41,7 +41,7 @@ class UserGroupClient(Client):
                     f"[{UserGroupClient.newId.__qualname__}] - grpc call to retrieve user group from server {self._server}:{self._port}"
                 )
                 request = UserGroupAppService_newIdRequest()
-                response: UserGroupAppService_newIdResponse = stub.newId.with_call(
+                response: UserGroupAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -73,14 +73,14 @@ class UserGroupClient(Client):
                     f"[{UserGroupClient.userGroups.__qualname__}] - grpc call to retrieve userGroups from server {self._server}:{self._port}"
                 )
                 request = UserGroupAppService_userGroupsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
                 response: UserGroupAppService_userGroupsResponse = (
-                    stub.userGroups.with_call(
+                    stub.user_groups.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -100,9 +100,9 @@ class UserGroupClient(Client):
                 return UserGroups(
                     user_groups=[
                         self._descriptorByObject(obj=userGroup)
-                        for userGroup in response[0].userGroups
+                        for userGroup in response[0].user_groups
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -117,7 +117,7 @@ class UserGroupClient(Client):
                     f"[{UserGroupClient.userGroupById.__qualname__}] - grpc call to retrieve userGroup with userGroupId: {userGroupId} from server {self._server}:{self._port}"
                 )
                 response: UserGroupAppService_userGroupByIdResponse = (
-                    stub.userGroupById.with_call(
+                    stub.user_group_by_id.with_call(
                         UserGroupAppService_userGroupByIdRequest(id=userGroupId),
                         metadata=(
                             ("token", self.token),
@@ -134,7 +134,7 @@ class UserGroupClient(Client):
                     f"[{UserGroupClient.userGroupById.__qualname__}] - grpc response: {response}"
                 )
 
-                return self._descriptorByObject(obj=response[0].userGroup)
+                return self._descriptorByObject(obj=response[0].user_group)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e

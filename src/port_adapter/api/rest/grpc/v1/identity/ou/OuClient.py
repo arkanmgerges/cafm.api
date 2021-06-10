@@ -39,7 +39,7 @@ class OuClient(Client):
                     f"[{OuClient.newId.__qualname__}] - grpc call to retrieve ous from server {self._server}:{self._port}"
                 )
                 request = OuAppService_newIdRequest()
-                response: OuAppService_newIdResponse = stub.newId.with_call(
+                response: OuAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -71,7 +71,7 @@ class OuClient(Client):
                     f"[{OuClient.ous.__qualname__}] - grpc call to retrieve ous from server {self._server}:{self._port}"
                 )
                 request = OuAppService_ousRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
@@ -94,7 +94,7 @@ class OuClient(Client):
                 )
                 return Ous(
                     ous=[self._descriptorByObject(obj=ou) for ou in response[0].ous],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -108,7 +108,7 @@ class OuClient(Client):
                 logger.debug(
                     f"[{OuClient.ouById.__qualname__}] - grpc call to retrieve ou with ouId: {ouId} from server {self._server}:{self._port}"
                 )
-                response: OuAppService_ouByIdResponse = stub.ouById.with_call(
+                response: OuAppService_ouByIdResponse = stub.ou_by_id.with_call(
                     OuAppService_ouByIdRequest(id=ouId),
                     metadata=(
                         ("token", self.token),

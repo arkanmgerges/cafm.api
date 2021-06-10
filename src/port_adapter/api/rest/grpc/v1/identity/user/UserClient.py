@@ -39,7 +39,7 @@ class UserClient(Client):
                     f"[{UserClient.newId.__qualname__}] - grpc call to retrieve users from server {self._server}:{self._port}"
                 )
                 request = UserAppService_newIdRequest()
-                response: UserAppService_newIdResponse = stub.newId.with_call(
+                response: UserAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -71,7 +71,7 @@ class UserClient(Client):
                     f"[{UserClient.users.__qualname__}] - grpc call to retrieve users from server {self._server}:{self._port}"
                 )
                 request = UserAppService_usersRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
@@ -97,7 +97,7 @@ class UserClient(Client):
                     users=[
                         self._descriptorByObject(obj=user) for user in response[0].users
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -111,7 +111,7 @@ class UserClient(Client):
                 logger.debug(
                     f"[{UserClient.userById.__qualname__}] - grpc call to retrieve user with userId: {userId} from server {self._server}:{self._port}"
                 )
-                response: UserAppService_userByIdResponse = stub.userById.with_call(
+                response: UserAppService_userByIdResponse = stub.user_by_id.with_call(
                     UserAppService_userByIdRequest(id=userId),
                     metadata=(
                         ("token", self.token),

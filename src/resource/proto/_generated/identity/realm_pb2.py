@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x14identity/realm.proto\x12\x13\x63\x61\x66m.identity.realm\"4\n\x05Realm\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x11\n\trealmType\x18\x03 \x01(\tb\x06proto3'
+  serialized_pb=b'\n\x14identity/realm.proto\x12\x13\x63\x61\x66m.identity.realm\"5\n\x05Realm\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04name\x18\x02 \x01(\t\x12\x12\n\nrealm_type\x18\x03 \x01(\tb\x06proto3'
 )
 
 
@@ -48,7 +48,7 @@ _REALM = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='realmType', full_name='cafm.identity.realm.Realm.realmType', index=2,
+      name='realm_type', full_name='cafm.identity.realm.Realm.realm_type', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -67,7 +67,7 @@ _REALM = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=45,
-  serialized_end=97,
+  serialized_end=98,
 )
 
 DESCRIPTOR.message_types_by_name['Realm'] = _REALM

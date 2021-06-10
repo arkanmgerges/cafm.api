@@ -39,7 +39,7 @@ class RealmClient(Client):
                     f"[{RealmClient.newId.__qualname__}] - grpc call to retrieve realms from server {self._server}:{self._port}"
                 )
                 request = RealmAppService_newIdRequest()
-                response: RealmAppService_newIdResponse = stub.newId.with_call(
+                response: RealmAppService_newIdResponse = stub.new_id.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -71,7 +71,7 @@ class RealmClient(Client):
                     f"[{RealmClient.realms.__qualname__}] - grpc call to retrieve realms from server {self._server}:{self._port}"
                 )
                 request = RealmAppService_realmsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
@@ -98,7 +98,7 @@ class RealmClient(Client):
                         self._descriptorByObject(obj=realm)
                         for realm in response[0].realms
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -112,7 +112,7 @@ class RealmClient(Client):
                 logger.debug(
                     f"[{RealmClient.realmById.__qualname__}] - grpc call to retrieve realm with realmId: {realmId} from server {self._server}:{self._port}"
                 )
-                response: RealmAppService_realmByIdResponse = stub.realmById.with_call(
+                response: RealmAppService_realmByIdResponse = stub.realm_by_id.with_call(
                     RealmAppService_realmByIdRequest(id=realmId),
                     metadata=(
                         ("token", self.token),
@@ -134,4 +134,4 @@ class RealmClient(Client):
                 raise e
 
     def _descriptorByObject(self, obj: Any) -> RealmDescriptor:
-        return RealmDescriptor(id=obj.id, name=obj.name, realm_type=obj.realmType)
+        return RealmDescriptor(id=obj.id, name=obj.name, realm_type=obj.realm_type)

@@ -45,7 +45,7 @@ class PermissionContextClient(Client):
                 )
                 request = PermissionContextAppService_newIdRequest()
                 response: PermissionContextAppService_newIdResponse = (
-                    stub.newId.with_call(
+                    stub.new_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),
@@ -78,13 +78,13 @@ class PermissionContextClient(Client):
                     f"[{PermissionContextClient.permissionContexts.__qualname__}] - grpc call to retrieve permission context from server {self._server}:{self._port}"
                 )
                 request = PermissionContextAppService_permissionContextsRequest(
-                    resultFrom=resultFrom, resultSize=resultSize
+                    result_from=resultFrom, result_size=resultSize
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
-                response: PermissionContextAppService_permissionContextsResponse = stub.permissionContexts.with_call(
+                response: PermissionContextAppService_permissionContextsResponse = stub.permission_contexts.with_call(
                     request,
                     metadata=(
                         ("token", self.token),
@@ -103,9 +103,9 @@ class PermissionContextClient(Client):
                 return PermissionContexts(
                     permission_contexts=[
                         self._descriptorByObject(obj=permissionContext)
-                        for permissionContext in response[0].permissionContexts
+                        for permissionContext in response[0].permission_contexts
                     ],
-                    total_item_count=response[0].totalItemCount,
+                    total_item_count=response[0].total_item_count,
                 )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
@@ -119,7 +119,7 @@ class PermissionContextClient(Client):
                 logger.debug(
                     f"[{PermissionContextClient.permissionContextById.__qualname__}] - grpc call to retrieve permission context with id: {permissionContextId} from server {self._server}:{self._port}"
                 )
-                response: PermissionContextAppService_permissionContextByIdResponse = stub.permissionContextById.with_call(
+                response: PermissionContextAppService_permissionContextByIdResponse = stub.permission_context_by_id.with_call(
                     PermissionContextAppService_permissionContextByIdRequest(
                         id=permissionContextId
                     ),
@@ -137,7 +137,7 @@ class PermissionContextClient(Client):
                     f"[{PermissionContextClient.permissionContextById.__qualname__}] - grpc response: {response}"
                 )
 
-                return self._descriptorByObject(obj=response[0].permissionContext)
+                return self._descriptorByObject(obj=response[0].permission_context)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
