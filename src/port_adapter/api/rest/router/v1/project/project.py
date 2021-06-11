@@ -231,7 +231,7 @@ async def updateProject(
         ..., description="The id of the beneficiary", embed=True
     ),
     postal_code: str = Body(
-        ..., description="The postal code for the project address", embed=True
+        None, description="The postal code for the project address", embed=True
     ),
     developer_name: str = Body(
         ..., description="The name of the developer", embed=True
@@ -249,7 +249,7 @@ async def updateProject(
         ..., description="The address line two of the developer", embed=True
     ),
     developer_postal_code: str = Body(
-        ..., description="The postal code of the developer", embed=True
+        None, description="The postal code of the developer", embed=True
     ),
     developer_contact: str = Body(
         ..., description="The contact address of the developer", embed=True
@@ -315,8 +315,8 @@ async def partialUpdateProject(
         ..., description="Project id that is used in order to update the project"
     ),
     name: str = Body(None, description="Title of the project", embed=True),
-    city_id: str = Body(None, description="City id of this project", embed=True),
-    country_id: str = Body(None, description="Country id of this project", embed=True),
+    city_id: int = Body(None, description="City id of this project", embed=True),
+    country_id: int = Body(None, description="Country id of this project", embed=True),
     address_line: str = Body(
         None, description="Address line of the project", embed=True
     ),
