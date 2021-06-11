@@ -143,7 +143,7 @@ class DailyCheckProcedureOperationClient(Client):
                 logger.debug(
                     f"[{DailyCheckProcedureOperationClient.dailyCheckProcedureOperationById.__qualname__}] - grpc response: {response}"
                 )
-                dailyCheckProcedureOperation = response[0].dailyCheckProcedureOperation
+                dailyCheckProcedureOperation = response[0].daily_check_procedure_operation
                 return self._descriptorByObject(obj=dailyCheckProcedureOperation)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
