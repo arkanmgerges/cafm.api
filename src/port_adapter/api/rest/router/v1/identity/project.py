@@ -139,35 +139,3 @@ async def createProject(
     )
     return {"request_id": reqId}
 
-
-"""
-c4model|cb|api:Component(api__identity_project_py__delete, "Delete Project", "http(s)", "")
-c4model|cb|api:ComponentQueue(api__identity_project_py__delete__api_command_topic, "CommonCommandConstant.DELETE_PROJECT.value", "api command topic", "")
-c4model:Rel(api__identity_project_py__delete, api__identity_project_py__delete__api_command_topic, "CommonCommandConstant.DELETE_PROJECT.value", "message")
-"""
-
-
-@router.delete(
-    "/{project_id}", summary="Delete a project", status_code=status.HTTP_200_OK
-)
-@OpenTelemetry.fastApiTraceOTel
-async def deleteProject(
-    *,
-    _=Depends(CustomHttpBearer()),
-    __=Depends(CustomAuthorization()),
-    project_id: str = Path(
-        ..., description="Project id that is used in order to delete the project"
-    ),
-):
-    reqId = RequestIdGenerator.generateId()
-    producer = AppDi.instance.get(SimpleProducer)
-    producer.produce(
-        obj=ApiCommand(
-            id=reqId,
-            name=CommandConstant.DELETE_PROJECT.value,
-            metadata=json.dumps({"token": Client.token}),
-            data=json.dumps({"project_id": project_id}),
-        ),
-        schema=ApiCommand.get_schema(),
-    )
-    return {"request_id": reqId}

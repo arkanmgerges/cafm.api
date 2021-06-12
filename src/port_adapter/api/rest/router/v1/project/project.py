@@ -397,6 +397,31 @@ async def partialUpdateProject(
     return {"request_id": reqId}
 
 
+@router.delete(
+    "/{project_id}", summary="Delete a project", status_code=status.HTTP_200_OK
+)
+@OpenTelemetry.fastApiTraceOTel
+async def deleteProject(
+    *,
+    _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
+    project_id: str = Path(
+        ..., description="Project id that is used in order to delete the project"
+    ),
+):
+    reqId = RequestIdGenerator.generateId()
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.DELETE_PROJECT.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps({"project_id": project_id}),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
+    return {"request_id": reqId}
 # endregion
 
 # region Building
