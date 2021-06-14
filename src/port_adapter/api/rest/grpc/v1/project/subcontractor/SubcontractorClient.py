@@ -265,6 +265,7 @@ class SubcontractorClient(Client):
             description=obj.description,
             country_id=obj.country_id,
             city_id=obj.city_id,
-            state_id=obj.state_id,
             postal_code=obj.postal_code,
+            country_state_name=obj.country_state_name,
+            country_state_iso_code=obj.country_state_iso_code,
         )
