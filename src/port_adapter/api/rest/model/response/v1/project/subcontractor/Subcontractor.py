@@ -21,8 +21,10 @@ class Subcontractor(BaseModel):
     description: Optional[str]
     city_id: Optional[int]
     country_id: Optional[int]
-    state_id: Optional[str]
     postal_code: Optional[str]
+    country_state_name: Optional[str]
+    country_state_iso_code: Optional[str]
+
 
 
 class SubcontractorDescriptor(Subcontractor):
