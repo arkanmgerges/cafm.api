@@ -22,10 +22,13 @@ from src.resource.proto._generated.identity.authz_app_service_pb2_grpc import (
     AuthzAppServiceStub,
 )
 from src.resource.proto._generated.identity.unhashed_key_pb2 import UnhashedKey
-from src.application.AuthorizationApplicationService import AuthorizationApplicationService
+from src.application.AuthorizationApplicationService import (
+    AuthorizationApplicationService,
+)
 from src.port_adapter.api.rest.model.response.v1.identity.RoleAccessPermissionDatas import (
     RoleAccessPermissionDatas,
 )
+
 
 class AuthzClient(Client):
     def __init__(self):
@@ -60,7 +63,7 @@ class AuthzClient(Client):
 
                 return HashedKeys(
                     hashed_keys=[
-                        HashedKey(key=x.key, hash_code=x.hashCode)
+                        HashedKey(key=x.key, hash_code=x.hash_code)
                         for x in response[0].hashed_keys
                     ],
                     total_item_count=len(response[0].hashed_keys),
@@ -70,7 +73,9 @@ class AuthzClient(Client):
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def isAuthorized(self, roleTrees: RoleAccessPermissionDatas, request: Request) -> bool:
+    def isAuthorized(
+        self, roleTrees: RoleAccessPermissionDatas, request: Request
+    ) -> bool:
         authzService: AuthorizationApplicationService = AppDi.instance.get(
             AuthorizationApplicationService
         )
