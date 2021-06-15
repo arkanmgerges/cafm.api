@@ -164,7 +164,7 @@ class RoleClient(Client):
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def roleTree(self, roleId) -> RoleAccessPermissionDatas:
+    def roleTree(self, roleId) -> RoleAccessPermissionDataDescriptor:
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = RoleAppServiceStub(channel)
             try:
@@ -190,6 +190,7 @@ class RoleClient(Client):
 
                 roleAccessPermissionResponse = response[0].role_access_permission
                 role = self._descriptorByObject(obj=roleAccessPermissionResponse.role)
+
                 # owned by
                 ownedBy = self._resourceFromProtoBuff(
                     roleAccessPermissionResponse.owned_by
@@ -221,7 +222,7 @@ class RoleClient(Client):
 
                 # role access tree
 
-                return RoleAccessPermissionDatas(
+                return RoleAccessPermissionDataDescriptor(
                     role=role,
                     owned_by=ownedBy,
                     owner_of=ownerOfList,

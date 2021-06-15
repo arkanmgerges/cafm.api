@@ -261,7 +261,7 @@ async def updateSubcontractor(
     ),
     country_id: int = Body(..., description="country id of subcontractor", embed=True),
     city_id: int = Body(..., description="city id of subcontractor", embed=True),
-    state_id: str = Body(..., description="state id of subcontractor", embed=True),
+    state_id: str = Body(None, description="state id of subcontractor", embed=True),
     postal_code: str = Body(
         ..., description="postal code of subcontractor", embed=True
     ),
