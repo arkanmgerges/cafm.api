@@ -264,7 +264,7 @@ c4model:Rel(api__identity_user_py__resetUserPassword, api__identity_user_py__res
 @OpenTelemetry.fastApiTraceOTel
 async def resetUserPassword(
     *,
-    _=Depends(CustomHttpBearer()),
+    # _=Depends(CustomHttpBearer()),
     # __=Depends(CustomAuthorization()),
     user_id: str = Path(
         ..., description="User id that is used in order to reset the user password"
