@@ -25,7 +25,7 @@ from src.port_adapter.api.rest.grpc.v1.identity.user.UserClient import UserClien
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.helper.Validator import Validator
 from src.port_adapter.api.rest.model.response.v1.identity.User import UserDescriptor
-from src.port_adapter.api.rest.model.response.v1.identity.UserHasOneTimePassword import UserHasOneTimePasswordDescriptor
+from src.port_adapter.api.rest.model.response.v1.identity.HasUserPasswordSet import HasUserPasswordSetDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Users import Users
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
@@ -72,9 +72,9 @@ async def getUsers(
         logger.info(e)
 
 
-@router.get(path="/{user_id}/has_one_time_password", summary="Get user has one time password", response_model=UserHasOneTimePasswordDescriptor)
+@router.get(path="/{user_id}/has_user_password_set", summary="Get user has password set", response_model=HasUserPasswordSetDescriptor)
 @OpenTelemetry.fastApiTraceOTel
-async def getUserHasOneTimePassword(
+async def getHasUserPasswordSet(
     *,
     user_id: str = Path(..., description="User id that is used to fetch user data"),
     # _=Depends(CustomHttpBearer()),
@@ -87,7 +87,7 @@ async def getUserHasOneTimePassword(
         #     span.set_attribute("user_id", user_id)
 
         client = UserClient()
-        return client.userHasOneTimePassword(userId=user_id)
+        return client.hasUserPasswordSet(userId=user_id)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -95,7 +95,7 @@ async def getUserHasOneTimePassword(
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f"[{getUserHasOneTimePassword.__module__}.{getUserHasOneTimePassword.__qualname__}] - error response e: {e}"
+                f"[{getHasUserPasswordSet.__module__}.{getHasUserPasswordSet.__qualname__}] - error response e: {e}"
             )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:

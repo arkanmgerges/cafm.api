@@ -6,9 +6,9 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class UserHasOneTimePassword(BaseModel):
+class HasUserPasswordSet(BaseModel):
     result: bool
 
 
-class UserHasOneTimePasswordDescriptor(UserHasOneTimePassword):
+class HasUserPasswordSetDescriptor(HasUserPasswordSet):
     pass

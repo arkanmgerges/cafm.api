@@ -9,7 +9,7 @@ import grpc
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.model.response.v1.identity.User import UserDescriptor
-from src.port_adapter.api.rest.model.response.v1.identity.UserHasOneTimePassword import UserHasOneTimePasswordDescriptor
+from src.port_adapter.api.rest.model.response.v1.identity.HasUserPasswordSet import HasUserPasswordSetDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Users import Users
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
@@ -18,9 +18,7 @@ from src.resource.proto._generated.identity.user_app_service_pb2 import (
     UserAppService_usersRequest,
     UserAppService_userByIdRequest,
     UserAppService_userByIdResponse,
-    UserAppService_newIdRequest,
-    UserAppService_newIdResponse, UserAppService_userHasOneTimePasswordRequest,
-    UserAppService_userHasOneTimePasswordResponse,
+    UserAppService_newIdRequest, UserAppService_hasUserPasswordSetRequest, UserAppService_hasUserPasswordSetResponse,
 )
 from src.resource.proto._generated.identity.user_app_service_pb2_grpc import (
     UserAppServiceStub,
@@ -62,29 +60,29 @@ class UserClient(Client):
                 raise e
 
     @OpenTelemetry.grpcTraceOTel
-    def userHasOneTimePassword(self, userId) -> UserHasOneTimePasswordDescriptor:
+    def hasUserPasswordSet(self, userId) -> HasUserPasswordSetDescriptor:
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = UserAppServiceStub(channel)
             try:
                 logger.debug(
-                    f"[{UserClient.userHasOneTimePassword.__qualname__}] - grpc call to {self._server}:{self._port}"
+                    f"[{UserClient.hasUserPasswordSet.__qualname__}] - grpc call to {self._server}:{self._port}"
                 )
-                request = UserAppService_userHasOneTimePasswordRequest(user_id=userId)
-                response: UserAppService_userHasOneTimePasswordResponse = stub.user_has_one_time_password.with_call(
+                request = UserAppService_hasUserPasswordSetRequest(user_id=userId)
+                response: UserAppService_hasUserPasswordSetResponse = stub.has_user_password_set.with_call(
                     request,
                     metadata=(
                         (
                             "opentel",
                             AppDi.instance.get(OpenTelemetry).serializedContext(
-                                UserClient.userHasOneTimePassword.__qualname__
+                                UserClient.hasUserPasswordSet.__qualname__
                             ),
                         ),
                     ),
                 )
                 logger.debug(
-                    f"[{UserClient.userHasOneTimePassword.__qualname__}] - grpc response: {response}"
+                    f"[{UserClient.hasUserPasswordSet.__qualname__}] - grpc response: {response}"
                 )
-                return UserHasOneTimePasswordDescriptor(result=response[0].has_one_time_password)
+                return HasUserPasswordSetDescriptor(result=response[0].has_user_password_set)
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
