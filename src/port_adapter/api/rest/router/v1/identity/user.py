@@ -25,6 +25,7 @@ from src.port_adapter.api.rest.grpc.v1.identity.user.UserClient import UserClien
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.helper.Validator import Validator
 from src.port_adapter.api.rest.model.response.v1.identity.User import UserDescriptor
+from src.port_adapter.api.rest.model.response.v1.identity.UserHasOneTimePassword import UserHasOneTimePasswordDescriptor
 from src.port_adapter.api.rest.model.response.v1.identity.Users import Users
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
@@ -71,6 +72,35 @@ async def getUsers(
         logger.info(e)
 
 
+@router.get(path="/{user_id}/has_one_time_password", summary="Get user has one time password", response_model=UserHasOneTimePasswordDescriptor)
+@OpenTelemetry.fastApiTraceOTel
+async def getUserHasOneTimePassword(
+    *,
+    user_id: str = Path(..., description="User id that is used to fetch user data"),
+    # _=Depends(CustomHttpBearer()),
+    # __=Depends(CustomAuthorization()),
+):
+    """Get a User has one time password"""
+    try:
+        # trace = openTelemetry.trace()
+        # with trace.get_current_span() as span:
+        #     span.set_attribute("user_id", user_id)
+
+        client = UserClient()
+        return client.userHasOneTimePassword(userId=user_id)
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getUserHasOneTimePassword.__module__}.{getUserHasOneTimePassword.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
+
 """
 c4model|cb|api:Component(api__identity_user_py__getUser, "Get User", "http(s)", "Get user by id")
 c4model:Rel(api__identity_user_py__getUser, identity__grpc__UserAppServiceListener__userById, "Get user by id", "grpc")
@@ -105,7 +135,6 @@ async def getUser(
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
-
 
 """
 c4model|cb|api:Component(api__identity_user_py__create, "Create User", "http(s)", "")
