@@ -107,18 +107,18 @@ async def updateUser(
     email: str = Body(..., description="User email", embed=True),
     first_name: str = Body(..., description="First name of the user", embed=True),
     last_name: str = Body(..., description="Last name of the user", embed=True),
-    address_one: str = Body(..., description="User first line of address", embed=True),
-    address_two: str = Body(..., description="User second line of address", embed=True),
-    postal_code: str = Body(..., description="Postal code of the user", embed=True),
-    phone_number: str = Body(..., description="Phone number of the user", embed=True),
-    avatar_image: str = Body(..., description="Avatar URL of the user", embed=True),
-    country_id: int = Body(..., description="Country id", embed=True),
-    city_id: int = Body(..., description="City id", embed=True),
-    country_state_name: str = Body(..., description="State name", embed=True),
+    address_one: str = Body(None, description="User first line of address", embed=True),
+    address_two: str = Body(None, description="User second line of address", embed=True),
+    postal_code: str = Body(None, description="Postal code of the user", embed=True),
+    phone_number: str = Body(None, description="Phone number of the user", embed=True),
+    avatar_image: str = Body(None, description="Avatar URL of the user", embed=True),
+    country_id: int = Body(None, description="Country id", embed=True),
+    city_id: int = Body(None, description="City id", embed=True),
+    country_state_name: str = Body(None, description="State name", embed=True),
     country_state_iso_code: str = Body(
-        ..., description="Country State Iso code", embed=True
+        None, description="Country State Iso code", embed=True
     ),
-    start_date: float = Body(..., description="Start date of the user", embed=True),
+    start_date: float = Body(None, description="Start date of the user", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
