@@ -1,13 +1,11 @@
-import os
-
 from starlette.requests import Request
-from src.resource.logging.decorator import debugLogger
-from src.resource.logging.logger import logger
 
+from src.domain_model.authorization.MethodType import MethodType
 from src.port_adapter.api.rest.model.response.v1.identity.RoleAccessPermissionDatas import (
     RoleAccessPermissionDatas,
 )
-from src.domain_model.authorization.MethodType import MethodType
+from src.resource.logging.decorator import debugLogger
+from src.resource.logging.logger import logger
 
 
 class AuthorizationService:
@@ -29,7 +27,7 @@ class AuthorizationService:
         try:
             method = AuthorizationService.getMethod(request.method)
             for tree in roleTrees.role_access_permissions:
-                if tree.role.name == 'super_admin':
+                if tree.role.name == "super_admin" or tree.role.name == "sys_admin":
                     return True
 
             for tree in roleTrees.role_access_permissions:
@@ -37,8 +35,10 @@ class AuthorizationService:
                     return False
 
                 for permissionObject in tree.permissions:
-                    if hasattr(permissionObject.permission,
-                               'denied_actions') and permissionObject.permission.denied_actions == method:
+                    if (
+                        hasattr(permissionObject.permission, "denied_actions")
+                        and permissionObject.permission.denied_actions == method
+                    ):
                         return False
 
                     exist = next((x for x in permissionObject.permission.allowed_actions if x == method), [False])
@@ -46,7 +46,7 @@ class AuthorizationService:
                     if exist is not False:
                         for context in permissionObject.permission_contexts:
                             path = request.url.path
-                            if context.data['path'] == path:
+                            if 'path' in context.data and context.data['path'] == path:
                                 return True
             return False
         except Exception as e:
@@ -56,9 +56,6 @@ class AuthorizationService:
     @staticmethod
     def getMethod(method: str = None):
         if method not in [e.name for e in MethodType]:
-            raise ValueError(
-                "Invalid method, it should be one of these: "
-                + ", ".join([e.name for e in MethodType])
-            )
+            raise ValueError("Invalid method, it should be one of these: " + ", ".join([e.name for e in MethodType]))
 
         return MethodType[method]
