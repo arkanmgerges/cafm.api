@@ -139,17 +139,13 @@ def _isSuccessfulWhenBulk(cacheClient, cacheKey, requestId):
 
 def _isSuccessfulWhenListWithSuccessCount(cacheClient, cacheKey, split, requestId):
     items = cacheClient.lrange(cacheKey, 0, -1)
+    itemsCount = len(items)
     if _hasAtLeastOneFailed(items):
         return BoolRequestResponse(success=False)
     else:
         _key = split[1]
         successRequired = int(split[2])
-        if cacheClient.llen(cacheKey) == successRequired:
-            items = cacheClient.lrange(cacheKey, 0, -1)
-            if len(items) < successRequired:
-                raise InProgressException(
-                    f"Request id: {requestId} is still in progress"
-                )
+        if itemsCount >= successRequired:
             return BoolRequestResponse(success=True)
     raise InProgressException(
         f"Request id: {requestId} is still in progress"
@@ -160,20 +156,15 @@ def _resultWhenListWithSuccessCount(cacheClient, cacheKey, split, requestId):
     cacheType = split[0]
     if CacheType.valueToEnum(cacheType) == CacheType.LIST:
         items = cacheClient.lrange(cacheKey, 0, -1)
+        itemsCount = len(items)
         if _hasAtLeastOneFailed(items):
             _key = split[1]
-            successRequired = int(split[2])
-            return ResultRequestResponse(result=_resultFromItems(items, successRequired))
+            return ResultRequestResponse(result=_resultFromItems(items, itemsCount))
         else:
             _key = split[1]
             successRequired = int(split[2])
-            if cacheClient.llen(cacheKey) == successRequired:
-                items = cacheClient.lrange(cacheKey, 0, -1)
-                if len(items) < successRequired:
-                    raise InProgressException(
-                        f"Request id: {requestId} is still in progress"
-                    )
-                return ResultRequestResponse(result=_resultFromItems(items, successRequired))
+            if itemsCount >= successRequired:
+                return ResultRequestResponse(result=_resultFromItems(items, itemsCount))
             else:
                 raise InProgressException(
                     f"Request id: {requestId} is still in progress"
@@ -212,7 +203,7 @@ def _resultForBulk(items):
     return {'items': resultItemsCurated, 'total_item_count': totalItemCount, 'exceptions': exceptionItems}
 
 
-def _resultFromItems(items, successRequired):
+def _resultFromItems(items, length):
     result = {"items": [], "total_item_count": 0}
     for item in items:
         resultDict = json.loads(item.decode("utf-8"))
@@ -222,5 +213,5 @@ def _resultFromItems(items, successRequired):
                 "creator_service_name": resultDict["creator_service_name"],
             }
         )
-    result["total_item_count"] = successRequired
+    result["total_item_count"] = length
     return result
