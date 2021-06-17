@@ -84,34 +84,34 @@ async def updateOrganization(
     ),
     name: str = Body(..., description="Organization name", embed=True),
     website_url: str = Body(
-        ..., description="The website url of the organization", embed=True
+        None, description="The website url of the organization", embed=True
     ),
     organization_type: str = Body(
-        ..., description="The type of the organization", embed=True
+        None, description="The type of the organization", embed=True
     ),
-    address_one: str = Body(..., description="Organization first address", embed=True),
-    address_two: str = Body(..., description="Organization second address", embed=True),
+    address_one: str = Body(None, description="Organization first address", embed=True),
+    address_two: str = Body(None, description="Organization second address", embed=True),
     postal_code: str = Body(
-        ..., description="Postal code of the organization", embed=True
+        None, description="Postal code of the organization", embed=True
     ),
-    country_id: int = Body(..., description="Country id", embed=True),
-    city_id: int = Body(..., description="City id", embed=True),
-    country_state_name: str = Body(..., description="Country State name", embed=True),
+    country_id: int = Body(None, description="Country id", embed=True),
+    city_id: int = Body(None, description="City id", embed=True),
+    country_state_name: str = Body(None, description="Country State name", embed=True),
     country_state_iso_code: str = Body(
-        ..., description="Country State Iso code", embed=True
+        None, description="Country State Iso code", embed=True
     ),
     manager_first_name: str = Body(
-        ..., description="First name of the manager", embed=True
+        None, description="First name of the manager", embed=True
     ),
     manager_last_name: str = Body(
-        ..., description="Last name of the manager", embed=True
+        None, description="Last name of the manager", embed=True
     ),
-    manager_email: str = Body(..., description="Email of the manager", embed=True),
+    manager_email: str = Body(None, description="Email of the manager", embed=True),
     manager_phone_number: str = Body(
-        ..., description="Phone number of the manager", embed=True
+        None, description="Phone number of the manager", embed=True
     ),
     manager_avatar: str = Body(
-        ..., description="Avatar image of the manager", embed=True
+        None, description="Avatar image of the manager", embed=True
     ),
 ):
     reqId = RequestIdGenerator.generateId()
