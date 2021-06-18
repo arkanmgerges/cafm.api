@@ -157,7 +157,7 @@ async def getRoleByName(
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f"[{getRoleById.__module__}.{getRoleById.__qualname__}] - error response e: {e}"
+                f"[{getRoleByName.__module__}.{getRoleByName.__qualname__}] - error response e: {e}"
             )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
