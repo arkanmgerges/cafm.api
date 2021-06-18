@@ -20,6 +20,8 @@ from src.resource.proto._generated.project.role_app_service_pb2 import (
     RoleAppService_rolesRequest,
     RoleAppService_roleByIdRequest,
     RoleAppService_roleByIdResponse,
+    RoleAppService_roleByNameRequest,
+    RoleAppService_roleByNameResponse,
     RoleAppService_newIdResponse,
     RoleAppService_rolesByOrganizationTypeRequest,
     RoleAppService_rolesByOrganizationTypeResponse,
@@ -179,6 +181,35 @@ class RoleClient(Client):
                 )
                 logger.debug(
                     f"[{RoleClient.roleById.__qualname__}] - grpc response: {response}"
+                )
+                role = response[0].role
+                return self._descriptorByObject(obj=role)
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def roleByName(self, role_name) -> RoleDescriptor:
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
+            stub = RoleAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f"[{RoleClient.roleByName.__qualname__}] - grpc call to retrieve role with roleId: {role_name} from server {self._server}:{self._port}"
+                )
+                response: RoleAppService_roleByNameResponse = stub.role_by_name.with_call(
+                    RoleAppService_roleByNameRequest(name=role_name),
+                    metadata=(
+                        ("token", self.token),
+                        (
+                            "opentel",
+                            AppDi.instance.get(OpenTelemetry).serializedContext(
+                                RoleClient.roleByName.__qualname__
+                            ),
+                        ),
+                    ),
+                )
+                logger.debug(
+                    f"[{RoleClient.roleByName.__qualname__}] - grpc response: {response}"
                 )
                 role = response[0].role
                 return self._descriptorByObject(obj=role)
