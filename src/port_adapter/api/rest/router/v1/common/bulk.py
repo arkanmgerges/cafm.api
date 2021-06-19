@@ -161,6 +161,12 @@ def extractData(command: str, commandData: BulkBodyDataItemValue):
                         data[f"{entityName}_id"] = entityToGrpcClientList[entityName].newBuildingLevelId()
                     elif entityName == "building_level_room":
                         data[f"{entityName}_id"] = entityToGrpcClientList[entityName].newBuildingLevelRoomId()
+                    elif entityName == "permission":
+                        data[f"{entityName}_id"] = entityToGrpcClientList[entityName].idByString(string=data["name"])
+                    elif entityName == "permission_context":
+                        stringArray = [str(x) for x in data["data"].values()]
+                        stringArray.append(data["type"])
+                        data[f"{entityName}_id"] = entityToGrpcClientList[entityName].idByString(string="".join(stringArray))
                     else:
                         data[f"{entityName}_id"] = entityToGrpcClientList[entityName].newId()
                 return ItemDetail(microserviceName=microserviceName, apiPath=route.path, commandData=data)

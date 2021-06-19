@@ -20,7 +20,7 @@ from src.resource.proto._generated.identity.permission_app_service_pb2 import (
     PermissionAppService_permissionByIdRequest,
     PermissionAppService_permissionByIdResponse,
     PermissionAppService_newIdRequest,
-    PermissionAppService_newIdResponse,
+    PermissionAppService_newIdResponse, PermissionAppService_idByStringRequest, PermissionAppService_idByStringResponse,
 )
 from src.resource.proto._generated.identity.permission_app_service_pb2_grpc import (
     PermissionAppServiceStub,
@@ -31,6 +31,35 @@ class PermissionClient(Client):
     def __init__(self):
         self._server = os.getenv("CAFM_IDENTITY_GRPC_SERVER_SERVICE", "")
         self._port = os.getenv("CAFM_IDENTITY_GRPC_SERVER_SERVICE_PORT", "")
+
+    @OpenTelemetry.grpcTraceOTel
+    def idByString(self, string: str) -> str:
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
+            stub = PermissionAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f"[{PermissionClient.idByString.__qualname__}] - grpc call to server {self._server}:{self._port}"
+                )
+                request = PermissionAppService_idByStringRequest(string=string)
+                response: PermissionAppService_idByStringResponse = stub.id_by_string.with_call(
+                    request,
+                    metadata=(
+                        ("token", self.token),
+                        (
+                            "opentel",
+                            AppDi.instance.get(OpenTelemetry).serializedContext(
+                                PermissionClient.idByString.__qualname__
+                            ),
+                        ),
+                    ),
+                )
+                logger.debug(
+                    f"[{PermissionClient.idByString.__qualname__}] - grpc response: {response}"
+                )
+                return response[0].id
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
 
     @OpenTelemetry.grpcTraceOTel
     def newId(self) -> str:

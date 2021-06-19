@@ -23,7 +23,8 @@ from src.resource.proto._generated.identity.permission_context_app_service_pb2 i
     PermissionContextAppService_permissionContextByIdResponse,
     PermissionContextAppService_permissionContextByIdRequest,
     PermissionContextAppService_newIdRequest,
-    PermissionContextAppService_newIdResponse,
+    PermissionContextAppService_newIdResponse, PermissionContextAppService_idByStringRequest,
+    PermissionContextAppService_idByStringResponse,
 )
 from src.resource.proto._generated.identity.permission_context_app_service_pb2_grpc import (
     PermissionContextAppServiceStub,
@@ -34,6 +35,35 @@ class PermissionContextClient(Client):
     def __init__(self):
         self._server = os.getenv("CAFM_IDENTITY_GRPC_SERVER_SERVICE", "")
         self._port = os.getenv("CAFM_IDENTITY_GRPC_SERVER_SERVICE_PORT", "")
+
+    @OpenTelemetry.grpcTraceOTel
+    def idByString(self, string: str) -> str:
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
+            stub = PermissionContextAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f"[{PermissionContextClient.idByString.__qualname__}] - grpc call to server {self._server}:{self._port}"
+                )
+                request = PermissionContextAppService_idByStringRequest(string=string)
+                response: PermissionContextAppService_idByStringResponse = stub.id_by_string.with_call(
+                    request,
+                    metadata=(
+                        ("token", self.token),
+                        (
+                            "opentel",
+                            AppDi.instance.get(OpenTelemetry).serializedContext(
+                                PermissionContextClient.idByString.__qualname__
+                            ),
+                        ),
+                    ),
+                )
+                logger.debug(
+                    f"[{PermissionContextClient.idByString.__qualname__}] - grpc response: {response}"
+                )
+                return response[0].id
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
 
     @OpenTelemetry.grpcTraceOTel
     def newId(self) -> str:
