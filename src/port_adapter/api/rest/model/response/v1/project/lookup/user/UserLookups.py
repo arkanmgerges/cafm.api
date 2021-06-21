@@ -5,7 +5,7 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.port_adapter.api.rest.model.response.v1.project.UserLookup import (
+from src.port_adapter.api.rest.model.response.v1.project.lookup.user.UserLookup import (
     UserLookupDescriptor,
 )
 

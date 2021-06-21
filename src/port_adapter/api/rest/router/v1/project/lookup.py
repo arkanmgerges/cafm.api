@@ -23,7 +23,7 @@ from src.port_adapter.api.rest.grpc.v1.project.lookup.subcontractor.Subcontracto
 from src.port_adapter.api.rest.grpc.v1.project.lookup.user.UserLookupClient import (
     UserLookupClient,
 )
-from src.port_adapter.api.rest.model.response.v1.project.UserLookups import UserLookups
+from src.port_adapter.api.rest.model.response.v1.project.lookup.user.UserLookups import UserLookups
 from src.port_adapter.api.rest.model.response.v1.project.lookup.daily_check_procedure.DailyCheckProcedureLookups import \
     DailyCheckProcedureLookups
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentLookups import EquipmentLookups

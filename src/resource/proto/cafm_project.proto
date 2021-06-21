@@ -2,11 +2,11 @@ syntax = "proto3";
 
 import "project/lookup/equipment/equipment_lookup_app_service.proto";
 import "project/lookup/subcontractor/subcontractor_lookup_app_service.proto";
+import "project/lookup/user/user_lookup_app_service.proto";
 import "project/lookup/daily_check_procedure/daily_check_procedure_lookup_app_service.proto";
 import "project/equipment_app_service.proto";
 import "project/project_app_service.proto";
 import "project/user_app_service.proto";
-import "project/user_lookup_app_service.proto";
 import "project/subcontractor_app_service.proto";
 import "project/equipment_model_app_service.proto";
 import "project/manufacturer_app_service.proto";

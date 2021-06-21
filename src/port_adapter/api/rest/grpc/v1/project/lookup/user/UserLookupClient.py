@@ -8,24 +8,21 @@ import grpc
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
+from src.port_adapter.api.rest.model.response.v1.project.Project import ProjectDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.Organization import (
-    Organization,
+    OrganizationDescriptor,
 )
-from src.port_adapter.api.rest.model.response.v1.project.role.Role import Role
-from src.port_adapter.api.rest.model.response.v1.project.User import User
-from src.port_adapter.api.rest.model.response.v1.project.UserLookup import (
+from src.port_adapter.api.rest.model.response.v1.project.User import UserDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.lookup.user.UserLookup import (
     UserLookupDescriptor,
 )
-from src.port_adapter.api.rest.model.response.v1.project.UserLookups import UserLookups
+from src.port_adapter.api.rest.model.response.v1.project.lookup.user.UserLookups import UserLookups
+from src.port_adapter.api.rest.model.response.v1.project.role.Role import RoleDescriptor
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
-from src.resource.proto._generated.project.user_lookup_app_service_pb2 import (
-    UserLookupAppService_userLookupsRequest,
-    UserLookupAppService_userLookupsResponse,
-)
-from src.resource.proto._generated.project.user_lookup_app_service_pb2_grpc import (
-    UserLookupAppServiceStub,
-)
+from src.resource.proto._generated.project.lookup.user.user_lookup_app_service_pb2 import \
+    UserLookupAppService_userLookupsRequest, UserLookupAppService_userLookupsResponse
+from src.resource.proto._generated.project.lookup.user.user_lookup_app_service_pb2_grpc import UserLookupAppServiceStub
 
 
 class UserLookupClient(Client):
@@ -85,42 +82,33 @@ class UserLookupClient(Client):
 
     def _descriptorByObject(self, obj: Any) -> UserLookupDescriptor:
         return UserLookupDescriptor(
-            user=User(
-                id=obj.user.id,
-                email=obj.user.email,
-                first_name=obj.user.first_name,
-                last_name=obj.user.last_name,
-                address_one=obj.user.address_one,
-                address_two=obj.user.address_two,
-                postal_code=obj.user.postal_code,
-                phone_number=obj.user.phone_number,
-                avatar_image=obj.user.avatar_image,
-                country_id=obj.user.country_id,
-                city_id=obj.user.city_id,
-                country_state_name=obj.user.country_state_name,
-                country_state_iso_code=obj.user.country_state_iso_code,
-                start_date=obj.user.start_date,
+            user=UserDescriptor(
+                **(self._constructProjectKwargs(protoObject=obj.user))
             ),
-            roles=[Role(id=x.id, name=x.name, title=x.title) for x in obj.roles],
+            roles=[RoleDescriptor(id=x.id, name=x.name, title=x.title) for x in obj.roles],
             organizations=[
-                Organization(
-                    id=x.id,
-                    name=x.name,
-                    website_url=x.website_url,
-                    organization_type=x.organization_type,
-                    address_one=x.address_one,
-                    address_two=x.address_two,
-                    postal_code=x.postal_code,
-                    country_id=x.country_id,
-                    city_id=x.city_id,
-                    country_state_name=x.country_state_name,
-                    country_state_iso_code=x.country_state_iso_code,
-                    manager_first_name=x.manager_first_name,
-                    manager_last_name=x.manager_last_name,
-                    manager_email=x.manager_email,
-                    manager_phone_number=x.manager_phone_number,
-                    manager_avatar=x.manager_avatar,
+                OrganizationDescriptor(
+                    **(self._constructProjectKwargs(protoObject=x))
                 )
                 for x in obj.organizations
             ],
+            projects=[
+                ProjectDescriptor(
+                    **(self._constructProjectKwargs(protoObject=x, intAttributes=['city_id', 'country_id', 'start_date', 'developer_city_id', 'developer_country_id']))
+                )
+                for x in obj.projects
+            ],
         )
+
+    def _constructProjectKwargs(self, protoObject, intAttributes: List[str]=None):
+        kwargs = {}
+        intAttributes = intAttributes if intAttributes is not None else []
+        for fieldDescriptor in protoObject.DESCRIPTOR.fields:
+            attribute = fieldDescriptor.name
+            value = getattr(protoObject, attribute, None)
+            if attribute in intAttributes and value is None:
+                value = 0
+            kwargs[attribute] = value
+        return kwargs
+
+

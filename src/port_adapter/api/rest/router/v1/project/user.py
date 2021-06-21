@@ -3,7 +3,6 @@
 """
 import json
 from typing import Optional
-from uuid import uuid4
 
 import grpc
 from fastapi import APIRouter, Depends, Query, Body
@@ -23,7 +22,6 @@ from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.user.UserClient import UserClient
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.project.User import UserDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.UserLookups import UserLookups
 from src.port_adapter.api.rest.model.response.v1.project.Users import Users
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
