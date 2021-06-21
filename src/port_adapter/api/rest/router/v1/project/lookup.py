@@ -179,15 +179,22 @@ async def getUserLookups(
         "",
         description="e.g. user.id:asc,user.email:desc,role.name:asc,organization.name:desc",
     ),
+    filters: str = Query(
+        "",
+        description="e.g. column_name:column_value"
+    ),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
 ):
     try:
         client = UserLookupClient()
         orderService = AppDi.instance.get(OrderService)
+        filterService = AppDi.instance.get(FilterService)
         orders = orderService.orderStringToListOfDict(orders)
+        filters = filterService.filterStringToListOfDict(filters)
+
         return client.userLookups(
-            resultFrom=result_from, resultSize=result_size, orders=orders
+            resultFrom=result_from, resultSize=result_size, orders=orders, filters=filters
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:

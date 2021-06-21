@@ -35,9 +35,11 @@ class UserLookupClient(Client):
 
     @OpenTelemetry.grpcTraceOTel
     def userLookups(
-        self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None
+        self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None, filters: List[dict] = None
     ) -> UserLookups:
         orders = [] if orders is None else orders
+        filters = [] if filters is None else filters
+
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = UserLookupAppServiceStub(channel)
             try:
@@ -45,12 +47,13 @@ class UserLookupClient(Client):
                     f"[{UserLookupClient.userLookups.__qualname__}] - grpc call to retrieve user lookups from server {self._server}:{self._port}"
                 )
                 request = UserLookupAppService_userLookupsRequest(
-                    result_from=resultFrom, result_size=resultSize
+                    result_from=resultFrom, result_size=resultSize, orders=orders, filters=filters
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])
                     for o in orders
                 ]
+
                 response: UserLookupAppService_userLookupsResponse = (
                     stub.user_lookups.with_call(
                         request,

@@ -13,6 +13,5 @@ class FilterService:
         if len(filterArray) > 0:
             for item in filterArray:
                 split = [item.strip() for item in item.split(":")]
-                if len(split) > 1:
-                    result.append({"key": split[0], "value": split[1]})
+                result.append({"key": split[0], "value": split[1]})
         return result
