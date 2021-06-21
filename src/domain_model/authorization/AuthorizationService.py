@@ -13,8 +13,7 @@ class AuthorizationService:
     def __init__(self):
         super().__init__()
 
-    @staticmethod
-    def isAuthorized(roleTrees: RoleAccessPermissionDatas, request: Request) -> bool:
+    def isAuthorized(self, roleTrees: RoleAccessPermissionDatas, request: Request) -> bool:
         """Check if the user is authenticated, by checking if the token exists, and if exists then refresh it
 
         Args:
@@ -25,7 +24,7 @@ class AuthorizationService:
             bool: If the token exists and then it's valid then the response is True, and it returns False otherwise
         """
         try:
-            method = AuthorizationService.getMethod(request.method)
+            method = self.getMethod(request.method)
             for tree in roleTrees.role_access_permissions:
                 if tree.role.name == "super_admin" or tree.role.name == "sys_admin":
                     return True
@@ -37,25 +36,32 @@ class AuthorizationService:
                 for permissionObject in tree.permissions:
                     if (
                         hasattr(permissionObject.permission, "denied_actions")
-                        and permissionObject.permission.denied_actions == method
+                        and method in permissionObject.permission.denied_actions
                     ):
                         return False
 
-                    exist = next((x for x in permissionObject.permission.allowed_actions if x == method), [False])
-
-                    if exist is not False:
+                    exist = method in permissionObject.permission.allowed_actions
+                    if exist:
                         for context in permissionObject.permission_contexts:
                             path = request.url.path
-                            if 'path' in context.data and context.data['path'] == path:
+                            originalPath = self._convertToOriginalPath(urlPath=path, pathParams=request.path_params)
+                            if 'path' in context.data and context.data['path'] == originalPath:
                                 return True
             return False
         except Exception as e:
             logger.error({e})
             return False
 
-    @staticmethod
-    def getMethod(method: str = None):
-        if method not in [e.name for e in MethodType]:
-            raise ValueError("Invalid method, it should be one of these: " + ", ".join([e.name for e in MethodType]))
+    def _convertToOriginalPath(self, urlPath: str, pathParams: dict = None):
+        if pathParams is not None and isinstance(pathParams, dict):
+            for arg, value in pathParams.items():
+                urlPath = urlPath.replace(value, f'{{{arg}}}')
+        return urlPath
+
+    def getMethod(self, method: str = None):
+        from enum import Enum
+        methodType: Enum
+        if method not in [methodType.name for methodType in MethodType]:
+            raise ValueError("Invalid method, it should be one of these: " + ", ".join([methodType.name for methodType in MethodType]))
 
         return MethodType[method]
