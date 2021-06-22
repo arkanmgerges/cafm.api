@@ -4,6 +4,8 @@ import "project/lookup/equipment/equipment_lookup_app_service.proto";
 import "project/lookup/subcontractor/subcontractor_lookup_app_service.proto";
 import "project/lookup/user/user_lookup_app_service.proto";
 import "project/lookup/daily_check_procedure/daily_check_procedure_lookup_app_service.proto";
+import "project/lookup/project/project_lookup_app_service.proto";
+import "project/lookup/organization/organization_lookup_app_service.proto";
 import "project/equipment_app_service.proto";
 import "project/project_app_service.proto";
 import "project/user_app_service.proto";
