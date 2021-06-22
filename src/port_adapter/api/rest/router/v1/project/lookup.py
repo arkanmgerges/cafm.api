@@ -18,12 +18,16 @@ from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.v1.project.lookup.daily_check_procedure.DailyCheckProcedureLookupClient import \
     DailyCheckProcedureLookupClient
 from src.port_adapter.api.rest.grpc.v1.project.lookup.equipment.EquipmentLookupClient import EquipmentLookupClient
+from src.port_adapter.api.rest.grpc.v1.project.lookup.organization.OrganizationLookupClient import \
+    OrganizationLookupClient
 from src.port_adapter.api.rest.grpc.v1.project.lookup.project.ProjectLookupClient import ProjectLookupClient
 from src.port_adapter.api.rest.grpc.v1.project.lookup.subcontractor.SubcontractorLookupClient import \
     SubcontractorLookupClient
 from src.port_adapter.api.rest.grpc.v1.project.lookup.user.UserLookupClient import (
     UserLookupClient,
 )
+from src.port_adapter.api.rest.model.response.v1.project.lookup.organization.OrganizationLookups import \
+    OrganizationLookups
 from src.port_adapter.api.rest.model.response.v1.project.lookup.project.ProjectLookups import ProjectLookups
 from src.port_adapter.api.rest.model.response.v1.project.lookup.user.UserLookups import UserLookups
 from src.port_adapter.api.rest.model.response.v1.project.lookup.daily_check_procedure.DailyCheckProcedureLookups import \
@@ -250,6 +254,50 @@ async def getProjectLookups(
         else:
             logger.error(
                 f"[{getProjectLookups.__module__}.{getProjectLookups.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
+
+@router.get(
+    path="/organizations",
+    summary="Get organizations with other related data",
+    response_model=OrganizationLookups,
+)
+@OpenTelemetry.fastApiTraceOTel
+async def getOrganizationLookups(
+    *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    orders: str = Query(
+        "",
+        description="e.g. user.id:asc,user.email:desc,role.name:asc,organization.name:desc",
+    ),
+    filters: str = Query(
+        "",
+        description="e.g. column_name:column_value"
+    ),
+    _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
+):
+    try:
+        client = OrganizationLookupClient()
+        orderService = AppDi.instance.get(OrderService)
+        filterService = AppDi.instance.get(FilterService)
+        orders = orderService.orderStringToListOfDict(orders)
+        filters = filterService.filterStringToListOfDict(filters)
+
+        return client.organizationLookups(
+            resultFrom=result_from, resultSize=result_size, orders=orders, filters=filters
+        )
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getOrganizationLookups.__module__}.{getOrganizationLookups.__qualname__}] - error response e: {e}"
             )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
