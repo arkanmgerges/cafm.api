@@ -103,6 +103,9 @@ from src.port_adapter.api.rest.router.v1.project.subcontractor.category import (
 from src.port_adapter.api.rest.router.v1.project.role import (
     role as project_role,
 )
+from src.port_adapter.api.rest.router.v1.project.tag import (
+    tag as project_tag,
+)
 from src.port_adapter.api.rest.router.v1.util import route as util_route
 
 # from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
@@ -572,6 +575,17 @@ app.include_router(
     project_role.router,
     prefix="/v1/project/roles",
     tags=["Project/Role"],
+    responses={
+        400: {"model": Message},
+        404: {"model": Message},
+        500: {"model": Message},
+    },
+)
+
+app.include_router(
+    project_tag.router,
+    prefix="/v1/project/tags",
+    tags=["Project/Tag"],
     responses={
         400: {"model": Message},
         404: {"model": Message},

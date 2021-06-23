@@ -16,6 +16,8 @@ from src.port_adapter.api.rest.model.response.v1.project.role.Roles import Roles
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.role_app_service_pb2 import (
+    RoleAppService_rolesByTagNameRequest,
+    RoleAppService_rolesByTagNameResponse,
     RoleAppService_rolesResponse,
     RoleAppService_rolesRequest,
     RoleAppService_roleByIdRequest,
@@ -147,6 +149,49 @@ class RoleClient(Client):
                 )
                 logger.debug(
                     f"[{RoleClient.rolesByOrganizationType.__qualname__}] - grpc response: {response}"
+                )
+
+                return Roles(
+                    roles=[
+                        self._descriptorByObject(obj=role) for role in response[0].roles
+                    ],
+                    total_item_count=response[0].total_item_count,
+                )
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def rolesByTagName(
+        self,
+        tagName: str = None,
+    ) -> Roles:
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
+            stub = RoleAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f"[{RoleClient.rolesByTagName.__qualname__}] - grpc call to retrieve roles by organization type from server {self._server}:{self._port}"
+                )
+                request = RoleAppService_rolesByTagNameRequest(
+                    tag_name=tagName,
+                )
+
+                response: RoleAppService_rolesByTagNameResponse = (
+                    stub.roles_by_tag_name.with_call(
+                        request,
+                        metadata=(
+                            ("token", self.token),
+                            (
+                                "opentel",
+                                AppDi.instance.get(OpenTelemetry).serializedContext(
+                                    RoleClient.rolesByTagName.__qualname__
+                                ),
+                            ),
+                        ),
+                    )
+                )
+                logger.debug(
+                    f"[{RoleClient.rolesByTagName.__qualname__}] - grpc response: {response}"
                 )
 
                 return Roles(
