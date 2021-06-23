@@ -78,6 +78,39 @@ async def getRolesByOrganizationType(
         logger.info(e)
 
 
+@router.get(
+    path="/by_tag_name/{tag_name}",
+    summary="Get all role(s) by tag name",
+    response_model=Roles,
+)
+@OpenTelemetry.fastApiTraceOTel
+async def getRolesByTagName(
+    *,
+    tag_name: str = Path(
+        ..., description="tag name that is used to fetch role data"
+    ),
+    _=Depends(CustomHttpBearer()),
+    #    _1=Depends(CustomAuthorization()),
+):
+    try:
+        client = RoleClient()
+        return client.rolesByTagName(
+            tagName=tag_name
+        )
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getRolesByTagName.__module__}.{getRolesByTagName.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
+
+
 @router.get(path="", summary="Get all role(s)", response_model=Roles)
 @OpenTelemetry.fastApiTraceOTel
 async def getRoles(
