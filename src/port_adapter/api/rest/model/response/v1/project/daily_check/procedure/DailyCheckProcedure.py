@@ -9,6 +9,7 @@ class DailyCheckProcedure(BaseModel):
     id: str
     name: str
     description: str
+    project_id: str
     equipment_id: str
     equipment_category_group_id: str
 

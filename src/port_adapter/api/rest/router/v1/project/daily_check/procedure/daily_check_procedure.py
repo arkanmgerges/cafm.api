@@ -140,6 +140,46 @@ async def getDailyCheckProceduresByEquipmentOrGroupId(
     except Exception as e:
         logger.info(e)
 
+@router.get(
+    path="/by_project_id/{project_id}",
+    summary="Get all daily check procedure by project id",
+    response_model=DailyCheckProcedures,
+)
+@OpenTelemetry.fastApiTraceOTel
+async def getDailyCheckProceduresByProjectId(
+    *,
+    project_id: str = Path(
+        ...,
+        description="project id that is used to fetch daily check procedure data",
+    ),
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
+    _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
+):
+    try:
+        client = DailyCheckProcedureClient()
+        orderService = AppDi.instance.get(OrderService)
+        orders = orderService.orderStringToListOfDict(orders)
+        return client.dailyCheckProceduresByProjectId(
+            projectId=project_id,
+            resultFrom=result_from,
+            resultSize=result_size,
+            orders=orders,
+        )
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getDailyCheckProceduresByProjectId.__module__}.{getDailyCheckProceduresByProjectId.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
 
 # endregion
 
@@ -591,6 +631,9 @@ async def createDailyCheckProcedure(
     equipment_id: Optional[str] = Body(
         description="equipment id of daily check procedure", embed=True, default=None
     ),
+    project_id: str = Body(
+        description="project id", embed=True, default=None
+    ),
     equipment_category_group_id: Optional[str] = Body(
         description="equipment category group id of daily check procedure",
         embed=True,
@@ -612,6 +655,7 @@ async def createDailyCheckProcedure(
                     "daily_check_procedure_id": client.newId(),
                     "name": name,
                     "description": description,
+                    "project_id": project_id,
                     "equipment_id": equipment_id,
                     "equipment_category_group_id": equipment_category_group_id,
                 }
@@ -639,6 +683,9 @@ async def updateDailyCheckProcedure(
     ),
     name: str = Body(..., description="name of name", embed=True),
     description: str = Body(..., description="description of description", embed=True),
+    project_id: str = Body(
+        default=None, description="project id", embed=True
+    ),
     equipment_id: Optional[str] = Body(
         default=None, description="equipment id of equipment id", embed=True
     ),
@@ -662,6 +709,7 @@ async def updateDailyCheckProcedure(
                     "daily_check_procedure_id": daily_check_procedure_id,
                     "name": name,
                     "description": description,
+                    "project_id": project_id,
                     "equipment_id": equipment_id,
                     "equipment_category_group_id": equipment_category_group_id,
                 }
@@ -689,6 +737,9 @@ async def partialUpdateDailyCheckProcedure(
     ),
     name: str = Body(None, description="name of name", embed=True),
     description: str = Body(None, description="description of description", embed=True),
+    project_id: Optional[str] = Body(
+        default=None, description="project id", embed=True
+    ),
     equipment_id: str = Body(
         None, description="equipment id of equipment id", embed=True
     ),
@@ -712,6 +763,7 @@ async def partialUpdateDailyCheckProcedure(
                     "daily_check_procedure_id": daily_check_procedure_id,
                     "name": name,
                     "description": description,
+                    "project_id": project_id,
                     "equipment_id": equipment_id,
                     "equipment_category_group_id": equipment_category_group_id,
                 }

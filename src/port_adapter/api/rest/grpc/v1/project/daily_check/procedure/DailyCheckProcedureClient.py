@@ -27,7 +27,8 @@ from src.resource.proto._generated.project.daily_check_procedure_app_service_pb2
     DailyCheckProcedureAppService_dailyCheckProceduresByEquipmentOrGroupIdResponse,
     DailyCheckProcedureAppService_dailyCheckProceduresByEquipmentOrGroupIdRequest,
     DailyCheckProcedureAppService_newIdRequest,
-    DailyCheckProcedureAppService_newIdResponse,
+    DailyCheckProcedureAppService_newIdResponse, DailyCheckProcedureAppService_dailyCheckProceduresByProjectIdRequest,
+    DailyCheckProcedureAppService_dailyCheckProceduresByProjectIdResponse,
 )
 from src.resource.proto._generated.project.daily_check_procedure_app_service_pb2_grpc import (
     DailyCheckProcedureAppServiceStub,
@@ -192,11 +193,63 @@ class DailyCheckProcedureClient(Client):
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
+    @OpenTelemetry.grpcTraceOTel
+    def dailyCheckProceduresByProjectId(
+            self,
+            projectId: str = None,
+            resultFrom: int = 0,
+            resultSize: int = 10,
+            orders: List[dict] = None,
+    ) -> DailyCheckProcedures:
+        orders = [] if orders is None else orders
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
+            stub = DailyCheckProcedureAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f"[{DailyCheckProcedureClient.dailyCheckProceduresByProjectId.__qualname__}] - grpc call to {self._server}:{self._port}"
+                )
+                request = DailyCheckProcedureAppService_dailyCheckProceduresByProjectIdRequest(
+                    project_id=projectId,
+                    result_from=resultFrom,
+                    result_size=resultSize,
+                )
+                [
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
+                ]
+                response: DailyCheckProcedureAppService_dailyCheckProceduresByProjectIdResponse = stub.daily_check_procedures_by_project_id.with_call(
+                    request,
+                    metadata=(
+                        ("token", self.token),
+                        (
+                            "opentel",
+                            AppDi.instance.get(OpenTelemetry).serializedContext(
+                                DailyCheckProcedureClient.dailyCheckProceduresByProjectId.__qualname__
+                            ),
+                        ),
+                    ),
+                )
+                logger.debug(
+                    f"[{DailyCheckProcedureClient.dailyCheckProceduresByProjectId.__qualname__}] - grpc response: {response}"
+                )
+
+                return DailyCheckProcedures(
+                    daily_check_procedures=[
+                        self._descriptorByObject(obj=dailyCheckProcedure)
+                        for dailyCheckProcedure in response[0].daily_check_procedures
+                    ],
+                    total_item_count=response[0].total_item_count,
+                )
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
     def _descriptorByObject(self, obj: Any) -> DailyCheckProcedureDescriptor:
         return DailyCheckProcedureDescriptor(
             id=obj.id,
             name=obj.name,
             description=obj.description,
+            project_id=obj.project_id,
             equipment_id=obj.equipment_id,
             equipment_category_group_id=obj.equipment_category_group_id,
         )
