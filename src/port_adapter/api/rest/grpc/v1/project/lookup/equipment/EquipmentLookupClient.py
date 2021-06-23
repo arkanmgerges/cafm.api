@@ -8,28 +8,48 @@ import grpc
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Building import BuildingDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.BuildingLevel import BuildingLevelDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.BuildingLevelRoom import \
-    BuildingLevelRoomDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentCategory import \
-    EquipmentCategoryDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentCategoryGroup import \
-    EquipmentCategoryGroupDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentLookup import \
-    EquipmentLookupDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentLookups import EquipmentLookups
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentModel import EquipmentModelDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentProjectCategory import \
-    EquipmentProjectCategoryDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.MaintenanceProcedure import \
-    MaintenanceProcedureDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.MaintenanceProcedureOperation import \
-    MaintenanceProcedureOperationDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.MaintenanceProcedureOperationParameter import \
-    MaintenanceProcedureOperationParameterDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Manufacturer import ManufacturerDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Unit import UnitDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Building import (
+    BuildingDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.BuildingLevel import (
+    BuildingLevelDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.BuildingLevelRoom import (
+    BuildingLevelRoomDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentCategory import (
+    EquipmentCategoryDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentCategoryGroup import (
+    EquipmentCategoryGroupDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentLookup import (
+    EquipmentLookupDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentLookups import (
+    EquipmentLookups,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentModel import (
+    EquipmentModelDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentProjectCategory import (
+    EquipmentProjectCategoryDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.MaintenanceProcedure import (
+    MaintenanceProcedureDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.MaintenanceProcedureOperation import (
+    MaintenanceProcedureOperationDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.MaintenanceProcedureOperationParameter import (
+    MaintenanceProcedureOperationParameterDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Manufacturer import (
+    ManufacturerDescriptor,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Unit import (
+    UnitDescriptor,
+)
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.lookup.equipment.equipment_lookup_app_service_pb2 import (
@@ -63,26 +83,37 @@ class EquipmentLookupClient(Client):
                     f"[{EquipmentLookupClient.lookup.__qualname__}] - grpc call to retrieve lookups from server {self._server}:{self._port}"
                 )
                 request = EquipmentLookupAppService_lookupRequest(
-                    result_from=resultFrom, result_size=resultSize, orders=orders, filters=filters
+                    result_from=resultFrom,
+                    result_size=resultSize,
+                    orders=orders,
+                    filters=filters,
                 )
-                [request.orders.add(orderBy=o["orderBy"], direction=o["direction"]) for o in orders]
-                response: EquipmentLookupAppService_lookupResponse = stub.lookup.with_call(
-                    request,
-                    metadata=(
-                        ("token", self.token),
-                        (
-                            "opentel",
-                            AppDi.instance.get(OpenTelemetry).serializedContext(
-                                EquipmentLookupClient.lookup.__qualname__
+                [
+                    request.orders.add(orderBy=o["orderBy"], direction=o["direction"])
+                    for o in orders
+                ]
+                response: EquipmentLookupAppService_lookupResponse = (
+                    stub.lookup.with_call(
+                        request,
+                        metadata=(
+                            ("token", self.token),
+                            (
+                                "opentel",
+                                AppDi.instance.get(OpenTelemetry).serializedContext(
+                                    EquipmentLookupClient.lookup.__qualname__
+                                ),
                             ),
                         ),
-                    ),
+                    )
                 )
-                logger.debug(f"[{EquipmentLookupClient.lookup.__qualname__}] - grpc response: {response}")
+                logger.debug(
+                    f"[{EquipmentLookupClient.lookup.__qualname__}] - grpc response: {response}"
+                )
 
                 return EquipmentLookups(
                     equipment_lookups=[
-                        self._descriptorByObject(obj=obj) for obj in response[0].equipments
+                        self._descriptorByObject(obj=obj)
+                        for obj in response[0].equipments
                     ],
                     total_item_count=response[0].total_item_count,
                 )
@@ -106,7 +137,7 @@ class EquipmentLookupClient(Client):
                             unit=UnitDescriptor(
                                 id=param.unit.id,
                                 name=param.unit.name,
-                            )
+                            ),
                         )
                     )
                 operations.append(
@@ -144,11 +175,10 @@ class EquipmentLookupClient(Client):
                 id=obj.equipment_category.id, name=obj.equipment_category.name
             ),
             equipment_category_group=EquipmentCategoryGroupDescriptor(
-                id=obj.equipment_category_group.id, name=obj.equipment_category_group.name
+                id=obj.equipment_category_group.id,
+                name=obj.equipment_category_group.name,
             ),
-            building=BuildingDescriptor(
-                id=obj.building.id, name=obj.building.name
-            ),
+            building=BuildingDescriptor(id=obj.building.id, name=obj.building.name),
             building_level=BuildingLevelDescriptor(
                 id=obj.building_level.id,
                 name=obj.building_level.name,
