@@ -154,5 +154,10 @@ class CommandConstant(Enum):
     UNLINK_ORGANIZATION_BUILDING = "unlink_organization_building"
     PROCESS_BULK = "process_bulk"
 
+    CREATE_TAG = 'create_tag'
+    UPDATE_TAG = 'update_tag'
+    DELETE_TAG = 'delete_tag'
+    ASSIGN_TAG_TO_ROLE = 'assign_tag_to_role'
+
 
 # endregion
