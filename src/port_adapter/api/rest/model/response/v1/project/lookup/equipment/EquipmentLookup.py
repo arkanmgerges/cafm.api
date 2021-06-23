@@ -5,7 +5,6 @@ from typing import List
 
 from pydantic import BaseModel
 
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentCategory import EquipmentCategoryDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentProjectCategory import EquipmentProjectCategoryDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentCategoryGroup import EquipmentCategoryGroupDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Building import BuildingDescriptor
@@ -22,7 +21,6 @@ class EquipmentLookup(BaseModel):
     quantity: int
     project_id: str
     equipment_project_category: EquipmentProjectCategoryDescriptor
-    equipment_category: EquipmentCategoryDescriptor
     equipment_category_group: EquipmentCategoryGroupDescriptor
     building: BuildingDescriptor
     building_level: BuildingLevelDescriptor

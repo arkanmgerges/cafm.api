@@ -17,9 +17,6 @@ from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Buildi
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.BuildingLevelRoom import (
     BuildingLevelRoomDescriptor,
 )
-from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentCategory import (
-    EquipmentCategoryDescriptor,
-)
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentCategoryGroup import (
     EquipmentCategoryGroupDescriptor,
 )
@@ -170,9 +167,6 @@ class EquipmentLookupClient(Client):
             equipment_project_category=EquipmentProjectCategoryDescriptor(
                 id=obj.equipment_project_category.id,
                 name=obj.equipment_project_category.name,
-            ),
-            equipment_category=EquipmentCategoryDescriptor(
-                id=obj.equipment_category.id, name=obj.equipment_category.name
             ),
             equipment_category_group=EquipmentCategoryGroupDescriptor(
                 id=obj.equipment_category_group.id,
