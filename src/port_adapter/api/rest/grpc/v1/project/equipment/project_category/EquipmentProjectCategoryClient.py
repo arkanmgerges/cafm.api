@@ -198,7 +198,6 @@ class EquipmentProjectCategoryClient(Client):
                         EquipmentCategoryGroupDescriptor(
                             id=group.id,
                             name=group.name,
-                            equipment_category_id=group.equipment_category_id,
                         )
                         for group in response[0].equipment_category_groups
                     ],

@@ -115,9 +115,6 @@ async def createEquipment(
     equipment_project_category_id: str = Body(
         ..., description="equipment project category id of equipment", embed=True
     ),
-    equipment_category_id: str = Body(
-        ..., description="equipment category id of equipment", embed=True
-    ),
     equipment_category_group_id: str = Body(
         ..., description="equipment category group id of equipment", embed=True
     ),
@@ -152,7 +149,6 @@ async def createEquipment(
                     "name": name,
                     "project_id": project_id,
                     "equipment_project_category_id": equipment_project_category_id,
-                    "equipment_category_id": equipment_category_id,
                     "equipment_category_group_id": equipment_category_group_id,
                     "building_id": building_id,
                     "building_level_id": building_level_id,
@@ -186,9 +182,6 @@ async def updateEquipment(
         ...,
         description="equipment project category id of equipment project category id",
         embed=True,
-    ),
-    equipment_category_id: str = Body(
-        ..., description="equipment category id of equipment category id", embed=True
     ),
     equipment_category_group_id: str = Body(
         ...,
@@ -225,7 +218,6 @@ async def updateEquipment(
                     "name": name,
                     "project_id": project_id,
                     "equipment_project_category_id": equipment_project_category_id,
-                    "equipment_category_id": equipment_category_id,
                     "equipment_category_group_id": equipment_category_group_id,
                     "building_id": building_id,
                     "building_level_id": building_level_id,
@@ -262,9 +254,6 @@ async def partialUpdateEquipment(
         description="equipment project category id of equipment project category id",
         embed=True,
     ),
-    equipment_category_id: str = Body(
-        None, description="equipment category id of equipment category id", embed=True
-    ),
     equipment_category_group_id: str = Body(
         None,
         description="equipment category group id of equipment category group id",
@@ -300,7 +289,6 @@ async def partialUpdateEquipment(
                     "name": name,
                     "project_id": project_id,
                     "equipment_project_category_id": equipment_project_category_id,
-                    "equipment_category_id": equipment_category_id,
                     "equipment_category_group_id": equipment_category_group_id,
                     "building_id": building_id,
                     "building_level_id": building_level_id,

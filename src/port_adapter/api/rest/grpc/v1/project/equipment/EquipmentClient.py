@@ -147,7 +147,6 @@ class EquipmentClient(Client):
             name=obj.name,
             project_id=obj.project_id,
             equipment_project_category_id=obj.equipment_project_category_id,
-            equipment_category_id=obj.equipment_category_id,
             equipment_category_group_id=obj.equipment_category_group_id,
             building_id=obj.building_id,
             building_level_id=obj.building_level_id,

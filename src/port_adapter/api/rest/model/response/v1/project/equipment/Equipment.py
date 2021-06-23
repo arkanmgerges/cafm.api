@@ -13,7 +13,6 @@ class Equipment(BaseModel):
     name: str
     project_id: str
     equipment_project_category_id: str
-    equipment_category_id: str
     equipment_category_group_id: str
     building_id: str
     building_level_id: str

@@ -12,7 +12,6 @@ message Equipment {
   string name = 2;
   string project_id = 3;
   string equipment_project_category_id = 4;
-  string equipment_category_id = 5;
   string equipment_category_group_id = 6;
   string building_id = 7;
   string building_level_id = 8;

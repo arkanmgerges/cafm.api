@@ -149,5 +149,4 @@ class EquipmentCategoryGroupClient(Client):
         return EquipmentCategoryGroupDescriptor(
             id=obj.id,
             name=obj.name,
-            equipment_category_id=obj.equipment_category_id,
         )
