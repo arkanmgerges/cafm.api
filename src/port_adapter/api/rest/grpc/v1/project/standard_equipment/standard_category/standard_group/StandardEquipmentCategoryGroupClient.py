@@ -25,6 +25,8 @@ from src.resource.proto._generated.project.standard_equipment_category_group_app
     StandardEquipmentCategoryGroupAppService_standardEquipmentCategoryGroupByIdResponse,
     StandardEquipmentCategoryGroupAppService_newIdResponse,
     StandardEquipmentCategoryGroupAppService_newIdRequest,
+    StandardEquipmentCategoryGroupAppService_standardEquipmentCategoryGroupsByStandardEquipmentCategoryIdRequest,
+    StandardEquipmentCategoryGroupAppService_standardEquipmentCategoryGroupsByStandardEquipmentCategoryIdResponse,
 )
 from src.resource.proto._generated.project.standard_equipment_category_group_app_service_pb2_grpc import (
     StandardEquipmentCategoryGroupAppServiceStub,
@@ -94,6 +96,54 @@ class StandardEquipmentCategoryGroupClient(Client):
                 )
                 logger.debug(
                     f"[{StandardEquipmentCategoryGroupClient.standardEquipmentCategoryGroups.__qualname__}] - grpc response: {response}"
+                )
+
+                return StandardEquipmentCategoryGroups(
+                    standard_equipment_category_groups=[
+                        self._descriptorByObject(obj=standardEquipmentCategoryGroup)
+                        for standardEquipmentCategoryGroup in response[
+                            0
+                        ].standard_equipment_category_groups
+                    ],
+                    total_item_count=response[0].total_item_count,
+                )
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def standardEquipmentCategoryGroupsByStandardEquipmentCategoryId(
+            self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None, standardEquipmentCategoryId: str = None,
+    ) -> StandardEquipmentCategoryGroups:
+        orders = [] if orders is None else orders
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
+            stub = StandardEquipmentCategoryGroupAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f"[{StandardEquipmentCategoryGroupClient.standardEquipmentCategoryGroups.__qualname__}] - grpc call to retrieve standardEquipmentCategoryGroups from server {self._server}:{self._port}"
+                )
+                request = StandardEquipmentCategoryGroupAppService_standardEquipmentCategoryGroupsByStandardEquipmentCategoryIdRequest(
+                    result_from=resultFrom, result_size=resultSize, standard_equipment_category_id=standardEquipmentCategoryId
+                )
+                [
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
+                ]
+
+                response: StandardEquipmentCategoryGroupAppService_standardEquipmentCategoryGroupsByStandardEquipmentCategoryIdResponse = stub.standard_equipment_category_groups_by_standard_equipment_category_id.with_call(
+                    request,
+                    metadata=(
+                        ("token", self.token),
+                        (
+                            "opentel",
+                            AppDi.instance.get(OpenTelemetry).serializedContext(
+                                StandardEquipmentCategoryGroupClient.standardEquipmentCategoryGroupsByStandardEquipmentCategoryId.__qualname__
+                            ),
+                        ),
+                    ),
+                )
+                logger.debug(
+                    f"[{StandardEquipmentCategoryGroupClient.standardEquipmentCategoryGroupsByStandardEquipmentCategoryId.__qualname__}] - grpc response: {response}"
                 )
 
                 return StandardEquipmentCategoryGroups(

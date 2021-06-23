@@ -75,6 +75,40 @@ async def getStandardEquipmentCategoryGroups(
     except Exception as e:
         logger.info(e)
 
+@router.get(
+    path="/by_standard_equipment_category_id/{standard_equipment_category_id}",
+    summary="Get all standard equipment category group(s) by standard equipment category id",
+    response_model=StandardEquipmentCategoryGroups,
+)
+@OpenTelemetry.fastApiTraceOTel
+async def getStandardEquipmentCategoryGroupsByStandardEquipmentCategoryId(
+    *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
+    standard_equipment_category_id: str = Query(..., description="Standard equipment category id used to fetch standard equipment category groups"),
+    _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
+):
+    try:
+        client = StandardEquipmentCategoryGroupClient()
+        orderService = AppDi.instance.get(OrderService)
+        orders = orderService.orderStringToListOfDict(orders)
+        return client.standardEquipmentCategoryGroupsByStandardEquipmentCategoryId(
+            resultFrom=result_from, resultSize=result_size, orders=orders, standardEquipmentCategoryId=standard_equipment_category_id
+        )
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getStandardEquipmentCategoryGroupsByStandardEquipmentCategoryId.__module__}.{getStandardEquipmentCategoryGroupsByStandardEquipmentCategoryId.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
 
 @router.get(
     path="/{standard_equipment_category_group_id}",
