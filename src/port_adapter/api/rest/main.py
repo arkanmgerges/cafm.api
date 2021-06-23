@@ -63,9 +63,6 @@ from src.port_adapter.api.rest.router.v1.project.manufacturer import (
 from src.port_adapter.api.rest.router.v1.project.equipment.project_category import (
     equipment_project_category as project_equipment_project_category,
 )
-from src.port_adapter.api.rest.router.v1.project.equipment.category import (
-    equipment_category as project_equipment_category,
-)
 from src.port_adapter.api.rest.router.v1.project.equipment.category.group import (
     equipment_category_group as project_equipment_category_group,
 )
@@ -463,16 +460,7 @@ app.include_router(
         500: {"model": Message},
     },
 )
-app.include_router(
-    project_equipment_category.router,
-    prefix="/v1/project/equipment_categories",
-    tags=["Project/Equipment"],
-    responses={
-        400: {"model": Message},
-        404: {"model": Message},
-        500: {"model": Message},
-    },
-)
+
 app.include_router(
     project_equipment_input.router,
     prefix="/v1/project/equipment_inputs",

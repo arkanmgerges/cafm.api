@@ -28,7 +28,6 @@ from src.port_adapter.api.rest.grpc.v1.project.daily_check.procedure.operation.p
     DailyCheckProcedureOperationParameterClient,
 )
 from src.port_adapter.api.rest.grpc.v1.project.equipment.EquipmentClient import EquipmentClient
-from src.port_adapter.api.rest.grpc.v1.project.equipment.category.EquipmentCategoryClient import EquipmentCategoryClient
 from src.port_adapter.api.rest.grpc.v1.project.equipment.category.group.EquipmentCategoryGroupClient import (
     EquipmentCategoryGroupClient,
 )
@@ -208,7 +207,6 @@ entityToGrpcClientList = {
     "subcontractor": SubcontractorClient(),
     "subcontractor_category": SubcontractorCategoryClient(),
     "equipment": EquipmentClient(),
-    "equipment_category": EquipmentCategoryClient(),
     "equipment_category_group": EquipmentCategoryGroupClient(),
     "equipment_input": EquipmentInputClient(),
     "equipment_model": EquipmentModelClient(),
