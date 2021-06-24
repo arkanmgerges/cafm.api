@@ -30,9 +30,6 @@ class AuthorizationService:
                     return True
 
             for tree in roleTrees.role_access_permissions:
-                if len(tree.permissions) == 0:
-                    return False
-
                 for permissionObject in tree.permissions:
                     if (
                         hasattr(permissionObject.permission, "denied_actions")
