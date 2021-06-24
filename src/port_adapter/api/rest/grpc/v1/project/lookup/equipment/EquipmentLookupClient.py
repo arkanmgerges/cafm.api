@@ -47,6 +47,10 @@ from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Manufa
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Unit import (
     UnitDescriptor,
 )
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Subcontractor import (
+    SubcontractorDescriptor,
+)
+
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.lookup.equipment.equipment_lookup_app_service_pb2 import (
@@ -147,6 +151,7 @@ class EquipmentLookupClient(Client):
                     )
                 )
 
+            subcontractor = maintenance.subcontractor
             maintenances.append(
                 MaintenanceProcedureDescriptor(
                     id=maintenance.id,
@@ -156,6 +161,10 @@ class EquipmentLookupClient(Client):
                     frequency=maintenance.frequency,
                     start_date=maintenance.start_date,
                     maintenance_procedure_operations=operations,
+                    subcontractor=SubcontractorDescriptor(
+                        id=subcontractor.id,
+                        company_name=subcontractor.company_name,
+                    ),
                 )
             )
 

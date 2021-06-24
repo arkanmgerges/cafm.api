@@ -10,6 +10,9 @@ from pydantic import BaseModel
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.MaintenanceProcedureOperation import (
     MaintenanceProcedureOperation,
 )
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Subcontractor import (
+    Subcontractor,
+)
 
 
 class MaintenanceProcedure(BaseModel):
@@ -20,6 +23,7 @@ class MaintenanceProcedure(BaseModel):
     frequency: str
     start_date: int
     maintenance_procedure_operations: Optional[List[MaintenanceProcedureOperation]]
+    subcontractor: Optional[Subcontractor]
 
 
 class MaintenanceProcedureDescriptor(MaintenanceProcedure):

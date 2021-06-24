@@ -140,7 +140,7 @@ async def getEquipmentLookups(
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f"[{getUserLookups.__module__}.{getUserLookups.__qualname__}] - error response e: {e}"
+                f"[{getEquipmentLookups.__module__}.{getEquipmentLookups.__qualname__}] - error response e: {e}"
             )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
