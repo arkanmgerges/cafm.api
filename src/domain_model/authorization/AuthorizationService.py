@@ -25,10 +25,8 @@ class AuthorizationService:
         """
         try:
             method = self.getMethod(request.method)
-            logger.debug(f'------------ method: {method}')
             for tree in roleTrees.role_access_permissions:
                 if tree.role.name == "super_admin" or tree.role.name == "sys_admin":
-                    logger.debug(f'------------ return for super_admin')
                     return True
 
             for tree in roleTrees.role_access_permissions:
@@ -37,7 +35,6 @@ class AuthorizationService:
                         hasattr(permissionObject.permission, "denied_actions")
                         and method in permissionObject.permission.denied_actions
                     ):
-                        logger.debug(f'------------ return on denied, permission object: {permissionObject}')
                         return False
 
                     exist = method in permissionObject.permission.allowed_actions
@@ -46,9 +43,7 @@ class AuthorizationService:
                             path = request.url.path
                             originalPath = self._convertToOriginalPath(urlPath=path, pathParams=request.path_params)
                             if 'path' in context.data and context.data['path'] == originalPath:
-                                logger.debug(f'------------ return on ok, permission object: {permissionObject}, path: {path}, method: {method}, orig. path: {originalPath}, context: {context}')
                                 return True
-            logger.debug(f'------------ return loop is over')
             return False
         except Exception as e:
             logger.error({e})
