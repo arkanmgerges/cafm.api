@@ -109,6 +109,9 @@ class RoleClient(Client):
                 result = []
                 roleAccessPermissionsBytesData = response[0].data
                 roleAccessPermissionsData = pickle.loads(zlib.decompress(roleAccessPermissionsBytesData))
+                logger.debug(
+                    f"[{RoleClient.rolesTrees.__qualname__}] - grpc response after decompression: {roleAccessPermissionsData}"
+                )
                 for roleAccessPermissionDataItem in roleAccessPermissionsData:
                     role = self._descriptorByDataItem(
                         dataItem={**roleAccessPermissionDataItem["role"], **{'id': roleAccessPermissionDataItem["role"]['role_id']}} if "role" in roleAccessPermissionDataItem else None
@@ -192,53 +195,73 @@ class RoleClient(Client):
                         ),
                     ),
                 )
+
+                roleAccessPermissionBytesData = response[0].data
+                roleAccessPermissionsData = pickle.loads(zlib.decompress(roleAccessPermissionBytesData))
                 logger.debug(
-                    f"[{RoleClient.roleTree.__qualname__}] - grpc response: {response}"
+                    f"[{RoleClient.roleTree.__qualname__}] - grpc response after decompression: {roleAccessPermissionsData}"
                 )
 
-                roleAccessPermissionResponse = response[0].role_access_permission
-                role = self._descriptorByObject(obj=roleAccessPermissionResponse.role)
-
+                role = self._descriptorByDataItem(
+                    dataItem={**roleAccessPermissionsData["role"], **{'id': roleAccessPermissionsData["role"][
+                        'role_id']}} if "role" in roleAccessPermissionsData else None
+                )
                 # owned by
-                ownedBy = self._resourceFromDataItem(
-                    roleAccessPermissionResponse.owned_by
-                )
-                # owner of
-                ownerOfList = []
-                for ownerOfItem in roleAccessPermissionResponse.owner_of:
-                    ownerOfList.append(self._resourceFromDataItem(ownerOfItem))
+                ownedBy = None
+                if ("owned_by" in roleAccessPermissionsData
+                        and roleAccessPermissionsData["owned_by"] is not None
+                        and "resource_id" in roleAccessPermissionsData["owned_by"]
+                        and roleAccessPermissionsData["owned_by"]["resource_id"] is not None):
+                    ownedBy = self._resourceFromDataItem(
+                        dataItem={**roleAccessPermissionsData["owned_by"],
+                                  **{'id': roleAccessPermissionsData["owned_by"]['resource_id']}})
 
-                # permissions with permission contexts
-                tmp = []
-                for (
-                    permissionWithContext
-                ) in roleAccessPermissionResponse.permission_with_permission_contexts:
-                    pcs = []
-                    for permissionContext in permissionWithContext.permission_contexts:
-                        pcs.append(
-                            self._permissionContextFromDataItem(permissionContext)
-                        )
+                    # owner of
+                    ownerOfList = []
+                    if "owner_of" in roleAccessPermissionsData and len(roleAccessPermissionsData["owner_of"]) > 0:
+                        for ownerOfItem in roleAccessPermissionsData["owner_of"]:
+                            ownerOfList.append(
+                                self._resourceFromDataItem({**ownerOfItem, **{'id': ownerOfItem['resource_id']}}))
 
-                    tmp.append(
-                        PermissionWithPermissionContexts(
-                            permission=self._permissionFromDataItem(
-                                permissionWithContext.permission
-                            ),
-                            permission_contexts=pcs,
-                        )
-                    )
+                        # permissions with permission contexts
+                        tmp = []
+                        if "permission_with_permission_contexts" in roleAccessPermissionsData and \
+                                len(roleAccessPermissionsData["permission_with_permission_contexts"]) > 0:
+                            for (
+                                    permissionWithContext
+                            ) in roleAccessPermissionsData["permission_with_permission_contexts"]:
+                                pcs = []
+                                if "permission_contexts" in permissionWithContext and len(
+                                        permissionWithContext["permission_contexts"]) > 0:
+                                    for (
+                                            permissionContext
+                                    ) in permissionWithContext["permission_contexts"]:
+                                        pcs.append(
+                                            self._permissionContextFromDataItem({**permissionContext, **{
+                                                'id': permissionContext['permission_context_id']}})
+                                        )
+
+                                    tmp.append(
+                                        PermissionWithPermissionContexts(
+                                            permission=self._permissionFromDataItem(
+                                                {**permissionWithContext["permission"],
+                                                 **{'id': permissionWithContext["permission"]['permission_id']}}
+                                            ),
+                                            permission_contexts=pcs,
+                                        )
+                                    )
 
                 # role access tree
 
                 return RoleAccessPermissionDataDescriptor(
-                    role=role,
-                    owned_by=ownedBy,
-                    owner_of=ownerOfList,
-                    permissions=tmp,
-                    access_tree=self._accessNodeFromDataItem(
-                        roleAccessPermissionResponse.access_tree
-                    ),
-                )
+                            role=role,
+                            owned_by=ownedBy,
+                            owner_of=ownerOfList,
+                            permissions=tmp,
+                            access_tree=self._accessNodeFromDataItem(
+                                roleAccessPermissionsData["access_tree"]
+                            ),
+                        )
             except Exception as e:
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
