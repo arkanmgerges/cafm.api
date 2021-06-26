@@ -3,6 +3,8 @@
 """
 import json
 import os
+import pickle
+import zlib
 from typing import List, Any
 
 import grpc
@@ -103,48 +105,54 @@ class RoleClient(Client):
                         ),
                     ),
                 )
-                logger.debug(
-                    f"[{RoleClient.rolesTrees.__qualname__}] - grpc response: {response}"
-                )
 
                 result = []
-
-                roleAccessPermissionsResponse = response[0].role_access_permission
-
-                for roleAccessPermissionResponse in roleAccessPermissionsResponse:
-                    role = self._descriptorByObject(
-                        obj=roleAccessPermissionResponse.role
+                roleAccessPermissionsBytesData = response[0].data
+                roleAccessPermissionsData = pickle.loads(zlib.decompress(roleAccessPermissionsBytesData))
+                for roleAccessPermissionDataItem in roleAccessPermissionsData:
+                    role = self._descriptorByDataItem(
+                        dataItem={**roleAccessPermissionDataItem["role"], **{'id': roleAccessPermissionDataItem["role"]['role_id']}} if "role" in roleAccessPermissionDataItem else None
                     )
                     # owned by
-                    ownedBy = self._resourceFromProtoBuff(
-                        roleAccessPermissionResponse.owned_by
-                    )
+                    ownedBy = None
+                    if ("owned_by" in roleAccessPermissionDataItem
+                        and roleAccessPermissionDataItem["owned_by"] is not None
+                        and "resource_id" in roleAccessPermissionDataItem["owned_by"]
+                        and roleAccessPermissionDataItem["owned_by"]["resource_id"] is not None):
+                        ownedBy = self._resourceFromDataItem(
+                            dataItem={**roleAccessPermissionDataItem["owned_by"],
+                                      **{'id': roleAccessPermissionDataItem["owned_by"]['resource_id']}})
+
                     # owner of
                     ownerOfList = []
-                    for ownerOfItem in roleAccessPermissionResponse.owner_of:
-                        ownerOfList.append(self._resourceFromProtoBuff(ownerOfItem))
+                    if "owner_of" in roleAccessPermissionDataItem and len(roleAccessPermissionDataItem["owner_of"]) > 0:
+                        for ownerOfItem in roleAccessPermissionDataItem["owner_of"]:
+                            ownerOfList.append(self._resourceFromDataItem({**ownerOfItem, **{'id': ownerOfItem['resource_id']}}))
 
-                    # permissions with permission contexts
-                    tmp = []
-                    for (
-                        permissionWithContext
-                    ) in roleAccessPermissionResponse.permission_with_permission_contexts:
-                        pcs = []
-                        for (
-                            permissionContext
-                        ) in permissionWithContext.permission_contexts:
-                            pcs.append(
-                                self._permissionContextFromProtoBuff(permissionContext)
-                            )
+                        # permissions with permission contexts
+                        tmp = []
+                        if "permission_with_permission_contexts" in roleAccessPermissionDataItem and \
+                            len(roleAccessPermissionDataItem["permission_with_permission_contexts"]) > 0:
+                            for (
+                                permissionWithContext
+                            ) in roleAccessPermissionDataItem["permission_with_permission_contexts"]:
+                                pcs = []
+                                if "permission_contexts" in permissionWithContext and len(permissionWithContext["permission_contexts"]) > 0:
+                                    for (
+                                        permissionContext
+                                    ) in permissionWithContext["permission_contexts"]:
+                                        pcs.append(
+                                            self._permissionContextFromDataItem({**permissionContext, **{'id': permissionContext['permission_context_id']}})
+                                        )
 
-                        tmp.append(
-                            PermissionWithPermissionContexts(
-                                permission=self._permissionFromProtoBuff(
-                                    permissionWithContext.permission
-                                ),
-                                permission_contexts=pcs,
-                            )
-                        )
+                                    tmp.append(
+                                        PermissionWithPermissionContexts(
+                                            permission=self._permissionFromDataItem(
+                                                {**permissionWithContext["permission"], **{'id': permissionWithContext["permission"]['permission_id']}}
+                                            ),
+                                            permission_contexts=pcs,
+                                        )
+                                    )
 
                     # role access tree
                     result.append(
@@ -153,8 +161,8 @@ class RoleClient(Client):
                             owned_by=ownedBy,
                             owner_of=ownerOfList,
                             permissions=tmp,
-                            access_tree=self._accessNodeFromProtoBuff(
-                                roleAccessPermissionResponse.access_tree
+                            access_tree=self._accessNodeFromDataItem(
+                                roleAccessPermissionDataItem["access_tree"]
                             ),
                         )
                     )
@@ -192,13 +200,13 @@ class RoleClient(Client):
                 role = self._descriptorByObject(obj=roleAccessPermissionResponse.role)
 
                 # owned by
-                ownedBy = self._resourceFromProtoBuff(
+                ownedBy = self._resourceFromDataItem(
                     roleAccessPermissionResponse.owned_by
                 )
                 # owner of
                 ownerOfList = []
                 for ownerOfItem in roleAccessPermissionResponse.owner_of:
-                    ownerOfList.append(self._resourceFromProtoBuff(ownerOfItem))
+                    ownerOfList.append(self._resourceFromDataItem(ownerOfItem))
 
                 # permissions with permission contexts
                 tmp = []
@@ -208,12 +216,12 @@ class RoleClient(Client):
                     pcs = []
                     for permissionContext in permissionWithContext.permission_contexts:
                         pcs.append(
-                            self._permissionContextFromProtoBuff(permissionContext)
+                            self._permissionContextFromDataItem(permissionContext)
                         )
 
                     tmp.append(
                         PermissionWithPermissionContexts(
-                            permission=self._permissionFromProtoBuff(
+                            permission=self._permissionFromDataItem(
                                 permissionWithContext.permission
                             ),
                             permission_contexts=pcs,
@@ -227,7 +235,7 @@ class RoleClient(Client):
                     owned_by=ownedBy,
                     owner_of=ownerOfList,
                     permissions=tmp,
-                    access_tree=self._accessNodeFromProtoBuff(
+                    access_tree=self._accessNodeFromDataItem(
                         roleAccessPermissionResponse.access_tree
                     ),
                 )
@@ -235,37 +243,38 @@ class RoleClient(Client):
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
-    def _resourceFromProtoBuff(self, protoBuf):
-        return Resource(id=protoBuf.id, type=protoBuf.type)
+    def _resourceFromDataItem(self, dataItem):
+        return Resource(id=dataItem["id"], type=dataItem["type"])
 
-    def _permissionContextFromProtoBuff(self, protoBuf):
+    def _permissionContextFromDataItem(self, dataItem):
         return PermissionContext(
-            id=protoBuf.id, type=protoBuf.type, data=json.loads(protoBuf.data)
+            id=dataItem["id"], type=dataItem["type"], data=json.loads(dataItem["data"])
         )
 
-    def _accessNodeFromProtoBuff(self, protoBuf):
+    def _accessNodeFromDataItem(self, dataItem):
         result = []
-        for node in protoBuf:
-            children = self._accessNodeFromProtoBuff(node.children)
+        if dataItem is not None and len(dataItem) > 0:
+            for node in dataItem:
+                children = self._accessNodeFromDataItem(node["children"])
 
-            result.append(
-                AccessNode(
-                    data=AccessNodeData(
-                        content=json.loads(node.data.content),
-                        content_type=node.data.content_type,
-                        context=json.loads(node.data.context),
-                    ),
-                    children=children,
+                result.append(
+                    AccessNode(
+                        data=AccessNodeData(
+                            content=node["content"],
+                            content_type=node["content_type"],
+                            context=node["context"],
+                        ),
+                        children=children,
+                    )
                 )
-            )
         return result
 
-    def _permissionFromProtoBuff(self, protoBuf):
-        allowedActions = [x for x in protoBuf.allowed_actions]
-        deniedActions = [x for x in protoBuf.denied_actions]
+    def _permissionFromDataItem(self, dataItem):
+        allowedActions = [x for x in dataItem["allowed_actions"]]
+        deniedActions = [x for x in dataItem["denied_actions"]]
         return Permission(
-            id=protoBuf.id,
-            name=protoBuf.name,
+            id=dataItem["id"],
+            name=dataItem["name"],
             allowed_actions=allowedActions,
             denied_actions=deniedActions,
         )
@@ -343,5 +352,12 @@ class RoleClient(Client):
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
+    def _descriptorByDataItem(self, dataItem: Any) -> RoleDescriptor:
+        if dataItem is not None:
+            return RoleDescriptor(id=dataItem["id"], name=dataItem["name"], title=dataItem["title"])
+        return None
+
     def _descriptorByObject(self, obj: Any) -> RoleDescriptor:
-        return RoleDescriptor(id=obj.id, name=obj.name, title=obj.title)
+        if obj is not None:
+            return RoleDescriptor(id=obj.id, name=obj.name, title=obj.title)
+        return None

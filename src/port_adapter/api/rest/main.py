@@ -10,10 +10,12 @@ from datetime import datetime
 import numpy as np
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from loguru import logger
 from starlette import status
 from starlette.responses import JSONResponse
 
 import src.port_adapter.AppDi as AppDi
+
 from src.port_adapter.api.rest.model.response.exception.Message import (
     Message,
     ValidationMessage,
@@ -52,26 +54,23 @@ from src.port_adapter.api.rest.router.v1.project import (
     organization as project_organization,
     lookup as project_lookup,
 )
-from src.resource.logging.logger import logger
-from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
-from src.port_adapter.api.rest.router.v1.project.equipment.model import (
-    equipment_model as project_equipment_model,
-)
-from src.port_adapter.api.rest.router.v1.project.manufacturer import (
-    manufacturer as project_manufacturer,
-)
-from src.port_adapter.api.rest.router.v1.project.equipment.project_category import (
-    equipment_project_category as project_equipment_project_category,
-)
-from src.port_adapter.api.rest.router.v1.project.equipment.category.group import (
-    equipment_category_group as project_equipment_category_group,
+from src.port_adapter.api.rest.router.v1.project.daily_check.procedure import (
+    daily_check_procedure as project_daily_check_procedure,
 )
 from src.port_adapter.api.rest.router.v1.project.equipment import (
     equipment as project_equipment,
 )
-from src.port_adapter.api.rest.router.v1.project.unit import unit as project_unit
+from src.port_adapter.api.rest.router.v1.project.equipment.category.group import (
+    equipment_category_group as project_equipment_category_group,
+)
 from src.port_adapter.api.rest.router.v1.project.equipment.input import (
     equipment_input as project_equipment_input,
+)
+from src.port_adapter.api.rest.router.v1.project.equipment.model import (
+    equipment_model as project_equipment_model,
+)
+from src.port_adapter.api.rest.router.v1.project.equipment.project_category import (
+    equipment_project_category as project_equipment_project_category,
 )
 from src.port_adapter.api.rest.router.v1.project.maintenance.procedure import (
     maintenance_procedure as project_maintenance_procedure,
@@ -79,8 +78,11 @@ from src.port_adapter.api.rest.router.v1.project.maintenance.procedure import (
 from src.port_adapter.api.rest.router.v1.project.maintenance.standard_procedure import (
     standard_maintenance_procedure as project_standard_maintenance_procedure,
 )
-from src.port_adapter.api.rest.router.v1.project.daily_check.procedure import (
-    daily_check_procedure as project_daily_check_procedure,
+from src.port_adapter.api.rest.router.v1.project.manufacturer import (
+    manufacturer as project_manufacturer,
+)
+from src.port_adapter.api.rest.router.v1.project.role import (
+    role as project_role,
 )
 from src.port_adapter.api.rest.router.v1.project.standard_equipment import (
     standard_equipment as standard_equipment,
@@ -97,15 +99,13 @@ from src.port_adapter.api.rest.router.v1.project.subcontractor import (
 from src.port_adapter.api.rest.router.v1.project.subcontractor.category import (
     subcontractor_category as project_subcontractor_category,
 )
-from src.port_adapter.api.rest.router.v1.project.role import (
-    role as project_role,
-)
 from src.port_adapter.api.rest.router.v1.project.tag import (
     tag as project_tag,
 )
+from src.port_adapter.api.rest.router.v1.project.unit import unit as project_unit
 from src.port_adapter.api.rest.router.v1.util import route as util_route
-
-# from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from src.resource.logging.loguru_logger import initLoguruLogging
+from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
 app = FastAPI(
     title="CAFM System Api Gateway",
@@ -114,24 +114,14 @@ app = FastAPI(
     openapi_url="/api/v1/openapi.json",
 )
 
+# We can use loguru logging, just uncomment the following line
+# initLoguruLogging()
+
 openTelemetry = AppDi.instance.get(OpenTelemetry)
-
-
-# FastAPIInstrumentor.instrument_app(app)
 
 
 def addCustomExceptionHandlers(app):
     from fastapi import Request
-
-    # from src.domain_model.exception.ItemDoesNotExistException import ItemDoesNotExistException
-    # from src.domain_model.exception.UserDoesNotExistException import UserDoesNotExistException
-
-    # @app.exception_handler(ItemDoesNotExistException)
-    # async def itemExceptionHandler(request: Request, e: ItemDoesNotExistException):
-    #     logger = AppDi.instance.get(Logger)
-    #     logger.warning(traceback.format_exc())
-    #     return JSONResponse(content={"detail": [{"msg": str(e)}]}, status_code=status.HTTP_404_NOT_FOUND)
-    #
 
     @app.exception_handler(ValidationErrorException)
     async def validationExceptionHandler(request: Request, e: ValidationErrorException):
