@@ -132,30 +132,30 @@ class RoleClient(Client):
                         for ownerOfItem in roleAccessPermissionDataItem["owner_of"]:
                             ownerOfList.append(self._resourceFromDataItem({**ownerOfItem, **{'id': ownerOfItem['resource_id']}}))
 
-                        # permissions with permission contexts
-                        tmp = []
-                        if "permission_with_permission_contexts" in roleAccessPermissionDataItem and \
-                            len(roleAccessPermissionDataItem["permission_with_permission_contexts"]) > 0:
-                            for (
-                                permissionWithContext
-                            ) in roleAccessPermissionDataItem["permission_with_permission_contexts"]:
-                                pcs = []
-                                if "permission_contexts" in permissionWithContext and len(permissionWithContext["permission_contexts"]) > 0:
-                                    for (
-                                        permissionContext
-                                    ) in permissionWithContext["permission_contexts"]:
-                                        pcs.append(
-                                            self._permissionContextFromDataItem({**permissionContext, **{'id': permissionContext['permission_context_id']}})
-                                        )
-
-                                    tmp.append(
-                                        PermissionWithPermissionContexts(
-                                            permission=self._permissionFromDataItem(
-                                                {**permissionWithContext["permission"], **{'id': permissionWithContext["permission"]['permission_id']}}
-                                            ),
-                                            permission_contexts=pcs,
-                                        )
+                    # permissions with permission contexts
+                    tmp = []
+                    if "permissions" in roleAccessPermissionDataItem and \
+                        len(roleAccessPermissionDataItem["permissions"]) > 0:
+                        for (
+                            permissionWithContext
+                        ) in roleAccessPermissionDataItem["permissions"]:
+                            pcs = []
+                            if "permission_contexts" in permissionWithContext and len(permissionWithContext["permission_contexts"]) > 0:
+                                for (
+                                    permissionContext
+                                ) in permissionWithContext["permission_contexts"]:
+                                    pcs.append(
+                                        self._permissionContextFromDataItem({**permissionContext, **{'id': permissionContext['permission_context_id']}})
                                     )
+
+                                tmp.append(
+                                    PermissionWithPermissionContexts(
+                                        permission=self._permissionFromDataItem(
+                                            {**permissionWithContext["permission"], **{'id': permissionWithContext["permission"]['permission_id']}}
+                                        ),
+                                        permission_contexts=pcs,
+                                    )
+                                )
 
                     # role access tree
                     result.append(
@@ -223,33 +223,33 @@ class RoleClient(Client):
                             ownerOfList.append(
                                 self._resourceFromDataItem({**ownerOfItem, **{'id': ownerOfItem['resource_id']}}))
 
-                        # permissions with permission contexts
-                        tmp = []
-                        if "permission_with_permission_contexts" in roleAccessPermissionsData and \
-                                len(roleAccessPermissionsData["permission_with_permission_contexts"]) > 0:
-                            for (
-                                    permissionWithContext
-                            ) in roleAccessPermissionsData["permission_with_permission_contexts"]:
-                                pcs = []
-                                if "permission_contexts" in permissionWithContext and len(
-                                        permissionWithContext["permission_contexts"]) > 0:
-                                    for (
-                                            permissionContext
-                                    ) in permissionWithContext["permission_contexts"]:
-                                        pcs.append(
-                                            self._permissionContextFromDataItem({**permissionContext, **{
-                                                'id': permissionContext['permission_context_id']}})
-                                        )
-
-                                    tmp.append(
-                                        PermissionWithPermissionContexts(
-                                            permission=self._permissionFromDataItem(
-                                                {**permissionWithContext["permission"],
-                                                 **{'id': permissionWithContext["permission"]['permission_id']}}
-                                            ),
-                                            permission_contexts=pcs,
-                                        )
+                    # permissions with permission contexts
+                    tmp = []
+                    if "permissions" in roleAccessPermissionsData and \
+                            len(roleAccessPermissionsData["permissions"]) > 0:
+                        for (
+                                permissionWithContext
+                        ) in roleAccessPermissionsData["permissions"]:
+                            pcs = []
+                            if "permission_contexts" in permissionWithContext and len(
+                                    permissionWithContext["permission_contexts"]) > 0:
+                                for (
+                                        permissionContext
+                                ) in permissionWithContext["permission_contexts"]:
+                                    pcs.append(
+                                        self._permissionContextFromDataItem({**permissionContext, **{
+                                            'id': permissionContext['permission_context_id']}})
                                     )
+
+                                tmp.append(
+                                    PermissionWithPermissionContexts(
+                                        permission=self._permissionFromDataItem(
+                                            {**permissionWithContext["permission"],
+                                             **{'id': permissionWithContext["permission"]['permission_id']}}
+                                        ),
+                                        permission_contexts=pcs,
+                                    )
+                                )
 
                 # role access tree
 
@@ -271,7 +271,7 @@ class RoleClient(Client):
 
     def _permissionContextFromDataItem(self, dataItem):
         return PermissionContext(
-            id=dataItem["id"], type=dataItem["type"], data=json.loads(dataItem["data"])
+            id=dataItem["id"], type=dataItem["type"], data=dataItem["data"]
         )
 
     def _accessNodeFromDataItem(self, dataItem):
