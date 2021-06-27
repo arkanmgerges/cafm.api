@@ -216,40 +216,40 @@ class RoleClient(Client):
                         dataItem={**roleAccessPermissionsData["owned_by"],
                                   **{'id': roleAccessPermissionsData["owned_by"]['resource_id']}})
 
-                    # owner of
-                    ownerOfList = []
-                    if "owner_of" in roleAccessPermissionsData and len(roleAccessPermissionsData["owner_of"]) > 0:
-                        for ownerOfItem in roleAccessPermissionsData["owner_of"]:
-                            ownerOfList.append(
-                                self._resourceFromDataItem({**ownerOfItem, **{'id': ownerOfItem['resource_id']}}))
+                # owner of
+                ownerOfList = []
+                if "owner_of" in roleAccessPermissionsData and len(roleAccessPermissionsData["owner_of"]) > 0:
+                    for ownerOfItem in roleAccessPermissionsData["owner_of"]:
+                        ownerOfList.append(
+                            self._resourceFromDataItem({**ownerOfItem, **{'id': ownerOfItem['resource_id']}}))
 
-                    # permissions with permission contexts
-                    tmp = []
-                    if "permissions" in roleAccessPermissionsData and \
-                            len(roleAccessPermissionsData["permissions"]) > 0:
-                        for (
-                                permissionWithContext
-                        ) in roleAccessPermissionsData["permissions"]:
-                            pcs = []
-                            if "permission_contexts" in permissionWithContext and len(
-                                    permissionWithContext["permission_contexts"]) > 0:
-                                for (
-                                        permissionContext
-                                ) in permissionWithContext["permission_contexts"]:
-                                    pcs.append(
-                                        self._permissionContextFromDataItem({**permissionContext, **{
-                                            'id': permissionContext['permission_context_id']}})
-                                    )
-
-                                tmp.append(
-                                    PermissionWithPermissionContexts(
-                                        permission=self._permissionFromDataItem(
-                                            {**permissionWithContext["permission"],
-                                             **{'id': permissionWithContext["permission"]['permission_id']}}
-                                        ),
-                                        permission_contexts=pcs,
-                                    )
+                # permissions with permission contexts
+                tmp = []
+                if "permissions" in roleAccessPermissionsData and \
+                        len(roleAccessPermissionsData["permissions"]) > 0:
+                    for (
+                            permissionWithContext
+                    ) in roleAccessPermissionsData["permissions"]:
+                        pcs = []
+                        if "permission_contexts" in permissionWithContext and len(
+                                permissionWithContext["permission_contexts"]) > 0:
+                            for (
+                                    permissionContext
+                            ) in permissionWithContext["permission_contexts"]:
+                                pcs.append(
+                                    self._permissionContextFromDataItem({**permissionContext, **{
+                                        'id': permissionContext['permission_context_id']}})
                                 )
+
+                            tmp.append(
+                                PermissionWithPermissionContexts(
+                                    permission=self._permissionFromDataItem(
+                                        {**permissionWithContext["permission"],
+                                         **{'id': permissionWithContext["permission"]['permission_id']}}
+                                    ),
+                                    permission_contexts=pcs,
+                                )
+                            )
 
                 # role access tree
 
