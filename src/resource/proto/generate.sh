@@ -40,6 +40,5 @@ echo -e ${YELLOW}
 python -m grpc_tools.protoc --python_out=_generated --grpc_python_out=_generated -I "$TMPDIR" "$TMPDIR"/*.proto "$TMPDIR"/**/*.proto "$TMPDIR"/project/lookup/**/*.proto
 echo -e ${RESET}
 wait
-cp identity/__init__.py _generated/identity
-cp project/__init__.py _generated/project
+
 rm -rf "$TMPDIR"
