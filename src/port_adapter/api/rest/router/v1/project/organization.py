@@ -68,6 +68,39 @@ async def getOrganizations(
     except Exception as e:
         logger.info(e)
 
+@router.get(path="/by_type/{organization_type}", summary="Get all organizations by type", response_model=Organizations)
+@OpenTelemetry.fastApiTraceOTel
+async def getOrganizationsByType(
+    *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
+    organization_type: str = Path(
+        ...,
+        description="Organization type that is used in order to retrieve the organizations",
+    ),
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+):
+    try:
+        client = OrganizationClient()
+        orderService = AppDi.instance.get(OrderService)
+        orders = orderService.orderStringToListOfDict(orders)
+        return client.organizationsByType(
+            resultFrom=result_from, resultSize=result_size, orders=orders, organizationType=organization_type
+        )
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getOrganizationsByType.__module__}.{getOrganizationsByType.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
 
 @router.put(
     "/{organization_id}",

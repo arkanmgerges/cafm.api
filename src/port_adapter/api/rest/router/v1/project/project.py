@@ -135,7 +135,7 @@ async def getProjectsByOrganizationId(
 
 @router.get(path="/by_state/{state}", summary="Get all projects filtered by state", response_model=Projects)
 @OpenTelemetry.fastApiTraceOTel
-async def getProjects(
+async def getProjectsState(
     *,
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
@@ -160,7 +160,7 @@ async def getProjects(
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f"[{getProjects.__module__}.{getProjects.__qualname__}] - error response e: {e}"
+                f"[{getProjectsState.__module__}.{getProjectsState.__qualname__}] - error response e: {e}"
             )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
@@ -176,7 +176,7 @@ c4model:Rel(api__project_project_py__getProject, project__grpc__ProjectAppServic
     path="/{project_id}", summary="Get project", response_model=ProjectDescriptor
 )
 @OpenTelemetry.fastApiTraceOTel
-async def getProject(
+async def getProjectById(
     *,
     project_id: str = Path(
         ..., description="Project id that is used to fetch project data"
@@ -195,7 +195,7 @@ async def getProject(
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f"[{getProject.__module__}.{getProject.__qualname__}] - error response e: {e}"
+                f"[{getProjectById.__module__}.{getProjectById.__qualname__}] - error response e: {e}"
             )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
