@@ -161,7 +161,6 @@ async def createEquipment(
                     "manufacturer_id": manufacturer_id,
                     "equipment_model_id": equipment_model_id,
                     "quantity": quantity,
-                    "new_equipment_category_group_id": equiomentCategoryGroupClient.newId()
                 }
             ),
             external=[],
