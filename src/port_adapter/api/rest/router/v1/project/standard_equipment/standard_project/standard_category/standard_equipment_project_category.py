@@ -92,18 +92,19 @@ async def getStandardEquipmentProjectCategoriesByOrganizationId(
     ),
     result_from: int = Query(0, description="Starting offset for fetching data"),
     result_size: int = Query(10, description="Item count to be fetched"),
-    order: str = Query("", description="e.g. id:asc,email:desc"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
 ):
     try:
+        print(f"___________________\n{orders}")
         client = StandardEquipmentProjectCategoryClient()
         orderService = AppDi.instance.get(OrderService)
-        order = orderService.orderStringToListOfDict(order)
+        orders = orderService.orderStringToListOfDict(orders)
         return client.standardEquipmentProjectCategoriesByOrganizationId(
-            organizationId=organization_id,
             resultFrom=result_from,
             resultSize=result_size,
-            order=order,
+            orders=orders,
+            organizationId=organization_id,
         )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
@@ -116,6 +117,8 @@ async def getStandardEquipmentProjectCategoriesByOrganizationId(
             )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
+        print("===================")
+
         logger.info(e)
 
 

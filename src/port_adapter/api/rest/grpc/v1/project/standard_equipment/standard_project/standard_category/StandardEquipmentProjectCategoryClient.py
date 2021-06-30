@@ -157,7 +157,7 @@ class StandardEquipmentProjectCategoryClient(Client):
         organizationId: str = None,
         resultFrom: int = 0,
         resultSize: int = 10,
-        order: List[dict] = None,
+        orders: List[dict] = None,
     ) -> StandardEquipmentProjectCategories:
         orders = [] if orders is None else orders
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
@@ -167,9 +167,9 @@ class StandardEquipmentProjectCategoryClient(Client):
                     f"[{StandardEquipmentProjectCategoryClient.standardEquipmentProjectCategoriesByOrganizationId.__qualname__}] - grpc call to retrieve standardEquipmentProjectCategories from server {self._server}:{self._port}"
                 )
                 request = StandardEquipmentProjectCategoryAppService_standardEquipmentProjectCategoriesByOrganizationIdRequest(
-                    organizationId=organizationId,
-                    resultFrom=resultFrom,
-                    resultSize=resultSize,
+                    result_from=resultFrom,
+                    result_size=resultSize,
+                    organization_id=organizationId,
                 )
                 [
                     request.orders.add(order_by=o["orderBy"], direction=o["direction"])

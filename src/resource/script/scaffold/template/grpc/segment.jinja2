@@ -29,7 +29,7 @@ from src.resource.proto._generated.{{model.microservice}}.{{model.name}}_app_ser
       {%-set lowerForeignModelName = segmentItem.foreign.model.name | lowerCamelCase%}
 
     @OpenTelemetry.grpcTraceOTel
-    def {{ lowerCamelModelName | pluralize }}By{{foreignModelName}}Id(self, {{lowerForeignModelName}}Id: str = None, resultFrom: int = 0, resultSize: int = 10, order: List[dict] = None) -> {{ className | pluralize }}:
+    def {{ lowerCamelModelName | pluralize }}By{{foreignModelName}}Id(self, {{lowerForeignModelName}}Id: str = None, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None) -> {{ className | pluralize }}:
         orders = [] if orders is None else orders
         with grpc.insecure_channel(f'{self._server}:{self._port}') as channel:
             stub = {{ className }}AppServiceStub(channel)

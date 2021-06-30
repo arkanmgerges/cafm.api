@@ -47,7 +47,9 @@ async def getUsers(
         client = UserClient()
         orderService = AppDi.instance.get(OrderService)
         orders = orderService.orderStringToListOfDict(orders)
-        return client.users(resultFrom=result_from, resultSize=result_size, orders=orders)
+        return client.users(
+            resultFrom=result_from, resultSize=result_size, orders=orders
+        )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -62,7 +64,11 @@ async def getUsers(
         logger.info(e)
 
 
-@router.get(path="/by_organization_id/{organization_id}", summary="Get all users by organization", response_model=Users)
+@router.get(
+    path="/by_organization_id/{organization_id}",
+    summary="Get all users by organization",
+    response_model=Users,
+)
 @OpenTelemetry.fastApiTraceOTel
 async def getUsersByOrganizationId(
     *,
@@ -71,15 +77,18 @@ async def getUsersByOrganizationId(
     orders: str = Query("", description="e.g. id:asc,email:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
-    organization_id: str = Path(
-        ..., description="Organization id tto filter users"
-    )
+    organization_id: str = Path(..., description="Organization id tto filter users"),
 ):
     try:
         client = UserClient()
         orderService = AppDi.instance.get(OrderService)
         orders = orderService.orderStringToListOfDict(orders)
-        return client.usersByOrganizationId(organizationId=organization_id, resultFrom=result_from, resultSize=result_size, orders=orders)
+        return client.usersByOrganizationId(
+            organizationId=organization_id,
+            resultFrom=result_from,
+            resultSize=result_size,
+            orders=orders,
+        )
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
@@ -92,6 +101,7 @@ async def getUsersByOrganizationId(
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
+
 
 @router.put("/{user_id}", summary="Update a user", status_code=status.HTTP_200_OK)
 @OpenTelemetry.fastApiTraceOTel
@@ -106,7 +116,9 @@ async def updateUser(
     first_name: str = Body(..., description="First name of the user", embed=True),
     last_name: str = Body(..., description="Last name of the user", embed=True),
     address_one: str = Body(None, description="User first line of address", embed=True),
-    address_two: str = Body(None, description="User second line of address", embed=True),
+    address_two: str = Body(
+        None, description="User second line of address", embed=True
+    ),
     postal_code: str = Body(None, description="Postal code of the user", embed=True),
     phone_number: str = Body(None, description="Phone number of the user", embed=True),
     avatar_image: str = Body(None, description="Avatar URL of the user", embed=True),

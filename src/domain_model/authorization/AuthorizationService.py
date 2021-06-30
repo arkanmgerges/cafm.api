@@ -13,7 +13,9 @@ class AuthorizationService:
     def __init__(self):
         super().__init__()
 
-    def isAuthorized(self, roleTrees: RoleAccessPermissionDatas, request: Request) -> bool:
+    def isAuthorized(
+        self, roleTrees: RoleAccessPermissionDatas, request: Request
+    ) -> bool:
         """Check if the user is authenticated, by checking if the token exists, and if exists then refresh it
 
         Args:
@@ -41,8 +43,13 @@ class AuthorizationService:
                     if exist:
                         for context in permissionObject.permission_contexts:
                             path = request.url.path
-                            originalPath = self._convertToOriginalPath(urlPath=path, pathParams=request.path_params)
-                            if 'path' in context.data and context.data['path'] == originalPath:
+                            originalPath = self._convertToOriginalPath(
+                                urlPath=path, pathParams=request.path_params
+                            )
+                            if (
+                                "path" in context.data
+                                and context.data["path"] == originalPath
+                            ):
                                 return True
             return False
         except Exception as e:
@@ -52,13 +59,17 @@ class AuthorizationService:
     def _convertToOriginalPath(self, urlPath: str, pathParams: dict = None):
         if pathParams is not None and isinstance(pathParams, dict):
             for arg, value in pathParams.items():
-                urlPath = urlPath.replace(value, f'{{{arg}}}')
+                urlPath = urlPath.replace(value, f"{{{arg}}}")
         return urlPath
 
     def getMethod(self, method: str = None):
         from enum import Enum
+
         methodType: Enum
-        if method not in [methodType.name for methodType in MethodType]:
-            raise ValueError("Invalid method, it should be one of these: " + ", ".join([methodType.name for methodType in MethodType]))
+        if method not in [name for name, value in MethodType.__members__.items()]:
+            raise ValueError(
+                "Invalid method, it should be one of these: "
+                + ", ".join([methodType.name for methodType in MethodType])
+            )
 
         return MethodType[method]

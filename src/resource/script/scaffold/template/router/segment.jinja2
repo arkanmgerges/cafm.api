@@ -34,7 +34,7 @@ async def get{{ className | pluralize }}By{{foreignModelName}}Id(*,
                             {{segmentItem.foreign.model.name}}_id: str = Path(..., description='{{segmentItem.foreign.model.name | spacedWords}} id that is used to fetch {{ model.name | spacedWords }} data'),
                             result_from: int = Query(0, description='Starting offset for fetching data'),
                             result_size: int = Query(10, description='Item count to be fetched'),
-                            order: str = Query('', description='e.g. id:asc,email:desc'),
+                            orders: str = Query('', description='e.g. id:asc,email:desc'),
                             _=Depends(CustomHttpBearer())):
     try:
         client = {{ className }}Client()
