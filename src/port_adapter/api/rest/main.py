@@ -93,6 +93,9 @@ from src.port_adapter.api.rest.router.v1.project.standard_equipment.standard_cat
 from src.port_adapter.api.rest.router.v1.project.standard_equipment.standard_category.standard_group import (
     standard_equipment_category_group as standard_equipment_category_group,
 )
+from src.port_adapter.api.rest.router.v1.project.standard_equipment.standard_project.standard_category import (
+    standard_equipment_project_category as standard_equipment_project_category,
+)
 from src.port_adapter.api.rest.router.v1.project.subcontractor import (
     subcontractor as project_subcontractor,
 )
@@ -530,6 +533,16 @@ app.include_router(
 app.include_router(
     standard_equipment_category_group.router,
     prefix="/v1/project/standard_equipment_category_groups",
+    tags=["Project/StandardEquipment"],
+    responses={
+        400: {"model": Message},
+        404: {"model": Message},
+        500: {"model": Message},
+    },
+)
+app.include_router(
+    standard_equipment_project_category.router,
+    prefix="/v1/project/standard_equipment_project_categories",
     tags=["Project/StandardEquipment"],
     responses={
         400: {"model": Message},

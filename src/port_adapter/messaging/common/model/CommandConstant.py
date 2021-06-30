@@ -159,5 +159,8 @@ class CommandConstant(Enum):
     DELETE_TAG = 'delete_tag'
     ASSIGN_TAG_TO_ROLE = 'assign_tag_to_role'
 
+    CREATE_STANDARD_EQUIPMENT_PROJECT_CATEGORY = 'create_standard_equipment_project_category'
+    UPDATE_STANDARD_EQUIPMENT_PROJECT_CATEGORY = 'update_standard_equipment_project_category'
+    DELETE_STANDARD_EQUIPMENT_PROJECT_CATEGORY = 'delete_standard_equipment_project_category'
 
 # endregion
