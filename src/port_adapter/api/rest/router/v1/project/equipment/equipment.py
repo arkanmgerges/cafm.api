@@ -24,6 +24,9 @@ from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.equipment.EquipmentClient import (
     EquipmentClient,
 )
+from src.port_adapter.api.rest.grpc.v1.project.equipment.category.group.EquipmentCategoryGroupClient import (
+    EquipmentCategoryGroupClient,
+)
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.project.equipment.Equipments import (
     Equipments,
@@ -138,6 +141,8 @@ async def createEquipment(
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 
     client = EquipmentClient()
+    equiomentCategoryGroupClient = EquipmentCategoryGroupClient()
+
     producer.produce(
         obj=ProjectCommand(
             id=reqId,
@@ -156,6 +161,7 @@ async def createEquipment(
                     "manufacturer_id": manufacturer_id,
                     "equipment_model_id": equipment_model_id,
                     "quantity": quantity,
+                    "new_equipment_category_group_id": equiomentCategoryGroupClient.newId()
                 }
             ),
             external=[],
