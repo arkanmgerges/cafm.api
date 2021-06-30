@@ -118,8 +118,8 @@ async def createEquipment(
     equipment_project_category_id: str = Body(
         ..., description="equipment project category id of equipment", embed=True
     ),
-    equipment_category_group_id: str = Body(
-        ..., description="equipment category group id of equipment", embed=True
+    standard_equipment_category_group_id: str = Body(
+        ..., description="standard equipment category group id of equipment", embed=True
     ),
     building_id: str = Body(..., description="building id of equipment", embed=True),
     building_level_id: str = Body(
@@ -154,7 +154,7 @@ async def createEquipment(
                     "name": name,
                     "project_id": project_id,
                     "equipment_project_category_id": equipment_project_category_id,
-                    "equipment_category_group_id": equipment_category_group_id,
+                    "standard_equipment_category_group_id": standard_equipment_category_group_id,
                     "building_id": building_id,
                     "building_level_id": building_level_id,
                     "building_level_room_id": building_level_room_id,
