@@ -168,10 +168,4 @@ class ApiResponseListener:
             # Close down consumer to commit final offsets.
             consumer.close()
 
-# region Logger
-import src.resource.Di as Di
-logProcessor = Di.instance.get(LogProcessor)
-thread = threading.Thread(target=logProcessor.start)
-thread.start()
-# endregion
 ApiResponseListener().run()
