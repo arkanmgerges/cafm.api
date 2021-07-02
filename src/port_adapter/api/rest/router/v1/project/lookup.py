@@ -191,49 +191,49 @@ async def getSubcontractorLookups(
         logger.info(e)
 
 
-@router.get(
-    path="/users",
-    summary="Get users with other related data",
-    response_model=UserLookups,
-)
-@OpenTelemetry.fastApiTraceOTel
-async def getUserLookups(
-    *,
-    result_from: int = Query(0, description="Starting offset for fetching data"),
-    result_size: int = Query(10, description="Item count to be fetched"),
-    orders: str = Query(
-        "",
-        description="e.g. user.id:asc,user.email:desc,role.name:asc,organization.name:desc",
-    ),
-    filters: str = Query("", description="e.g. column_name:column_value"),
-    _=Depends(CustomHttpBearer()),
-    __=Depends(CustomAuthorization()),
-):
-    try:
-        client = UserLookupClient()
-        orderService = AppDi.instance.get(OrderService)
-        filterService = AppDi.instance.get(FilterService)
-        orders = orderService.orderStringToListOfDict(orders)
-        filters = filterService.filterStringToListOfDict(filters)
-
-        return client.userLookups(
-            resultFrom=result_from,
-            resultSize=result_size,
-            orders=orders,
-            filters=filters,
-        )
-    except grpc.RpcError as e:
-        if e.code() == StatusCode.PERMISSION_DENIED:
-            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
-        if e.code() == StatusCode.NOT_FOUND:
-            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
-        else:
-            logger.error(
-                f"[{getUserLookups.__module__}.{getUserLookups.__qualname__}] - error response e: {e}"
-            )
-            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
-    except Exception as e:
-        logger.info(e)
+# @router.get(
+#     path="/users",
+#     summary="Get users with other related data",
+#     response_model=UserLookups,
+# )
+# @OpenTelemetry.fastApiTraceOTel
+# async def getUserLookups(
+#     *,
+#     result_from: int = Query(0, description="Starting offset for fetching data"),
+#     result_size: int = Query(10, description="Item count to be fetched"),
+#     orders: str = Query(
+#         "",
+#         description="e.g. user.id:asc,user.email:desc,role.name:asc,organization.name:desc",
+#     ),
+#     filters: str = Query("", description="e.g. column_name:column_value"),
+#     _=Depends(CustomHttpBearer()),
+#     __=Depends(CustomAuthorization()),
+# ):
+#     try:
+#         client = UserLookupClient()
+#         orderService = AppDi.instance.get(OrderService)
+#         filterService = AppDi.instance.get(FilterService)
+#         orders = orderService.orderStringToListOfDict(orders)
+#         filters = filterService.filterStringToListOfDict(filters)
+#
+#         return client.userLookups(
+#             resultFrom=result_from,
+#             resultSize=result_size,
+#             orders=orders,
+#             filters=filters,
+#         )
+#     except grpc.RpcError as e:
+#         if e.code() == StatusCode.PERMISSION_DENIED:
+#             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+#         if e.code() == StatusCode.NOT_FOUND:
+#             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+#         else:
+#             logger.error(
+#                 f"[{getUserLookups.__module__}.{getUserLookups.__qualname__}] - error response e: {e}"
+#             )
+#             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+#     except Exception as e:
+#         logger.info(e)
 
 
 @router.get(
