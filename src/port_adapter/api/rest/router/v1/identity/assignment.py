@@ -510,3 +510,60 @@ async def removeResourceToAnotherResourceAssignment(
         schema=ApiCommand.get_schema(),
     )
     return {"request_id": reqId}
+
+
+@router.post(
+"/assign_child_realm_to_parent_realm",
+summary="Assign a resource to another resouce",
+status_code=status.HTTP_200_OK,
+)
+@OpenTelemetry.fastApiTraceOTel
+async def assignResourceToAnotherResource(
+        *,
+        _=Depends(CustomHttpBearer()),
+        __=Depends(CustomAuthorization()),
+        child_realm_id: str = Body(..., description="Child realm id", embed=True),
+        parent_realm_id: str = Body(..., description="Parent realm id", embed=True),
+    ):
+        reqId = RequestIdGenerator.generateId()
+        producer = AppDi.instance.get(SimpleProducer)
+        producer.produce(
+            obj=ApiCommand(
+                id=reqId,
+                name=CommandConstant.ASSIGN_RESOURCE_TO_RESOURCE.value,
+                metadata=json.dumps({"token": Client.token}),
+                data=json.dumps(
+                    {"src_resource_id": parent_realm_id, "dst_resource_id": child_realm_id}
+                ),
+            ),
+            schema=ApiCommand.get_schema(),
+        )
+        return {"request_id": reqId}
+
+@router.delete(
+    "/assign_child_realm_to_parent_realm",
+    summary="Remove assignment of resource to another resource",
+    status_code=status.HTTP_200_OK,
+)
+@OpenTelemetry.fastApiTraceOTel
+async def removeResourceToAnotherResourceAssignment(
+    *,
+    _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
+    child_realm_id: str = Body(..., description="Child realm id to unlink", embed=True),
+    parent_realm_id: str = Body(..., description="Parent realm id to unlink", embed=True),
+):
+    reqId = RequestIdGenerator.generateId()
+    producer = AppDi.instance.get(SimpleProducer)
+    producer.produce(
+        obj=ApiCommand(
+            id=reqId,
+            name=CommandConstant.REVOKE_ASSIGNMENT_RESOURCE_TO_RESOURCE.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {"src_resource_id": parent_realm_id, "dst_resource_id": child_realm_id}
+            ),
+        ),
+        schema=ApiCommand.get_schema(),
+    )
+    return {"request_id": reqId}
