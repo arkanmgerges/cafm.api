@@ -109,6 +109,7 @@ class DailyCheckProcedureLookupClient(Client):
             name=obj.name,
             description=obj.description,
             equipment_id=obj.equipment_id,
+            project_id=obj.project_id,
             equipment_category_group=EquipmentCategoryGroupDescriptor(
                 id=obj.equipment_category_group.id,
                 name=obj.equipment_category_group.name,

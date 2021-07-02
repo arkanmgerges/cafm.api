@@ -16,6 +16,7 @@ class DailyCheckProcedureLookup(BaseModel):
     name: str
     description: str
     equipment_id: str
+    project_id: str
     equipment_category_group: EquipmentCategoryGroupDescriptor
     daily_check_procedure_operations: List[DailyCheckProcedureOperationDescriptor]
 
