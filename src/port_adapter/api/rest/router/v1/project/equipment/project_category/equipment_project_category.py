@@ -120,6 +120,7 @@ async def createEquipmentProjectCategory(
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
     name: str = Body(..., description="name of equipment project category", embed=True),
+    project_id: str = Body(..., description="project id for project category", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -135,6 +136,7 @@ async def createEquipmentProjectCategory(
                 {
                     "equipment_project_category_id": client.newId(),
                     "name": name,
+                    "project_id": project_id,
                 }
             ),
             external=[],

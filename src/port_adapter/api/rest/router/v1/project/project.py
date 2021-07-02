@@ -133,7 +133,11 @@ async def getProjectsByOrganizationId(
         logger.info(e)
 
 
-@router.get(path="/by_state/{state}", summary="Get all projects filtered by state", response_model=Projects)
+@router.get(
+    path="/by_state/{state}",
+    summary="Get all projects filtered by state",
+    response_model=Projects,
+)
 @OpenTelemetry.fastApiTraceOTel
 async def getProjects(
     *,
@@ -142,9 +146,7 @@ async def getProjects(
     orders: str = Query("", description="e.g. name:asc,age:desc"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
-    state: str = Path(
-        ..., description="Project state to filter by"
-    ),
+    state: str = Path(..., description="Project state to filter by"),
 ):
     try:
         client = ProjectClient()
@@ -165,6 +167,7 @@ async def getProjects(
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
+
 
 """
 c4model|cb|api:Component(api__project_project_py__getProject, "Get a Project", "http(s)", "Get all projects")
@@ -422,6 +425,8 @@ async def deleteProject(
         schema=ProjectCommand.get_schema(),
     )
     return {"request_id": reqId}
+
+
 # endregion
 
 # region Building

@@ -24,6 +24,9 @@ from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.equipment.EquipmentClient import (
     EquipmentClient,
 )
+from src.port_adapter.api.rest.grpc.v1.project.equipment.category.group.EquipmentCategoryGroupClient import (
+    EquipmentCategoryGroupClient,
+)
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.project.equipment.Equipments import (
     Equipments,
@@ -115,8 +118,8 @@ async def createEquipment(
     equipment_project_category_id: str = Body(
         ..., description="equipment project category id of equipment", embed=True
     ),
-    equipment_category_group_id: str = Body(
-        ..., description="equipment category group id of equipment", embed=True
+    standard_equipment_category_group_id: str = Body(
+        ..., description="standard equipment category group id of equipment", embed=True
     ),
     building_id: str = Body(..., description="building id of equipment", embed=True),
     building_level_id: str = Body(
@@ -138,6 +141,8 @@ async def createEquipment(
     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
 
     client = EquipmentClient()
+    equiomentCategoryGroupClient = EquipmentCategoryGroupClient()
+
     producer.produce(
         obj=ProjectCommand(
             id=reqId,
@@ -149,7 +154,7 @@ async def createEquipment(
                     "name": name,
                     "project_id": project_id,
                     "equipment_project_category_id": equipment_project_category_id,
-                    "equipment_category_group_id": equipment_category_group_id,
+                    "standard_equipment_category_group_id": standard_equipment_category_group_id,
                     "building_id": building_id,
                     "building_level_id": building_level_id,
                     "building_level_room_id": building_level_room_id,
