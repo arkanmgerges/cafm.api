@@ -352,3 +352,36 @@ async def getCategoryGroupsByProjectCategoryId(
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
+
+@router.get(
+    path="/by_project_id/{project_id}",
+    summary="Get all daily check procedure by project id",
+    response_model=EquipmentProjectCategories,
+)
+@OpenTelemetry.fastApiTraceOTel
+async def getEquipmentProjectCategoriesByProjectId(
+    *,
+    project_id: str = Path(
+        ...,
+        description="Project id to filter by",
+    ),
+    _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
+):
+    try:
+        client = EquipmentProjectCategoryClient()
+        return client.equipmentProjectCategoriesByProjectId(
+            project_id=project_id
+        )
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getEquipmentProjectCategoriesByProjectId.__module__}.{getEquipmentProjectCategoriesByProjectId.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
