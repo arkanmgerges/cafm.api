@@ -30,23 +30,16 @@ from src.port_adapter.api.rest.grpc.v1.project.lookup.project.ProjectLookupClien
 from src.port_adapter.api.rest.grpc.v1.project.lookup.subcontractor.SubcontractorLookupClient import (
     SubcontractorLookupClient,
 )
-from src.port_adapter.api.rest.grpc.v1.project.lookup.user.UserLookupClient import (
-    UserLookupClient,
-)
-from src.port_adapter.api.rest.model.response.v1.project.lookup.organization.OrganizationLookups import (
-    OrganizationLookups,
-)
-from src.port_adapter.api.rest.model.response.v1.project.lookup.project.ProjectLookups import (
-    ProjectLookups,
-)
-from src.port_adapter.api.rest.model.response.v1.project.lookup.user.UserLookups import (
-    UserLookups,
-)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.common.OrganizationsIncludeUsersIncludeRoles import \
+    OrganizationsIncludeUsersIncludeRoles
 from src.port_adapter.api.rest.model.response.v1.project.lookup.daily_check_procedure.DailyCheckProcedureLookups import (
     DailyCheckProcedureLookups,
 )
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentLookups import (
     EquipmentLookups,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.project.ProjectLookups import (
+    ProjectLookups,
 )
 from src.port_adapter.api.rest.model.response.v1.project.lookup.subcontractor.SubcontractorLookups import (
     SubcontractorLookups,
@@ -96,7 +89,7 @@ async def getDailyCheckProcedureLookups(
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f"[{getUserLookups.__module__}.{getUserLookups.__qualname__}] - error response e: {e}"
+                f"[{getDailyCheckProcedureLookups.__module__}.{getDailyCheckProcedureLookups.__qualname__}] - error response e: {e}"
             )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
@@ -184,7 +177,7 @@ async def getSubcontractorLookups(
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f"[{getUserLookups.__module__}.{getUserLookups.__qualname__}] - error response e: {e}"
+                f"[{getSubcontractorLookups.__module__}.{getSubcontractorLookups.__qualname__}] - error response e: {e}"
             )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
@@ -284,7 +277,7 @@ async def getProjectLookups(
 @router.get(
     path="/organizations",
     summary="Get organizations with other related data",
-    response_model=OrganizationLookups,
+    response_model=OrganizationsIncludeUsersIncludeRoles,
 )
 @OpenTelemetry.fastApiTraceOTel
 async def getOrganizationLookups(
