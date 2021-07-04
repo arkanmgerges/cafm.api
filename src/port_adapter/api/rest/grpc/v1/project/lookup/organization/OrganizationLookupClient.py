@@ -82,9 +82,6 @@ class OrganizationLookupClient(Client):
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
-    def _responseModelAttributues(self, model):
-        return list(model.__fields__.keys())
-
     def _descriptorByObject(self, protoObj: Any) -> OrganizationIncludesUsersIncludeRoles:
         responseModel =  OrganizationIncludesUsersIncludeRoles()
         [setattr(responseModel, attribute, getattr(protoObj, attribute)) for attribute in self._responseModelAttributues(OrganizationDescriptor)]
@@ -104,6 +101,9 @@ class OrganizationLookupClient(Client):
             responseModel.users_include_roles.append(userIncludesRolesResponseModel)
 
         return responseModel
+
+    def _responseModelAttributues(self, model):
+        return list(model.__fields__.keys())
 
     def _constructResponseModelKwargs(self, protoObject, intAttributes: List[str]=None):
         kwargs = {}

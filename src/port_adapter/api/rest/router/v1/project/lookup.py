@@ -32,6 +32,8 @@ from src.port_adapter.api.rest.grpc.v1.project.lookup.subcontractor.Subcontracto
 )
 from src.port_adapter.api.rest.model.response.v1.project.lookup.common.OrganizationsIncludeUsersIncludeRoles import \
     OrganizationsIncludeUsersIncludeRoles
+from src.port_adapter.api.rest.model.response.v1.project.lookup.common.ProjectsIncludeOrganizationsIncludeUsersIncludeRoles import \
+    ProjectsIncludeOrganizationsIncludeUsersIncludeRoles
 from src.port_adapter.api.rest.model.response.v1.project.lookup.daily_check_procedure.DailyCheckProcedureLookups import (
     DailyCheckProcedureLookups,
 )
@@ -232,7 +234,7 @@ async def getSubcontractorLookups(
 @router.get(
     path="/projects",
     summary="Get projects with other related data",
-    response_model=ProjectLookups,
+    response_model=ProjectsIncludeOrganizationsIncludeUsersIncludeRoles,
 )
 @OpenTelemetry.fastApiTraceOTel
 async def getProjectLookups(
