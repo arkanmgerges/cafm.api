@@ -13,6 +13,10 @@ from src.port_adapter.api.rest.model.response.v1.project.Organization import (
     OrganizationDescriptor,
 )
 from src.port_adapter.api.rest.model.response.v1.project.User import UserDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.lookup.common.UserIncludesOrganizationsAndRoles import \
+    UserIncludesOrganizationsAndRoles
+from src.port_adapter.api.rest.model.response.v1.project.lookup.common.UsersIncludeOrganizationsAndRoles import \
+    UsersIncludeOrganizationsAndRoles
 from src.port_adapter.api.rest.model.response.v1.project.lookup.user.UserLookup import (
     UserLookupDescriptor,
 )
@@ -33,7 +37,7 @@ class UserLookupClient(Client):
     @OpenTelemetry.grpcTraceOTel
     def userLookups(
         self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None, filters: List[dict] = None
-    ) -> UserLookups:
+    ) -> UsersIncludeOrganizationsAndRoles:
         orders = [] if orders is None else orders
         filters = [] if filters is None else filters
 
@@ -69,10 +73,10 @@ class UserLookupClient(Client):
                     f"[{UserLookupClient.userLookups.__qualname__}] - grpc response: {response}"
                 )
 
-                return UserLookups(
-                    user_lookups=[
-                        self._descriptorByObject(obj=userLookup)
-                        for userLookup in response[0].user_lookups
+                return UsersIncludeOrganizationsAndRoles(
+                    users_include_organizations_and_roles=[
+                        self._descriptorByObject(protoObj=userLookup)
+                        for userLookup in response[0].users_include_organizations_and_roles
                     ],
                     total_item_count=response[0].total_item_count,
                 )
@@ -80,23 +84,16 @@ class UserLookupClient(Client):
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
-    def _descriptorByObject(self, obj: Any) -> UserLookupDescriptor:
-        return UserLookupDescriptor(
-            user=UserDescriptor(
-                **(self._constructResponseModelKwargs(protoObject=obj.user))
-            ),
-            roles=[RoleDescriptor(id=x.id, name=x.name, title=x.title) for x in obj.roles],
+    def _descriptorByObject(self, protoObj: Any) -> UserIncludesOrganizationsAndRoles:
+        return UserIncludesOrganizationsAndRoles(
+            **(self._constructResponseModelKwargs(protoObject=protoObj))
+            ,
+            roles=[RoleDescriptor(id=x.id, name=x.name, title=x.title) for x in protoObj.roles],
             organizations=[
                 OrganizationDescriptor(
                     **(self._constructResponseModelKwargs(protoObject=x))
                 )
-                for x in obj.organizations
-            ],
-            projects=[
-                ProjectDescriptor(
-                    **(self._constructResponseModelKwargs(protoObject=x, intAttributes=['city_id', 'country_id', 'start_date', 'developer_city_id', 'developer_country_id']))
-                )
-                for x in obj.projects
+                for x in protoObj.organizations
             ],
         )
 
@@ -105,10 +102,11 @@ class UserLookupClient(Client):
         intAttributes = intAttributes if intAttributes is not None else []
         for fieldDescriptor in protoObject.DESCRIPTOR.fields:
             attribute = fieldDescriptor.name
-            value = getattr(protoObject, attribute, None)
-            if attribute in intAttributes and value is None:
-                value = 0
-            kwargs[attribute] = value
+            if attribute not in ['organizations', 'roles']:
+                value = getattr(protoObject, attribute, None)
+                if attribute in intAttributes and value is None:
+                    value = 0
+                kwargs[attribute] = value
         return kwargs
 
 
