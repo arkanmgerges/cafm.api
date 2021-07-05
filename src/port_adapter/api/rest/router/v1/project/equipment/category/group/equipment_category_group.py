@@ -75,6 +75,44 @@ async def getEquipmentCategoryGroups(
     except Exception as e:
         logger.info(e)
 
+@router.get(
+    path="/by_equipment_project_category_id/{equipment_project_category_id}",
+    summary="Get all equipment category group(s) filtered by equipment project category id",
+    response_model=EquipmentCategoryGroups,
+)
+@OpenTelemetry.fastApiTraceOTel
+async def getEquipmentCategoryGroupsByEquipmentProjectCategoryId(
+    *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
+    equipment_project_category_id: str = Path(
+        ...,
+        description="equipment project category id that is used to fetch equipment category group data",
+    ),
+    _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
+):
+    try:
+        client = EquipmentCategoryGroupClient()
+        orderService = AppDi.instance.get(OrderService)
+        orders = orderService.orderStringToListOfDict(orders)
+        return client.equipmentCategoryGroupsByEquipmentProjectCategoryId(
+            resultFrom=result_from, resultSize=result_size, orders=orders, equipmentProjectCategoryId=equipment_project_category_id
+        )
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getEquipmentCategoryGroupsByEquipmentProjectCategoryId.__module__}.{getEquipmentCategoryGroupsByEquipmentProjectCategoryId.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
+
 
 @router.get(
     path="/{equipment_category_group_id}",
@@ -119,6 +157,7 @@ async def createEquipmentCategoryGroup(
     __=Depends(CustomAuthorization()),
     name: str = Body(..., description="name of equipment category group", embed=True),
     project_id: str = Body(..., description="project id for project category", embed=True),
+    equipment_project_category_id: str = Body(..., description="equipment project category id for project category", embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
@@ -135,6 +174,7 @@ async def createEquipmentCategoryGroup(
                     "equipment_category_group_id": client.newId(),
                     "name": name,
                     "project_id": project_id,
+                    "equipment_project_category_id": equipment_project_category_id
                 }
             ),
             external=[],
