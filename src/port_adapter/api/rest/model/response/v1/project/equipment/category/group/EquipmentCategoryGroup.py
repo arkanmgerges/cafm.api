@@ -11,6 +11,8 @@ from pydantic import BaseModel
 class EquipmentCategoryGroup(BaseModel):
     id: str
     name: str
+    project_id: str
+    equipment_project_category_id: str
 
 
 class EquipmentCategoryGroupDescriptor(EquipmentCategoryGroup):
