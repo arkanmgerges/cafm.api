@@ -14,8 +14,8 @@ class Organization(BaseModel):
     address_one: Optional[str]
     address_two: Optional[str]
     postal_code: Optional[str]
-    country_id: Optional[int]
-    city_id: Optional[int]
+    country_id: Optional[int] = 0
+    city_id: Optional[int] = 0
     country_state_name: Optional[str]
     country_state_iso_code: Optional[str]
     manager_first_name: Optional[str]

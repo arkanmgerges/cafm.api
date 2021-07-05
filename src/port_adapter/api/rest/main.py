@@ -562,16 +562,16 @@ app.include_router(
     },
 )
 
-app.include_router(
-    project_role.router,
-    prefix="/v1/project/roles",
-    tags=["Project/Role"],
-    responses={
-        400: {"model": Message},
-        404: {"model": Message},
-        500: {"model": Message},
-    },
-)
+# app.include_router(
+#     project_role.router,
+#     prefix="/v1/project/roles",
+#     tags=["Project/Role"],
+#     responses={
+#         400: {"model": Message},
+#         404: {"model": Message},
+#         500: {"model": Message},
+#     },
+# )
 
 app.include_router(
     project_tag.router,

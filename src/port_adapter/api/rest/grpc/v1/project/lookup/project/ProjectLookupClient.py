@@ -5,6 +5,15 @@ import os
 from typing import List, Any
 
 import grpc
+
+from src.port_adapter.api.rest.model.response.v1.project.lookup.common.OrganizationIncludesUsersIncludeRoles import \
+    OrganizationIncludesUsersIncludeRolesDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.lookup.common.ProjectIncludesOrganizationsIncludeUsersIncludeRoles import \
+    ProjectIncludesOrganizationsIncludeUsersIncludeRoles
+from src.port_adapter.api.rest.model.response.v1.project.lookup.common.ProjectsIncludeOrganizationsIncludeUsersIncludeRoles import \
+    ProjectsIncludeOrganizationsIncludeUsersIncludeRoles
+from src.port_adapter.api.rest.model.response.v1.project.lookup.common.UserIncludesRoles import \
+    UserIncludesRolesDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.lookup.project.ProjectLookup import (
     ProjectLookupDescriptor,
 )
@@ -34,7 +43,7 @@ class ProjectLookupClient(Client):
     @OpenTelemetry.grpcTraceOTel
     def projectLookups(
         self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None, filters: List[dict] = None
-    ) -> ProjectLookups:
+    ) -> ProjectsIncludeOrganizationsIncludeUsersIncludeRoles:
         orders = [] if orders is None else orders
         filters = [] if filters is None else filters
 
@@ -70,10 +79,10 @@ class ProjectLookupClient(Client):
                     f"[{ProjectLookupClient.projectLookups.__qualname__}] - grpc response: {response}"
                 )
 
-                return ProjectLookups(
-                    project_lookups=[
-                        self._descriptorByObject(obj=projectLookup)
-                        for projectLookup in response[0].project_lookups
+                return ProjectsIncludeOrganizationsIncludeUsersIncludeRoles(
+                    projects_include_organizations_include_users_include_roles=[
+                        self._descriptorByObject(protoObj=projectLookup)
+                        for projectLookup in response[0].projects_include_organizations_include_users_include_roles
                     ],
                     total_item_count=response[0].total_item_count,
                 )
@@ -81,25 +90,36 @@ class ProjectLookupClient(Client):
                 channel.unsubscribe(lambda ch: ch.close())
                 raise e
 
-    def _descriptorByObject(self, obj: Any) -> ProjectLookupDescriptor:
-        return ProjectLookupDescriptor(
-            project=ProjectDescriptor(
-                **(self._constructResponseModelKwargs(protoObject=obj.project))
-            ),
-            roles=[RoleDescriptor(id=x.id, name=x.name, title=x.title) for x in obj.roles],
-            users=[
-                UserDescriptor(
-                    **(self._constructResponseModelKwargs(protoObject=x))
-                )
-                for x in obj.users
-            ],
-            organizations=[
-                OrganizationDescriptor(
-                    **(self._constructResponseModelKwargs(protoObject=x))
-                )
-                for x in obj.organizations
-            ]
-        )
+    def _descriptorByObject(self, protoObj: Any) -> ProjectIncludesOrganizationsIncludeUsersIncludeRoles:
+        responseModel = ProjectIncludesOrganizationsIncludeUsersIncludeRoles()
+        [setattr(responseModel, attribute, getattr(protoObj, attribute)) for attribute in
+         self._responseModelAttributues(ProjectDescriptor)]
+        responseModel.organizations_include_users_include_roles = []
+        for organizationIncludesUsersIncludeRolesProtoObj in protoObj.organizations_include_users_include_roles:
+            organizationIncludesUsersIncludeRolesResponseModel = OrganizationIncludesUsersIncludeRolesDescriptor()
+            [setattr(organizationIncludesUsersIncludeRolesResponseModel, attribute, getattr(organizationIncludesUsersIncludeRolesProtoObj, attribute)) for attribute in
+             self._responseModelAttributues(OrganizationDescriptor)]
+            organizationIncludesUsersIncludeRolesResponseModel.users_include_roles = []
+            for userIncludesRolesProtoObj in organizationIncludesUsersIncludeRolesProtoObj.users_include_roles:
+                userIncludesRolesResponseModel = UserIncludesRolesDescriptor()
+                [setattr(userIncludesRolesResponseModel, attribute, getattr(userIncludesRolesProtoObj, attribute)) for
+                 attribute in
+                 self._responseModelAttributues(UserDescriptor)]
+
+                userIncludesRolesResponseModel.roles = []
+                for roleProtoObj in userIncludesRolesProtoObj.roles:
+                    roleResponseModel = RoleDescriptor()
+                    [setattr(roleResponseModel, attribute, getattr(roleProtoObj, attribute)) for attribute
+                     in
+                     self._responseModelAttributues(RoleDescriptor)]
+                    userIncludesRolesResponseModel.roles.append(roleResponseModel)
+                organizationIncludesUsersIncludeRolesResponseModel.users_include_roles.append(userIncludesRolesResponseModel)
+            responseModel.organizations_include_users_include_roles.append(organizationIncludesUsersIncludeRolesResponseModel)
+
+        return responseModel
+
+    def _responseModelAttributues(self, model):
+        return list(model.__fields__.keys())
 
     def _constructResponseModelKwargs(self, protoObject, intAttributes: List[str]=None):
         kwargs = {}

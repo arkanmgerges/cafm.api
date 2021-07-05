@@ -196,133 +196,133 @@ async def getRoleByName(
     except Exception as e:
         logger.info(e)
 
-@router.post("", summary="Create role", status_code=status.HTTP_200_OK)
-@OpenTelemetry.fastApiTraceOTel
-async def createRole(
-    *,
-    _=Depends(CustomHttpBearer()),
-    #    _1=Depends(CustomAuthorization()),
-    name: str = Body(..., description="name of role", embed=True),
-    title: str = Body(..., description="title of role", embed=True),
-):
-    reqId = RequestIdGenerator.generateId()
-    producer = AppDi.instance.get(SimpleProducer)
-    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-
-    client = RoleClient()
-    producer.produce(
-        obj=ProjectCommand(
-            id=reqId,
-            name=CommandConstant.CREATE_ROLE.value,
-            metadata=json.dumps({"token": Client.token}),
-            data=json.dumps(
-                {
-                    "role_id": client.newId(),
-                    "name": name,
-                    "title": title,
-                }
-            ),
-            external=[],
-        ),
-        schema=ProjectCommand.get_schema(),
-    )
-    return {"request_id": reqId}
-
-
-@router.put("/{role_id}", summary="Update role", status_code=status.HTTP_200_OK)
-@OpenTelemetry.fastApiTraceOTel
-async def updateRole(
-    *,
-    _=Depends(CustomHttpBearer()),
-    #    _1=Depends(CustomAuthorization()),
-    role_id: str = Path(
-        ..., description="role id that is used in order to update the role"
-    ),
-    name: str = Body(..., description="name of role", embed=True),
-    title: str = Body(..., description="title of role", embed=True),
-):
-    reqId = RequestIdGenerator.generateId()
-    producer = AppDi.instance.get(SimpleProducer)
-    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-
-    producer.produce(
-        obj=ProjectCommand(
-            id=reqId,
-            name=CommandConstant.UPDATE_ROLE.value,
-            metadata=json.dumps({"token": Client.token}),
-            data=json.dumps(
-                {
-                    "role_id": role_id,
-                    "name": name,
-                    "title": title,
-                }
-            ),
-            external=[],
-        ),
-        schema=ProjectCommand.get_schema(),
-    )
-    return {"request_id": reqId}
-
-
-@router.patch(
-    "/{role_id}", summary="Partial update role", status_code=status.HTTP_200_OK
-)
-@OpenTelemetry.fastApiTraceOTel
-async def partialUpdateRole(
-    *,
-    _=Depends(CustomHttpBearer()),
-    #    _1=Depends(CustomAuthorization()),
-    role_id: str = Path(
-        ..., description="role id that is used in order to update the role"
-    ),
-    name: str = Body(None, description="name of role", embed=True),
-    title: str = Body(None, description="title of role", embed=True),
-):
-    reqId = RequestIdGenerator.generateId()
-    producer = AppDi.instance.get(SimpleProducer)
-    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-
-    producer.produce(
-        obj=ProjectCommand(
-            id=reqId,
-            name=CommandConstant.UPDATE_ROLE.value,
-            metadata=json.dumps({"token": Client.token}),
-            data=json.dumps(
-                {
-                    "role_id": role_id,
-                    "name": name,
-                    "title": title,
-                }
-            ),
-            external=[],
-        ),
-        schema=ProjectCommand.get_schema(),
-    )
-    return {"request_id": reqId}
-
-
-@router.delete("/{role_id}", summary="Delete a roles", status_code=status.HTTP_200_OK)
-@OpenTelemetry.fastApiTraceOTel
-async def deleteRole(
-    *,
-    _=Depends(CustomHttpBearer()),
-    #    _1=Depends(CustomAuthorization()),
-    role_id: str = Path(
-        ..., description="role id that is used in order to delete the role"
-    ),
-):
-    reqId = RequestIdGenerator.generateId()
-    producer = AppDi.instance.get(SimpleProducer)
-    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
-
-    producer.produce(
-        obj=ProjectCommand(
-            id=reqId,
-            name=CommandConstant.DELETE_ROLE.value,
-            metadata=json.dumps({"token": Client.token}),
-            data=json.dumps({"role_id": role_id}),
-            external=[],
-        ),
-        schema=ProjectCommand.get_schema(),
-    )
-    return {"request_id": reqId}
+# @router.post("", summary="Create role", status_code=status.HTTP_200_OK)
+# @OpenTelemetry.fastApiTraceOTel
+# async def createRole(
+#     *,
+#     _=Depends(CustomHttpBearer()),
+#     #    _1=Depends(CustomAuthorization()),
+#     name: str = Body(..., description="name of role", embed=True),
+#     title: str = Body(..., description="title of role", embed=True),
+# ):
+#     reqId = RequestIdGenerator.generateId()
+#     producer = AppDi.instance.get(SimpleProducer)
+#     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+#
+#     client = RoleClient()
+#     producer.produce(
+#         obj=ProjectCommand(
+#             id=reqId,
+#             name=CommandConstant.CREATE_ROLE.value,
+#             metadata=json.dumps({"token": Client.token}),
+#             data=json.dumps(
+#                 {
+#                     "role_id": client.newId(),
+#                     "name": name,
+#                     "title": title,
+#                 }
+#             ),
+#             external=[],
+#         ),
+#         schema=ProjectCommand.get_schema(),
+#     )
+#     return {"request_id": reqId}
+#
+#
+# @router.put("/{role_id}", summary="Update role", status_code=status.HTTP_200_OK)
+# @OpenTelemetry.fastApiTraceOTel
+# async def updateRole(
+#     *,
+#     _=Depends(CustomHttpBearer()),
+#     #    _1=Depends(CustomAuthorization()),
+#     role_id: str = Path(
+#         ..., description="role id that is used in order to update the role"
+#     ),
+#     name: str = Body(..., description="name of role", embed=True),
+#     title: str = Body(..., description="title of role", embed=True),
+# ):
+#     reqId = RequestIdGenerator.generateId()
+#     producer = AppDi.instance.get(SimpleProducer)
+#     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+#
+#     producer.produce(
+#         obj=ProjectCommand(
+#             id=reqId,
+#             name=CommandConstant.UPDATE_ROLE.value,
+#             metadata=json.dumps({"token": Client.token}),
+#             data=json.dumps(
+#                 {
+#                     "role_id": role_id,
+#                     "name": name,
+#                     "title": title,
+#                 }
+#             ),
+#             external=[],
+#         ),
+#         schema=ProjectCommand.get_schema(),
+#     )
+#     return {"request_id": reqId}
+#
+#
+# @router.patch(
+#     "/{role_id}", summary="Partial update role", status_code=status.HTTP_200_OK
+# )
+# @OpenTelemetry.fastApiTraceOTel
+# async def partialUpdateRole(
+#     *,
+#     _=Depends(CustomHttpBearer()),
+#     #    _1=Depends(CustomAuthorization()),
+#     role_id: str = Path(
+#         ..., description="role id that is used in order to update the role"
+#     ),
+#     name: str = Body(None, description="name of role", embed=True),
+#     title: str = Body(None, description="title of role", embed=True),
+# ):
+#     reqId = RequestIdGenerator.generateId()
+#     producer = AppDi.instance.get(SimpleProducer)
+#     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+#
+#     producer.produce(
+#         obj=ProjectCommand(
+#             id=reqId,
+#             name=CommandConstant.UPDATE_ROLE.value,
+#             metadata=json.dumps({"token": Client.token}),
+#             data=json.dumps(
+#                 {
+#                     "role_id": role_id,
+#                     "name": name,
+#                     "title": title,
+#                 }
+#             ),
+#             external=[],
+#         ),
+#         schema=ProjectCommand.get_schema(),
+#     )
+#     return {"request_id": reqId}
+#
+#
+# @router.delete("/{role_id}", summary="Delete a roles", status_code=status.HTTP_200_OK)
+# @OpenTelemetry.fastApiTraceOTel
+# async def deleteRole(
+#     *,
+#     _=Depends(CustomHttpBearer()),
+#     #    _1=Depends(CustomAuthorization()),
+#     role_id: str = Path(
+#         ..., description="role id that is used in order to delete the role"
+#     ),
+# ):
+#     reqId = RequestIdGenerator.generateId()
+#     producer = AppDi.instance.get(SimpleProducer)
+#     from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+#
+#     producer.produce(
+#         obj=ProjectCommand(
+#             id=reqId,
+#             name=CommandConstant.DELETE_ROLE.value,
+#             metadata=json.dumps({"token": Client.token}),
+#             data=json.dumps({"role_id": role_id}),
+#             external=[],
+#         ),
+#         schema=ProjectCommand.get_schema(),
+#     )
+#     return {"request_id": reqId}

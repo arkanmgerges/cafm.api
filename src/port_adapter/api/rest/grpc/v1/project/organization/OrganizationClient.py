@@ -22,7 +22,8 @@ from src.resource.proto._generated.project.organization_app_service_pb2 import (
     OrganizationAppService_organizationByIdRequest,
     OrganizationAppService_organizationByIdResponse,
     OrganizationAppService_newIdRequest,
-    OrganizationAppService_newIdResponse,
+    OrganizationAppService_newIdResponse, OrganizationAppService_organizationsByTypeRequest,
+    OrganizationAppService_organizationsByTypeResponse,
 )
 from src.resource.proto._generated.project.organization_app_service_pb2_grpc import (
     OrganizationAppServiceStub,
@@ -95,6 +96,54 @@ class OrganizationClient(Client):
                 )
                 logger.debug(
                     f"[{OrganizationClient.organizations.__qualname__}] - grpc response: {response}"
+                )
+
+                return Organizations(
+                    organizations=[
+                        self._descriptorByObject(obj=organization)
+                        for organization in response[0].organizations
+                    ],
+                    total_item_count=response[0].total_item_count,
+                )
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def organizationsByType(
+            self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None, organizationType: str = None,
+    ) -> Organizations:
+        orders = [] if orders is None else orders
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
+            stub = OrganizationAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f"[{OrganizationClient.organizationsByType.__qualname__}] - grpc call to retrieve organizations from server {self._server}:{self._port}"
+                )
+                request = OrganizationAppService_organizationsByTypeRequest(
+                    result_from=resultFrom, result_size=resultSize, type=organizationType
+                )
+                [
+                    request.orders.add(
+                        orderBy=o["orderBy"], direction=o["direction"])
+                    for o in orders
+                ]
+                response: OrganizationAppService_organizationsByTypeResponse = (
+                    stub.organizations_by_type.with_call(
+                        request,
+                        metadata=(
+                            ("token", self.token),
+                            (
+                                "opentel",
+                                AppDi.instance.get(OpenTelemetry).serializedContext(
+                                    OrganizationClient.organizationsByType.__qualname__
+                                ),
+                            ),
+                        ),
+                    )
+                )
+                logger.debug(
+                    f"[{OrganizationClient.organizationsByType.__qualname__}] - grpc response: {response}"
                 )
 
                 return Organizations(

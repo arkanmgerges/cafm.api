@@ -30,23 +30,18 @@ from src.port_adapter.api.rest.grpc.v1.project.lookup.project.ProjectLookupClien
 from src.port_adapter.api.rest.grpc.v1.project.lookup.subcontractor.SubcontractorLookupClient import (
     SubcontractorLookupClient,
 )
-from src.port_adapter.api.rest.grpc.v1.project.lookup.user.UserLookupClient import (
-    UserLookupClient,
-)
-from src.port_adapter.api.rest.model.response.v1.project.lookup.organization.OrganizationLookups import (
-    OrganizationLookups,
-)
-from src.port_adapter.api.rest.model.response.v1.project.lookup.project.ProjectLookups import (
-    ProjectLookups,
-)
-from src.port_adapter.api.rest.model.response.v1.project.lookup.user.UserLookups import (
-    UserLookups,
-)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.common.OrganizationsIncludeUsersIncludeRoles import \
+    OrganizationsIncludeUsersIncludeRoles
+from src.port_adapter.api.rest.model.response.v1.project.lookup.common.ProjectsIncludeOrganizationsIncludeUsersIncludeRoles import \
+    ProjectsIncludeOrganizationsIncludeUsersIncludeRoles
 from src.port_adapter.api.rest.model.response.v1.project.lookup.daily_check_procedure.DailyCheckProcedureLookups import (
     DailyCheckProcedureLookups,
 )
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.EquipmentLookups import (
     EquipmentLookups,
+)
+from src.port_adapter.api.rest.model.response.v1.project.lookup.project.ProjectLookups import (
+    ProjectLookups,
 )
 from src.port_adapter.api.rest.model.response.v1.project.lookup.subcontractor.SubcontractorLookups import (
     SubcontractorLookups,
@@ -96,7 +91,7 @@ async def getDailyCheckProcedureLookups(
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f"[{getUserLookups.__module__}.{getUserLookups.__qualname__}] - error response e: {e}"
+                f"[{getDailyCheckProcedureLookups.__module__}.{getDailyCheckProcedureLookups.__qualname__}] - error response e: {e}"
             )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
@@ -184,62 +179,62 @@ async def getSubcontractorLookups(
             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
         else:
             logger.error(
-                f"[{getUserLookups.__module__}.{getUserLookups.__qualname__}] - error response e: {e}"
+                f"[{getSubcontractorLookups.__module__}.{getSubcontractorLookups.__qualname__}] - error response e: {e}"
             )
             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         logger.info(e)
 
 
-@router.get(
-    path="/users",
-    summary="Get users with other related data",
-    response_model=UserLookups,
-)
-@OpenTelemetry.fastApiTraceOTel
-async def getUserLookups(
-    *,
-    result_from: int = Query(0, description="Starting offset for fetching data"),
-    result_size: int = Query(10, description="Item count to be fetched"),
-    orders: str = Query(
-        "",
-        description="e.g. user.id:asc,user.email:desc,role.name:asc,organization.name:desc",
-    ),
-    filters: str = Query("", description="e.g. column_name:column_value"),
-    _=Depends(CustomHttpBearer()),
-    __=Depends(CustomAuthorization()),
-):
-    try:
-        client = UserLookupClient()
-        orderService = AppDi.instance.get(OrderService)
-        filterService = AppDi.instance.get(FilterService)
-        orders = orderService.orderStringToListOfDict(orders)
-        filters = filterService.filterStringToListOfDict(filters)
-
-        return client.userLookups(
-            resultFrom=result_from,
-            resultSize=result_size,
-            orders=orders,
-            filters=filters,
-        )
-    except grpc.RpcError as e:
-        if e.code() == StatusCode.PERMISSION_DENIED:
-            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
-        if e.code() == StatusCode.NOT_FOUND:
-            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
-        else:
-            logger.error(
-                f"[{getUserLookups.__module__}.{getUserLookups.__qualname__}] - error response e: {e}"
-            )
-            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
-    except Exception as e:
-        logger.info(e)
+# @router.get(
+#     path="/users",
+#     summary="Get users with other related data",
+#     response_model=UserLookups,
+# )
+# @OpenTelemetry.fastApiTraceOTel
+# async def getUserLookups(
+#     *,
+#     result_from: int = Query(0, description="Starting offset for fetching data"),
+#     result_size: int = Query(10, description="Item count to be fetched"),
+#     orders: str = Query(
+#         "",
+#         description="e.g. user.id:asc,user.email:desc,role.name:asc,organization.name:desc",
+#     ),
+#     filters: str = Query("", description="e.g. column_name:column_value"),
+#     _=Depends(CustomHttpBearer()),
+#     __=Depends(CustomAuthorization()),
+# ):
+#     try:
+#         client = UserLookupClient()
+#         orderService = AppDi.instance.get(OrderService)
+#         filterService = AppDi.instance.get(FilterService)
+#         orders = orderService.orderStringToListOfDict(orders)
+#         filters = filterService.filterStringToListOfDict(filters)
+#
+#         return client.userLookups(
+#             resultFrom=result_from,
+#             resultSize=result_size,
+#             orders=orders,
+#             filters=filters,
+#         )
+#     except grpc.RpcError as e:
+#         if e.code() == StatusCode.PERMISSION_DENIED:
+#             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+#         if e.code() == StatusCode.NOT_FOUND:
+#             return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+#         else:
+#             logger.error(
+#                 f"[{getUserLookups.__module__}.{getUserLookups.__qualname__}] - error response e: {e}"
+#             )
+#             return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+#     except Exception as e:
+#         logger.info(e)
 
 
 @router.get(
     path="/projects",
     summary="Get projects with other related data",
-    response_model=ProjectLookups,
+    response_model=ProjectsIncludeOrganizationsIncludeUsersIncludeRoles,
 )
 @OpenTelemetry.fastApiTraceOTel
 async def getProjectLookups(
@@ -284,7 +279,7 @@ async def getProjectLookups(
 @router.get(
     path="/organizations",
     summary="Get organizations with other related data",
-    response_model=OrganizationLookups,
+    response_model=OrganizationsIncludeUsersIncludeRoles,
 )
 @OpenTelemetry.fastApiTraceOTel
 async def getOrganizationLookups(

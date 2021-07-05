@@ -9,9 +9,9 @@ from pydantic import BaseModel
 
 
 class Role(BaseModel):
-    id: str
-    name: str
-    title: str
+    id: str = ''
+    name: str = ''
+    title: str = ''
 
 
 class RoleDescriptor(Role):
