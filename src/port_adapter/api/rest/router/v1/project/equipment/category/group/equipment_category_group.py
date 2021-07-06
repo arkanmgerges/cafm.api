@@ -113,6 +113,43 @@ async def getEquipmentCategoryGroupsByEquipmentProjectCategoryId(
     except Exception as e:
         logger.info(e)
 
+@router.get(
+    path="/by_project_id/{project_id}",
+    summary="Get all equipment category group(s) filtered by project id",
+    response_model=EquipmentCategoryGroups,
+)
+@OpenTelemetry.fastApiTraceOTel
+async def getEquipmentCategoryGroupsByProjectId(
+    *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    orders: str = Query("", description="e.g. id:asc,email:desc"),
+    project_id: str = Path(
+        ...,
+        description="Project id that is used to fetch equipment category group data",
+    ),
+    _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
+):
+    try:
+        client = EquipmentCategoryGroupClient()
+        orderService = AppDi.instance.get(OrderService)
+        orders = orderService.orderStringToListOfDict(orders)
+        return client.equipmentCategoryGroupsByProjectId(
+            resultFrom=result_from, resultSize=result_size, orders=orders, projectId=project_id
+        )
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getEquipmentCategoryGroupsByProjectId.__module__}.{getEquipmentCategoryGroupsByProjectId.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
 
 @router.get(
     path="/{equipment_category_group_id}",

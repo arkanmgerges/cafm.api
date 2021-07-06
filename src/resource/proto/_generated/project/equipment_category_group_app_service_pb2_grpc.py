@@ -24,15 +24,20 @@ class EquipmentCategoryGroupAppServiceStub(object):
                 request_serializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsRequest.SerializeToString,
                 response_deserializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsResponse.FromString,
                 )
-        self.new_id = channel.unary_unary(
-                '/cafm.project.equipment_category_group.EquipmentCategoryGroupAppService/new_id',
-                request_serializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_newIdRequest.SerializeToString,
-                response_deserializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_newIdResponse.FromString,
-                )
         self.equipment_category_groups_by_equipment_project_category_id = channel.unary_unary(
                 '/cafm.project.equipment_category_group.EquipmentCategoryGroupAppService/equipment_category_groups_by_equipment_project_category_id',
                 request_serializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsByEquipmentProjectCategoryIdRequest.SerializeToString,
                 response_deserializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsByEquipmentProjectCategoryIdResponse.FromString,
+                )
+        self.equipment_category_groups_by_project_id = channel.unary_unary(
+                '/cafm.project.equipment_category_group.EquipmentCategoryGroupAppService/equipment_category_groups_by_project_id',
+                request_serializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsByProjectIdRequest.SerializeToString,
+                response_deserializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsByProjectIdResponse.FromString,
+                )
+        self.new_id = channel.unary_unary(
+                '/cafm.project.equipment_category_group.EquipmentCategoryGroupAppService/new_id',
+                request_serializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_newIdRequest.SerializeToString,
+                response_deserializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_newIdResponse.FromString,
                 )
 
 
@@ -51,13 +56,19 @@ class EquipmentCategoryGroupAppServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def new_id(self, request, context):
+    def equipment_category_groups_by_equipment_project_category_id(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
-    def equipment_category_groups_by_equipment_project_category_id(self, request, context):
+    def equipment_category_groups_by_project_id(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def new_id(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -76,15 +87,20 @@ def add_EquipmentCategoryGroupAppServiceServicer_to_server(servicer, server):
                     request_deserializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsRequest.FromString,
                     response_serializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsResponse.SerializeToString,
             ),
-            'new_id': grpc.unary_unary_rpc_method_handler(
-                    servicer.new_id,
-                    request_deserializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_newIdRequest.FromString,
-                    response_serializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_newIdResponse.SerializeToString,
-            ),
             'equipment_category_groups_by_equipment_project_category_id': grpc.unary_unary_rpc_method_handler(
                     servicer.equipment_category_groups_by_equipment_project_category_id,
                     request_deserializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsByEquipmentProjectCategoryIdRequest.FromString,
                     response_serializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsByEquipmentProjectCategoryIdResponse.SerializeToString,
+            ),
+            'equipment_category_groups_by_project_id': grpc.unary_unary_rpc_method_handler(
+                    servicer.equipment_category_groups_by_project_id,
+                    request_deserializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsByProjectIdRequest.FromString,
+                    response_serializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsByProjectIdResponse.SerializeToString,
+            ),
+            'new_id': grpc.unary_unary_rpc_method_handler(
+                    servicer.new_id,
+                    request_deserializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_newIdRequest.FromString,
+                    response_serializer=project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_newIdResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -131,23 +147,6 @@ class EquipmentCategoryGroupAppService(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
-    def new_id(request,
-            target,
-            options=(),
-            channel_credentials=None,
-            call_credentials=None,
-            insecure=False,
-            compression=None,
-            wait_for_ready=None,
-            timeout=None,
-            metadata=None):
-        return grpc.experimental.unary_unary(request, target, '/cafm.project.equipment_category_group.EquipmentCategoryGroupAppService/new_id',
-            project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_newIdRequest.SerializeToString,
-            project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_newIdResponse.FromString,
-            options, channel_credentials,
-            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
-
-    @staticmethod
     def equipment_category_groups_by_equipment_project_category_id(request,
             target,
             options=(),
@@ -161,5 +160,39 @@ class EquipmentCategoryGroupAppService(object):
         return grpc.experimental.unary_unary(request, target, '/cafm.project.equipment_category_group.EquipmentCategoryGroupAppService/equipment_category_groups_by_equipment_project_category_id',
             project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsByEquipmentProjectCategoryIdRequest.SerializeToString,
             project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsByEquipmentProjectCategoryIdResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def equipment_category_groups_by_project_id(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cafm.project.equipment_category_group.EquipmentCategoryGroupAppService/equipment_category_groups_by_project_id',
+            project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsByProjectIdRequest.SerializeToString,
+            project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_equipmentCategoryGroupsByProjectIdResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def new_id(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/cafm.project.equipment_category_group.EquipmentCategoryGroupAppService/new_id',
+            project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_newIdRequest.SerializeToString,
+            project_dot_equipment__category__group__app__service__pb2.EquipmentCategoryGroupAppService_newIdResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
