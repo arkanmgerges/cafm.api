@@ -169,6 +169,90 @@ async def createEquipment(
     )
     return {"request_id": reqId}
 
+@router.post(
+    "/link_equipment_to_equipment",
+    summary="Link equipment with another equipment",
+    status_code=status.HTTP_200_OK,
+)
+@OpenTelemetry.fastApiTraceOTel
+async def linkEquipmentToEquipment(
+    *,
+    _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
+    src_equipment_id: str = Body(
+        ...,
+        description="Source equipment to link it to the destination equipment",
+        embed=True,
+    ),
+    dst_equipment_id: str = Body(
+        ...,
+        description="Destination equipment to link it to the source equipment",
+        embed=True,
+    ),
+):
+    reqId = RequestIdGenerator.generateId()
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.LINK_EQUIPMENT_TO_EQUIPMENT.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "src_equipment_id": src_equipment_id,
+                    "dst_equipment_id": dst_equipment_id,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
+    return {"request_id": reqId}
+
+
+@router.delete(
+    "/unlink_equipment_to_equipment",
+    summary="Unlink equipment to another equipment",
+    status_code=status.HTTP_200_OK,
+)
+@OpenTelemetry.fastApiTraceOTel
+async def unlinkEquipmentToEquipment(
+    *,
+    _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
+    src_equipment_id: str = Body(
+        ...,
+        description="Source equipment to unlink it from the destination equipment",
+        embed=True,
+    ),
+    dst_equipment_id: str = Body(
+        ...,
+        description="Destination equipment to unlink it from the source equipment",
+        embed=True,
+    ),
+):
+    reqId = RequestIdGenerator.generateId()
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+
+    producer.produce(
+        obj=ProjectCommand(
+            id=reqId,
+            name=CommandConstant.UNLINK_EQUIPMENT_TO_EQUIPMENT.value,
+            metadata=json.dumps({"token": Client.token}),
+            data=json.dumps(
+                {
+                    "src_equipment_id": src_equipment_id,
+                    "dst_equipment_id": dst_equipment_id,
+                }
+            ),
+            external=[],
+        ),
+        schema=ProjectCommand.get_schema(),
+    )
+    return {"request_id": reqId}
 
 @router.put(
     "/{equipment_id}", summary="Update equipment", status_code=status.HTTP_200_OK

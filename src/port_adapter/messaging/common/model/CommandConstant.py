@@ -128,6 +128,8 @@ class CommandConstant(Enum):
     )
     CHANGE_PROJECT_STATE = "change_project_state"
     LINK_EQUIPMENT_PROJECT_CATEGORY_GROUP = "link_equipment_project_category_group"
+    LINK_EQUIPMENT_TO_EQUIPMENT = "link_equipment_to_equipment"
+    UNLINK_EQUIPMENT_TO_EQUIPMENT = "unlink_equipment_to_equipment"
     UNLINK_EQUIPMENT_PROJECT_CATEGORY_GROUP = "unlink_equipment_project_category_group"
     CREATE_STANDARD_MAINTENANCE_PROCEDURE = "create_standard_maintenance_procedure"
     UPDATE_STANDARD_MAINTENANCE_PROCEDURE = "update_standard_maintenance_procedure"
