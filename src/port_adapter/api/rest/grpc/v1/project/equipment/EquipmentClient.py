@@ -25,7 +25,8 @@ from src.resource.proto._generated.project.equipment_app_service_pb2 import (
     EquipmentAppService_equipmentByIdRequest,
     EquipmentAppService_equipmentByIdResponse,
     EquipmentAppService_newIdRequest,
-    EquipmentAppService_newIdResponse,
+    EquipmentAppService_newIdResponse, EquipmentAppService_linkedEquipmentsByEquipmentIdRequest,
+    EquipmentAppService_linkedEquipmentsByEquipmentIdResponse,
 )
 from src.resource.proto._generated.project.equipment_app_service_pb2_grpc import (
     EquipmentAppServiceStub,
@@ -83,6 +84,53 @@ class EquipmentClient(Client):
                 ]
                 response: EquipmentAppService_equipmentsResponse = (
                     stub.equipments.with_call(
+                        request,
+                        metadata=(
+                            ("token", self.token),
+                            (
+                                "opentel",
+                                AppDi.instance.get(OpenTelemetry).serializedContext(
+                                    EquipmentClient.equipments.__qualname__
+                                ),
+                            ),
+                        ),
+                    )
+                )
+                logger.debug(
+                    f"[{EquipmentClient.equipments.__qualname__}] - grpc response: {response}"
+                )
+
+                return Equipments(
+                    equipments=[
+                        self._descriptorByObject(obj=equipment)
+                        for equipment in response[0].equipments
+                    ],
+                    total_item_count=response[0].total_item_count,
+                )
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def linkedEquipmentsByEquipmentId(
+        self, resultFrom: int = 0, resultSize: int = 10, orders: List[dict] = None, equipmentId: str = None,
+    ) -> Equipments:
+        orders = [] if orders is None else orders
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
+            stub = EquipmentAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f"[{EquipmentClient.equipments.__qualname__}] - grpc call to retrieve equipments from server {self._server}:{self._port}"
+                )
+                request = EquipmentAppService_linkedEquipmentsByEquipmentIdRequest(
+                    result_from=resultFrom, result_size=resultSize, equipment_id=equipmentId,
+                )
+                [
+                    request.orders.add(order_by=o["orderBy"], direction=o["direction"])
+                    for o in orders
+                ]
+                response: EquipmentAppService_linkedEquipmentsByEquipmentIdResponse = (
+                    stub.linked_equipments_by_equipment_id.with_call(
                         request,
                         metadata=(
                             ("token", self.token),

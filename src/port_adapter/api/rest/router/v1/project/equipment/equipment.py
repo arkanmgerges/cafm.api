@@ -76,6 +76,37 @@ async def getEquipments(
 
 
 @router.get(
+    path="/linked_equipments_by_equipment_id/{equipment_id}",
+    summary="Get linked equipments by equipment id",
+    response_model=Equipments,
+)
+@OpenTelemetry.fastApiTraceOTel
+async def getLinkedEquipmentsByEquipmentId(
+    *,
+    equipment_id: str = Path(
+        ..., description="equipment id that is used to fetch equipment data"
+    ),
+    _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
+):
+    try:
+        client = EquipmentClient()
+        return client.linkedEquipmentsByEquipmentId(equipmentId=equipment_id)
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getLinkedEquipmentsByEquipmentId.__module__}.{getLinkedEquipmentsByEquipmentId.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
+
+
+@router.get(
     path="/{equipment_id}",
     summary="Get equipment by id",
     response_model=EquipmentDescriptor,
