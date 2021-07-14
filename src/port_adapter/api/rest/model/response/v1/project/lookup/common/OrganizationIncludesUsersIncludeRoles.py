@@ -1,6 +1,7 @@
 """
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
+from src.port_adapter.api.rest.model.response.v1.project.lookup.common.OrganizationLocation import OrganizationLocationDescriptor
 from typing import List, Optional
 
 from pydantic import BaseModel
@@ -33,6 +34,8 @@ class OrganizationIncludesUsersIncludeRoles(BaseModel):
     manager_phone_number: Optional[str]
     manager_avatar: Optional[str]
     users_include_roles: List[UserIncludesRolesDescriptor] = []
+    locations: List[OrganizationLocationDescriptor] = []
+
 
 
 class OrganizationIncludesUsersIncludeRolesDescriptor(OrganizationIncludesUsersIncludeRoles):
