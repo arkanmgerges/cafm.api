@@ -2,6 +2,7 @@
 @author: Arkan M. Gerges<arkan.m.gerges@gmail.com>
 """
 import os
+from src.port_adapter.api.rest.model.response.v1.project.lookup.common.OrganizationLocation import OrganizationLocationDescriptor
 from typing import List, Any
 
 import grpc
@@ -99,6 +100,15 @@ class ProjectLookupClient(Client):
             organizationIncludesUsersIncludeRolesResponseModel = OrganizationIncludesUsersIncludeRolesDescriptor()
             [setattr(organizationIncludesUsersIncludeRolesResponseModel, attribute, getattr(organizationIncludesUsersIncludeRolesProtoObj, attribute)) for attribute in
              self._responseModelAttributues(OrganizationDescriptor)]
+
+            organizationIncludesUsersIncludeRolesResponseModel.locations = []
+            for locationProtoObj in organizationIncludesUsersIncludeRolesProtoObj.locations:
+                organizationLocationModel = OrganizationLocationDescriptor()
+                [setattr(organizationLocationModel, attribute, getattr(locationProtoObj, attribute)) for
+                 attribute in
+                 self._responseModelAttributues(OrganizationLocationDescriptor)]
+                organizationIncludesUsersIncludeRolesResponseModel.locations.append(organizationLocationModel)
+
             organizationIncludesUsersIncludeRolesResponseModel.users_include_roles = []
             for userIncludesRolesProtoObj in organizationIncludesUsersIncludeRolesProtoObj.users_include_roles:
                 userIncludesRolesResponseModel = UserIncludesRolesDescriptor()
