@@ -34,6 +34,8 @@ class ProjectIncludesOrganizationsIncludeUsersIncludeRoles(BaseModel):
     developer_warranty: Optional[str]
     developer_country_state_name: Optional[str]
     developer_country_state_iso_code: Optional[str]
+    created_at: Optional[int]
+    modified_at: Optional[int]
     organizations_include_users_include_roles: List[OrganizationIncludesUsersIncludeRolesDescriptor] = []
 
 
