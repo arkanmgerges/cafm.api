@@ -31,6 +31,8 @@ class Project(BaseModel):
     developer_warranty: Optional[str]
     developer_country_state_name: Optional[str]
     developer_country_state_iso_code: Optional[str]
+    created_at: Optional[int]
+    modified_at: Optional[int]
 
 
 class ProjectDescriptor(Project):
