@@ -30,6 +30,7 @@ from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.M
 from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameterClient import (
     MaintenanceProcedureOperationParameterClient,
 )
+from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.label.MaintenanceProcedureOperationLabelClient import MaintenanceProcedureOperationLabelClient
 
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
 from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.MaintenanceProcedures import (
@@ -64,6 +65,9 @@ from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.Maintenan
 from src.port_adapter.api.rest.router.v1.project.maintenance.procedure.MaintenanceProcedureHardSubType import (
     MaintenanceProcedureHardSubType,
 )
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.label.MaintenanceProcedureOperationLabels import MaintenanceProcedureOperationLabels
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.label.MaintenanceProcedureOperationLabel import MaintenanceProcedureOperationLabelDescriptor
+
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.common.DateTimeHelper import DateTimeHelper
@@ -906,8 +910,6 @@ async def createMaintenanceProcedureOperation(
 # endregion
 
 # region PUT/PATCH /{maintenance_procedure_id}/operations/{maintenance_procedure_operation_id}
-
-
 @router.put(
     "/{maintenance_procedure_id}/operations/{maintenance_procedure_operation_id}",
     summary="Update maintenance procedure operation",
@@ -1003,5 +1005,166 @@ async def partialUpdateMaintenanceProcedureOperation(
     )
     return {"request_id": reqId}
 
-
 # endregion
+
+#region GET/DELETE /operations/labels/{maintenance_procedure_operation_label_id}
+@router.get(path="/operations/labels/{maintenance_procedure_operation_label_id}", summary='Get maintenance procedure operation label by id',
+            response_model=MaintenanceProcedureOperationLabelDescriptor)
+@OpenTelemetry.fastApiTraceOTel
+async def getMaintenanceProcedureOperationLabelById(
+    *,
+    maintenance_procedure_operation_label_id: str = Path(
+        ...,
+        description='maintenance procedure operation label id that is used to fetch maintenance procedure operation label data',
+    ),
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+):
+    """Get a maintenance procedure operation label by id
+    """
+    try:
+        client = MaintenanceProcedureOperationLabelClient()
+        return client.maintenanceProcedureOperationLabelById(id=maintenance_procedure_operation_label_id)
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f'[{getMaintenanceProcedureOperationLabelById.__module__}.{getMaintenanceProcedureOperationLabelById.__qualname__}] - error response e: {e}')
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
+
+@router.delete("/operations/labels/{maintenance_procedure_operation_label_id}", summary='Delete a maintenance procedure operation labels', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def deleteMaintenanceProcedureOperationLabel(*,
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+    maintenance_procedure_operation_label_id: str = Path(
+        ..., description='maintenance procedure operation label id that is used in order to delete the maintenance procedure operation label'
+    ),
+):
+    reqId = RequestIdGenerator.generateId()
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_MAINTENANCE_PROCEDURE_OPERATION_LABEL.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'maintenance_procedure_operation_label_id': maintenance_procedure_operation_label_id}),
+                                        external=[]),
+                     schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
+#endregion
+
+# region GET/POST /operations/{maintenance_procedure_operation_id}/labels
+@router.get(path="/operations/{maintenance_procedure_operation_id}/labels", summary='Get all maintenance procedure operation label(s)', response_model=MaintenanceProcedureOperationLabels)
+@OpenTelemetry.fastApiTraceOTel
+async def getMaintenanceProcedureOperationLabels(
+    *,
+    result_from: int = Query(0, description='Starting offset for fetching data'),
+    result_size: int = Query(10, description='Item count to be fetched'),
+    orders: str = Query('', description='e.g. id:asc,email:desc'),
+    maintenance_procedure_operation_id: str = Path(..., description='maintenance procedure operation id of maintenance procedure operation label'),
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+):
+    try:
+        client = MaintenanceProcedureOperationLabelClient()
+        orderService = AppDi.instance.get(OrderService)
+        orders = orderService.orderStringToListOfDict(order)
+        return client.maintenanceProcedureOperationLabels(resultFrom=result_from, resultSize=result_size, orders=orders)
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f'[{getMaintenanceProcedureOperationLabels.__module__}.{getMaintenanceProcedureOperationLabels.__qualname__}] - error response e: {e}')
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
+
+@router.post("/operations/{maintenance_procedure_operation_id}/labels", summary='Create maintenance procedure operation label', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def createMaintenanceProcedureOperationLabel(*,
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+    label: str = Body(..., description='label of maintenance procedure operation label', embed=True),
+    generate_alert: int = Body(..., description='generate alert of maintenance procedure operation label', embed=True),
+    maintenance_procedure_operation_id: str = Path(..., description='maintenance procedure operation id of maintenance procedure operation label'),
+):
+    reqId = RequestIdGenerator.generateId()
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    client = MaintenanceProcedureOperationLabelClient()
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_MAINTENANCE_PROCEDURE_OPERATION_LABEL.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {
+                                             'maintenance_procedure_operation_label_id': client.newId(),
+                                             'label': label,
+                                             'generate_alert': generate_alert,
+                                             'maintenance_procedure_operation_id': maintenance_procedure_operation_id,
+                                             }),
+                                        external=[]),
+                     schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
+#endregion
+
+#region PUT/PATCH /operations/{maintenance_procedure_operation_id}/labels/{maintenance_procedure_operation_label_id}
+
+@router.put("/operations/{maintenance_procedure_operation_id}/labels/{maintenance_procedure_operation_label_id}", summary='Update maintenance procedure operation label', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def updateMaintenanceProcedureOperationLabel(*,
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+    maintenance_procedure_operation_label_id: str = Path(..., description='maintenance procedure operation label id that is used in order to update the maintenance procedure operation label'),
+        label: str = Body(..., description='label of maintenance procedure operation label', embed=True),
+        generate_alert: int = Body(..., description='generate alert of maintenance procedure operation label', embed=True),
+        maintenance_procedure_operation_id: str = Path(..., description='maintenance procedure operation id of maintenance procedure operation label'),
+):
+    reqId = RequestIdGenerator.generateId()
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE_OPERATION_LABEL.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'maintenance_procedure_operation_label_id': maintenance_procedure_operation_label_id,
+                                            'label': label,
+                                            'generate_alert': generate_alert,
+                                            'maintenance_procedure_operation_id': maintenance_procedure_operation_id,
+                                             }),
+                                        external=[]),
+                     schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.patch("/operations/{maintenance_procedure_operation_id}/labels/{maintenance_procedure_operation_label_id}", summary='Partial update maintenance procedure operation label', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def partialUpdateMaintenanceProcedureOperationLabel(*,
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+    maintenance_procedure_operation_label_id: str = Path(..., description='maintenance procedure operation label id that is used in order to update the maintenance procedure operation label'),
+        label: str = Body(None, description='label of maintenance procedure operation label', embed=True),
+        generate_alert: int = Body(None, description='generate alert of maintenance procedure operation label', embed=True),
+        maintenance_procedure_operation_id: str = Path(None, description='maintenance procedure operation id of maintenance procedure operation label'),
+):
+    reqId = RequestIdGenerator.generateId()
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_MAINTENANCE_PROCEDURE_OPERATION_LABEL.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'maintenance_procedure_operation_label_id': maintenance_procedure_operation_label_id,
+                                            'label': label,
+                                            'generate_alert': generate_alert,
+                                            'maintenance_procedure_operation_id': maintenance_procedure_operation_id,
+                                            }),
+                                        external=[]),
+                     schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
+#endregion
+
