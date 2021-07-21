@@ -27,6 +27,9 @@ from src.port_adapter.api.rest.grpc.v1.project.daily_check.procedure.operation.D
 from src.port_adapter.api.rest.grpc.v1.project.daily_check.procedure.operation.parameter.DailyCheckProcedureOperationParameterClient import (
     DailyCheckProcedureOperationParameterClient,
 )
+from src.port_adapter.api.rest.grpc.v1.project.daily_check.procedure.operation.label.DailyCheckProcedureOperationLabelClient import (
+    DailyCheckProcedureOperationLabelClient,
+)
 from src.port_adapter.api.rest.grpc.v1.project.equipment.EquipmentClient import EquipmentClient
 from src.port_adapter.api.rest.grpc.v1.project.equipment.category.group.EquipmentCategoryGroupClient import (
     EquipmentCategoryGroupClient,
@@ -44,6 +47,9 @@ from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.M
 )
 from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.parameter.MaintenanceProcedureOperationParameterClient import (
     MaintenanceProcedureOperationParameterClient,
+)
+from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.label.MaintenanceProcedureOperationLabelClient import (
+    MaintenanceProcedureOperationLabelClient,
 )
 from src.port_adapter.api.rest.grpc.v1.project.maintenance.standard_procedure.StandardMaintenanceProcedureClient import (
     StandardMaintenanceProcedureClient,
@@ -214,9 +220,11 @@ entityToGrpcClientList = {
     "daily_check_procedure": DailyCheckProcedureClient(),
     "daily_check_procedure_operation": DailyCheckProcedureOperationClient(),
     "daily_check_procedure_operation_parameter": DailyCheckProcedureOperationParameterClient(),
+    "daily_check_procedure_operation_label": DailyCheckProcedureOperationLabelClient(),
     "maintenance_procedure": MaintenanceProcedureClient(),
     "maintenance_procedure_operation": MaintenanceProcedureOperationClient(),
     "maintenance_procedure_operation_parameter": MaintenanceProcedureOperationParameterClient(),
+    "maintenance_procedure_operation_label": MaintenanceProcedureOperationLabelClient(),
     "standard_maintenance_procedure": StandardMaintenanceProcedureClient(),
     "manufacturer": ManufacturerClient(),
     "standard_equipment": StandardEquipmentClient(),

@@ -22,10 +22,10 @@ from starlette.status import (
 import src.port_adapter.AppDi as AppDi
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.MaintenanceProcedureOperationLabelClient import MaintenanceProcedureOperationLabelClient
+from src.port_adapter.api.rest.grpc.v1.project.maintenance.procedure.operation.label.MaintenanceProcedureOperationLabelClient import MaintenanceProcedureOperationLabelClient
 from src.port_adapter.api.rest.helper.RequestIdGenerator import RequestIdGenerator
-from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.MaintenanceProcedureOperationLabels import MaintenanceProcedureOperationLabels
-from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.MaintenanceProcedureOperationLabel import MaintenanceProcedureOperationLabelDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.label.MaintenanceProcedureOperationLabels import MaintenanceProcedureOperationLabels
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.label.MaintenanceProcedureOperationLabel import MaintenanceProcedureOperationLabelDescriptor
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -128,7 +128,7 @@ async def updateMaintenanceProcedureOperationLabel(*,
     maintenance_procedure_operation_label_id: str = Path(..., description='maintenance procedure operation label id that is used in order to update the maintenance procedure operation label'),
         label: str = Body(..., description='label of maintenance procedure operation label', embed=True),
         generate_alert: int = Body(..., description='generate alert of maintenance procedure operation label', embed=True),
-        maintenance_procedure_operation_id: str = Body(..., description='maintenance procedure operation id of maintenance procedure operation label', embed=True),                 
+        maintenance_procedure_operation_id: str = Body(..., description='maintenance procedure operation id of maintenance procedure operation label', embed=True),
 ):
     reqId = RequestIdGenerator.generateId()
     producer = AppDi.instance.get(SimpleProducer)
