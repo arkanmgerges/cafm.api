@@ -56,7 +56,7 @@ from src.port_adapter.api.rest.router.v1.project.daily_check.procedure.DailyChec
     DailyCheckProcedureOperationType,
 )
 
-from src.port_adapter.api.rest.grpc.v1.project.daily_check.procedure.DailyCheckProcedureOperationLabelClient import DailyCheckProcedureOperationLabelClient
+from src.port_adapter.api.rest.grpc.v1.project.daily_check.procedure.operation.label.DailyCheckProcedureOperationLabelClient import DailyCheckProcedureOperationLabelClient
 from src.port_adapter.api.rest.model.response.v1.project.daily_check.procedure.DailyCheckProcedureOperationLabels import DailyCheckProcedureOperationLabels
 from src.port_adapter.api.rest.model.response.v1.project.daily_check.procedure.DailyCheckProcedureOperationLabel import DailyCheckProcedureOperationLabelDescriptor
 

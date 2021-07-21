@@ -16,6 +16,8 @@ from src.port_adapter.api.rest.model.response.v1.project.lookup.daily_check_proc
     DailyCheckProcedureOperationDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.lookup.daily_check_procedure.DailyCheckProcedureOperationParameter import \
     DailyCheckProcedureOperationParameterDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.lookup.daily_check_procedure.DailyCheckProcedureOperationLabel import \
+    DailyCheckProcedureOperationLabelDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.lookup.daily_check_procedure.EquipmentCategoryGroup import \
     EquipmentCategoryGroupDescriptor
 from src.port_adapter.api.rest.model.response.v1.project.lookup.daily_check_procedure.Unit import UnitDescriptor
@@ -93,6 +95,15 @@ class DailyCheckProcedureLookupClient(Client):
                             )
                         )
                     )
+                labels = []
+                for param in operation.daily_check_procedure_operation_labels:
+                    labels.append(
+                        DailyCheckProcedureOperationLabelDescriptor(
+                            id=param.id,
+                            label=param.label,
+                            generate_alert=param.generate_alert,
+                        )
+                    )
                 operations.append(
                     DailyCheckProcedureOperationDescriptor(
                         id=operation.id,
@@ -100,6 +111,7 @@ class DailyCheckProcedureLookupClient(Client):
                         description=operation.description,
                         type=operation.type,
                         daily_check_procedure_operation_parameters=params,
+                        daily_check_procedure_operation_labels=labels,
                     )
                 )
 

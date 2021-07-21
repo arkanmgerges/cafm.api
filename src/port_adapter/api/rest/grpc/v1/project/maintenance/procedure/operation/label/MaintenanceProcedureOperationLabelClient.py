@@ -12,8 +12,8 @@ import grpc
 
 import src.port_adapter.AppDi as AppDi
 from src.port_adapter.api.rest.grpc.Client import Client
-from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.MaintenanceProcedureOperationLabel import MaintenanceProcedureOperationLabelDescriptor
-from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.MaintenanceProcedureOperationLabels import MaintenanceProcedureOperationLabels
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.label.MaintenanceProcedureOperationLabel import MaintenanceProcedureOperationLabelDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.maintenance.procedure.operation.label.MaintenanceProcedureOperationLabels import MaintenanceProcedureOperationLabels
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.maintenance_procedure_operation_label_app_service_pb2 import \
