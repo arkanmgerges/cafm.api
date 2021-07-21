@@ -164,5 +164,14 @@ class CommandConstant(Enum):
     CREATE_STANDARD_EQUIPMENT_PROJECT_CATEGORY = 'create_standard_equipment_project_category'
     UPDATE_STANDARD_EQUIPMENT_PROJECT_CATEGORY = 'update_standard_equipment_project_category'
     DELETE_STANDARD_EQUIPMENT_PROJECT_CATEGORY = 'delete_standard_equipment_project_category'
+    CREATE_DAILY_CHECK_PROCEDURE_OPERATION_LABEL = 'create_daily_check_procedure_operation_label'
+    UPDATE_DAILY_CHECK_PROCEDURE_OPERATION_LABEL = 'update_daily_check_procedure_operation_label'
+    DELETE_DAILY_CHECK_PROCEDURE_OPERATION_LABEL = 'delete_daily_check_procedure_operation_label'
+    CREATE_STANDARD_MAINTENANCE_PROCEDURE_OPERATION_LABEL = 'create_standard_maintenance_procedure_operation_label'
+    UPDATE_STANDARD_MAINTENANCE_PROCEDURE_OPERATION_LABEL = 'update_standard_maintenance_procedure_operation_label'
+    DELETE_STANDARD_MAINTENANCE_PROCEDURE_OPERATION_LABEL = 'delete_standard_maintenance_procedure_operation_label'
+    CREATE_MAINTENANCE_PROCEDURE_OPERATION_LABEL = 'create_maintenance_procedure_operation_label'
+    UPDATE_MAINTENANCE_PROCEDURE_OPERATION_LABEL = 'update_maintenance_procedure_operation_label'
+    DELETE_MAINTENANCE_PROCEDURE_OPERATION_LABEL = 'delete_maintenance_procedure_operation_label'
 
 # endregion
