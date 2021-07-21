@@ -41,6 +41,9 @@ from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Mainte
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.MaintenanceProcedureOperationParameter import (
     MaintenanceProcedureOperationParameterDescriptor,
 )
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.MaintenanceProcedureOperationLabel import (
+    MaintenanceProcedureOperationLabelDescriptor,
+)
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.Manufacturer import (
     ManufacturerDescriptor,
 )
@@ -141,6 +144,15 @@ class EquipmentLookupClient(Client):
                             ),
                         )
                     )
+                labels = []
+                for label in operation.maintenance_procedure_operation_labels:
+                    labels.append(
+                        MaintenanceProcedureOperationLabelDescriptor(
+                            id=label.id,
+                            label=label.label,
+                            generate_alert=label.generate_alert,
+                        )
+                    )
                 operations.append(
                     MaintenanceProcedureOperationDescriptor(
                         id=operation.id,
@@ -148,6 +160,7 @@ class EquipmentLookupClient(Client):
                         description=operation.description,
                         type=operation.type,
                         maintenance_procedure_operation_parameters=params,
+                        maintenance_procedure_operation_labels=labels,
                     )
                 )
 
