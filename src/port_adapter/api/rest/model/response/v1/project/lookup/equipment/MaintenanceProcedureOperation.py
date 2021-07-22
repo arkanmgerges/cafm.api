@@ -8,7 +8,8 @@ from pydantic import BaseModel
 
 from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.MaintenanceProcedureOperationParameter import \
     MaintenanceProcedureOperationParameter
-
+from src.port_adapter.api.rest.model.response.v1.project.lookup.equipment.MaintenanceProcedureOperationLabel import \
+    MaintenanceProcedureOperationLabel
 
 class MaintenanceProcedureOperation(BaseModel):
     id: str
@@ -16,6 +17,8 @@ class MaintenanceProcedureOperation(BaseModel):
     description: str
     type: str
     maintenance_procedure_operation_parameters: Optional[List[MaintenanceProcedureOperationParameter]]
+    maintenance_procedure_operation_labels: Optional[List[MaintenanceProcedureOperationLabel]]
+
 
 
 class MaintenanceProcedureOperationDescriptor(MaintenanceProcedureOperation):

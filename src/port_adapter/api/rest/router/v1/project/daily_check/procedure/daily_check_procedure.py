@@ -55,6 +55,11 @@ from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorizati
 from src.port_adapter.api.rest.router.v1.project.daily_check.procedure.DailyCheckProcedureOperationType import (
     DailyCheckProcedureOperationType,
 )
+
+from src.port_adapter.api.rest.grpc.v1.project.daily_check.procedure.operation.label.DailyCheckProcedureOperationLabelClient import DailyCheckProcedureOperationLabelClient
+from src.port_adapter.api.rest.model.response.v1.project.daily_check.procedure.DailyCheckProcedureOperationLabels import DailyCheckProcedureOperationLabels
+from src.port_adapter.api.rest.model.response.v1.project.daily_check.procedure.DailyCheckProcedureOperationLabel import DailyCheckProcedureOperationLabelDescriptor
+
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
 from src.port_adapter.messaging.common.model.CommandConstant import CommandConstant
 from src.resource.logging.logger import logger
@@ -1003,3 +1008,158 @@ async def partialUpdateDailyCheckProcedureOperation(
 
 
 # endregion
+
+@router.get(path="/operations/labels/{daily_check_procedure_operation_label_id}", summary='Get daily check procedure operation label by id',
+            response_model=DailyCheckProcedureOperationLabelDescriptor)
+@OpenTelemetry.fastApiTraceOTel
+async def getDailyCheckProcedureOperationLabelById(
+    *,
+    daily_check_procedure_operation_label_id: str = Path(
+        ...,
+        description='daily check procedure operation label id that is used to fetch daily check procedure operation label data',
+    ),
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+):
+    """Get a daily check procedure operation label by id
+    """
+    try:
+        client = DailyCheckProcedureOperationLabelClient()
+        return client.dailyCheckProcedureOperationLabelById(id=daily_check_procedure_operation_label_id)
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f'[{getDailyCheckProcedureOperationLabelById.__module__}.{getDailyCheckProcedureOperationLabelById.__qualname__}] - error response e: {e}')
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
+
+@router.delete("/operations/labels/{daily_check_procedure_operation_label_id}", summary='Delete a daily check procedure operation labels', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def deleteDailyCheckProcedureOperationLabel(*,
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+    daily_check_procedure_operation_label_id: str = Path(
+        ..., description='daily check procedure operation label id that is used in order to delete the daily check procedure operation label'
+    ),
+):
+    reqId = RequestIdGenerator.generateId()
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.DELETE_DAILY_CHECK_PROCEDURE_OPERATION_LABEL.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'daily_check_procedure_operation_label_id': daily_check_procedure_operation_label_id}),
+                                        external=[]),
+                     schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
+
+@router.get(path="/operations/{daily_check_procedure_operation_id}/labels", summary='Get all daily check procedure operation label(s)', response_model=DailyCheckProcedureOperationLabels)
+@OpenTelemetry.fastApiTraceOTel
+async def getDailyCheckProcedureOperationLabels(
+    *,
+    result_from: int = Query(0, description='Starting offset for fetching data'),
+    result_size: int = Query(10, description='Item count to be fetched'),
+    orders: str = Query('', description='e.g. id:asc,email:desc'),
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+):
+    try:
+        client = DailyCheckProcedureOperationLabelClient()
+        orderService = AppDi.instance.get(OrderService)
+        orders = orderService.orderStringToListOfDict(orders)
+        return client.dailyCheckProcedureOperationLabels(resultFrom=result_from, resultSize=result_size, orders=orders)
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f'[{getDailyCheckProcedureOperationLabels.__module__}.{getDailyCheckProcedureOperationLabels.__qualname__}] - error response e: {e}')
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
+
+@router.post("/operations/{daily_check_procedure_operation_id}/labels", summary='Create daily check procedure operation label', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def createDailyCheckProcedureOperationLabel(
+    *,
+    label: str = Body(..., description='label of daily check procedure operation label', embed=True),
+    generate_alert: int = Body(..., description='generate alert of daily check procedure operation label', embed=True),
+    daily_check_procedure_operation_id: str = Path(..., description='daily check procedure operation id of daily check procedure operation label'),
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+):
+    reqId = RequestIdGenerator.generateId()
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    client = DailyCheckProcedureOperationLabelClient()
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.CREATE_DAILY_CHECK_PROCEDURE_OPERATION_LABEL.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {
+                                             'daily_check_procedure_operation_label_id': client.newId(),
+                                             'label': label,
+                                             'generate_alert': generate_alert,
+                                             'daily_check_procedure_operation_id': daily_check_procedure_operation_id,
+                                             }),
+                                        external=[]),
+                     schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.put("/operations/{daily_check_procedure_operation_id}/labels/{daily_check_procedure_operation_label_id}", summary='Update daily check procedure operation label', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def updateDailyCheckProcedureOperationLabel(*,
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+    daily_check_procedure_operation_label_id: str = Path(..., description='daily check procedure operation label id that is used in order to update the daily check procedure operation label'),
+    label: str = Body(..., description='label of daily check procedure operation label', embed=True),
+    generate_alert: int = Body(..., description='generate alert of daily check procedure operation label', embed=True),
+    daily_check_procedure_operation_id: str = Path(..., description='daily check procedure operation id of daily check procedure operation label'),
+):
+    reqId = RequestIdGenerator.generateId()
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_DAILY_CHECK_PROCEDURE_OPERATION_LABEL.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'daily_check_procedure_operation_label_id': daily_check_procedure_operation_label_id,
+                                            'label': label,
+                                            'generate_alert': generate_alert,
+                                            'daily_check_procedure_operation_id': daily_check_procedure_operation_id,
+                                             }),
+                                        external=[]),
+                     schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
+
+
+@router.patch("/operations/{daily_check_procedure_operation_id}/labels/{daily_check_procedure_operation_label_id}", summary='Partial update daily check procedure operation label', status_code=status.HTTP_200_OK)
+@OpenTelemetry.fastApiTraceOTel
+async def partialUpdateDailyCheckProcedureOperationLabel(*,
+    _=Depends(CustomHttpBearer()),
+    _1=Depends(CustomAuthorization()),
+    daily_check_procedure_operation_label_id: str = Path(..., description='daily check procedure operation label id that is used in order to update the daily check procedure operation label'),
+    label: str = Body(None, description='label of daily check procedure operation label', embed=True),
+    generate_alert: int = Body(None, description='generate alert of daily check procedure operation label', embed=True),
+    daily_check_procedure_operation_id: str = Path(..., description='daily check procedure operation id of daily check procedure operation label'),
+):
+    reqId = RequestIdGenerator.generateId()
+    producer = AppDi.instance.get(SimpleProducer)
+    from src.port_adapter.messaging.common.model.ProjectCommand import ProjectCommand
+    producer.produce(obj=ProjectCommand(id=reqId, name=CommandConstant.UPDATE_DAILY_CHECK_PROCEDURE_OPERATION_LABEL.value,
+                                        metadata=json.dumps({"token": Client.token}),
+                                        data=json.dumps(
+                                            {'daily_check_procedure_operation_label_id': daily_check_procedure_operation_label_id,
+                                            'label': label,
+                                            'generate_alert': generate_alert,
+                                            'daily_check_procedure_operation_id': daily_check_procedure_operation_id,
+                                            }),
+                                        external=[]),
+                     schema=ProjectCommand.get_schema())
+    return {"request_id": reqId}
