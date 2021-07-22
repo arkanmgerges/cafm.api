@@ -31,6 +31,9 @@ from src.port_adapter.api.rest.model.response.v1.project.Project import (
     ProjectDescriptor,
 )
 from src.port_adapter.api.rest.model.response.v1.project.Projects import Projects
+from src.port_adapter.api.rest.model.response.v1.project.statistic.project.ProjectStatistic import \
+    ProjectStatisticDescriptor
+from src.port_adapter.api.rest.model.response.v1.project.statistic.project.ProjectsStatistics import ProjectsStatistics
 from src.resource.logging.logger import logger
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 from src.resource.proto._generated.project.project_app_service_pb2 import (
@@ -61,7 +64,8 @@ from src.resource.proto._generated.project.project_app_service_pb2 import (
     ProjectAppService_newBuildingLevelRoomIdRequest,
     ProjectAppService_newBuildingLevelRoomIdResponse,
     ProjectAppService_buildingLevelRoomsRequest,
-    ProjectAppService_buildingLevelRoomsResponse,
+    ProjectAppService_buildingLevelRoomsResponse, ProjectAppService_statisticsResponse,
+    ProjectAppService_statisticsRequest,
 )
 from src.resource.proto._generated.project.project_app_service_pb2_grpc import (
     ProjectAppServiceStub,
@@ -138,6 +142,44 @@ class ProjectClient(Client):
                     projects=[
                         self._descriptorByObject(project)
                         for project in response[0].projects
+                    ],
+                    total_item_count=response[0].total_item_count,
+                )
+            except Exception as e:
+                channel.unsubscribe(lambda ch: ch.close())
+                raise e
+
+    @OpenTelemetry.grpcTraceOTel
+    def projectsStatistics(
+            self,
+    ) -> ProjectsStatistics:
+        with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
+            stub = ProjectAppServiceStub(channel)
+            try:
+                logger.debug(
+                    f"[{ProjectClient.projectsStatistics.__qualname__}] - grpc call to server {self._server}:{self._port}"
+                )
+                request = ProjectAppService_statisticsRequest()
+                response: ProjectAppService_statisticsResponse = stub.statistics.with_call(
+                    request,
+                    metadata=(
+                        ("token", self.token),
+                        (
+                            "opentel",
+                            AppDi.instance.get(OpenTelemetry).serializedContext(
+                                ProjectClient.projectsStatistics.__qualname__
+                            ),
+                        ),
+                    ),
+                )
+                logger.debug(
+                    f"[{ProjectClient.projectsStatistics.__qualname__}] - grpc response: {response}"
+                )
+
+                return ProjectsStatistics(
+                    statistics=[
+                        self._statisticDescriptorByObject(statistic)
+                        for statistic in response[0].statistics
                     ],
                     total_item_count=response[0].total_item_count,
                 )
@@ -278,6 +320,10 @@ class ProjectClient(Client):
     def _descriptorByObject(self, obj: Any) -> ProjectDescriptor:
         kwargs = {k: getattr(obj, k, None) for k in ProjectDescriptor.__fields__.keys()}
         return ProjectDescriptor(**kwargs)
+
+    def _statisticDescriptorByObject(self, obj: Any) -> ProjectStatisticDescriptor:
+        kwargs = {k: getattr(obj, k, None) for k in ProjectStatisticDescriptor.__fields__.keys()}
+        return ProjectStatisticDescriptor(**kwargs)
 
     # endregion
 

@@ -42,6 +42,7 @@ from src.port_adapter.api.rest.model.response.v1.project.Project import (
     ProjectDescriptor,
 )
 from src.port_adapter.api.rest.model.response.v1.project.Projects import Projects
+from src.port_adapter.api.rest.model.response.v1.project.statistic.project.ProjectsStatistics import ProjectsStatistics
 from src.port_adapter.api.rest.router.v1.identity.auth import CustomHttpBearer
 from src.port_adapter.api.rest.router.v1.identity.authz import CustomAuthorization
 from src.port_adapter.messaging.common.SimpleProducer import SimpleProducer
@@ -91,6 +92,29 @@ async def getProjects(
     except Exception as e:
         logger.info(e)
 
+
+@router.get(path="/statistics", summary="Get projects statistics", response_model=ProjectsStatistics)
+@OpenTelemetry.fastApiTraceOTel
+async def getProjectsStatistics(
+    *,
+    _=Depends(CustomHttpBearer()),
+    __=Depends(CustomAuthorization()),
+):
+    try:
+        client = ProjectClient()
+        return client.projectsStatistics()
+    except grpc.RpcError as e:
+        if e.code() == StatusCode.PERMISSION_DENIED:
+            return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
+        if e.code() == StatusCode.NOT_FOUND:
+            return Response(content=str(e), status_code=HTTP_404_NOT_FOUND)
+        else:
+            logger.error(
+                f"[{getProjectsStatistics.__module__}.{getProjectsStatistics.__qualname__}] - error response e: {e}"
+            )
+            return Response(content=str(e), status_code=HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        logger.info(e)
 
 @router.get(
     path="/by_organization_id/{organization_id}",
