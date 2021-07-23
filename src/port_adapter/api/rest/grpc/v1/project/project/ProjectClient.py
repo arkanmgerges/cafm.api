@@ -152,6 +152,7 @@ class ProjectClient(Client):
     @OpenTelemetry.grpcTraceOTel
     def projectsStatistics(
             self,
+            resultFrom: int = 0, resultSize: int = 10, filters: List[dict] = None
     ) -> ProjectsStatistics:
         with grpc.insecure_channel(f"{self._server}:{self._port}") as channel:
             stub = ProjectAppServiceStub(channel)
@@ -159,7 +160,9 @@ class ProjectClient(Client):
                 logger.debug(
                     f"[{ProjectClient.projectsStatistics.__qualname__}] - grpc call to server {self._server}:{self._port}"
                 )
-                request = ProjectAppService_statisticsRequest()
+                request = ProjectAppService_statisticsRequest(
+                    result_from=resultFrom, result_size=resultSize, filters=filters
+                )
                 response: ProjectAppService_statisticsResponse = stub.statistics.with_call(
                     request,
                     metadata=(

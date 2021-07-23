@@ -18,6 +18,7 @@ from starlette.status import (
 )
 
 import src.port_adapter.AppDi as AppDi
+from src.domain_model.FilterService import FilterService
 from src.domain_model.OrderService import OrderService
 from src.port_adapter.api.rest.grpc.Client import Client
 from src.port_adapter.api.rest.grpc.v1.project.project.ProjectClient import (
@@ -97,12 +98,17 @@ async def getProjects(
 @OpenTelemetry.fastApiTraceOTel
 async def getProjectsStatistics(
     *,
+    result_from: int = Query(0, description="Starting offset for fetching data"),
+    result_size: int = Query(10, description="Item count to be fetched"),
+    filters: str = Query("", description="e.g. project.state:draft"),
     _=Depends(CustomHttpBearer()),
     __=Depends(CustomAuthorization()),
 ):
     try:
         client = ProjectClient()
-        return client.projectsStatistics()
+        filterService = AppDi.instance.get(FilterService)
+        filters = filterService.filterStringToListOfDict(filters)
+        return client.projectsStatistics(resultFrom=result_from, resultSize=result_size, filters=filters)
     except grpc.RpcError as e:
         if e.code() == StatusCode.PERMISSION_DENIED:
             return Response(content=str(e), status_code=HTTP_403_FORBIDDEN)
