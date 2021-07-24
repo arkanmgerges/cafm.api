@@ -107,6 +107,7 @@ from src.port_adapter.api.rest.router.v1.project.tag import (
 )
 from src.port_adapter.api.rest.router.v1.project.unit import unit as project_unit
 from src.port_adapter.api.rest.router.v1.util import route as util_route
+from src.port_adapter.api.rest.router.v1.media import route as media_route
 from src.resource.logging.loguru_logger import initLoguruLogging
 from src.resource.logging.opentelemetry.OpenTelemetry import OpenTelemetry
 
@@ -209,6 +210,20 @@ app.include_router(
     util_route.router,
     prefix="/v1/util/route",
     tags=["Utility"],
+    responses={
+        202: {"model": Message},
+        400: {"model": Message},
+        404: {"model": Message},
+        500: {"model": Message},
+    },
+)
+# endregion
+
+# region Media
+app.include_router(
+    media_route.router,
+    prefix="/v1/media",
+    tags=["Media"],
     responses={
         202: {"model": Message},
         400: {"model": Message},

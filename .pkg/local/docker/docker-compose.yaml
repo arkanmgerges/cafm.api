@@ -1,5 +1,9 @@
 version: "3.8"
 
+volumes:
+  media_data:
+    driver: local
+
 services:
   cafm-api:
     image: cafm-api:local
@@ -32,6 +36,7 @@ services:
       - cafm-infra_default
     volumes:
       - ../../..:/app
+      - media_data:/media_data
     env_file:
       - ../../../.env
 

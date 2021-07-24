@@ -12,6 +12,7 @@ emoji = "==1.2.0"
 black = "==20.8b1"
 
 [packages]
+Authlib = "==0.15.2"
 aiofiles = "==0.5.0"
 alabaster = "==0.7.12"
 avro-models = "==1.0.0"
