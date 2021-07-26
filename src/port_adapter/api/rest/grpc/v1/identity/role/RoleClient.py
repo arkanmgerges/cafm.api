@@ -121,7 +121,10 @@ class RoleClient(Client):
                     if ("owned_by" in roleAccessPermissionDataItem
                         and roleAccessPermissionDataItem["owned_by"] is not None
                         and "resource_id" in roleAccessPermissionDataItem["owned_by"]
-                        and roleAccessPermissionDataItem["owned_by"]["resource_id"] is not None):
+                        and roleAccessPermissionDataItem["owned_by"]["resource_id"] is not None
+                        and "type" in roleAccessPermissionsData
+                        and roleAccessPermissionsData["type"] is not None
+                    ):
                         ownedBy = self._resourceFromDataItem(
                             dataItem={**roleAccessPermissionDataItem["owned_by"],
                                       **{'id': roleAccessPermissionDataItem["owned_by"]['resource_id']}})
@@ -211,7 +214,9 @@ class RoleClient(Client):
                 if ("owned_by" in roleAccessPermissionsData
                         and roleAccessPermissionsData["owned_by"] is not None
                         and "resource_id" in roleAccessPermissionsData["owned_by"]
-                        and roleAccessPermissionsData["owned_by"]["resource_id"] is not None):
+                        and roleAccessPermissionsData["owned_by"]["resource_id"] is not None
+                        and "type" in roleAccessPermissionsData
+                        and roleAccessPermissionsData["type"] is not None):
                     ownedBy = self._resourceFromDataItem(
                         dataItem={**roleAccessPermissionsData["owned_by"],
                                   **{'id': roleAccessPermissionsData["owned_by"]['resource_id']}})
