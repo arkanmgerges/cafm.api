@@ -1,4 +1,4 @@
-name: Build
+name: Staging
 
 on:
   push:
@@ -31,7 +31,7 @@ jobs:
           -f ${GITHUB_WORKSPACE}/.pkg/local/docker/Dockerfile \
           ${GITHUB_WORKSPACE}
 
-    - name: Deploy to the-bull
+    - name: Deploy to staging
       uses: fifsky/ssh-action@master
       with:
         command: |
@@ -42,7 +42,7 @@ jobs:
           docker-compose -f ~/cafm.api/.pkg/local/docker/docker-compose.yaml -p cafm-api up --build -d
           ssh-add -D
         host: 104.248.129.157
-        port: ${{ secrets.SSH_PORT }}
+        port: 22
         user: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         args: "-tt"
